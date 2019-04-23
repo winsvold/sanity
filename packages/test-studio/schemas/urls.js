@@ -16,6 +16,13 @@ export default {
       type: 'url',
       title: 'Plain url',
       description: 'A plain URL field'
+    },
+    {
+      name: 'customProtocols',
+      type: 'url',
+      title: 'Plain url',
+      description: 'A plain URL field',
+      validation: Rule => Rule.uri({scheme: ['http', 'https', 'mailto']})
     }
   ]
 }

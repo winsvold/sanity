@@ -19,6 +19,7 @@ import code from './code'
 import customNumber from './customNumber'
 import localeString from './localeString'
 import color from './color'
+import urls from './urls'
 import liveEdit from './liveEdit'
 import recursive from './recursive'
 import recursiveArray from './recursiveArray'
@@ -92,6 +93,7 @@ export default createSchema({
     myObject,
     codeInputType,
     notitle,
+    urls,
     typeWithNoToplevelStrings,
     reservedFieldNames,
     previewImageUrlTest,
