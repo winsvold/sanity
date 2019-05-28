@@ -9,7 +9,7 @@ import {WithReferringDocuments} from 'part:@sanity/base/with-referring-documents
 import Preview from '../../Preview'
 import schema from 'part:@sanity/base/schema'
 import {IntentLink} from 'part:@sanity/base/router'
-import client from 'part:@sanity/base/client'
+import client from '../../sanity/client'
 
 import styles from './styles/Asset.css'
 import TrashIcon from 'part:@sanity/base/trash-icon'
@@ -88,7 +88,9 @@ export default class Asset extends React.PureComponent {
     const Icon = icon
     return (
       <div className={color === 'danger' ? styles.menuItemDanger : styles.menuItem}>
-        {icon && <Icon />}&nbsp;&nbsp;{title}
+        {icon && <Icon />}
+        &nbsp;&nbsp;
+        {title}
       </div>
     )
   }

@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import client from 'part:@sanity/base/client'
 import userStore from 'part:@sanity/base/user'
 
 import LoginDialog from 'part:@sanity/base/login-dialog'
 import SanityStudioLogo from 'part:@sanity/base/sanity-studio-logo'
 import Spinner from 'part:@sanity/components/loading/spinner'
+import client from './client'
 import CookieTest from './CookieTest'
 import ErrorDialog from './ErrorDialog'
 import UnauthorizedUser from './UnauthorizedUser'

@@ -75,7 +75,10 @@ range(20)
   .map(DB.create)
 
 const ID_QUERY = /\[_id\s*==\s*[$\w]+]/
-export default {
+const client = {
+  withConfig() {
+    return client
+  },
   fetch(query, params) {
     // todo: reproject fields
     const [type] = query.split(/\[/)
@@ -105,3 +108,5 @@ export default {
     return Promise.resolve(DB.patch(spec))
   }
 }
+
+export default client

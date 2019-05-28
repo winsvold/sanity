@@ -19,7 +19,7 @@ function serializePath(path) {
 }
 
 const defaultIsUnique = (slug, options) => {
-  const client = require('part:@sanity/base/client')
+  const client = require('../client')
   const {document, path} = options
   const {published, draft} = getDocumentIds(document._id)
   const docType = document._type

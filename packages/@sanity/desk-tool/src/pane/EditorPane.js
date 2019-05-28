@@ -9,11 +9,11 @@ import {FormBuilder, checkoutPair} from 'part:@sanity/form-builder'
 import {getDraftId, getPublishedId} from 'part:@sanity/base/util/draft-utils'
 import schema from 'part:@sanity/base/schema'
 import Button from 'part:@sanity/components/buttons/default'
-import client from 'part:@sanity/base/client'
 import withDocumentType from '../utils/withDocumentType'
 import styles from './styles/EditorWrapper.css'
 import Editor from './Editor'
 import UseState from '../utils/UseState'
+import client from '../client'
 
 const INITIAL_DOCUMENT_STATE = {
   isLoading: true,
@@ -129,8 +129,9 @@ export default withDocumentType(
         draft$.pipe(map(event => ({...event, version: 'draft'})))
       )
         .pipe(
-          switchMap(event =>
-            event.type === 'reconnect' ? timer(500).pipe(mapTo(event)) : observableOf(event)
+          switchMap(
+            event =>
+              event.type === 'reconnect' ? timer(500).pipe(mapTo(event)) : observableOf(event)
           ),
           catchError((err, _caught$) => {
             // eslint-disable-next-line no-console
@@ -493,14 +494,15 @@ export default withDocumentType(
               This document has the schema type <code>{typeName}</code>, which is not defined as a
               type in the local content studio schema.
             </p>
-            {__DEV__ && doc && (
-              <div>
-                <h4>Here is the JSON representation of the document:</h4>
-                <pre className={styles.jsonDump}>
-                  <code>{JSON.stringify(doc, null, 2)}</code>
-                </pre>
-              </div>
-            )}
+            {__DEV__ &&
+              doc && (
+                <div>
+                  <h4>Here is the JSON representation of the document:</h4>
+                  <pre className={styles.jsonDump}>
+                    <code>{JSON.stringify(doc, null, 2)}</code>
+                  </pre>
+                </div>
+              )}
           </div>
         </div>
       )

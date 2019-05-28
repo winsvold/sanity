@@ -1,5 +1,4 @@
 // @flow
-import client from 'part:@sanity/base/client'
 import {
   combineLatest,
   concat,
@@ -26,6 +25,7 @@ import type {FieldName, Id} from './types'
 import {INCLUDE_FIELDS} from './constants'
 import hasEqualFields from './utils/hasEqualFields'
 import isUniqueBy from './utils/isUniqueBy'
+import client from './client'
 
 let _globalListener
 const getGlobalEvents = () => {

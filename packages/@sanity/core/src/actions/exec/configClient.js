@@ -21,4 +21,7 @@ if (!token) {
   )
 }
 
-client.config({token})
+client.config(
+  {token},
+  true // silence global client config warning
+)

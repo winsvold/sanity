@@ -3,7 +3,7 @@ import React, {PureComponent} from 'react'
 import semverCompare from 'semver-compare'
 import versions from 'sanity:versions'
 import FullscreenDialog from 'part:@sanity/components/dialogs/fullscreen?'
-import client from 'part:@sanity/base/client'
+import client from '../sanityClient'
 import FullscreenError from './FullscreenError'
 
 const fakeOutdatedModule = false

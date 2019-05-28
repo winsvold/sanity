@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import client from 'part:@sanity/base/client'
 import LoadingPane from '../pane/LoadingPane'
 import ErrorPane from '../pane/ErrorPane'
+import client from '../client'
 
 // Resolves the type for a document if not present
 export default function withDocument(Pane) {

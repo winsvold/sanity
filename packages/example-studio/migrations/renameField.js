@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
-import client from 'part:@sanity/base/client'
+import sanityClient from 'part:@sanity/base/client'
+
+const client = sanityClient.withConfig({apiVersion: '1'})
 
 // Run this script with: `sanity exec --with-user-token migrations/renameField.js`
 //

@@ -2,7 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
 import styles from './AuthorAnnotation.css'
-import sanityClient from 'part:@sanity/base/client'
+import client from 'part:@sanity/base/client'
+
+const sanityClient = client.withConfig({apiVersion: '1'})
 
 export default class AuthorAnnotation extends React.Component {
   static propTypes = {

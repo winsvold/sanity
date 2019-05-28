@@ -1,7 +1,7 @@
 import {defer, of as observableOf} from 'rxjs'
 
 import createDocumentStore from '@sanity/document-store'
-import client from 'part:@sanity/base/client'
+import client from '../../sanityClient'
 import {getPairListener} from './getPairListener'
 import {concatMap, map} from 'rxjs/operators'
 

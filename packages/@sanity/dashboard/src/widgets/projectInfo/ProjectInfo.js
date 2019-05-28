@@ -7,7 +7,8 @@ import AnchorButton from 'part:@sanity/components/buttons/anchor'
 import WidgetContainer from 'part:@sanity/dashboard/widget-container'
 import styles from './ProjectInfo.css'
 
-const {projectId, dataset} = sanityClient.config()
+const client = sanityClient.withConfig({apiVersion: '1'})
+const {projectId, dataset} = client.config()
 
 function isUrl(url) {
   return /^https?:\/\//.test(`${url}`)
@@ -44,7 +45,7 @@ class ProjectInfo extends React.Component {
 
   componentDidMount() {
     // fetch project data
-    sanityClient.projects
+    client.projects
       .getById(projectId)
       .then(result => {
         const {studioHost} = result
@@ -60,7 +61,7 @@ class ProjectInfo extends React.Component {
       })
 
     // ping assumed graphql endpoint
-    sanityClient
+    client
       .request({
         method: 'HEAD',
         uri: `/graphql/${dataset}/default`

@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react'
-import client from 'part:@sanity/base/client'
 import Spinner from 'part:@sanity/components/loading/spinner'
+import client from './client'
 
 const checkCors = () =>
   Promise.all([

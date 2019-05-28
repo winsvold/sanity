@@ -9,7 +9,7 @@ import PreviewComponentInline from 'part:@sanity/components/previews/inline'
 import PreviewComponentMedia from 'part:@sanity/components/previews/media'
 import PreviewComponentBlock from 'part:@sanity/components/previews/block'
 import PreviewComponentBlockImage from 'part:@sanity/components/previews/block-image'
-import sanityClient from 'part:@sanity/base/client'
+import sanityClient from '../client'
 import fileIcon from 'part:@sanity/base/file-icon'
 
 const previewComponentMap = {

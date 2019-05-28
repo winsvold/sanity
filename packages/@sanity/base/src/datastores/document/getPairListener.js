@@ -1,6 +1,6 @@
-import client from 'part:@sanity/base/client'
 import {defer, of as observableOf} from 'rxjs'
 import {concatMap} from 'rxjs/operators'
+import client from '../../sanityClient'
 
 const DOCS_QUERY = `{
  "published": *[_id == $publishedId][0],

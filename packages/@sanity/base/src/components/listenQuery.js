@@ -1,6 +1,6 @@
-import client from 'part:@sanity/base/client'
 import {auditTime, take, share, filter, mergeMap, switchMapTo} from 'rxjs/operators'
 import {defer, concat, throwError} from 'rxjs'
+import client from '../sanityClient'
 
 const fetch = (query, params) => defer(() => client.observable.fetch(query, params))
 const listen = (query, params) =>

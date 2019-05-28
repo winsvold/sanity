@@ -1,5 +1,5 @@
 import {map} from 'rxjs/operators'
-import client from 'part:@sanity/base/client'
+import client from '../../client'
 import {createWeightedSearch} from 'part:@sanity/base/search/weighted'
 import {observeForPreview} from 'part:@sanity/base/preview'
 

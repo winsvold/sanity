@@ -2,7 +2,7 @@ import {Observable} from 'rxjs'
 import createActions from '../utils/createActions'
 import pubsub from 'nano-pubsub'
 import authenticationFetcher from 'part:@sanity/base/authentication-fetcher'
-import client from 'part:@sanity/base/client'
+import client from '../../sanityClient'
 
 const userChannel = pubsub()
 const errorChannel = pubsub()

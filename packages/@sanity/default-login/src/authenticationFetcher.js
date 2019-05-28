@@ -1,5 +1,5 @@
-import client from 'part:@sanity/base/client'
 import getProviders from './util/getProviders'
+import client from './client'
 
 export default {
   getProviders,

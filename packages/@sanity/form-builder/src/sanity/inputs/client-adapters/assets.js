@@ -1,4 +1,4 @@
-import client from 'part:@sanity/base/client'
+import client from '../../client'
 import {observePaths} from 'part:@sanity/base/preview'
 import {mergeMap, map, catchError} from 'rxjs/operators'
 import {from as observableFrom, of as observableOf} from 'rxjs'
@@ -25,15 +25,16 @@ function uploadSanityAsset(assetType, file, options = {}) {
         })
       }
       return client.observable.assets.upload(assetType, file, {extract, preserveFilename}).pipe(
-        map(event =>
-          event.type === 'response'
-            ? {
-                // rewrite to a 'complete' event
-                type: 'complete',
-                id: event.body.document._id,
-                asset: event.body.document
-              }
-            : event
+        map(
+          event =>
+            event.type === 'response'
+              ? {
+                  // rewrite to a 'complete' event
+                  type: 'complete',
+                  id: event.body.document._id,
+                  asset: event.body.document
+                }
+              : event
         )
       )
     })

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import {throwError, interval, defer, of as observableOf} from 'rxjs'
 import {map, concat, switchMap, distinctUntilChanged, debounce} from 'rxjs/operators'
 import shallowEquals from 'shallow-equals'
-import client from 'part:@sanity/base/client'
 import {withRouterHOC} from 'part:@sanity/base/router'
 import {resolvePanes, LOADING} from './utils/resolvePanes'
 import styles from './styles/DeskTool.css'
@@ -11,6 +10,7 @@ import DeskToolPanes from './DeskToolPanes'
 import StructureError from './components/StructureError'
 import serializeStructure from './utils/serializeStructure'
 import defaultStructure from './defaultStructure'
+import client from './client'
 
 const EMPTY_PANE_KEYS = []
 

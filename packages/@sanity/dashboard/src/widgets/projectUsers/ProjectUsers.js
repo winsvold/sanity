@@ -7,6 +7,8 @@ import AnchorButton from 'part:@sanity/components/buttons/anchor'
 import ToolIcon from 'react-icons/lib/go/tools'
 import styles from './ProjectUsers.css'
 
+const client = sanityClient.withConfig({apiVersion: '1'})
+
 function getInviteUrl(projectId) {
   return `https://manage.sanity.io/projects/${projectId}/team/invite`
 }
@@ -39,14 +41,14 @@ class ProjectUsers extends React.Component {
   }
 
   fetchData() {
-    const {projectId} = sanityClient.config()
-    sanityClient.projects
+    const {projectId} = client.config()
+    client.projects
       .getById(projectId)
       .then(project => {
         this.setState({project})
         return project
       })
-      .then(project => sanityClient.users.getById(project.members.map(mem => mem.id).join(',')))
+      .then(project => client.users.getById(project.members.map(mem => mem.id).join(',')))
       .then(users => this.setState({users: Array.isArray(users) ? users : [users]}))
       .catch(error => this.setState({error}))
   }
