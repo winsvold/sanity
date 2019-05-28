@@ -30,6 +30,7 @@
   "dependencies": {
     "@sanity/client": "0.140.17",
     "@sanity/document-store": "0.140.30",
+    "@sanity/generate-help-url": "0.140.0",
     "@sanity/image-url": "0.140.12",
     "@sanity/observable": "0.140.0",
     "@sanity/preview": "0.140.12",
