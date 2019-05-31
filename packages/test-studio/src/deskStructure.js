@@ -16,7 +16,7 @@ export default () =>
         .title('Singleton author')
         .schemaType('author'),
 
-      S.divider(),
+      // S.divider(),
 
       S.listItem()
         .title('Anything with a title')
@@ -106,7 +106,7 @@ export default () =>
             ])
         ),
 
-      S.divider(),
+      // S.divider(),
 
       ...S.documentTypeListItems()
     ])

@@ -29,6 +29,42 @@ export default {
           description: 'This is a geopoint field'
         }
       ]
+    },
+    {
+      title: 'Block content with array of geopoints',
+      name: 'blockWithArrayOfLocations',
+      type: 'object',
+      fields: [
+        {
+          name: 'blocks',
+          type: 'array',
+          of: [
+            {
+              type: 'block',            
+            },
+            {
+              type: 'object',
+              name: 'arrayOfLocations',
+              title: 'Array of locations',
+              fields: [{
+                title: 'Locations',
+                name: 'locations',
+                type: 'array',
+                of: [{
+                  title: 'Location',
+                  name: 'location',
+                  type: 'object',
+                  fields: [{
+                    title: 'Coordinates',
+                    name: 'coordinates',
+                    type: 'geopoint'
+                  }]
+                }]
+              }]
+            }
+          ]
+        }
+      ]
     }
   ],
   preview: {
