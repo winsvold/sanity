@@ -87,7 +87,7 @@ exports.initConfig = (config, prevConfig) => {
   return newConfig
 }
 
-exports.validateApiVersion = function validateApiVersion(apiVersion, nowOffset = 0) {
+exports.validateApiVersion = function validateApiVersion(apiVersion) {
   if (apiVersion === '1' || apiVersion === 'X') {
     return
   }
