@@ -41,7 +41,7 @@ In general, unless you know what API version you want to use, you'll want to set
 
 **Note**: Do not be tempted to use a dynamic value for the `apiVersion`. The reason for setting a static value is to prevent unexpected, breaking changes.
 
-In future versions, specifying an API version will be required. For now (to maintain backwards compatiblity) not specifying a version will trigger a deprecation warning and fall back to using `v1`.
+In future versions, specifying an API version will be required. For now (to maintain backwards compatibility) not specifying a version will trigger a deprecation warning and fall back to using `v1`.
 
 ### Fetch a single document
 

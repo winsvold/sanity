@@ -25,16 +25,15 @@ function uploadSanityAsset(assetType, file, options = {}) {
         })
       }
       return client.observable.assets.upload(assetType, file, {extract, preserveFilename}).pipe(
-        map(
-          event =>
-            event.type === 'response'
-              ? {
-                  // rewrite to a 'complete' event
-                  type: 'complete',
-                  id: event.body.document._id,
-                  asset: event.body.document
-                }
-              : event
+        map(event =>
+          event.type === 'response'
+            ? {
+                // rewrite to a 'complete' event
+                type: 'complete',
+                id: event.body.document._id,
+                asset: event.body.document
+              }
+            : event
         )
       )
     })
