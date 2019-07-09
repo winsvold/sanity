@@ -23,7 +23,7 @@
 
     @media (--screen-medium) {
       padding: var(--small-padding);
-      font-size: var(--font-size-base);
+      font-size: var(--font-size-small);
     }
   }
 }

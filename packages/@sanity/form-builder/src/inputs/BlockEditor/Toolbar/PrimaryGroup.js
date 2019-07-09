@@ -102,7 +102,7 @@ export default class PrimaryGroup extends React.PureComponent<Props, State> {
               showLabels={
                 blockContentFeatures.types.blockObjects.concat(
                   blockContentFeatures.types.inlineObjects
-                ).length < 4
+                ).length < 10
               }
               blockTypes={blockContentFeatures.types.blockObjects}
               editor={editor}

@@ -1,5 +1,22 @@
 @import "part:@sanity/base/theme/variables-style";
 
+.root {
+  display: flex;
+}
+
+.label {
+  display: flex;
+  align-self: center;
+  font-weight: 600;
+  padding: 0 1em;
+}
+
+.items {
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
 .item {
   display: flex;
   padding: var(--extra-small-padding);

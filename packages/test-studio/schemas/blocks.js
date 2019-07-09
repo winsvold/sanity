@@ -177,6 +177,35 @@ export default {
           of: [
             {
               type: 'image',
+              title: 'Aligned image',
+              name: 'alignedImage',
+              fields: [
+                {
+                  title: 'Alignment',
+                  name: 'align',
+                  type: 'string',
+                  options: {
+                    isHighlighted: true,
+                    list: [
+                      {
+                        title: 'Left',
+                        value: 'left'
+                      },
+                      {
+                        title: 'Center',
+                        value: 'center'
+                      },
+                      {
+                        title: 'Right',
+                        value: 'right'
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              type: 'image',
               title: 'Image',
               fields: [
                 {title: 'Caption', name: 'caption', type: 'string', options: {isHighlighted: true}},

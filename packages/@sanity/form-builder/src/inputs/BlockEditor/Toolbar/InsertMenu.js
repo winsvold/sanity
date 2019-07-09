@@ -125,7 +125,14 @@ export default class InsertMenu extends React.Component<Props> {
     const items = this.getItems()
 
     if (!collapsed) {
-      return items.map((item, key) => ({...item, key})).map(this.renderButton)
+      return (
+        <div className={styles.root}>
+          <label className={styles.label}>Insert</label>
+          <ul className={styles.items}>
+            {items.map((item, key) => ({...item, key})).map(this.renderButton)}
+          </ul>
+        </div>
+      )
     }
 
     return (
