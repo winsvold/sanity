@@ -6,6 +6,7 @@ import {storiesOf, addDecorator} from 'part:@sanity/storybook'
 import {withKnobs, select, text, button, boolean, number} from 'part:@sanity/storybook/addons/knobs'
 import Sanity from 'part:@sanity/storybook/addons/sanity'
 import SnackbarProvider from 'part:@sanity/components/snackbar/provider'
+import MdUndo from 'part:@sanity/base/undo-icon'
 
 function action(something) {
   return () => console.log('action:', something)
@@ -56,6 +57,14 @@ storiesOf('Snackbar', module)
       {...globalDefaults}
       kind={select('Kind', ['success', 'error', 'warning', 'info'], 'info', 'props')}
       message={text('Message', 'This is a message placeholder', 'props')}
+      isCloseable={boolean('onClose', false, 'props')}
+      icon={boolean('Show icon')}
+      actions={[
+        {
+          title: 'Undo',
+          callback: () => action('undo')
+        }
+      ]}
     />
   ))
   .add('With icons', () => (
