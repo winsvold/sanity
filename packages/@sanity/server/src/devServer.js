@@ -8,14 +8,22 @@ import getStaticBasePath from './util/getStaticBasePath'
 
 export default function getDevServer(config = {}) {
   const staticPath = getStaticBasePath(config)
+  const basePath = getStaticBasePath.getBasePath(config)
   const app = getBaseServer(config)
   const webpackConfig = config.webpack || getWebpackDevConfig(config)
+
+  console.log('basePath', basePath)
 
   // Serve an empty CSS file for the main stylesheet,
   // as they are injected dynamically in development mode
   app.get(`${staticPath}/css/main.css`, (req, res) => {
     res.set('Content-Type', 'text/css')
     res.send()
+  })
+
+  app.get(`${basePath}/__sanity_dev_server`, (req, res) => {
+    res.set('Content-Type', 'text/event-stream')
+    res.write('event: open\n\n')
   })
 
   // Use babel-register in order to be able to load things like

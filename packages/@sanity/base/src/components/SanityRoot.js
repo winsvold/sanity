@@ -4,6 +4,7 @@ import RootComponent from 'part:@sanity/base/root'
 import SnackbarProvider from 'part:@sanity/components/snackbar/provider'
 import ErrorHandler from './ErrorHandler'
 import VersionChecker from './VersionChecker'
+import ServerConnectionMonitor from './ServerConnectionMonitor'
 import MissingProjectConfig from './MissingProjectConfig'
 import styles from './styles/SanityRoot.css'
 
@@ -16,6 +17,7 @@ function SanityRoot() {
   return (
     <div className={styles.root}>
       <SnackbarProvider>
+        <ServerConnectionMonitor />
         <ErrorHandler />
         <RootComponent />
         <VersionChecker />
