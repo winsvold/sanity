@@ -12,6 +12,7 @@ import {
   InitialValueTemplateItemBuilder,
   maybeSerializeInitialValueTemplateItem
 } from './InitialValueTemplateItem'
+import {validateId} from './util/validateId'
 
 function noChildResolver() {
   return undefined
@@ -150,7 +151,7 @@ export abstract class GenericListBuilder<L extends BuildableGenericList, Concret
     )
 
     return {
-      id,
+      id: validateId(id, options.path, id || options.index),
       title: this.spec.title,
       type: 'genericList',
       defaultLayout,
