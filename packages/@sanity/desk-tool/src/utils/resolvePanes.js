@@ -38,7 +38,10 @@ function resolveForStructure(structure, paneGroups, prevStructure, fromIndex) {
       return unsubscribe
     }
 
-    const paneSegments = [[structure.id]].concat(paneGroups).filter(pair => pair && pair.length > 0)
+    const paneSegments = [[{id: structure.id}]]
+      .concat(paneGroups)
+      .filter(pair => pair && pair.length > 0)
+
     const totalPanes = sumPaneSegments(paneSegments)
     const [fromRootIndex, fromSplitIndex] = fromIndex
     let panes = getInitialPanes(prevStructure, totalPanes, fromRootIndex + 1 + fromSplitIndex)
@@ -56,7 +59,7 @@ function resolveForStructure(structure, paneGroups, prevStructure, fromIndex) {
     return unsubscribe
 
     function resolve(index, splitIndex) {
-      if (index > totalPanes - 1) {
+      if (index > paneSegments.length - 1) {
         return
       }
 
@@ -102,6 +105,23 @@ function resolveForStructure(structure, paneGroups, prevStructure, fromIndex) {
       return null
     }
 
+    function findFlatIndexForPane(index, splitIndex) {
+      if (index === 0) {
+        return splitIndex
+      }
+
+      let flatIndex = 0
+      for (let i = 0; index < paneSegments.length && i <= index; i++) {
+        if (i === index) {
+          return flatIndex + splitIndex
+        }
+
+        flatIndex += paneSegments[i].length
+      }
+
+      return null
+    }
+
     function findParentForSegmentIndex(index) {
       const parentGroupIndex = findSegmentGroupIndexForPaneAtIndex(index)
       return parentGroupIndex === null ? null : panes[parentGroupIndex]
@@ -128,16 +148,17 @@ function resolveForStructure(structure, paneGroups, prevStructure, fromIndex) {
     }
 
     function maybeReplacePane(pane, index, splitIndex) {
-      const paneIndex = index + splitIndex
-      if (panes[paneIndex] === pane || shallowEquals(panes[paneIndex], pane)) {
+      // `panes` are flat: so we need to figure out the correct index based on the groups
+      const flatIndex = findFlatIndexForPane(index, splitIndex)
+      if (panes[flatIndex] === pane || shallowEquals(panes[flatIndex], pane)) {
         return false
       }
 
       panes = panes.slice()
       if (pane) {
-        panes.splice(paneIndex, 1, pane)
+        panes.splice(flatIndex, 1, pane)
       } else {
-        panes.splice(paneIndex)
+        panes.splice(flatIndex)
       }
 
       return true
