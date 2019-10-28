@@ -3,6 +3,7 @@
 // old: authors;knut,{"template":"diaryEntry"}
 // new: authors;knut,view=diff,eyJyZXYxIjoiYWJjMTIzIiwicmV2MiI6ImRlZjQ1NiJ9|latest-posts
 
+const reservedParams = ['id', 'params']
 const isKeyValue = str => /^[a-z0-9]+=[^=]+/i.test(str)
 const isBase64 = str => /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(str)
 const panePattern = /^([a-z0-9_-]+),?({.*?})?(?:(;|$))/i
@@ -25,7 +26,7 @@ export function parsePanesSegment(str) {
               if (isKeyValue(chunk)) {
                 const key = chunk.slice(0, chunk.indexOf('='))
                 const value = chunk.slice(key.length + 1)
-                pane[key === 'params' ? '_params' : key] = pane[value]
+                pane[reservedParams.includes(key) ? `_${key}` : key] = value
               } else if (isBase64(chunk)) {
                 pane.params = tryParseBase64Params(chunk)
               } else {

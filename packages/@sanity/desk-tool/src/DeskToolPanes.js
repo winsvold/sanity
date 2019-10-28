@@ -200,6 +200,21 @@ export default class DeskToolPanes extends React.Component {
         router.navigate({...router.state, panes: newPanes})
       },
 
+      setPaneView: viewId => {
+        const {id, siblings, ...rest} = getCurrentPaneUrlParams()
+        const {router} = this.props
+        const {editDocumentId, panes} = router.state
+
+        if (editDocumentId) {
+          // @todo implement i guess
+          throw new Error('not implemented for fallback pane')
+        } else {
+          const newPanes = panes.slice()
+          newPanes.splice(index - 1, 1, [{id, ...rest, view: viewId}])
+          router.navigate({...router.state, panes: newPanes})
+        }
+      },
+
       // Proxied navigation to a given intent. Consider just exposing `router` instead?
       navigateIntent: this.props.router.navigateIntent
     }
