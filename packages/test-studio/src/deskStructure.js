@@ -115,6 +115,24 @@ export default () =>
             .filter('_type == $type && role == $role')
             .params({type: 'author', role: 'developer'})
             .initialValueTemplates(S.initialValueTemplateItem('author-developer'))
+            .child(documentId =>
+              S.editor()
+                .documentId(documentId)
+                .schemaType('author')
+                .child(childId => {
+                  if (childId !== 'preview') {
+                    return undefined
+                  }
+
+                  return S.component()
+                    .title('Preview')
+                    .component(props => (
+                      <pre>
+                        <code>{JSON.stringify(props, null, 2)}</code>
+                      </pre>
+                    ))
+                })
+            )
       }),
 
       S.listItem({
