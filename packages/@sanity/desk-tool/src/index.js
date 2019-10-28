@@ -31,6 +31,9 @@ export const PaneRouterContext = React.createContext({
   // Duplicate the current pane, with optional overrides for item ID and parameters
   duplicateCurrentPane: (itemId, params) => missingContext(),
 
+  // Set the current "view" for the pane
+  setPaneView: viewId => missingContext(),
+
   // Proxied navigation to a given intent. Consider just exposing `router` instead?
   navigateIntent: (intentName, params, options = {}) => missingContext()
 })

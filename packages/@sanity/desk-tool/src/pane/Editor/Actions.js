@@ -100,9 +100,22 @@ export default class Actions extends React.PureComponent {
     )
   }
 
+  renderViewButton() {
+    return (
+      <button type="button" onClick={this.handleToggleViewButton} title="Toggle view">
+        <div tabIndex={-1}>
+          <WarningIcon />
+        </div>
+      </button>
+    )
+  }
+
   handleSplitPane = () => {
-    const {duplicateCurrentPane} = this.context
-    duplicateCurrentPane()
+    this.context.duplicateCurrentPane()
+  }
+
+  handleToggleViewButton = () => {
+    this.context.setPaneView('someView')
   }
 
   renderErrors() {
@@ -169,6 +182,7 @@ export default class Actions extends React.PureComponent {
         {value && !showSavingStatus && !isReconnecting && this.renderSyncedStatus()}
         {this.renderErrors()}
         {this.renderSplitPaneButton()}
+        {this.renderViewButton()}
       </div>
     )
   }
