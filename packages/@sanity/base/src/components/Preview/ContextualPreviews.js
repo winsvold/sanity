@@ -5,7 +5,6 @@ import React from 'react'
 // import PropTypes from 'prop-types'
 // import CloseIcon from 'part:@sanity/base/close-icon'
 import resolveContextualPreviews from 'part:@sanity/base/resolve-contextual-previews?'
-import {withDocument} from 'part:@sanity/form-builder'
 import styles from './styles/ContextualPreviews.css'
 
 class ContextualPreviews extends React.Component {
@@ -13,28 +12,27 @@ class ContextualPreviews extends React.Component {
     super(props)
 
     this.state = {
-      activeTab: 'example-com'
+      activeTab: null
     }
   }
 
-  handleOpenTab = tab => {
-    this.setState({activeTab: tab})
+  handleOpenTab = name => {
+    this.setState({activeTab: name})
   }
 
-  renderTab(title) {
+  renderTab(context) {
+    const {name, title} = context
     return (
       <div>
         <div
-          className={title === this.state.activeTab && styles.activeTab}
-          onClick={() => this.handleOpenTab(title)}
+          className={name === this.state.activeTab ? styles.activeTab : ''}
+          onClick={() => this.handleOpenTab(name)}
         >
           {title}
         </div>
       </div>
     )
   }
-
-  renderContext = context => {}
 
   render() {
     const {activeTab} = this.state
@@ -54,7 +52,7 @@ class ContextualPreviews extends React.Component {
             {contexts.map(context => {
               return (
                 <li className={styles.tabItem} key={context.name}>
-                  {this.renderTab(context.name)}
+                  {this.renderTab(context)}
                 </li>
               )
             })}
