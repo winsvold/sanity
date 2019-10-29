@@ -34,6 +34,8 @@ class ContextualPreviews extends React.Component {
     )
   }
 
+  renderContext = context => {}
+
   render() {
     const {activeTab} = this.state
     if (!resolveContextualPreviews) {
@@ -44,12 +46,12 @@ class ContextualPreviews extends React.Component {
       _type: 'author'
     }
     const contexts = resolveContextualPreviews(currentDoc)
+    const selectedContext = contexts.find(context => context.name === activeTab)
     return (
       <div>
         <div>
           <ol className={styles.tabList}>
             {contexts.map(context => {
-              // const {label} = context
               return (
                 <li className={styles.tabItem} key={context.name}>
                   {this.renderTab(context.name)}
@@ -58,19 +60,16 @@ class ContextualPreviews extends React.Component {
             })}
           </ol>
         </div>
-        <div>
-          {contexts.map(context => {
-            if (context.name !== activeTab) {
-              return undefined
-            }
-            return (
-              <div key={context.name}>
-                {context.url && <iframe src={context.url} width="600" height="600" />}
-                {context.component && context.component}
-              </div>
-            )
-          })}
-        </div>
+
+        {selectedContext && (
+          <div>
+            <h2>Preview of: {selectedContext.title}</h2>
+            {selectedContext.component && selectedContext.component}
+            {!selectedContext.component && selectedContext.url && (
+              <iframe src={selectedContext.url} width="600" height="600" />
+            )}
+          </div>
+        )}
       </div>
     )
   }
