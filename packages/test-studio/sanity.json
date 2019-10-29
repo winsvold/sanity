@@ -61,6 +61,10 @@
       "path": "src/resolveProductionUrl"
     },
     {
+      "implements": "part:@sanity/base/resolve-contextual-previews",
+      "path": "src/resolveContextualPreviews.js"
+    },
+    {
       "implements": "part:@sanity/form-builder/input/array/functions",
       "path": "src/components/SearchableArrayFunctions.js"
     },
