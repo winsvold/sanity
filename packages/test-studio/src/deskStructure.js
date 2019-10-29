@@ -120,12 +120,22 @@ export default () =>
                 .documentId(documentId)
                 .schemaType('author')
                 .child(childId => {
-                  if (childId !== 'preview') {
-                    return undefined
+                  if (childId === 'preview') {
+                    // It's preview time!
+                    return S.component()
+                      .title('Preview')
+                      .component(props => {
+                        console.log('props', props)
+                        return (
+                          <pre>
+                            <code>{JSON.stringify(props, null, 2)}</code>
+                          </pre>
+                        )
+                      })
                   }
-
+                  // Not preview, but something else
                   return S.component()
-                    .title('Preview')
+                    .title(childId)
                     .component(props => (
                       <pre>
                         <code>{JSON.stringify(props, null, 2)}</code>
