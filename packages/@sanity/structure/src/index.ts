@@ -26,6 +26,7 @@ import {
   defaultInitialValueTemplateItems,
   menuItemsFromInitialValueTemplateItems
 } from './InitialValueTemplateItem'
+import ContextualPreviews from 'part:@sanity/base/contextual-previews'
 
 const StructureBuilder = {
   defaults: getDefaultStructure,
@@ -66,7 +67,11 @@ const StructureBuilder = {
       : new ComponentBuilder(spec)
   },
 
-  divider: (): Divider => ({id: uniqueId('__divider__'), type: 'divider'})
+  divider: (): Divider => ({id: uniqueId('__divider__'), type: 'divider'}),
+
+  contextualPreviews: () => {
+    return new ComponentBuilder().component(ContextualPreviews)
+  },
 }
 
 function hasIcon(schemaType?: SchemaType | string): boolean {

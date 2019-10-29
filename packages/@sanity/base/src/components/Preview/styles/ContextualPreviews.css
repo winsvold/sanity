@@ -1,0 +1,13 @@
+.tabList {
+  list-style-type: none;
+  border-bottom: 1px solid grey;
+  display: flex;
+}
+
+.tabItem {
+  margin-right: 1rem;
+}
+
+.activeTab {
+  font-weight: bold;
+}

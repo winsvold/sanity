@@ -41,6 +41,10 @@
       "description": "A component which renders contextual previews"
     },
     {
+      "implements": "part:@sanity/base/contextual-previews",
+      "path": "components/Preview/ContextualPreviews.js"
+    },
+    {
       "name": "part:@sanity/base/configure-client",
       "description": "Function that configures the default sanity client"
     },
