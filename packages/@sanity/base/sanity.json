@@ -33,6 +33,10 @@
       "description": "Function that resolves a preview component for a given type"
     },
     {
+      "name": "part:@sanity/base/resolve-contextual-previews",
+      "description": "A function that returns an array of preview alternatives to display in a separate pane"
+    },
+    {
       "name": "part:@sanity/base/configure-client",
       "description": "Function that configures the default sanity client"
     },
@@ -874,6 +878,10 @@
     {
       "implements": "part:@sanity/base/history-icon",
       "path": "components/icons/History.js"
+    },
+    {
+      "implements": "part:@sanity/base/eye-icon",
+      "path": "components/icons/Eye.js"
     },
     {
       "implements": "part:@sanity/base/sanity-logo",
