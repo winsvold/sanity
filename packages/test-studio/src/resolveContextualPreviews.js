@@ -1,3 +1,4 @@
+import React from 'react'
 const PREVIEW_TYPES = ['book', 'author']
 const PREVIEWS = [
   {
@@ -9,6 +10,15 @@ const PREVIEWS = [
     name: 'old-blog',
     title: 'Old Blog',
     url: 'https://my-old-blog.com'
+  },
+  {
+    name: 'some-component',
+    title: 'Some component preview',
+    component: (
+      <div>
+        Some <strong>component</strong> preview
+      </div>
+    )
   }
 ]
 
