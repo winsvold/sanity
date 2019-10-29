@@ -8,6 +8,7 @@ import CheckIcon from 'part:@sanity/base/check-icon'
 import ValidationList from 'part:@sanity/components/validation/list'
 import ChevronDown from 'part:@sanity/base/chevron-down-icon'
 import WarningIcon from 'part:@sanity/base/warning-icon'
+import EyeIcon from 'part:@sanity/base/eye-icon'
 import styles from '../styles/Editor.css'
 
 export default class Actions extends React.PureComponent {
@@ -86,6 +87,20 @@ export default class Actions extends React.PureComponent {
     )
   }
 
+  renderPreviewPaneButton() {
+    return (
+      <button type="button" onClick={this.handlePreviewPane} title="Preview pane">
+        <div tabIndex={-1}>
+          <EyeIcon />
+        </div>
+      </button>
+    )
+  }
+
+  handlePreviewPane = () => {
+    // handle preview pane
+  }
+
   renderErrors() {
     const {
       onCloseValidationResults,
@@ -149,6 +164,7 @@ export default class Actions extends React.PureComponent {
         {isReconnecting && this.renderReconnecting()}
         {value && !showSavingStatus && !isReconnecting && this.renderSyncedStatus()}
         {this.renderErrors()}
+        {this.renderPreviewPaneButton()}
       </div>
     )
   }

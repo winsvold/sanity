@@ -676,6 +676,10 @@
       "path": "components/icons/Bars.js"
     },
     {
+      "implements": "part:@sanity/base/eye-icon",
+      "path": "components/icons/Eye.js"
+    },
+    {
       "implements": "part:@sanity/base/preview",
       "path": "preview/index.js"
     },
