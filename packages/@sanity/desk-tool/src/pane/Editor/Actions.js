@@ -102,12 +102,11 @@ export default class Actions extends React.PureComponent {
     )
   }
 
-  renderShowConextualPreviewsPane() {
+  renderShowContextualPreviewsPane() {
     if (!resolveContextualPreviews) {
       return null
     }
     const currentDoc = this.props.value
-    const previews = resolveContextualPreviews(currentDoc)
     const options = {stuff: 'other stuff', myId: currentDoc._id}
     return (
       <button
@@ -209,7 +208,7 @@ export default class Actions extends React.PureComponent {
         {this.renderErrors()}
         {this.renderSplitPaneButton()}
         {this.renderViewButton()}
-        {this.renderShowConextualPreviewsPane()}
+        {this.renderShowContextualPreviewsPane()}
       </div>
     )
   }
