@@ -1,4 +1,5 @@
 import React from 'react'
+
 const PREVIEW_TYPES = ['book', 'author']
 const PREVIEWS = [
   {
@@ -7,9 +8,9 @@ const PREVIEWS = [
     url: 'https://example.com/posts'
   },
   {
-    name: 'old-blog',
-    title: 'Old Blog',
-    url: 'https://my-old-blog.com'
+    name: 'css-tricks',
+    title: 'CSS Tricks',
+    url: 'https://css-tricks.com/newsletters/'
   },
   {
     name: 'some-component',
