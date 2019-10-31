@@ -1,5 +1,6 @@
 import React from 'react'
 import S from '@sanity/desk-tool/structure-builder'
+import ContextualPreviews from 'part:sanity-plugin-contextual-previews/contextual-previews-component'
 import RefreshIcon from 'part:@sanity/base/sync-icon'
 import JsonDocumentDump from './components/JsonDocumentDump'
 import {PaneRouterContext} from '@sanity/desk-tool'
@@ -127,11 +128,7 @@ export default () =>
                       .title('Preview')
                       .component(() => (
                         <PaneRouterContext.Consumer>
-                          {context => (
-                            <pre>
-                              <code>{JSON.stringify(context.getPayload(), null, 2)}</code>
-                            </pre>
-                          )}
+                          {context => <ContextualPreviews {...context.getPayload()} />}
                         </PaneRouterContext.Consumer>
                       ))
                   }

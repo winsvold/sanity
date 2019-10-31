@@ -41,6 +41,7 @@
     "dashboard-widget-cats",
     "dashboard-widget-document-count",
     "dashboard-widget-document-list",
+    "contextual-previews",
     "mux-input"
   ],
   "parts": [
@@ -61,7 +62,7 @@
       "path": "src/resolveProductionUrl"
     },
     {
-      "implements": "part:@sanity/base/resolve-contextual-previews",
+      "implements": "part:sanity-plugin-contextual-previews/resolve-contextual-previews",
       "path": "src/resolveContextualPreviews.js"
     },
     {
