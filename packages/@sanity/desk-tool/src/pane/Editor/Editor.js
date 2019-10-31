@@ -41,7 +41,6 @@ import HistoryForm from './HistoryForm'
 import {distanceInWordsToNow} from 'date-fns'
 import EditorStatusBadge from '../EditorStatusBadge'
 import TimeAgo from '../../components/TimeAgo'
-import resolveContextualPreviews from 'part:@sanity/base/resolve-contextual-previews?'
 
 const BREAKPOINT_SCREEN_MEDIUM = 512
 
@@ -672,11 +671,7 @@ export default class Editor extends React.PureComponent {
     const isLiveEditEnabled = this.isLiveEditEnabled()
 
     if (historyState.isOpen) {
-      return (
-        <div className={styles.footer}>
-          {this.renderHistoryFooter()}
-        </div>
-      )
+      return <div className={styles.footer}>{this.renderHistoryFooter()}</div>
     }
 
     return (
@@ -728,9 +723,7 @@ export default class Editor extends React.PureComponent {
   handleShowContextualPreview = () => {
     const {draft, published} = this.props
     const value = draft || published
-    // const previews = resolveContextualPreviews(value)
-    const options = {stuff: 'other stuff', myId: value._id}
-    this.context.replaceChildPane('preview', options)
+    this.context.replaceChildPane('preview', {document: value})
   }
 
   handleSplitPane = () => {
