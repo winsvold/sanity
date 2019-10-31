@@ -149,12 +149,6 @@ export default class Actions extends React.PureComponent {
         {isReconnecting && this.renderReconnecting()}
         {value && !showSavingStatus && !isReconnecting && this.renderSyncedStatus()}
         {this.renderErrors()}
-<<<<<<< HEAD
-        {this.renderSplitPaneButton()}
-        {this.renderViewButton()}
-        {this.renderShowContextualPreviewsPane()}
-=======
->>>>>>> split-pane
       </div>
     )
   }
