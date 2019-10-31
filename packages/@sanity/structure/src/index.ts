@@ -26,7 +26,6 @@ import {
   defaultInitialValueTemplateItems,
   menuItemsFromInitialValueTemplateItems
 } from './InitialValueTemplateItem'
-import {ContextualPreviews} from './parts/ContextualPreviews'
 
 const StructureBuilder = {
   defaults: getDefaultStructure,
@@ -67,11 +66,7 @@ const StructureBuilder = {
       : new ComponentBuilder(spec)
   },
 
-  divider: (): Divider => ({id: uniqueId('__divider__'), type: 'divider'}),
-
-  contextualPreviews: () => {
-    return new ComponentBuilder().component(ContextualPreviews())
-  }
+  divider: (): Divider => ({id: uniqueId('__divider__'), type: 'divider'})
 }
 
 function hasIcon(schemaType?: SchemaType | string): boolean {
