@@ -33,18 +33,6 @@
       "description": "Function that resolves a preview component for a given type"
     },
     {
-      "name": "part:@sanity/base/resolve-contextual-previews",
-      "description": "A function that returns an array of preview alternatives to display in a separate pane"
-    },
-    {
-      "name": "part:@sanity/base/contextual-previews",
-      "description": "A component which renders contextual previews"
-    },
-    {
-      "implements": "part:@sanity/base/contextual-previews",
-      "path": "components/Preview/ContextualPreviews.js"
-    },
-    {
       "name": "part:@sanity/base/configure-client",
       "description": "Function that configures the default sanity client"
     },
