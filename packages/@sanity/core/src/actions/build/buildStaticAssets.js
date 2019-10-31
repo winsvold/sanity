@@ -26,7 +26,7 @@ export default async (args, context) => {
   const outputDir = path.resolve(args.argsWithoutOptions[0] || defaultOutputDir)
   const config = getConfig(workDir)
   const compilationConfig = {
-    env: 'production',
+    env: process.env.NODE_ENV || 'production',
     staticPath: resolveStaticPath(workDir, config.get('server')),
     basePath: workDir,
     outputPath: path.join(outputDir, 'static'),
