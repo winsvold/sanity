@@ -38,6 +38,10 @@ import Actions from './Actions'
 import RestoreHistoryButton from './RestoreHistoryButton'
 import EditForm from './EditForm'
 import HistoryForm from './HistoryForm'
+import {distanceInWordsToNow} from 'date-fns'
+import EditorStatusBadge from '../EditorStatusBadge'
+import TimeAgo from '../../components/TimeAgo'
+import resolveContextualPreviews from 'part:@sanity/base/resolve-contextual-previews?'
 
 const BREAKPOINT_SCREEN_MEDIUM = 512
 
@@ -148,39 +152,6 @@ const getProductionPreviewItem = (
   }
 }
 
-// @todo refactor
-const getTemporaryPreviewItem = (
-  draft,
-  published,
-  liveEditEnabled,
-  isHistoryEnabled,
-  selectedEvent
-) => {
-  const snapshot = draft || published
-  if (!snapshot || !resolveProductionPreviewUrl) {
-    return null
-  }
-  let previewUrl
-  try {
-    previewUrl = resolveProductionPreviewUrl(snapshot, selectedEvent && selectedEvent.rev)
-  } catch (error) {
-    error.message = `An error was thrown while trying to get production preview url: ${error.message}`
-    // eslint-disable-next-line no-console
-    console.error(error)
-    return null
-  }
-
-  if (!previewUrl) {
-    return null
-  }
-
-  return {
-    action: 'contextual-preview',
-    title: 'Open contextual preview',
-    icon: PublicIcon
-  }
-}
-
 const getMenuItems = (
   enabledActions,
   draft,
@@ -191,7 +162,6 @@ const getMenuItems = (
 ) =>
   [
     getProductionPreviewItem,
-    getTemporaryPreviewItem,
     enabledActions.includes('delete') && getUnpublishItem,
     enabledActions.includes('create') && getDuplicateItem,
     getHistoryMenuItem,
@@ -246,7 +216,6 @@ export default class Editor extends React.PureComponent {
 
   static propTypes = {
     title: PropTypes.string,
-    paneIndex: PropTypes.number.isRequired,
     index: PropTypes.number,
     paneStyles: PropTypes.object,
     patchChannel: PropTypes.object,
@@ -477,7 +446,7 @@ export default class Editor extends React.PureComponent {
     }
 
     if (item.action === 'contextual-preview') {
-      this.context.replaceChildPane('preview')
+      this.context.replaceChildPane('preview', item.params)
       return true
     }
 
@@ -507,6 +476,7 @@ export default class Editor extends React.PureComponent {
     }
 
     this.setState({isMenuOpen: false})
+    return false
   }
 
   handleCloseValidationResults = () => {
@@ -587,7 +557,7 @@ export default class Editor extends React.PureComponent {
     )
   }
 
-  renderPublishInfo = () => {
+  renderWorkflowButtons = () => {
     const {
       draft,
       isCreatingDraft,
@@ -641,7 +611,7 @@ export default class Editor extends React.PureComponent {
     )
   }
 
-  renderHistoryInfo = () => {
+  renderHistoryFooter = () => {
     const {isReconnecting, isRestoring, onRestore} = this.props
     const {historyState} = this.state
     const selectedEvent = this.findSelectedEvent()
@@ -693,30 +663,59 @@ export default class Editor extends React.PureComponent {
     })
   }
 
-  renderStaticContent = () => {
-    const {draft} = this.props
+  renderFooter = () => {
+    const {draft, published, initialValue} = this.props
+    const value = draft || published || initialValue
     const {historyState} = this.state
-
+    const onShowHistory = this.handleOpenHistory
     const spinnerMessage = getSpinnerMessage(this.props)
+    const isLiveEditEnabled = this.isLiveEditEnabled()
+
+    if (historyState.isOpen) {
+      return (
+        <div className={styles.footer}>
+          {this.renderHistoryFooter()}
+        </div>
+      )
+    }
 
     return (
-      <>
+      <div className={styles.footer}>
+        <div className={styles.footerStatus}>
+          <div className={styles.statusBadges}>
+            <EditorStatusBadge
+              liveEdit={isLiveEditEnabled}
+              isDraft={!!draft}
+              isPublished={!!published}
+              title={
+                published &&
+                `Published ${distanceInWordsToNow(published._updatedAt, {
+                  addSuffix: true
+                })}`
+              }
+            />
+          </div>
+
+          {value && value._updatedAt && (
+            <div>
+              <span className={styles.editedTimeClickable} onClick={onShowHistory}>
+                {'Updated '}
+                <TimeAgo time={value._updatedAt} />
+              </span>
+            </div>
+          )}
+        </div>
+
         {spinnerMessage && (
           <div className={styles.spinnerContainer}>
             <Spinner center message={spinnerMessage} />
           </div>
         )}
-        <div
-          className={
-            (draft || historyState.isOpen) && !this.isLiveEditEnabled()
-              ? styles.publishInfo
-              : styles.publishInfoHidden
-          }
-        >
-          {historyState.isOpen && this.renderHistoryInfo()}
-          {!historyState.isOpen && draft && this.renderPublishInfo()}
+
+        <div className={styles.publishInfo}>
+          {!historyState.isOpen && draft && this.renderWorkflowButtons()}
         </div>
-      </>
+      </div>
     )
   }
 
@@ -724,6 +723,22 @@ export default class Editor extends React.PureComponent {
     this.setHistoryState({
       selectedRev: event.rev
     })
+  }
+
+  handleShowContextualPreview = () => {
+    const {draft, published} = this.props
+    const value = draft || published
+    // const previews = resolveContextualPreviews(value)
+    const options = {stuff: 'other stuff', myId: value._id}
+    this.context.replaceChildPane('preview', options)
+  }
+
+  handleSplitPane = () => {
+    this.context.duplicateCurrentPane()
+  }
+
+  handleToggleViewButton = () => {
+    this.context.setPaneView('someView')
   }
 
   renderForm() {
@@ -744,12 +759,10 @@ export default class Editor extends React.PureComponent {
         filterField={filterField}
         focusPath={focusPath}
         initialValue={initialValue}
-        isLiveEditEnabled={this.isLiveEditEnabled()}
         markers={markers}
         onBlur={this.handleBlur}
         onChange={this.handleChange}
         onFocus={this.handleFocus}
-        onShowHistory={this.handleOpenHistory}
         patchChannel={patchChannel}
         published={published}
         readOnly={isReconnecting || !isActionEnabled(type, 'update')}
@@ -817,6 +830,9 @@ export default class Editor extends React.PureComponent {
           index={this.props.index}
           title={this.getTitle(value)}
           onAction={this.handleMenuAction}
+          onShowContextualPreview={this.handleShowContextualPreview}
+          onSplitPane={this.handleSplitPane}
+          onToggleViewButton={this.handleToggleViewButton}
           menuItems={getMenuItems(
             enabledActions,
             draft,
@@ -828,7 +844,7 @@ export default class Editor extends React.PureComponent {
           renderActions={this.renderActions}
           onMenuToggle={this.handleMenuToggle}
           isSelected // last pane is always selected for now
-          staticContent={this.renderStaticContent()}
+          staticContent={this.renderFooter()}
           contentMaxWidth={672}
           minSize={historyState.isOpen && 1000}
         >
