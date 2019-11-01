@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp, react/display-name */
 import React from 'react'
 import ColorblindPreview from './components/previews/a11y/colorblind/ColorblindPreview'
 import SeoPreviews from './components/previews/seo/SeoPreviews'
@@ -7,21 +8,21 @@ const PREVIEWS = [
   {
     name: 'colorblind',
     title: 'Color blindness',
-    component: <ColorblindPreview url="https://css-tricks.com/newsletters/" />
+    component: props => <ColorblindPreview {...props} />,
+    options: {
+      url: 'https://css-tricks.com'
+    }
   },
   {
     name: 'seo',
     title: 'SEO',
-    component: <SeoPreviews />
+    baseUrl: 'https://some-seo-url.no',
+    component: props => <SeoPreviews {...props} />
   },
   {
-    name: 'some-component',
-    title: 'Some component preview',
-    component: (
-      <div>
-        Some <strong>component</strong> preview
-      </div>
-    )
+    name: 'example-com',
+    title: 'Example.com',
+    baseUrl: 'https://example.com'
   }
 ]
 
@@ -31,8 +32,8 @@ export default function resolveContextualPreviews(document, rev) {
   }
 
   return PREVIEWS.map(item => {
-    if (item.url) {
-      const url = `${item.url}/${document._id}`
+    if (item.baseUrl) {
+      const url = `${item.baseUrl}/${document._id}`
       return {...item, url: rev ? `${url}?rev=${rev}` : url}
     }
     return item
