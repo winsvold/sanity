@@ -1,16 +1,17 @@
 import React from 'react'
+import ColorblindPreview from './components/a11y/ColorblindPreview'
 
 const PREVIEW_TYPES = ['book', 'author']
 const PREVIEWS = [
   {
+    name: 'colorblind',
+    title: 'Color blindness',
+    component: <ColorblindPreview url="https://css-tricks.com/newsletters/" />
+  },
+  {
     name: 'example-com',
     title: 'Example.com',
     url: 'https://example.com/posts'
-  },
-  {
-    name: 'css-tricks',
-    title: 'CSS Tricks',
-    url: 'https://css-tricks.com/newsletters/'
   },
   {
     name: 'some-component',
