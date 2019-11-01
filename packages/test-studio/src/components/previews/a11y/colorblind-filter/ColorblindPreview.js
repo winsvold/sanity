@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-no-bind, react/no-multi-comp, react/no-did-mount-set-state,react/forbid-prop-types */
+/* eslint-disable react/no-multi-comp, react/no-did-mount-set-state */
 import React from 'react'
 import PropTypes from 'prop-types'
 import DefaultSelect from 'part:@sanity/components/selects/default'
@@ -7,12 +7,11 @@ import styles from './ColorblindPreview.css'
 
 class ColorblindPreview extends React.PureComponent {
   static propTypes = {
-    document: PropTypes.object,
-    options: PropTypes.object
+    options: PropTypes.object // eslint-disable-line react/forbid-prop-types
   }
 
   static defaultProps = {
-    options: null
+    options: {}
   }
 
   state = {
@@ -35,6 +34,7 @@ class ColorblindPreview extends React.PureComponent {
   }
 
   render() {
+    const {url} = this.props.options
     return (
       <div className={styles.componentWrapper}>
         <div className={styles.filterDropdown}>
@@ -52,7 +52,7 @@ class ColorblindPreview extends React.PureComponent {
           className={styles.iframeContainer}
           style={{filter: `url('${filters}#${this.state.activeFilter.title.toLowerCase()}')`}}
         >
-          <iframe src={this.props.options.url} frameBorder="0" />
+          <iframe src={url} frameBorder="0" />
         </div>
       </div>
     )
