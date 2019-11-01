@@ -15,7 +15,7 @@ class ColorblindPreview extends React.PureComponent {
   }
 
   state = {
-    activeFilter: 'Protanopia',
+    activeFilter: {title: 'Protanopia'},
     filters: [
       {title: 'Protanopia'},
       {title: 'Protanomaly'},
@@ -30,7 +30,6 @@ class ColorblindPreview extends React.PureComponent {
   }
 
   handleFilterChange = filter => {
-    console.log(filter)
     this.setState({activeFilter: filter})
   }
 
@@ -44,12 +43,13 @@ class ColorblindPreview extends React.PureComponent {
           <DefaultSelect
             id="select-filter"
             items={this.state.filters}
-            onChange={value => this.handleFilterChange(value.title)}
+            value={this.state.activeFilter}
+            onChange={value => this.handleFilterChange(value)}
           />
         </div>
         <div
           className={styles.iframeContainer}
-          style={{filter: `url('${filters}#${this.state.activeFilter.toLowerCase()}')`}}
+          style={{filter: `url('${filters}#${this.state.activeFilter.title.toLowerCase()}')`}}
         >
           <iframe src={this.props.url} frameBorder="0" />
         </div>
