@@ -1,5 +1,6 @@
 import React from 'react'
-import ColorblindPreview from './components/a11y/ColorblindPreview'
+import ColorblindPreview from './components/previews/a11y/ColorblindPreview'
+import SeoPreviews from './components/previews/seo/SeoPreviews'
 
 const PREVIEW_TYPES = ['book', 'author']
 const PREVIEWS = [
@@ -9,9 +10,9 @@ const PREVIEWS = [
     component: <ColorblindPreview url="https://css-tricks.com/newsletters/" />
   },
   {
-    name: 'example-com',
-    title: 'Example.com',
-    url: 'https://example.com/posts'
+    name: 'seo',
+    title: 'SEO',
+    component: <SeoPreviews />
   },
   {
     name: 'some-component',
@@ -30,7 +31,10 @@ export default function resolveContextualPreviews(document, rev) {
   }
 
   return PREVIEWS.map(item => {
-    const url = `${item.url}/${document._id}`
-    return {...item, url: rev ? `${url}?rev=${rev}` : url}
+    if (item.url) {
+      const url = `${item.url}/${document._id}`
+      return {...item, url: rev ? `${url}?rev=${rev}` : url}
+    }
+    return item
   })
 }
