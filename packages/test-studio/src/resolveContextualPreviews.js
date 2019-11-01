@@ -1,5 +1,5 @@
 import React from 'react'
-import ColorblindPreview from './components/previews/a11y/ColorblindPreview'
+import ColorblindPreview from './components/previews/a11y/colorblind/ColorblindPreview'
 import SeoPreviews from './components/previews/seo/SeoPreviews'
 
 const PREVIEW_TYPES = ['book', 'author']
