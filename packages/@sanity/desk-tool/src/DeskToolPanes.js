@@ -198,7 +198,7 @@ export default class DeskToolPanes extends React.Component {
       },
 
       // Duplicate the current pane, with optional overrides for item ID and parameters
-      duplicateCurrentPane: (itemId, payload, params = {}) => {
+      duplicateCurrentPane: (itemId, payload, params) => {
         modifyCurrentGroup((siblings, item) => [
           ...siblings,
 
