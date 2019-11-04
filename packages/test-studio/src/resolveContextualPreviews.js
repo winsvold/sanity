@@ -11,22 +11,21 @@ export default function resolveContextualPreviews(document) {
       component: <ColorblindPreview url="https://css-tricks.com" />
     },
     {
-      name: 'seo',
-      title: 'SEO',
-      url: 'https://some-seo-url.no',
-      component: <SeoPreviews document={document} />
+      name: 'example.com',
+      title: 'example.com',
+      url: `https://example.com/${document._id}`
     },
     {
-      name: 'example-com',
-      title: 'Example.com',
-      url: 'https://example.com'
+      name: 'seo',
+      title: 'SEO',
+      component: <SeoPreviews document={document} />
     },
     {
       name: 'author-name',
       title: 'Author Name',
       component: (
         <div>
-          <h1>{document.name}</h1>
+          <h1 style={{background: 'linear-gradient(#e66465, #9198e5)'}}>{document.name}</h1>
         </div>
       )
     }

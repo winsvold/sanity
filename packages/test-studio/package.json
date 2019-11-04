@@ -46,7 +46,7 @@
     "react": "16.3.1",
     "react-dom": "16.3.1",
     "react-icons": "^2.2.7",
-    "sanity-plugin-contextual-previews": "0.0.9",
+    "sanity-plugin-contextual-previews": "0.0.12",
     "sanity-plugin-dashboard-widget-cats": "0.0.2",
     "sanity-plugin-dashboard-widget-document-count": "0.0.1",
     "sanity-plugin-dashboard-widget-document-list": "0.0.3",

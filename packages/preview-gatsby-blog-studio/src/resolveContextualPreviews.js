@@ -22,7 +22,7 @@ const PREVIEWS = [
   {
     name: 'author-name',
     title: 'Author Name',
-    baseUrl: props => (
+    component: props => (
       <div>
         <h1>{props.name}</h1>
       </div>
@@ -31,6 +31,10 @@ const PREVIEWS = [
 ]
 
 export default function resolveContextualPreviews(document, rev) {
+  if (!document) {
+    console.log('wakka, no document')
+    return null
+  }
   if (!PREVIEW_TYPES.includes(document._type)) {
     return null
   }

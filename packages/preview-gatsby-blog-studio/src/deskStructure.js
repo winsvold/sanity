@@ -8,6 +8,17 @@ import {PaneRouterContext} from '@sanity/desk-tool'
 const hiddenDocTypes = listItem =>
   !['category', 'author', 'post', 'siteSettings'].includes(listItem.getId())
 
+function Preview(props) {
+  return (
+    <PaneRouterContext.Consumer>
+      {context => {
+        const doc = props.draft || props.published
+        return <ContextualPreviews document={doc} />
+      }}
+    </PaneRouterContext.Consumer>
+  )
+}
+
 export default () =>
   S.list()
     .title('Content')
@@ -29,40 +40,20 @@ export default () =>
         .title('Authors')
         .icon(MdPerson)
         .schemaType('author')
-        .child(S.documentTypeList('author').title('Authors')),
+        .child(
+          S.documentTypeList('author')
+            .title('Authors')
+            .child(documentId =>
+              S.document()
+                .documentId(documentId)
+                .schemaType('author')
+                .views([S.view.form(), S.view.component(Preview)])
+            )
+        ),
       S.listItem()
         .title('Categories')
         .schemaType('category')
-        .child(
-          S.documentTypeList('category')
-            .title('Categories')
-            .child(documentId =>
-              S.editor()
-                .documentId(documentId)
-                .schemaType('author')
-                .child(childId => {
-                  if (childId === 'preview') {
-                    // It's preview time!
-                    console.log('-------------')
-                    return S.component()
-                      .title('Preview')
-                      .component(() => (
-                        <PaneRouterContext.Consumer>
-                          {context => <ContextualPreviews {...context.getPayload()} />}
-                        </PaneRouterContext.Consumer>
-                      ))
-                  }
-                  // Not preview, but something else
-                  return S.component()
-                    .title(childId)
-                    .component(props => (
-                      <pre>
-                        <code>{JSON.stringify(props, null, 2)}</code>
-                      </pre>
-                    ))
-                })
-            )
-        ),
+        .child(S.documentTypeList('category').title('Categories')),
       // This returns an array of all the document types
       // defined in schema.js. We filter out those that we have
       // defined the structure above
