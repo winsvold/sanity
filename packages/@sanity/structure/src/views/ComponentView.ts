@@ -50,7 +50,6 @@ export class ComponentViewBuilder extends ViewBuilder {
   }
 
   serialize(options: SerializeOptions = {path: []}): ComponentView {
-    console.log('serializ with spec', this.spec)
     const base = super.serialize(options)
 
     const component = this.spec.component
@@ -72,7 +71,6 @@ export class ComponentViewBuilder extends ViewBuilder {
   clone(withSpec?: Partial<ComponentView>): ComponentViewBuilder {
     const builder = new ComponentViewBuilder()
     builder.spec = {...this.spec, ...(withSpec || {})}
-    console.log('return new', builder.spec)
     return builder
   }
 }
