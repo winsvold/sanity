@@ -44,7 +44,6 @@ export class ViewBuilder implements Serializable {
 
   serialize(options: SerializeOptions = {path: []}): View {
     const {id, title, icon} = this.spec
-    console.log(this.spec)
     if (!id) {
       throw new SerializeError(
         '`id` is required for view item',
