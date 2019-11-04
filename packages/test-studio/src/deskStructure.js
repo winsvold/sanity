@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react'
 import S from '@sanity/desk-tool/structure-builder'
 import ContextualPreviews from 'part:sanity-plugin-contextual-previews/contextual-previews-component'
@@ -11,11 +12,10 @@ const delay = val => new Promise(resolve => setTimeout(resolve, 10, val))
 function Preview(props) {
   return (
     <PaneRouterContext.Consumer>
-      {context => (
-        <pre>
-          <code>{JSON.stringify(props.draft || props.published, null, 2)}</code>
-        </pre>
-      )}
+      {context => {
+        const doc = props.draft || props.published
+        return <ContextualPreviews document={doc} />
+      }}
     </PaneRouterContext.Consumer>
   )
 }

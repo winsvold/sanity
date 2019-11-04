@@ -1,4 +1,4 @@
-/* eslint-disable react/no-multi-comp, react/display-name */
+/* eslint-disable no-console, react/no-multi-comp, react/display-name, react/prop-types */
 import React from 'react'
 import ColorblindPreview from './components/previews/a11y/colorblind-filter/ColorblindPreview'
 import SeoPreviews from './components/previews/seo/SeoPreviews'
@@ -23,14 +23,27 @@ const PREVIEWS = [
     name: 'example-com',
     title: 'Example.com',
     baseUrl: 'https://example.com'
+  },
+  {
+    name: 'author-name',
+    title: 'Author Name',
+    component: props => (
+      <div>
+        <h1>{props.document.name}</h1>
+      </div>
+    )
   }
 ]
 
 export default function resolveContextualPreviews(document, rev) {
-  if (!PREVIEW_TYPES.includes(document._type)) {
-    return null
+  if (!document) {
+    console.warn('No document to resolve preview from')
+    return []
   }
-
+  if (!PREVIEW_TYPES.includes(document._type)) {
+    console.warn('Document is of unwanted _type. If you want to preview, that is.')
+    return []
+  }
   return PREVIEWS.map(item => {
     if (item.baseUrl) {
       const url = `${item.baseUrl}/${document._id}`
