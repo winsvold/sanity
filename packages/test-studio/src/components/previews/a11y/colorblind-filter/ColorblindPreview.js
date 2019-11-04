@@ -7,11 +7,11 @@ import styles from './ColorblindPreview.css'
 
 class ColorblindPreview extends React.PureComponent {
   static propTypes = {
-    options: PropTypes.object // eslint-disable-line react/forbid-prop-types
+    url: PropTypes.string // eslint-disable-line react/forbid-prop-types
   }
 
   static defaultProps = {
-    options: {}
+    url: ''
   }
 
   state = {
@@ -34,7 +34,7 @@ class ColorblindPreview extends React.PureComponent {
   }
 
   render() {
-    const {url} = this.props.options
+    const {url} = this.props
     return (
       <div className={styles.componentWrapper}>
         <div className={styles.filterDropdown}>
