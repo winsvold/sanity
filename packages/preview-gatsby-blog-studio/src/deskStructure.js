@@ -13,7 +13,7 @@ function Preview(props) {
     <PaneRouterContext.Consumer>
       {context => {
         const doc = props.draft || props.published
-        return <ContextualPreviews document={doc} types={['author']} />
+        return <ContextualPreviews document={doc} />
       }}
     </PaneRouterContext.Consumer>
   )
@@ -35,7 +35,16 @@ export default () =>
       S.listItem()
         .title('Blog posts')
         .schemaType('post')
-        .child(S.documentTypeList('post').title('Blog posts')),
+        .child(
+          S.documentTypeList('post')
+            .title('Blog posts')
+            .child(documentId =>
+              S.document()
+                .documentId(documentId)
+                .schemaType('post')
+                .views([S.view.form(), S.view.component(Preview)])
+            )
+        ),
       S.listItem()
         .title('Authors')
         .icon(MdPerson)

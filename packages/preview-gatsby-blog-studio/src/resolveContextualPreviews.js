@@ -1,33 +1,50 @@
-/* eslint-disable no-console, react/no-multi-comp, react/display-name, react/prop-types */
+/* eslint-disable indent, no-console, react/no-multi-comp, react/display-name, react/prop-types */
 import React from 'react'
 import ColorblindPreview from './components/previews/a11y/colorblind-filter/ColorblindPreview'
 import SeoPreviews from './components/previews/seo/SeoPreviews'
+import {assemblePostUrl} from './utils'
 
-export default function resolveContextualPreviews(document) {
+const resolveContextualPreviews = document => {
+  const isPost = document._type === 'post'
+  const isAuthor = document._type === 'author'
+
   return [
-    {
-      name: 'colorblind',
-      title: 'Color blindness',
-      component: <ColorblindPreview url="https://css-tricks.com" />
-    },
-    {
-      name: 'example.com',
-      title: 'example.com',
-      url: `https://example.com/${document._id}`
-    },
+    isPost
+      ? {
+          name: 'colorblind',
+          title: 'Color blindness',
+          component: (
+            <ColorblindPreview
+              url={`https://preview-gatsby-blog.netlify.com/${assemblePostUrl(document)}`}
+            />
+          )
+        }
+      : null,
+    isPost
+      ? {
+          name: 'web-frontend',
+          title: 'Web frontend',
+          url: `https://preview-gatsby-blog.netlify.com/${assemblePostUrl(document)}`
+        }
+      : null,
     {
       name: 'seo',
       title: 'SEO',
       component: <SeoPreviews document={document} />
     },
-    {
-      name: 'author-name',
-      title: 'Author Name',
-      component: (
-        <div>
-          <h1 style={{background: 'linear-gradient(#e66465, #9198e5)'}}>{document.name}</h1>
-        </div>
-      )
-    }
-  ]
+    isAuthor
+      ? {
+          name: 'author-name',
+          title: 'Author Name',
+          types: ['author'],
+          component: (
+            <div>
+              <h1 style={{background: 'linear-gradient(#e66465, #9198e5)'}}>{document.name}</h1>
+            </div>
+          )
+        }
+      : null
+  ].filter(Boolean)
 }
+
+export default resolveContextualPreviews
