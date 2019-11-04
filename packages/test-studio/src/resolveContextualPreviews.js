@@ -8,7 +8,7 @@ export default function resolveContextualPreviews(document) {
     {
       name: 'colorblind',
       title: 'Color blindness',
-      component: <ColorblindPreview url="https://css-tricks.com" />
+      component: () => <ColorblindPreview url="https://css-tricks.com" />
     },
     {
       name: 'example.com',
@@ -18,12 +18,12 @@ export default function resolveContextualPreviews(document) {
     {
       name: 'seo',
       title: 'SEO',
-      component: <SeoPreviews document={document} />
+      component: () => <SeoPreviews document={document} />
     },
     {
       name: 'author-name',
       title: 'Author Name',
-      component: (
+      component: () => (
         <div>
           <h1 style={{background: 'linear-gradient(#e66465, #9198e5)'}}>{document.name}</h1>
         </div>
