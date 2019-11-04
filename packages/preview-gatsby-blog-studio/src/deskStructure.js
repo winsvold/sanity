@@ -13,7 +13,7 @@ function Preview(props) {
     <PaneRouterContext.Consumer>
       {context => {
         const doc = props.draft || props.published
-        return <ContextualPreviews document={doc} />
+        return <ContextualPreviews document={doc} types={['author']} />
       }}
     </PaneRouterContext.Consumer>
   )
