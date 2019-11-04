@@ -5,7 +5,7 @@ import {StructureNode, SerializeOptions, Serializable, Child, SerializePath} fro
 import {Layout, layoutOptions} from './Layout'
 import {MenuItem, MenuItemBuilder, maybeSerializeMenuItem} from './MenuItem'
 import {MenuItemGroup, MenuItemGroupBuilder, maybeSerializeMenuItemGroup} from './MenuItemGroup'
-import {IntentChecker, Intent, IntentParams} from './Intent'
+import {IntentChecker, Intent, IntentParams, defaultIntentChecker} from './Intent'
 import {SerializeError} from './SerializeError'
 import {
   InitialValueTemplateItem,
@@ -159,7 +159,7 @@ export abstract class GenericListBuilder<L extends BuildableGenericList, Concret
       type: 'genericList',
       defaultLayout,
       child: this.spec.child || noChildResolver,
-      canHandleIntent: this.spec.canHandleIntent,
+      canHandleIntent: this.spec.canHandleIntent || defaultIntentChecker,
       displayOptions: this.spec.displayOptions,
       initialValueTemplates,
       menuItems: menuItemsWithCreateIntents(this.spec, {path, initialValueTemplates}),
