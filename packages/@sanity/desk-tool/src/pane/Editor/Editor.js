@@ -42,7 +42,7 @@ import {distanceInWordsToNow} from 'date-fns'
 import EditorStatusBadge from '../EditorStatusBadge'
 import TimeAgo from '../../components/TimeAgo'
 
-const BREAKPOINT_SCREEN_MEDIUM = 512
+export const BREAKPOINT_SCREEN_MEDIUM = 512
 
 function navigateUrl(url) {
   window.open(url)

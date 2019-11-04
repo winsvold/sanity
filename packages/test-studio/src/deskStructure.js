@@ -8,6 +8,18 @@ import {PaneRouterContext} from '@sanity/desk-tool'
 // For testing. Bump the timeout to introduce som lag
 const delay = val => new Promise(resolve => setTimeout(resolve, 10, val))
 
+function Preview(props) {
+  return (
+    <PaneRouterContext.Consumer>
+      {context => (
+        <pre>
+          <code>{JSON.stringify(props.draft || props.published, null, 2)}</code>
+        </pre>
+      )}
+    </PaneRouterContext.Consumer>
+  )
+}
+
 export default () =>
   S.list()
     .id('root')
@@ -118,29 +130,10 @@ export default () =>
             .params({type: 'author', role: 'developer'})
             .initialValueTemplates(S.initialValueTemplateItem('author-developer'))
             .child(documentId =>
-              S.editor()
+              S.document()
                 .documentId(documentId)
                 .schemaType('author')
-                .child(childId => {
-                  if (childId === 'preview') {
-                    // It's preview time!
-                    return S.component()
-                      .title('Preview')
-                      .component(() => (
-                        <PaneRouterContext.Consumer>
-                          {context => <ContextualPreviews {...context.getPayload()} />}
-                        </PaneRouterContext.Consumer>
-                      ))
-                  }
-                  // Not preview, but something else
-                  return S.component()
-                    .title(childId)
-                    .component(props => (
-                      <pre>
-                        <code>{JSON.stringify(props, null, 2)}</code>
-                      </pre>
-                    ))
-                })
+                .views([S.view.form(), S.view.component(Preview)])
             )
       }),
 
