@@ -180,7 +180,7 @@ export default class DeskToolPanes extends React.Component {
 
       // Removes the current pane from the group
       closeCurrentPane: () => {
-        modifyCurrentGroup((siblings, item) => siblings.filter(sibling => sibling === item))
+        modifyCurrentGroup((siblings, item) => siblings.filter(sibling => sibling !== item))
       },
 
       // Replace or create a child pane with the given id and parameters
