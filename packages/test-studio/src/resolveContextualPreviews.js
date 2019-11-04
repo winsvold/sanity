@@ -13,7 +13,7 @@ export default function resolveContextualPreviews(document) {
     {
       name: 'seo',
       title: 'SEO',
-      baseUrl: 'https://some-seo-url.no',
+      url: 'https://some-seo-url.no',
       component: <SeoPreviews document={document} />
     },
     {
