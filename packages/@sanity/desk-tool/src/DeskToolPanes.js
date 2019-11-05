@@ -404,8 +404,7 @@ export default class DeskToolPanes extends React.Component {
   }
 
   renderFallbackPanes() {
-    const {panes, groupIndexes, keys, router} = this.props
-    const {editDocumentId, payload, panes: routerPanes} = router.state
+    const {panes, groupIndexes, keys} = this.props
     const {isMobile} = this.state
     const path = []
 
