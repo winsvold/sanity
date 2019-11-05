@@ -38,6 +38,7 @@ function DeskToolPaneStateSyncer(props) {
   return <DeskTool {...props} onPaneChange={setActivePanes} />
 }
 
+// eslint-disable-next-line complexity
 function getIntentState(intentName, params, currentState, payload) {
   const paneSegments = (currentState && currentState.panes) || []
   const activePanes = state.activePanes || []
@@ -61,28 +62,21 @@ function getIntentState(intentName, params, currentState, payload) {
 }
 
 function getFallbackIntentState({documentId, intentName, params, payload}) {
-  const editDocumentId = documentId
   const isTemplateCreate = intentName === 'create' && params.template
   const template = isTemplateCreate && getTemplateById(params.template)
+  const parameters = {
+    id: documentId,
+    template: params.template,
+    type: (template && template.schemaType) || params.type
+  }
 
-  return isTemplateCreate
-    ? {
-        editDocumentId,
-        type: template.schemaType,
-        options: {params, payload}
-      }
-    : {editDocumentId, type: params.type || '*'}
+  return {
+    panes: [[{id: '__edit__', params: parameters, payload}]]
+  }
 }
 
 export default {
   router: route('/', [
-    // Fallback route if no panes can handle intent
-    route('/edit/:type/:editDocumentId', [
-      route({
-        path: '/:options',
-        transform: {options: {toState: optionsToState, toPath: optionsToPath}}
-      })
-    ]),
     // The regular path - when the intent can be resolved to a specific pane
     route({
       path: '/:panes',

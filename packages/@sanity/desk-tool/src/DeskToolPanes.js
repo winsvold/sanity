@@ -93,7 +93,6 @@ export default class DeskToolPanes extends React.Component {
             })
           )
         ),
-        editDocumentId: PropTypes.string,
         payload: PropTypes.object,
         params: PropTypes.object
       })
@@ -115,8 +114,8 @@ export default class DeskToolPanes extends React.Component {
   // Memoized copy of contexts
   paneRouterContexts = new Map()
 
-  getPaneRouterContext = ({groupIndex, siblingIndex, flatIndex, isIntentFallback}) => {
-    const key = `${flatIndex}-${groupIndex}[${siblingIndex}]-${isIntentFallback ? 'f' : ''}`
+  getPaneRouterContext = ({groupIndex, siblingIndex, flatIndex}) => {
+    const key = `${flatIndex}-${groupIndex}[${siblingIndex}]`
     if (this.paneRouterContexts.has(key)) {
       return this.paneRouterContexts.get(key)
     }
@@ -133,11 +132,7 @@ export default class DeskToolPanes extends React.Component {
     }
 
     const getRouterPane = () => {
-      const {panes, editDocumentId, params, payload} = this.props.router.state
-      if (isIntentFallback) {
-        return {id: editDocumentId, params, payload}
-      }
-
+      const {panes} = this.props.router.state
       const routerPanes = panes || []
       const group = routerPanes[groupIndex] || []
       return group[siblingIndex] || {}
@@ -180,13 +175,7 @@ export default class DeskToolPanes extends React.Component {
 
       // Replaces the current pane with a new one
       replaceCurrentPane: (itemId, payload) => {
-        const {router} = this.props
-        const {editDocumentId} = router.state
-        if (editDocumentId) {
-          router.navigate({...router.state, editDocumentId: itemId})
-        } else {
-          modifyCurrentGroup(() => [{id: itemId, payload}])
-        }
+        modifyCurrentGroup(() => [{id: itemId, payload}])
       },
 
       // Removes the current pane from the group
@@ -197,15 +186,10 @@ export default class DeskToolPanes extends React.Component {
       // Replace or create a child pane with the given id and parameters
       replaceChildPane: (itemId, payload) => {
         const {router} = this.props
-        const {editDocumentId, panes} = router.state
-
-        if (editDocumentId) {
-          router.navigate({...router.state, editDocumentId: itemId})
-        } else {
-          const newPanes = panes.slice()
-          newPanes.splice(groupIndex + 1, 1, [{id: itemId, payload}])
-          router.navigate({...router.state, panes: newPanes})
-        }
+        const {panes} = router.state
+        const newPanes = panes.slice()
+        newPanes.splice(groupIndex + 1, 1, [{id: itemId, payload}])
+        router.navigate({...router.state, panes: newPanes})
       },
 
       // Duplicate the current pane, with optional overrides for item ID and parameters
@@ -332,23 +316,21 @@ export default class DeskToolPanes extends React.Component {
 
   renderPanes() {
     const {panes, groupIndexes, keys, router} = this.props
-    const {editDocumentId, payload, panes: routerPanes} = router.state
+    const {panes: routerPanes} = router.state
     const {isMobile} = this.state
     const path = []
 
-    const paneGroups = routerPanes
-      ? [[{id: 'root'}]].concat(routerPanes || [])
-      : [[{id: 'root'}], [{id: editDocumentId || 'fallback-editor', params: {}, payload}]]
-
-    if (!routerPanes) {
-      return this.renderFallbackPanes()
-    }
+    const paneGroups = [[{id: 'root'}]].concat(routerPanes || [])
 
     let i = -1
     return paneGroups.reduce((components, group, index) => {
       return components.concat(
-        group.map((_, siblingIndex) => {
+        group.map((sibling, siblingIndex) => {
           const pane = panes[++i]
+          if (!pane) {
+            return null
+          }
+
           const isCollapsed = Boolean(!isMobile && this.state.collapsedPanes[i])
           const paneKey = `${i}-${keys[i - 1] || 'root'}-${groupIndexes[i - 1]}`
 
@@ -401,68 +383,6 @@ export default class DeskToolPanes extends React.Component {
         })
       )
     }, [])
-  }
-
-  renderFallbackPanes() {
-    const {panes, groupIndexes, keys} = this.props
-    const {isMobile} = this.state
-    const path = []
-
-    return panes.map((pane, i) => {
-      const isIntentFallback = Boolean(pane.isIntentFallback)
-      const isCollapsed = Boolean(!isMobile && this.state.collapsedPanes[i])
-      const paneKey = isIntentFallback
-        ? 'intent-fallback'
-        : `${i}-${keys[i - 1] || 'root'}-${groupIndexes[i - 1]}`
-
-      // Same pane might appear multiple times, so use index as tiebreaker
-      const wrapperKey = pane === LOADING_PANE ? `loading-${i}` : `${i}-${pane.id}`
-      path.push(pane.id || `[${i}]`)
-
-      return (
-        <SplitPaneWrapper
-          key={wrapperKey}
-          isCollapsed={isCollapsed}
-          minSize={getPaneMinSize(pane)}
-          defaultSize={getPaneDefaultSize(pane)}
-        >
-          <PaneRouterContext.Provider
-            value={this.getPaneRouterContext({
-              groupIndex: i,
-              siblingIndex: 0,
-              flatIndex: i,
-              isIntentFallback
-            })}
-          >
-            {pane === LOADING_PANE ? (
-              <LoadingPane
-                key={paneKey} // Use key to force rerendering pane on ID change
-                path={path}
-                index={i}
-                message={getWaitMessages}
-                onExpand={this.handlePaneExpand}
-                onCollapse={this.handlePaneCollapse}
-                isCollapsed={isCollapsed}
-                isSelected={i === panes.length - 1}
-              />
-            ) : (
-              <Pane
-                key={paneKey} // Use key to force rerendering pane on ID change
-                paneKey={paneKey}
-                index={i}
-                itemId={keys[i]}
-                onExpand={this.handlePaneExpand}
-                onCollapse={this.handlePaneCollapse}
-                isCollapsed={isCollapsed}
-                isSelected={i === panes.length - 1}
-                isClosable={false}
-                {...pane}
-              />
-            )}
-          </PaneRouterContext.Provider>
-        </SplitPaneWrapper>
-      )
-    })
   }
 
   render() {
