@@ -4,20 +4,20 @@ import EyeIcon from 'part:@sanity/base/eye-icon'
 import EditIcon from 'part:@sanity/base/edit-icon'
 import JsonDocumentDump from './components/JsonDocumentDump'
 import S from '@sanity/desk-tool/structure-builder'
-import {PaneRouterContext} from '@sanity/desk-tool'
+import {PaneContext} from '@sanity/desk-tool'
 
 // For testing. Bump the timeout to introduce som lag
 const delay = val => new Promise(resolve => setTimeout(resolve, 10, val))
 
 function Preview(props) {
   return (
-    <PaneRouterContext.Consumer>
+    <PaneContext.Consumer>
       {context => (
         <pre>
           <code>{JSON.stringify(props.draft || props.published, null, 2)}</code>
         </pre>
       )}
-    </PaneRouterContext.Consumer>
+    </PaneContext.Consumer>
   )
 }
 

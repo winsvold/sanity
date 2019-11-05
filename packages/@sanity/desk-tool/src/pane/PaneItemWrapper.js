@@ -3,10 +3,10 @@ import listStyles from './styles/ListView.css'
 import PropTypes from 'prop-types'
 import React from 'react'
 import {Item as GridListItem} from 'part:@sanity/components/lists/grid'
-import {PaneRouterContext} from '../index'
+import {PaneContext} from '../index'
 
 const PaneItemWrapper = props => (
-  <PaneRouterContext.Consumer>
+  <PaneContext.Consumer>
     {({ChildLink}) => {
       const {id, useGrid, layout, isSelected} = props
       const link = (
@@ -21,7 +21,7 @@ const PaneItemWrapper = props => (
         <div className={isSelected ? styles.selected : styles.item}>{link}</div>
       )
     }}
-  </PaneRouterContext.Consumer>
+  </PaneContext.Consumer>
 )
 
 PaneItemWrapper.propTypes = {

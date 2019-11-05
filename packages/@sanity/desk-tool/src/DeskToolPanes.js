@@ -8,7 +8,7 @@ import SplitController from 'part:@sanity/components/panes/split-controller'
 import SplitPaneWrapper from 'part:@sanity/components/panes/split-pane-wrapper'
 import LoadingPane from './pane/LoadingPane'
 import Pane from './pane/Pane'
-import {PaneRouterContext, LOADING_PANE} from './index'
+import {PaneContext, LOADING_PANE} from './index'
 
 const COLLAPSED_WIDTH = 55
 const BREAKPOINT_SCREEN_MEDIUM = 512
@@ -112,12 +112,12 @@ export default class DeskToolPanes extends React.Component {
   userCollapsedPanes = []
 
   // Memoized copy of contexts
-  paneRouterContexts = new Map()
+  PaneContexts = new Map()
 
-  getPaneRouterContext = ({groupIndex, siblingIndex, flatIndex}) => {
+  getPaneContext = ({groupIndex, siblingIndex, flatIndex}) => {
     const key = `${flatIndex}-${groupIndex}[${siblingIndex}]`
-    if (this.paneRouterContexts.has(key)) {
-      return this.paneRouterContexts.get(key)
+    if (this.PaneContexts.has(key)) {
+      return this.PaneContexts.get(key)
     }
 
     const modifyCurrentGroup = modifier => {
@@ -223,7 +223,7 @@ export default class DeskToolPanes extends React.Component {
       navigateIntent: this.props.router.navigateIntent
     }
 
-    this.paneRouterContexts.set(key, ctx)
+    this.PaneContexts.set(key, ctx)
     return ctx
   }
 
@@ -346,8 +346,8 @@ export default class DeskToolPanes extends React.Component {
               minSize={getPaneMinSize(pane)}
               defaultSize={getPaneDefaultSize(pane)}
             >
-              <PaneRouterContext.Provider
-                value={this.getPaneRouterContext({
+              <PaneContext.Provider
+                value={this.getPaneContext({
                   groupIndex: index - 1,
                   siblingIndex,
                   flatIndex: i
@@ -378,7 +378,7 @@ export default class DeskToolPanes extends React.Component {
                     {...pane}
                   />
                 )}
-              </PaneRouterContext.Provider>
+              </PaneContext.Provider>
             </SplitPaneWrapper>
           )
         })

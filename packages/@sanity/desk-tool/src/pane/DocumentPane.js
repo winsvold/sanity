@@ -20,7 +20,7 @@ import Snackbar from 'part:@sanity/components/snackbar/default'
 import Hotkeys from 'part:@sanity/components/typography/hotkeys'
 import {FormBuilder, checkoutPair} from 'part:@sanity/form-builder'
 import {getDraftId, getPublishedId, newDraftFrom} from 'part:@sanity/base/util/draft-utils'
-import {PaneRouterContext} from '../../'
+import {PaneContext} from '../../'
 import withInitialValue from '../utils/withInitialValue'
 import copyDocument from '../utils/copyDocument'
 import UseState from '../utils/UseState'
@@ -174,7 +174,7 @@ function isRecoverable(draft, published) {
 
 export default withInitialValue(
   class DocumentPane extends React.PureComponent {
-    static contextType = PaneRouterContext
+    static contextType = PaneContext
 
     static propTypes = {
       styles: PropTypes.object, // eslint-disable-line react/forbid-prop-types
