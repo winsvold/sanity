@@ -17,3 +17,6 @@
   width: calc(100% - 50px);
 }
 
+.facebookBorder {
+  border: solid 3px gold;
+}
