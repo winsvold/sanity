@@ -114,8 +114,9 @@ export default withRouterHOC(
 
     maybeAddEditorPane = (panes, props) => {
       const router = props.router
-      const {editDocumentId, type, params = {}} = router.state
-      const {template, ...templateParams} = params
+      const {editDocumentId, type, options = {}} = router.state
+      const {params = {}, payload} = options
+      const {template} = params
 
       if (!editDocumentId) {
         return observableOf(panes)
@@ -124,7 +125,8 @@ export default withRouterHOC(
       const editor = {
         id: 'editor',
         type: 'document',
-        options: {id: editDocumentId, type, template, templateParameters: templateParams}
+        options: {id: editDocumentId, type, template, templateParameters: payload},
+        isIntentFallback: true
       }
 
       if (type !== '*') {

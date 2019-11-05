@@ -1,10 +1,15 @@
 import React from 'react'
-import Icon from 'part:@sanity/base/view-column-icon'
-import {route} from 'part:@sanity/base/router'
-import DeskTool from './DeskTool'
-import {parsePanesSegment, encodePanesSegment} from './utils/parsePanesSegment'
 import UUID from '@sanity/uuid'
 import {getTemplateById} from '@sanity/base/initial-value-templates'
+import Icon from 'part:@sanity/base/view-column-icon'
+import {route} from 'part:@sanity/base/router'
+import {
+  parseChunks,
+  encodeChunks,
+  parsePanesSegment,
+  encodePanesSegment
+} from './utils/parsePanesSegment'
+import DeskTool from './DeskTool'
 
 function toState(pathSegment) {
   return parsePanesSegment(decodeURIComponent(pathSegment))
@@ -14,18 +19,13 @@ function toPath(panes) {
   return encodePanesSegment(panes)
 }
 
-function paramsToState(params) {
-  try {
-    return JSON.parse(decodeURIComponent(params))
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.warn('Failed to parse JSON parameters')
-    return {}
-  }
+function optionsToState(optionsString) {
+  const chunks = optionsString.split(',')
+  return parseChunks(chunks)
 }
 
-function paramsToPath(params) {
-  return JSON.stringify(params)
+function optionsToPath(options) {
+  return encodeChunks(options)
 }
 
 const state = {activePanes: []}
@@ -69,7 +69,7 @@ function getFallbackIntentState({documentId, intentName, params, payload}) {
     ? {
         editDocumentId,
         type: template.schemaType,
-        params: {template: params.template, templateParameters: payload}
+        options: {params, payload}
       }
     : {editDocumentId, type: params.type || '*'}
 }
@@ -78,7 +78,10 @@ export default {
   router: route('/', [
     // Fallback route if no panes can handle intent
     route('/edit/:type/:editDocumentId', [
-      route({path: '/:params', transform: {params: {toState: paramsToState, toPath: paramsToPath}}})
+      route({
+        path: '/:options',
+        transform: {options: {toState: optionsToState, toPath: optionsToPath}}
+      })
     ]),
     // The regular path - when the intent can be resolved to a specific pane
     route({
