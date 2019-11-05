@@ -1,21 +1,17 @@
 /* eslint-disable react/no-multi-comp, react/no-did-mount-set-state, react/forbid-prop-types */
 import React from 'react'
 import PropTypes from 'prop-types'
-import SerpPreview from 'react-serp-preview'
-import {assemblePostUrl} from '../../../utils'
+import sanityClient from 'part:@sanity/base/client'
+import Spinner from 'part:@sanity/components/loading/spinner'
+import GoogleSearchResult from './GoogleSearchResult'
+import TwitterCard from './TwitterCard'
+import FacebookShare from './FacebookShare'
 import styles from './SeoPreviews.css'
 
-const renderGoogleSearchResult = document => {
-  const url = assemblePostUrl(document)
-  return (
-    <SerpPreview
-      title={document.title}
-      metaDescription={`Example Domain. This domain is established to be used for
-illustrative examples in documents. You may use this domain in examples
-without prior coordination or asking for permission.`}
-      url={url}
-    />
-  )
+const materializeDocument = documentId => {
+  return sanityClient.fetch(`*[_id == $documentId][0]{..., "authors": authors[].author->}`, {
+    documentId
+  })
 }
 
 class SeoPreviews extends React.PureComponent {
@@ -27,10 +23,37 @@ class SeoPreviews extends React.PureComponent {
     document: null
   }
 
-  render() {
-    const {document} = this.props
+  state = {
+    materializedDocument: null
+  }
 
-    return <div>{renderGoogleSearchResult(document)}</div>
+  static async getDerivedStateFromProps(props, state) {
+    const newState = await materializeDocument(props.document._id).then(materializedDocument => ({
+      materializedDocument
+    }))
+    return newState
+  }
+
+  componentDidMount() {
+    materializeDocument(this.props.document._id).then(materializedDocument =>
+      this.setState({materializedDocument})
+    )
+  }
+
+  render() {
+    const document = this.state.materializedDocument
+    if (!document) {
+      return <Spinner />
+    }
+    console.log('document', document)
+
+    return (
+      <div>
+        <GoogleSearchResult document={document} />
+        <TwitterCard document={document} />
+        <FacebookShare document={document} />
+      </div>
+    )
   }
 }
 

@@ -13,18 +13,14 @@ const resolveContextualPreviews = document => {
       ? {
           name: 'colorblind',
           title: 'Color blindness',
-          component: (
-            <ColorblindPreview
-              url={`https://preview-gatsby-blog.netlify.com/${assemblePostUrl(document)}`}
-            />
-          )
+          component: <ColorblindPreview url={assemblePostUrl(document)} />
         }
       : null,
     isPost
       ? {
           name: 'web-frontend',
           title: 'Web frontend',
-          url: `https://preview-gatsby-blog.netlify.com/${assemblePostUrl(document)}`
+          url: `${assemblePostUrl(document)}`
         }
       : null,
     {
