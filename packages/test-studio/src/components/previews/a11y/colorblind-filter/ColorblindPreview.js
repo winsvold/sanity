@@ -5,6 +5,18 @@ import DefaultSelect from 'part:@sanity/components/selects/default'
 import filters from './filters.svg'
 import styles from './ColorblindPreview.css'
 
+const FILTER_ITEMS = [
+  {title: 'Protanopia (red/green)', value: 'protanopia'},
+  {title: 'Deuteranopia (green/red)', value: 'deuteranopia'},
+  {title: 'Tritanopia (blue/yellow)', value: 'tritanopia'},
+  {title: 'Achromatopsia (greyscale)', value: 'achromatopsia'},
+  {title: 'Protanomaly (red/green)', value: 'protanomaly'},
+  {title: 'Deuteranomaly (green/red)', value: 'deuteranomaly'},
+  {title: 'Tritanomaly (blue/yellow)', value: 'tritanomaly'},
+  {title: 'Achromatomaly (greyscale)', value: 'achromatomaly'},
+  {title: 'No filter', value: ''}
+]
+
 class ColorblindPreview extends React.PureComponent {
   static propTypes = {
     url: PropTypes.string // eslint-disable-line react/forbid-prop-types
@@ -15,18 +27,7 @@ class ColorblindPreview extends React.PureComponent {
   }
 
   state = {
-    activeFilter: {title: 'Protanopia'},
-    filters: [
-      {title: 'Protanopia'},
-      {title: 'Protanomaly'},
-      {title: 'Deuteranopia'},
-      {title: 'Deuteranomaly'},
-      {title: 'Tritanopia'},
-      {title: 'Tritanomaly'},
-      {title: 'Achromatopsia'},
-      {title: 'Achromatomaly'},
-      {title: 'Off'}
-    ]
+    activeFilter: FILTER_ITEMS[0]
   }
 
   handleFilterChange = filter => {
@@ -43,14 +44,14 @@ class ColorblindPreview extends React.PureComponent {
           </label>
           <DefaultSelect
             id="select-filter"
-            items={this.state.filters}
+            items={FILTER_ITEMS}
             value={this.state.activeFilter}
             onChange={value => this.handleFilterChange(value)}
           />
         </div>
         <div
           className={styles.iframeContainer}
-          style={{filter: `url('${filters}#${this.state.activeFilter.title.toLowerCase()}')`}}
+          style={{filter: `url('${filters}#${this.state.activeFilter.value}')`}}
         >
           <iframe src={url} frameBorder="0" />
         </div>
