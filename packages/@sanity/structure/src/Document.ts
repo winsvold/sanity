@@ -169,24 +169,23 @@ function getDocumentOptions(spec: Partial<DocumentOptions>): DocumentOptions {
 }
 
 export function documentFromEditor(spec?: EditorNode) {
-  const doc = new DocumentBuilder()
+  let doc = new DocumentBuilder()
 
   if (spec) {
     const {id, type, template, templateParameters} = spec.options
 
-    doc.id(spec.id)
-    doc.documentId(id)
+    doc = doc.id(spec.id).documentId(id)
 
     if (type) {
-      doc.schemaType(type)
+      doc = doc.schemaType(type)
     }
 
     if (template) {
-      doc.initialValueTemplate(template, templateParameters)
+      doc = doc.initialValueTemplate(template, templateParameters)
     }
 
     if (spec.child) {
-      doc.child(spec.child)
+      doc = doc.child(spec.child)
     }
   }
 
