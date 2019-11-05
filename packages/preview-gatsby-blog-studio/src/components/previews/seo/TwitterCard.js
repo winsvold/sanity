@@ -28,7 +28,7 @@ class TwitterCard extends React.PureComponent {
 
   render() {
     const {document} = this.props
-    const {title, body, mainImage} = document
+    const {title, excerpt, mainImage} = document
     const url = assemblePostUrl(document)
     const primaryAuthor = {...placeholderAuthor, ...document.authors[0]}
     const websiteUrlWithoutProtocol = websiteUrl.split('://')[1]
@@ -36,37 +36,37 @@ class TwitterCard extends React.PureComponent {
     return (
       <div className={styles.seoItem}>
         <h3>Twitter card preview</h3>
-        <div className={styles.twitterBorder}>
-          <div>
+        <div className={styles.tweetWrapper}>
+          <div className={styles.tweetAuthor}>
             <img
+              className={styles.tweetAuthorAvatar}
               src={urlFor(primaryAuthor.image)
                 .width(90)
                 .url()}
             />
-            <div>{primaryAuthor.name}</div>
-            <div>@{primaryAuthor.slug.current}</div>
+            <span className={styles.tweetAuthorName}>{primaryAuthor.name}</span>
+            <span className={styles.tweetAuthorHandle}>@{primaryAuthor.slug.current}</span>
           </div>
 
-          <div>
+          <div className={styles.tweetText}>
             <p>The card for your website will look a little something like this!</p>
           </div>
-
-          <div>
-            <a href={url}>
-              <div>
+          <a href={url} className={styles.tweetUrlWrapper}>
+            <div className={styles.tweetCardPreview}>
+              <div className={styles.tweetCardImage}>
                 <img
                   src={urlFor(mainImage)
-                    .width(90)
+                    .width(300)
                     .url()}
                 />
               </div>
-              <div>
-                <h2>{title}</h2>
-                <p>{blocksToText(body).split('.')[0]}.</p>
-                <span>{websiteUrlWithoutProtocol}</span>
+              <div className={styles.tweetCardContent}>
+                <h2 className={styles.tweetCardTitle}>{title}</h2>
+                <div className={styles.tweetCardDescription}>{blocksToText(excerpt)}</div>
+                <div className={styles.tweetCardDestination}>{websiteUrlWithoutProtocol}</div>
               </div>
-            </a>
-          </div>
+            </div>
+          </a>
         </div>
       </div>
     )
