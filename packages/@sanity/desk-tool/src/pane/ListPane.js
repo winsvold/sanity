@@ -2,12 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import DefaultPane from 'part:@sanity/components/panes/default'
 import listStyles from 'part:@sanity/components/lists/default-style'
-import {PaneContext} from '../index'
+import {PaneRouterContext} from '../index'
 import PaneItem from './PaneItem'
 import ListView from './ListView'
 
 export default class ListPane extends React.PureComponent {
-  static contextType = PaneContext
+  static contextType = PaneRouterContext
 
   static propTypes = {
     index: PropTypes.number.isRequired,

@@ -6,7 +6,7 @@ import {map, switchMap, scan, filter, distinctUntilChanged, catchError} from 'rx
 import schema from 'part:@sanity/base/schema'
 import {observePaths} from 'part:@sanity/base/preview'
 import {getDraftId, getPublishedId} from 'part:@sanity/base/util/draft-utils'
-import {PaneContext} from '../../'
+import {PaneRouterContext} from '../../'
 import ErrorPane from '../pane/ErrorPane'
 import LoadingPane from '../pane/LoadingPane'
 import BrokenReferences from '../components/BrokenReferences'
@@ -98,9 +98,9 @@ const withInitialValue = Pane => {
   )
 
   const WithInitialValueWrapper = props => (
-    <PaneContext.Consumer>
+    <PaneRouterContext.Consumer>
       {context => <WithInitialValueStream {...props} paneApi={context} />}
-    </PaneContext.Consumer>
+    </PaneRouterContext.Consumer>
   )
 
   return WithInitialValueWrapper

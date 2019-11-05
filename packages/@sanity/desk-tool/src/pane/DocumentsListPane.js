@@ -8,7 +8,7 @@ import Spinner from 'part:@sanity/components/loading/spinner'
 import {collate, getPublishedId} from 'part:@sanity/base/util/draft-utils'
 import {combineLatest} from 'rxjs'
 import {map, tap} from 'rxjs/operators'
-import {PaneContext} from '../index'
+import {PaneRouterContext} from '../index'
 import settings from '../settings'
 import styles from './styles/DocumentsListPane.css'
 import listStyles from './styles/ListView.css'
@@ -113,7 +113,7 @@ export default class DocumentsListPane extends React.PureComponent {
     initialValueTemplates: undefined
   }
 
-  static contextType = PaneContext
+  static contextType = PaneRouterContext
 
   actionHandlers = {
     setLayout: ({layout}) => {
