@@ -107,8 +107,8 @@ class TextToSpeechPreview extends React.Component {
               Stop
             </DefaultButton>
           </div>
-          <h2>Field: {activeField.title}</h2>
-          <p>{this.textToSpeak()}</p>
+          <h3 className={styles.transcriptHeading}>Transcript</h3>
+          <p className={styles.transcriptBody}>{this.textToSpeak()}</p>
         </div>
       )
     }
