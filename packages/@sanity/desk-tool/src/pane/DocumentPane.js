@@ -40,11 +40,6 @@ import EditorStatusBadge from './EditorStatusBadge'
 import {getProductionPreviewItem, getMenuItems} from './documentPaneMenuItems'
 import {validateDocument} from '@sanity/validation'
 
-function noop() {
-  // eslint-disable-next-line no-console
-  console.warn('No handler defined for action')
-}
-
 // Want a nicer api for listen/unlisten
 function listen(target, eventType, callback, useCapture = false) {
   target.addEventListener(eventType, callback, useCapture)
@@ -184,9 +179,11 @@ export default withInitialValue(
     static propTypes = {
       styles: PropTypes.object, // eslint-disable-line react/forbid-prop-types
       title: PropTypes.string,
+      paneKey: PropTypes.string.isRequired,
       type: PropTypes.string.isRequired,
       isSelected: PropTypes.bool.isRequired,
       isCollapsed: PropTypes.bool.isRequired,
+      isClosable: PropTypes.bool.isRequired,
       onExpand: PropTypes.func,
       onCollapse: PropTypes.func,
       menuItems: PropTypes.arrayOf(
@@ -824,7 +821,7 @@ export default withInitialValue(
       const {options} = this.props
       const {draft, published} = this.getDocumentSnapshots()
       const typeName = options.type
-      const doc = draft.snapshot || published.snapshot
+      const doc = draft || published
       return (
         <div className={documentStyles.unknownSchemaType}>
           <div className={documentStyles.unknownSchemaTypeInner}>
@@ -1083,7 +1080,8 @@ export default withInitialValue(
         onExpand,
         menuItemGroups,
         views,
-        options
+        options,
+        paneKey
       } = this.props
 
       const {
@@ -1130,8 +1128,8 @@ export default withInitialValue(
         )
       }
 
-      const activeViewId = this.context.getPaneView() || views[0].id
-      const activeView = views.find(view => view.id === activeViewId) || views[0]
+      const activeViewId = this.context.getPaneView() || (views[0] && views[0].id)
+      const activeView = views.find(view => view.id === activeViewId) || views[0] || {type: 'form'}
       const enabledActions = resolveEnabledActions(schemaType)
       const menuItems = getMenuItems({
         enabledActions,
@@ -1163,7 +1161,6 @@ export default withInitialValue(
           selectedIsLatest: this.findSelectedEvent() === historyState.events[0]
         },
         onDelete: this.handleDelete,
-        onClearTransactionResult: this.handleClearTransactionResult,
         onPublish: this.handlePublish,
         onRestore: this.handleRestoreRevision,
         onUnpublish: this.handleUnpublish,
@@ -1195,6 +1192,7 @@ export default withInitialValue(
           )}
           <TabbedPane
             key="pane"
+            idPrefix={paneKey}
             title={this.getTitle(value)}
             views={views}
             activeView={activeViewId}

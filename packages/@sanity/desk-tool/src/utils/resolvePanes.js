@@ -64,12 +64,12 @@ function resolveForStructure(structure, paneGroups, prevStructure, fromIndex) {
       }
 
       // @todo Path is incorrect (array of groups vs ids), is it being used anywhere?
-      const path = paneSegments.slice(0, index + 1)
       const parent = index === 0 ? null : findParentForSegmentIndex(index - 1)
+      const path = paneSegments.slice(0, index + 1).map(segment => segment[0].id)
+      const context = {parent, index, splitIndex, path}
 
       if (index === 0) {
-        const {id, params, payload} = paneSegments[index][splitIndex]
-        const context = {parent, index, splitIndex, path, params, payload}
+        const {id} = paneSegments[index][splitIndex]
         subscribeForUpdates(structure, index, 0, context, [id, context])
         return
       }
@@ -81,16 +81,10 @@ function resolveForStructure(structure, paneGroups, prevStructure, fromIndex) {
       const siblings = paneSegments[index]
       for (let i = splitIndex; i < siblings.length; i++) {
         // @todo add split index to path?
-        const {id, params, payload} = siblings[i]
-        const context = {
-          parent,
-          index,
-          splitIndex: i,
-          path,
-          params,
-          payload
-        }
-        subscribeForUpdates(parent.child, index, i, context, [id, context])
+        const {id} = siblings[i]
+        const isFallbackEditor = index === 1 && id === '__edit__'
+        const child = isFallbackEditor ? resolveFallbackEditor : parent.child
+        subscribeForUpdates(child, index, i, context, [id, context])
       }
     }
 
@@ -176,6 +170,20 @@ function resolveForStructure(structure, paneGroups, prevStructure, fromIndex) {
       }
 
       return true
+<<<<<<< HEAD
+=======
+    }
+
+    function resolveFallbackEditor(nodeId, context) {
+      const {params, payload} = context
+      const {id, template, type} = params
+
+      return {
+        id: 'editor',
+        type: 'document',
+        options: {id, template, type, templateParameters: payload}
+      }
+>>>>>>> split-pane
     }
 
     function unsubscribe() {

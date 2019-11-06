@@ -1,9 +1,11 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
-import S from '@sanity/desk-tool/structure-builder'
 import ContextualPreviews from 'part:sanity-plugin-contextual-previews/contextual-previews-component'
 import RefreshIcon from 'part:@sanity/base/sync-icon'
+import EyeIcon from 'part:@sanity/base/eye-icon'
+import EditIcon from 'part:@sanity/base/edit-icon'
 import JsonDocumentDump from './components/JsonDocumentDump'
+import S from '@sanity/desk-tool/structure-builder'
 import {PaneRouterContext} from '@sanity/desk-tool'
 
 // For testing. Bump the timeout to introduce som lag
@@ -126,6 +128,7 @@ export default () =>
         schemaType: 'author',
         child: () =>
           S.documentTypeList('author')
+            .title('Developers')
             .filter('_type == $type && role == $role')
             .params({type: 'author', role: 'developer'})
             .initialValueTemplates(S.initialValueTemplateItem('author-developer'))
@@ -133,7 +136,7 @@ export default () =>
               S.document()
                 .documentId(documentId)
                 .schemaType('author')
-                .views([S.view.form(), S.view.component(Preview)])
+                .views([S.view.form().icon(EditIcon), S.view.component(Preview).icon(EyeIcon)])
             )
       }),
 

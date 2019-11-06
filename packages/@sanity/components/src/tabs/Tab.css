@@ -1,0 +1,36 @@
+@import 'part:@sanity/base/theme/variables-style';
+
+.root {
+  -webkit-appearance: none;
+  -webkit-font-smoothing: inherit;
+  border: 0;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.875em;
+  line-height: calc(17 / 14);
+  font-weight: 500;
+  padding: 0;
+  border-radius: 2px;
+  outline: none;
+
+  /* Clickable focus container */
+  & > div {
+    padding: calc(0.25rem - 1px) 0.5rem calc(0.25rem + 1px);
+    outline: none;
+  }
+
+  @nest &:focus {
+    background: var(--selectable-item-color-hover);
+  }
+
+  @media (hover: hover) {
+    @nest &:hover {
+      color: inherit;
+    }
+  }
+}
+
+.isActive {
+  composes: root;
+  color: var(--text-color);
+}

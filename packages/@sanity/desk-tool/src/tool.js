@@ -1,10 +1,11 @@
 import React from 'react'
-import Icon from 'part:@sanity/base/view-column-icon'
-import {route} from 'part:@sanity/base/router'
-import DeskTool from './DeskTool'
-import {parsePanesSegment, encodePanesSegment} from './utils/parsePanesSegment'
 import UUID from '@sanity/uuid'
 import {getTemplateById} from '@sanity/base/initial-value-templates'
+import Icon from 'part:@sanity/base/view-column-icon'
+import {route} from 'part:@sanity/base/router'
+import {parsePanesSegment, encodePanesSegment} from './utils/parsePanesSegment'
+import DeskTool from './DeskTool'
+import {EMPTY_PARAMS} from './'
 
 function toState(pathSegment) {
   return parsePanesSegment(decodeURIComponent(pathSegment))
@@ -12,20 +13,6 @@ function toState(pathSegment) {
 
 function toPath(panes) {
   return encodePanesSegment(panes)
-}
-
-function paramsToState(params) {
-  try {
-    return JSON.parse(decodeURIComponent(params))
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.warn('Failed to parse JSON parameters')
-    return {}
-  }
-}
-
-function paramsToPath(params) {
-  return JSON.stringify(params)
 }
 
 const state = {activePanes: []}
@@ -38,7 +25,8 @@ function DeskToolPaneStateSyncer(props) {
   return <DeskTool {...props} onPaneChange={setActivePanes} />
 }
 
-function getIntentState(intentName, params, currentState, jsonParams = {}) {
+// eslint-disable-next-line complexity
+function getIntentState(intentName, params, currentState, payload) {
   const paneSegments = (currentState && currentState.panes) || []
   const activePanes = state.activePanes || []
   const editDocumentId = params.id || UUID()
@@ -47,35 +35,35 @@ function getIntentState(intentName, params, currentState, jsonParams = {}) {
   // Loop through open panes and see if any of them can handle the intent
   for (let i = activePanes.length - 1; i >= 0; i--) {
     const pane = activePanes[i]
-    if (pane.canHandleIntent && pane.canHandleIntent(intentName, params, {pane})) {
-      const paneParams = isTemplate ? {template: params.template, ...jsonParams} : undefined
-      return {panes: paneSegments.slice(0, i).concat([{id: editDocumentId, params: paneParams}])}
+    if (pane.canHandleIntent && pane.canHandleIntent(intentName, params, {pane, index: i})) {
+      const paneParams = isTemplate ? {template: params.template} : EMPTY_PARAMS
+      return {
+        panes: paneSegments
+          .slice(0, i)
+          .concat([[{id: editDocumentId, params: paneParams, payload}]])
+      }
     }
   }
 
-  return getFallbackIntentState({documentId: editDocumentId, intentName, params, jsonParams})
+  return getFallbackIntentState({documentId: editDocumentId, intentName, params, payload})
 }
 
-function getFallbackIntentState({documentId, intentName, params, jsonParams = {}}) {
-  const editDocumentId = documentId
+function getFallbackIntentState({documentId, intentName, params, payload}) {
   const isTemplateCreate = intentName === 'create' && params.template
   const template = isTemplateCreate && getTemplateById(params.template)
+  const parameters = {
+    id: documentId,
+    template: params.template,
+    type: (template && template.schemaType) || params.type
+  }
 
-  return isTemplateCreate
-    ? {
-        editDocumentId,
-        type: template.schemaType,
-        params: {template: params.template, ...jsonParams}
-      }
-    : {editDocumentId, type: params.type || '*'}
+  return {
+    panes: [[{id: '__edit__', params: parameters, payload}]]
+  }
 }
 
 export default {
   router: route('/', [
-    // Fallback route if no panes can handle intent
-    route('/edit/:type/:editDocumentId', [
-      route({path: '/:params', transform: {params: {toState: paramsToState, toPath: paramsToPath}}})
-    ]),
     // The regular path - when the intent can be resolved to a specific pane
     route({
       path: '/:panes',
