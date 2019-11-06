@@ -1,0 +1,40 @@
+{
+  "root": true,
+  "project": {
+    "name": "Preview Next.js landing pages"
+  },
+  "api": {
+    "projectId": "e8pwkiz9",
+    "dataset": "production"
+  },
+  "plugins": [
+    "@sanity/base",
+    "@sanity/components",
+    "@sanity/default-layout",
+    "@sanity/default-login",
+    "@sanity/dashboard",
+    "@sanity/desk-tool",
+    "dashboard-widget-structure-menu",
+    "dashboard-widget-document-list",
+    "dashboard-widget-netlify",
+    "contextual-previews"
+  ],
+  "parts": [
+    {
+      "name": "part:@sanity/base/schema",
+      "path": "./schemas/schema.js"
+    },
+    {
+      "implements": "part:@sanity/desk-tool/structure",
+      "path": "./src/deskStructure.js"
+    },
+    {
+      "implements": "part:@sanity/dashboard/config",
+      "path": "./src/dashboardConfig.js"
+    },
+    {
+      "implements": "part:sanity-plugin-contextual-previews/resolve-contextual-previews",
+      "path": "./src/resolveContextualPreviews.js"
+    }
+  ]
+}

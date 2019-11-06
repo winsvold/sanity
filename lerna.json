@@ -12,9 +12,11 @@
     "packages/example-studio",
     "packages/groq",
     "packages/movies-studio",
+    "packages/preview-gatsby-blog-studio",
+    "packages/preview-nextjs-landing-pages-studio",
     "packages/sanity",
     "packages/storybook",
     "packages/test-studio"
   ],
-  "version": "0.144.2"
+  "version": "0.144.0"
 }

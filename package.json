@@ -27,6 +27,8 @@
     "example-studio": "gulp example-studio",
     "movies-studio": "gulp movies-studio",
     "blog-studio": "gulp blog-studio",
+    "preview-blog-studio": "gulp preview-gatsby-blog-studio",
+    "preview-landing-studio": "gulp preview-nextjs-landing-pages-studio",
     "stylelint": "stylelint \"**/*.css\"",
     "stylelint:fix": "stylelint \"**/*.css\" --fix",
     "test": "echo 'Run `npm run test-all` to run `npm test` for every package'",
