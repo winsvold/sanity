@@ -69,8 +69,10 @@ class TextToSpeechPreview extends React.Component {
   }
 
   componentDidUpdate() {
-    this.handleStopSpeaking()
-    this.handleStartSpeaking()
+    if (speechSynth.speaking) {
+      this.handleStopSpeaking()
+      this.handleStartSpeaking()
+    }
   }
 
   componentWillUnmount() {
