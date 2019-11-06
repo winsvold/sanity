@@ -5,7 +5,7 @@ export function decodeJsonParams(pathsegment = '') {
   }
 
   try {
-    return JSON.parse(atob(segment))
+    return JSON.parse(segment)
   } catch (err) {
     // eslint-disable-next-line no-console
     console.warn('Failed to parse JSON parameters')
@@ -15,5 +15,5 @@ export function decodeJsonParams(pathsegment = '') {
 }
 
 export function encodeJsonParams(params) {
-  return params === null || typeof params === 'undefined' ? '' : btoa(JSON.stringify(params))
+  return JSON.stringify(params)
 }

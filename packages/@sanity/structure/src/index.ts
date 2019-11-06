@@ -15,14 +15,10 @@ import {
 import {ListItemBuilder, ListItemInput} from './ListItem'
 import {MenuItemGroup, MenuItemGroupBuilder} from './MenuItemGroup'
 import {DocumentListBuilder, DocumentListInput} from './DocumentList'
-import {Divider} from './StructureNodes'
+import {EditorBuilder, editorWithInitialValueTemplate} from './Editor'
+import {EditorNode, Divider} from './StructureNodes'
 import {SerializeError} from './SerializeError'
-import {
-  DocumentBuilder,
-  PartialDocumentNode,
-  documentFromEditor,
-  documentFromEditorWithInitialValue
-} from './Document'
+import {DocumentBuilder, PartialDocumentNode} from './Document'
 import {ComponentInput, ComponentBuilder} from './Component'
 import {DocumentListItemBuilder, DocumentListItemInput} from './DocumentListItem'
 import {Ordering} from './Sort'
@@ -53,8 +49,8 @@ const StructureBuilder = {
   orderingMenuItem: (ordering: Ordering) => getOrderingMenuItem(ordering),
   orderingMenuItemsForType: (type: string) => getOrderingMenuItemsForSchemaType(type),
 
-  editor: documentFromEditor,
-  editorWithInitialValueTemplate: documentFromEditorWithInitialValue,
+  editor: (spec?: EditorNode) => new EditorBuilder(spec),
+  editorWithInitialValueTemplate,
 
   defaultInitialValueTemplateItems,
   initialValueTemplateItem: (

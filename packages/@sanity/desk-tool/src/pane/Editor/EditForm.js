@@ -7,12 +7,10 @@ const preventDefault = ev => ev.preventDefault()
 
 export default class EditForm extends React.PureComponent {
   static propTypes = {
-    draft: PropTypes.shape({_type: PropTypes.string.isRequired}),
-    published: PropTypes.shape({_type: PropTypes.string.isRequired}),
-    initialValue: PropTypes.shape({}),
-
+    draft: PropTypes.object,
     filterField: PropTypes.func.isRequired,
     focusPath: PropTypes.array.isRequired,
+    // isLiveEditEnabled: PropTypes.bool,
     markers: PropTypes.arrayOf(
       PropTypes.shape({
         path: PropTypes.array
@@ -21,18 +19,14 @@ export default class EditForm extends React.PureComponent {
     onBlur: PropTypes.func.isRequired,
     onChange: PropTypes.func.isRequired,
     onFocus: PropTypes.func.isRequired,
+    // onShowHistory: PropTypes.func.isRequired,
     patchChannel: PropTypes.object.isRequired,
+    published: PropTypes.object,
+    initialValue: PropTypes.object,
     readOnly: PropTypes.bool.isRequired,
     schema: PropTypes.object.isRequired,
-    type: PropTypes.shape({name: PropTypes.string}).isRequired
+    type: PropTypes.object.isRequired
   }
-
-  static defaultProps = {
-    draft: undefined,
-    published: undefined,
-    initialValue: undefined
-  }
-
   render() {
     const {
       draft,
@@ -40,10 +34,12 @@ export default class EditForm extends React.PureComponent {
       filterField,
       focusPath,
       initialValue,
+      // isLiveEditEnabled,
       markers,
       onBlur,
       onChange,
       onFocus,
+      // onShowHistory,
       patchChannel,
       readOnly,
       schema,

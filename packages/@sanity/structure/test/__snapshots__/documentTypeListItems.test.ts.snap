@@ -4,7 +4,6 @@ exports[`generates correct document type list item for specific type 1`] = `
 ListItemBuilder {
   "spec": Object {
     "child": DocumentTypeListBuilder {
-      "initialValueTemplatesSpecified": false,
       "spec": Object {
         "canHandleIntent": [Function],
         "child": [Function],
@@ -146,7 +145,6 @@ exports[`generates correct document type list item for specific type 2`] = `
 ListItemBuilder {
   "spec": Object {
     "child": DocumentTypeListBuilder {
-      "initialValueTemplatesSpecified": false,
       "spec": Object {
         "canHandleIntent": [Function],
         "child": [Function],
@@ -289,7 +287,6 @@ Array [
   ListItemBuilder {
     "spec": Object {
       "child": DocumentTypeListBuilder {
-        "initialValueTemplatesSpecified": false,
         "spec": Object {
           "canHandleIntent": [Function],
           "child": [Function],
@@ -428,7 +425,6 @@ Array [
   ListItemBuilder {
     "spec": Object {
       "child": DocumentTypeListBuilder {
-        "initialValueTemplatesSpecified": false,
         "spec": Object {
           "canHandleIntent": [Function],
           "child": [Function],
@@ -692,7 +688,6 @@ Array [
   ListItemBuilder {
     "spec": Object {
       "child": DocumentTypeListBuilder {
-        "initialValueTemplatesSpecified": false,
         "spec": Object {
           "canHandleIntent": [Function],
           "child": [Function],
@@ -831,7 +826,6 @@ Array [
   ListItemBuilder {
     "spec": Object {
       "child": DocumentTypeListBuilder {
-        "initialValueTemplatesSpecified": false,
         "spec": Object {
           "canHandleIntent": [Function],
           "child": [Function],

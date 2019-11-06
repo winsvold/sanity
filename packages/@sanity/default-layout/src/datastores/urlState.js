@@ -42,7 +42,7 @@ function resolveDefaultState(state) {
 }
 
 function resolveIntentState(currentState, intentState) {
-  const {intent, params, payload} = intentState
+  const {intent, params, jsonParams} = intentState
 
   const tools = getOrderedTools()
 
@@ -61,7 +61,7 @@ function resolveIntentState(currentState, intentState) {
       intent,
       params,
       currentState[matchingTool.name],
-      payload
+      jsonParams
     )
     const currentWithState = resolveUrlStateWithDefaultSpace(currentState) || currentState
     return Object.assign({}, currentWithState, {

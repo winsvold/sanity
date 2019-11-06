@@ -8,7 +8,6 @@ import IconMoreVert from 'part:@sanity/base/more-vert-icon'
 import {IntentLink} from 'part:@sanity/base/router'
 import ScrollContainer from 'part:@sanity/components/utilities/scroll-container'
 import DropDownButton from 'part:@sanity/components/buttons/dropdown'
-import TabPanel from 'part:@sanity/components/tabs/tab-panel'
 import Styleable from '../utilities/Styleable'
 import defaultStyles from './styles/DefaultPane.css'
 import S from '@sanity/base/structure-builder'
@@ -77,9 +76,6 @@ const isMenuButton = negate(isActionButton)
 // eslint-disable-next-line
 class Pane extends React.Component {
   static propTypes = {
-    hasTabs: PropTypes.bool,
-    tabIdPrefix: PropTypes.string,
-    viewId: PropTypes.string,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     isCollapsed: PropTypes.bool,
     onExpand: PropTypes.func,
@@ -113,14 +109,11 @@ class Pane extends React.Component {
     index: PropTypes.number,
     staticContent: PropTypes.node,
     contentMaxWidth: PropTypes.number,
-    renderHeaderViewMenu: PropTypes.func,
+    renderHeaderView: PropTypes.func,
     styles: PropTypes.object // eslint-disable-line react/forbid-prop-types
   }
 
   static defaultProps = {
-    hasTabs: false,
-    tabIdPrefix: undefined,
-    viewId: undefined,
     title: 'Untitled',
     isCollapsed: false,
     isSelected: false,
@@ -133,7 +126,7 @@ class Pane extends React.Component {
     menuItems: [],
     menuItemGroups: [],
     initialValueTemplates: [],
-    renderHeaderViewMenu: () => null
+    renderHeaderView: () => null
   }
 
   state = {
@@ -421,12 +414,10 @@ class Pane extends React.Component {
     )
   }
 
-  // eslint-disable-next-line complexity
   render() {
     const {
       title,
       children,
-      hasTabs,
       isSelected,
       isCollapsed,
       isScrollable,
@@ -434,24 +425,10 @@ class Pane extends React.Component {
       styles,
       renderActions,
       staticContent,
-      contentMaxWidth,
-      tabIdPrefix,
-      viewId
+      contentMaxWidth
     } = this.props
     const actions = menuItems.filter(
       act => act.showAsAction && (!isCollapsed || act.showAsAction.whenCollapsed)
-    )
-
-    const mainChildren = (
-      <>
-        {isScrollable ? (
-          <ScrollContainer className={styles.scrollContainer} onScroll={this.handleContentScroll}>
-            <div style={contentMaxWidth ? {maxWidth: `${contentMaxWidth}px`} : {}}>{children}</div>
-          </ScrollContainer>
-        ) : (
-          <div className={styles.notScrollable}>{children}</div>
-        )}
-      </>
     )
 
     return (
@@ -475,22 +452,20 @@ class Pane extends React.Component {
               {this.renderMenu()}
             </div>
           </div>
-          {this.props.renderHeaderViewMenu()}
+          {this.props.renderHeaderView()}
         </div>
 
-        {hasTabs ? (
-          <TabPanel
-            aria-labelledby={`${tabIdPrefix}tab-${viewId}`}
-            className={styles.main}
-            id={`${tabIdPrefix}tabpanel`}
-            role="tabpanel"
-            tabIndex="0"
-          >
-            {mainChildren}
-          </TabPanel>
-        ) : (
-          <div className={styles.main}>{mainChildren}</div>
-        )}
+        <div className={styles.main}>
+          {isScrollable ? (
+            <ScrollContainer className={styles.scrollContainer} onScroll={this.handleContentScroll}>
+              <div style={contentMaxWidth ? {maxWidth: `${contentMaxWidth}px`} : {}}>
+                {children}
+              </div>
+            </ScrollContainer>
+          ) : (
+            <div className={styles.notScrollable}>{children}</div>
+          )}
+        </div>
 
         {staticContent && <div className={styles.footer}>{staticContent}</div>}
       </div>

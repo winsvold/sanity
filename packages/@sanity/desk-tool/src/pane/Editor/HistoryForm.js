@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {format, isToday, isYesterday} from 'date-fns'
 import FormBuilder from 'part:@sanity/form-builder'
 import historyStore from 'part:@sanity/base/datastore/history'
-import Spinner from 'part:@sanity/components/loading/spinner'
 import TimeAgo from '../../components/TimeAgo'
-import Delay from '../../utils/Delay'
 import styles from '../styles/Editor.css'
+import {format, isToday, isYesterday} from 'date-fns'
+
+import Spinner from 'part:@sanity/components/loading/spinner'
+import Delay from '../../utils/Delay'
 
 const noop = () => null
 

@@ -1,10 +1,11 @@
-import {SerializeOptions, Serializable, Child, DocumentNode} from './StructureNodes'
+import {camelCase} from 'lodash'
+import {EditorNode, SerializeOptions, Serializable, Child} from './StructureNodes'
+import {getTemplateById} from '@sanity/initial-value-templates'
 import {SerializeError, HELP_URL} from './SerializeError'
 import {SchemaType} from './parts/Schema'
 import {validateId} from './util/validateId'
-import {View, ViewBuilder, maybeSerializeView} from './views/View'
 
-interface DocumentOptions {
+interface EditorOptions {
   id: string
   type: string
   template?: string
@@ -13,26 +14,34 @@ interface DocumentOptions {
   }
 }
 
-export type PartialDocumentNode = {
+export type PartialEditorNode = {
   id?: string
+  title?: string
   child?: Child
-  views?: (View | ViewBuilder)[]
-  options?: Partial<DocumentOptions>
+  options?: Partial<EditorOptions>
 }
 
-export class DocumentBuilder implements Serializable {
-  protected spec: PartialDocumentNode
+export class EditorBuilder implements Serializable {
+  protected spec: PartialEditorNode
 
-  constructor(spec?: PartialDocumentNode) {
+  constructor(spec?: EditorNode) {
     this.spec = spec ? spec : {}
   }
 
-  id(id: string): DocumentBuilder {
+  id(id: string): EditorBuilder {
     return this.clone({id})
   }
 
   getId() {
     return this.spec.id
+  }
+
+  title(title: string) {
+    return this.clone({title, id: this.spec.id || camelCase(title)})
+  }
+
+  getTitle() {
+    return this.spec.title
   }
 
   child(child: Child) {
@@ -43,7 +52,7 @@ export class DocumentBuilder implements Serializable {
     return this.spec.child
   }
 
-  documentId(documentId: string): DocumentBuilder {
+  documentId(documentId: string): EditorBuilder {
     // Let's try to be a bit helpful and assign an ID from document ID if none is specified
     const paneId = this.spec.id || documentId
     return this.clone({
@@ -59,7 +68,7 @@ export class DocumentBuilder implements Serializable {
     return this.spec.options && this.spec.options.id
   }
 
-  schemaType(documentType: SchemaType | string): DocumentBuilder {
+  schemaType(documentType: SchemaType | string): EditorBuilder {
     return this.clone({
       options: {
         ...(this.spec.options || {}),
@@ -90,20 +99,12 @@ export class DocumentBuilder implements Serializable {
     return this.spec.options && this.spec.options.templateParameters
   }
 
-  views(views: (View | ViewBuilder)[]) {
-    return this.clone({views})
-  }
-
-  getViews(): (View | ViewBuilder)[] {
-    return this.spec.views || []
-  }
-
-  serialize({path = [], index, hint}: SerializeOptions = {path: []}): DocumentNode {
+  serialize({path = [], index, hint}: SerializeOptions = {path: []}): EditorNode {
     const urlId = path[index || path.length - 1]
 
     // Try to grab document ID / editor ID from URL if not defined
     const id = this.spec.id || (urlId && `${urlId}`) || ''
-    const options: Partial<DocumentOptions> = {
+    const options: Partial<EditorOptions> = {
       id,
       type: undefined,
       template: undefined,
@@ -112,45 +113,39 @@ export class DocumentBuilder implements Serializable {
     }
 
     if (typeof id !== 'string' || !id) {
-      throw new SerializeError(
-        '`id` is required for document nodes',
-        path,
-        index,
-        hint
-      ).withHelpUrl(HELP_URL.ID_REQUIRED)
+      throw new SerializeError('`id` is required for editor nodes', path, index, hint).withHelpUrl(
+        HELP_URL.ID_REQUIRED
+      )
     }
 
     if (!options || !options.id) {
       throw new SerializeError(
-        'document id (`id`) is required for document nodes',
+        'document id (`id`) is required for editor nodes',
         path,
         id,
         hint
       ).withHelpUrl(HELP_URL.DOCUMENT_ID_REQUIRED)
     }
 
-    const views = (this.spec.views || []).map((item, i) => maybeSerializeView(item, i, path))
-
     return {
       ...this.spec,
       child: this.spec.child,
       id: validateId(id, path, index),
-      type: 'document',
-      options: getDocumentOptions(options),
-      views
+      type: 'editor',
+      options: getEditorOptions(options)
     }
   }
 
-  clone(withSpec: PartialDocumentNode = {}) {
-    const builder = new DocumentBuilder()
+  clone(withSpec: PartialEditorNode = {}) {
+    const builder = new EditorBuilder()
     const options = {...(this.spec.options || {}), ...(withSpec.options || {})}
     builder.spec = {...this.spec, ...withSpec, options}
     return builder
   }
 }
 
-function getDocumentOptions(spec: Partial<DocumentOptions>): DocumentOptions {
-  const opts: DocumentOptions = {
+function getEditorOptions(spec: Partial<EditorOptions>): EditorOptions {
+  const opts: EditorOptions = {
     id: spec.id || '',
     type: spec.type || '*'
   }
@@ -164,4 +159,18 @@ function getDocumentOptions(spec: Partial<DocumentOptions>): DocumentOptions {
   }
 
   return opts
+}
+
+export function editorWithInitialValueTemplate(
+  templateId: string,
+  parameters?: {[key: string]: any}
+) {
+  const template = getTemplateById(templateId)
+  if (!template) {
+    throw new Error(`Template with ID "${templateId}" not defined`)
+  }
+
+  return new EditorBuilder()
+    .schemaType(template.schemaType)
+    .initialValueTemplate(templateId, parameters)
 }

@@ -11,7 +11,7 @@ const CloseIcon = () => (
     width="1em"
     height="1em"
   >
-    <path d="M18 7L7 18M7 7L18 18" stroke="currentColor" style={strokeStyle} />
+    <path d="M19 6L6 19M6 6L19 19" stroke="currentColor" style={strokeStyle} />
   </svg>
 )
 

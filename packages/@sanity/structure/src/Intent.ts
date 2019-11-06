@@ -1,4 +1,4 @@
-import {PartialDocumentList, getTypeNamesFromFilter} from './DocumentList'
+import {PartialDocumentList, getTypeNameFromSingleTypeFilter} from './DocumentList'
 import {StructureNode} from './StructureNodes'
 
 type JsonParams = {[key: string]: any}
@@ -19,11 +19,7 @@ export interface Intent {
 }
 
 export interface IntentChecker {
-  (
-    intentName: string,
-    params: {[key: string]: any},
-    context: {pane: StructureNode; index: number}
-  ): boolean
+  (intentName: string, params: {[key: string]: any}, context: {pane: StructureNode}): boolean
   identity?: Symbol
 }
 
@@ -33,9 +29,8 @@ export const defaultIntentChecker: IntentChecker = (intentName, params, {pane}):
   const typedSpec = pane as PartialDocumentList
   const paneFilter = (typedSpec.options && typedSpec.options.filter) || ''
   const paneParams = (typedSpec.options && typedSpec.options.params) || {}
-  const typeNames = typedSpec.schemaTypeName
-    ? [typedSpec.schemaTypeName]
-    : getTypeNamesFromFilter(paneFilter, paneParams)
+  const typeName =
+    typedSpec.schemaTypeName || getTypeNameFromSingleTypeFilter(paneFilter, paneParams)
 
   const initialValueTemplates = typedSpec.initialValueTemplates || []
 
@@ -43,10 +38,7 @@ export const defaultIntentChecker: IntentChecker = (intentName, params, {pane}):
     return initialValueTemplates.some(tpl => tpl.templateId === params.template)
   }
 
-  return (
-    (isEdit && params.id && typeNames.includes(params.type)) ||
-    (isCreate && typeNames.includes(params.type))
-  )
+  return (isEdit && params.id && params.type === typeName) || (isCreate && params.type === typeName)
 }
 
 defaultIntentChecker.identity = DEFAULT_INTENT_HANDLER
