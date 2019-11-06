@@ -1,7 +1,10 @@
+import {MdPerson} from 'react-icons/lib/md'
+
 export default {
   name: 'person',
   type: 'document',
   title: 'Person',
+  icon: MdPerson,
   fields: [
     {
       name: 'name',
@@ -20,7 +23,7 @@ export default {
     },
     {
       name: 'contactInfo',
-      type: 'contaccontactInfo',
+      type: 'contactInfo',
       title: 'Contact information'
     }
   ]

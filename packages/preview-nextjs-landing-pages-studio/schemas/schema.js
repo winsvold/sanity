@@ -9,6 +9,7 @@ import page from './documents/page'
 import route from './documents/route'
 import siteConfig from './documents/siteConfig'
 import person from './documents/person'
+import ad from './documents/ad'
 
 // Object types
 import cta from './objects/cta'
@@ -47,6 +48,7 @@ export default createSchema({
     siteConfig,
     textSection,
     contactInfo,
-    person
+    person,
+    ad
   ])
 })
