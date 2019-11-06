@@ -12,41 +12,46 @@ const urlFor = source => {
   return builder.image(source)
 }
 
-const placeholderAuthor = {
-  name: 'My Name',
-  slug: {current: 'my-name'}
-}
-
 class TwitterCard extends React.PureComponent {
   static propTypes = {
-    document: PropTypes.object
+    document: PropTypes.object,
+    author: PropTypes.object
   }
 
   static defaultProps = {
-    document: null
+    document: null,
+    author: {
+      name: 'Author',
+      handle: 'author',
+      image: '#'
+    }
   }
 
   render() {
-    const {document} = this.props
+    const {document, author} = this.props
     const {title, excerpt, mainImage} = document
     const url = assemblePostUrl(document)
-    const primaryAuthor = {...placeholderAuthor, ...document.authors[0]}
     const websiteUrlWithoutProtocol = websiteUrl.split('://')[1]
-
     return (
       <div className={styles.seoItem}>
         <h3>Twitter card preview</h3>
         <div className={styles.tweetWrapper}>
-          <div className={styles.tweetAuthor}>
-            <img
-              className={styles.tweetAuthorAvatar}
-              src={urlFor(primaryAuthor.image)
-                .width(90)
-                .url()}
-            />
-            <span className={styles.tweetAuthorName}>{primaryAuthor.name}</span>
-            <span className={styles.tweetAuthorHandle}>@{primaryAuthor.slug.current}</span>
-          </div>
+          {author && (
+            <div className={styles.tweetAuthor}>
+              <img
+                className={styles.tweetAuthorAvatar}
+                src={
+                  author && typeof author.image === 'object'
+                    ? urlFor(author.image)
+                        .width(300)
+                        .url()
+                    : author.image
+                }
+              />
+              <span className={styles.tweetAuthorName}>{author.name}</span>
+              <span className={styles.tweetAuthorHandle}>@{author.handle}</span>
+            </div>
+          )}
 
           <div className={styles.tweetText}>
             <p>The card for your website will look a little something like this!</p>

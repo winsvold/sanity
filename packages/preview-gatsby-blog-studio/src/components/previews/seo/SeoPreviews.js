@@ -8,8 +8,8 @@ import TwitterCard from './TwitterCard'
 import FacebookShare from './FacebookShare'
 import styles from './SeoPreviews.css'
 
-const materializeDocument = documentId => {
-  return sanityClient.fetch(`*[_id == $documentId][0]{..., "authors": authors[].author->}`, {
+const materializeAuthor = documentId => {
+  return sanityClient.fetch(`*[_id == $documentId][0]{"author": authors[0].author->}`, {
     documentId
   })
 }
@@ -24,33 +24,31 @@ class SeoPreviews extends React.PureComponent {
   }
 
   state = {
-    materializedDocument: null
-  }
-
-  static async getDerivedStateFromProps(props, state) {
-    const newState = await materializeDocument(props.document._id).then(materializedDocument => ({
-      materializedDocument
-    }))
-    return newState
+    materializedAuthor: null
   }
 
   componentDidMount() {
-    materializeDocument(this.props.document._id).then(materializedDocument =>
-      this.setState({materializedDocument})
-    )
+    materializeAuthor(this.props.document._id).then(document => {
+      this.setState({
+        materializedAuthor: {
+          name: document.author.name,
+          handle: document.author.slug.current,
+          image: document.author.image
+        }
+      })
+    })
   }
 
   render() {
-    const document = this.state.materializedDocument
+    const document = this.props.document
     if (!document) {
       return <Spinner />
     }
-    console.log('document', document)
 
     return (
       <div>
         <GoogleSearchResult document={document} />
-        <TwitterCard document={document} />
+        <TwitterCard document={document} author={this.state.materializedAuthor} />
         <FacebookShare document={document} />
       </div>
     )
