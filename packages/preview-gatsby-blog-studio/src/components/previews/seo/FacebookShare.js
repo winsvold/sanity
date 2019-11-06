@@ -29,16 +29,21 @@ class FacebookShare extends React.PureComponent {
     return (
       <div className={styles.seoItem}>
         <h3>Facebook share</h3>
-        <div className={styles.facebookBorder}>
-          <div>
+        <div className={styles.facebookWrapper}>
+          <div className={styles.facebookImageContainer}>
             <img
+              className={styles.facebookCardImage}
               src={urlFor(mainImage)
                 .width(500)
                 .url()}
             />
-            <div>{websiteUrlWithoutProtocol}</div>
-            <h2>{title}</h2>
-            <p>{blocksToText(excerpt).split('.')[0]}.</p>
+          </div>
+          <div className={styles.facebookCardContent}>
+            <div className={styles.facebookCardUrl}>{websiteUrlWithoutProtocol}</div>
+            <div className={styles.facebookCardTitle}>
+              <a href={websiteUrl}>{title}</a>
+            </div>
+            <div className={styles.facebookCardDescription}>{blocksToText(excerpt)}</div>
           </div>
         </div>
       </div>
