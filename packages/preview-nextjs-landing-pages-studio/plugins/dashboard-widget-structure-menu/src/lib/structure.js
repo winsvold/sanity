@@ -4,7 +4,7 @@ import {defer, from as observableFrom, of as observableOf, throwError} from 'rxj
 import {mergeMap} from 'rxjs/operators'
 
 // eslint-disable-next-line import/no-commonjs
-const {StructureBuilder} = require('@sanity/structure')
+import StructureBuilder from '@sanity/desk-tool/structure-builder'
 
 let prevStructureError = null
 if (__DEV__) {
@@ -13,11 +13,11 @@ if (__DEV__) {
   }
 }
 
-export function isSubscribable (thing) {
+export function isSubscribable(thing) {
   return thing && (typeof thing.then === 'function' || typeof thing.subscribe === 'function')
 }
 
-export function isStructure (structure) {
+export function isStructure(structure) {
   return (
     structure &&
     (typeof structure === 'function' ||
@@ -28,7 +28,7 @@ export function isStructure (structure) {
   )
 }
 
-export function serializeStructure (item, context, resolverArgs = []) {
+export function serializeStructure(item, context, resolverArgs = []) {
   // Lazy
   if (typeof item === 'function') {
     return serializeStructure(item(...resolverArgs), context, resolverArgs)
@@ -50,7 +50,7 @@ export function serializeStructure (item, context, resolverArgs = []) {
   return observableOf(item)
 }
 
-export function getDefaultStructure () {
+export function getDefaultStructure() {
   const items = StructureBuilder.documentTypeListItems()
   return StructureBuilder.list()
     .id('__root__')
@@ -62,7 +62,7 @@ export function getDefaultStructure () {
 // We are lazy-requiring/resolving the structure inside of a function in order to catch errors
 // on the root-level of the module. Any loading errors will be caught and emitted as errors
 // eslint-disable-next-line complexity
-export function loadStructure () {
+export function loadStructure() {
   let structure
   try {
     const mod = require('part:@sanity/desk-tool/structure?') || getDefaultStructure()

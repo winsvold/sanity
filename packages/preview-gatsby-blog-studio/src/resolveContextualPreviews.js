@@ -36,16 +36,17 @@ const resolveContextualPreviews = document => {
           url: `${assemblePostUrl(document)}`
         }
       : null,
-    {
-      name: 'seo',
-      title: 'SEO',
-      component: <SeoPreviews document={document} />
-    },
+    isPost
+      ? {
+          name: 'seo',
+          title: 'SEO',
+          component: <SeoPreviews document={document} />
+        }
+      : null,
     isAuthor
       ? {
           name: 'author-name',
           title: 'Author Name',
-          types: ['author'],
           component: (
             <div>
               <h1 style={{background: 'linear-gradient(#e66465, #9198e5)'}}>{document.name}</h1>
