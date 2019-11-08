@@ -25,6 +25,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-moveable": "^0.13.4",
     "react-serp-preview": "^0.3.1",
     "sanity-plugin-contextual-previews": "0.0.13",
     "sanity-plugin-dashboard-widget-document-list": "^0.0.8",
