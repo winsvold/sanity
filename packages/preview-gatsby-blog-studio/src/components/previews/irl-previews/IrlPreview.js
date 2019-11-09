@@ -29,13 +29,13 @@ class IrlPreview extends React.PureComponent {
     this.previewBanner = React.createRef()
     this.matrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
     this.scale = [1, 1]
-
   }
 
   static propTypes = {
     position: PropTypes.string,
     previewImage: PropTypes.string.isRequired,
-    document: PropTypes.object
+    document: PropTypes.object,
+    children: PropTypes.node
   }
 
   static defaultProps = {
@@ -75,7 +75,7 @@ class IrlPreview extends React.PureComponent {
   }
 
   render() {
-    const {document, previewImage} = this.props
+    const {document, previewImage, children} = this.props
     const {bannerTarget, editMode, isEditMode, imgFilter} = this.state
     return (
       <div className={styles.componentWrapper}>
@@ -104,6 +104,7 @@ class IrlPreview extends React.PureComponent {
               resizable={editMode.name === 'resizable'}
               warpable={editMode.name === 'warpable'}
               scalable={editMode.name === 'scalable'}
+              keepRatio
               onWarp={({target, multiply, delta}) => {
                 this.matrix = multiply(this.matrix, delta)
                 target.style.transform = `scale(${this.scale[0]},${
@@ -129,7 +130,7 @@ class IrlPreview extends React.PureComponent {
             />
           )}
           <div ref={this.previewBanner} className={styles.banner}>
-            {document.title}
+            {children}
           </div>
         </div>
       </div>
