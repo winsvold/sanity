@@ -3,12 +3,15 @@ import React from 'react'
 import BusinessCard from './components/previews/pdf/BusinessCard'
 
 const resolveContextualPreviews = document => {
+  const isPerson = document._type === 'person'
   return [
-    {
-      name: 'business-card',
-      title: 'Business Card',
-      component: <BusinessCard document={document} />
-    }
+    isPerson
+      ? {
+          name: 'business-card',
+          title: 'Business Card',
+          component: <BusinessCard document={document} />
+        }
+      : null
   ].filter(Boolean)
 }
 
