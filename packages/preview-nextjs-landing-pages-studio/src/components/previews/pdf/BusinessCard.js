@@ -19,7 +19,8 @@ class BusinessCard extends React.PureComponent {
   }
 
   state = {
-    businessCardImage: null
+    businessCardImage: null,
+    error: null
   }
 
   // TODO: materialize profileImageURL?
@@ -27,7 +28,7 @@ class BusinessCard extends React.PureComponent {
   componentDidMount = () => {
     const {document} = this.props
     const url = `${cardGeneratorUrl}&document=${JSON.stringify(document)}`
-    console.log('url', url)
+    console.log('Fetching business card from', url)
     request({url, rawBody: true})
       .then(response => {
         const base64 = btoa(
@@ -35,15 +36,20 @@ class BusinessCard extends React.PureComponent {
         )
         this.setState({businessCardImage: `data:image/png;base64,${base64}`})
       })
-      .catch((error, response) => {
+      .catch(error => {
         console.error('BOOOM', error)
+        this.setState({error})
       })
   }
 
   render() {
     const {document} = this.props
-    const {businessCardImage} = this.state
+    const {businessCardImage, error} = this.state
     const {name} = document
+
+    if (error) {
+      return <pre>{JSON.stringify(error, null, 2)}</pre>
+    }
 
     return (
       <div className={styles.root}>
