@@ -6,7 +6,6 @@ import Spinner from 'part:@sanity/components/loading/spinner'
 import GoogleSearchResult from './GoogleSearchResult'
 import TwitterCard from './TwitterCard'
 import FacebookShare from './FacebookShare'
-import styles from './SeoPreviews.css'
 
 const materializeAuthor = documentId => {
   return sanityClient.fetch(`*[_id == $documentId][0]{"author": authors[0].author->}`, {
