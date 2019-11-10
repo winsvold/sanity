@@ -1,10 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Moveable from 'react-moveable'
-import RadioButtons from 'part:@sanity/components/selects/radio'
-import styles from './BannerExample.css'
+import styles from './OsakaBanner.css'
 
-class BannerExample extends React.PureComponent {
+class OsakaBanner extends React.PureComponent {
   static propTypes = {
     tagline: PropTypes.string
   }
@@ -28,4 +26,4 @@ class BannerExample extends React.PureComponent {
   }
 }
 
-export default BannerExample
+export default OsakaBanner

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 import React from 'react'
 import PropTypes from 'prop-types'
 import Moveable from 'react-moveable'
@@ -24,23 +25,24 @@ class IrlPreview extends React.PureComponent {
       bannerTarget: null,
       editMode: EDIT_MODES[0],
       imgFilter: IMG_FILTERS[0],
-      isEditMode: false
+      isEditMode: false,
+      cssOutput: {}
     }
     this.previewBanner = React.createRef()
     this.matrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
     this.scale = [1, 1]
+    this.rotate = 0
   }
 
   static propTypes = {
-    position: PropTypes.string,
-    previewImage: PropTypes.string.isRequired,
-    document: PropTypes.object,
-    children: PropTypes.node
+    initialStyles: PropTypes.object,
+    backgroundImage: PropTypes.string.isRequired,
+    children: PropTypes.node.isRequired
   }
 
   static defaultProps = {
     document: null,
-    position: ''
+    initialStyles: {}
   }
 
   handleEditModeChange = item => {
@@ -67,16 +69,29 @@ class IrlPreview extends React.PureComponent {
     })
   }
 
+  handlePrintStyles = style => {
+    const css = {
+      transform: style.transform,
+      top: style.top,
+      left: style.left,
+      width: style.width,
+      height: style.height
+    }
+    this.setState({
+      cssOutput: css
+    })
+  }
+
   componentDidMount() {
     this.setState({
-      bannerTarget: this.previewBanner.current
+      bannerTarget: this.previewBanner.current,
+      cssOutput: this.props.initialStyles
     })
-    this.previewBanner.current.setAttribute('style', this.props.position)
   }
 
   render() {
-    const {document, previewImage, children} = this.props
-    const {bannerTarget, editMode, isEditMode, imgFilter} = this.state
+    const {backgroundImage, children, initialStyles} = this.props
+    const {bannerTarget, editMode, isEditMode, imgFilter, cssOutput} = this.state
     return (
       <div className={styles.componentWrapper}>
         <div className={styles.radioWrapper}>
@@ -96,41 +111,56 @@ class IrlPreview extends React.PureComponent {
           onMouseEnter={this.handleShowEditMode}
           onMouseLeave={this.handleHideEditMode}
         >
-          <img className={styles.backgroundImage} src={previewImage} />
+          <img className={styles.backgroundImage} src={backgroundImage} />
           {bannerTarget && isEditMode && (
             <Moveable
               target={bannerTarget}
               draggable
+              rotatable
               resizable={editMode.name === 'resizable'}
               warpable={editMode.name === 'warpable'}
               scalable={editMode.name === 'scalable'}
               keepRatio
-              onWarp={({target, multiply, delta}) => {
-                this.matrix = multiply(this.matrix, delta)
-                target.style.transform = `scale(${this.scale[0]},${
-                  this.scale[1]
-                }) matrix3d(${this.matrix.join(',')})`
-              }}
               onDrag={({target, left, top, beforeDelta}) => {
                 target.style.left = `${left}px`
                 target.style.top = `${top}px`
+                this.handlePrintStyles(target.style)
+              }}
+              onRotate={({target, beforeDelta, delta}) => {
+                this.rotate += delta
+                target.style.transform = `rotate(${this.rotate}deg) scale(${this.scale[0]},${
+                  this.scale[1]
+                }) matrix3d(${this.matrix.join(',')})`
+                this.handlePrintStyles(target.style)
               }}
               onResize={({target, width, height, dist}) => {
                 target.style.width = `${width}px`
                 target.style.height = `${height}px`
+                this.handlePrintStyles(target.style)
+              }}
+              onWarp={({target, multiply, delta}) => {
+                this.matrix = multiply(this.matrix, delta)
+                target.style.transform = `rotate(${this.rotate}deg) scale(${this.scale[0]},${
+                  this.scale[1]
+                }) matrix3d(${this.matrix.join(',')})`
+                this.handlePrintStyles(target.style)
               }}
               onScale={({target, delta}) => {
                 const scale = this.scale
                 scale[0] *= delta[0]
                 scale[1] *= delta[1]
-                target.style.transform = `scale(${scale[0]}, ${
+                target.style.transform = `rotate(${this.rotate}deg) scale(${scale[0]}, ${
                   scale[1]
                 }) matrix3d(${this.matrix.join(',')})`
+                this.handlePrintStyles(target.style)
               }}
             />
           )}
-          <div ref={this.previewBanner} className={styles.banner}>
+          <div ref={this.previewBanner} className={styles.banner} style={initialStyles}>
             {children}
+          </div>
+          <div>
+            <pre>{JSON.stringify(cssOutput, null, 2)}</pre>
           </div>
         </div>
       </div>
