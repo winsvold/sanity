@@ -45,7 +45,16 @@ export default () =>
       S.listItem()
         .title('Ads')
         .schemaType('ad')
-        .child(S.documentTypeList('ad').title('Ads')),
+        .child(
+          S.documentTypeList('ad')
+            .title('Ads')
+            .child(documentId =>
+              S.document()
+                .documentId(documentId)
+                .schemaType('ad')
+                .views([S.view.form(), S.view.component(Preview)])
+            )
+        ),
       S.listItem()
         .title('People')
         .schemaType('person')
