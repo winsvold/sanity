@@ -6,3 +6,8 @@
 .cardWrapper {
   width: 50%;
 }
+
+.tempBorder {
+  border: solid 3px gold;
+  width: 100px;
+}
