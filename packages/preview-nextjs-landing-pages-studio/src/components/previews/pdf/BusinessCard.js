@@ -20,6 +20,10 @@ const urlFor = source => {
 
 let memoizedDocument = null
 
+const arrayBufferToBase64 = arrbuf => {
+  return btoa(new Uint8Array(arrbuf).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+}
+
 class BusinessCard extends React.PureComponent {
   static propTypes = {
     document: PropTypes.object
@@ -57,34 +61,33 @@ class BusinessCard extends React.PureComponent {
     }
   }
 
-  fetchData = () => {
+  assembleCardServiceUrl = () => {
     const {document} = this.props
-
-    sanityClient.fetch('*[_id == "global-config"][0]').then(siteConfig => {
-      const siteLogoImageUrl = urlFor(siteConfig.logo)
-        .width(500)
-        .url()
-      document.imageUrl = siteLogoImageUrl
+    return sanityClient.fetch('*[_id == "global-config"][0]').then(siteConfig => {
+      if (siteConfig.logo) {
+        const siteLogoImageUrl = urlFor(siteConfig.logo)
+          .width(500)
+          .url()
+        document.imageUrl = siteLogoImageUrl
+      }
       const stringifiedDoc = JSON.stringify(document)
-      const cardServiceUrl = `${cardServiceBaseUrl}&document=${stringifiedDoc}&imageUrl=${siteLogoImageUrl}`
-
-      request({url: cardServiceUrl, rawBody: true})
-        .then(response => {
-          const base64 = btoa(
-            new Uint8Array(response.body).reduce(
-              (data, byte) => data + String.fromCharCode(byte),
-              ''
-            )
-          )
-          this.setState({
-            businessCardImage: `data:image/${fileType};base64,${base64}`,
-            refetchData: false
-          })
-        })
-        .catch(error => {
-          this.setState({error})
-        })
+      return `${cardServiceBaseUrl}&document=${stringifiedDoc}`
     })
+  }
+
+  fetchData = async () => {
+    const cardServiceUrl = await this.assembleCardServiceUrl()
+    request({url: cardServiceUrl, rawBody: true})
+      .then(response => {
+        const base64 = arrayBufferToBase64(response.body)
+        this.setState({
+          businessCardImage: `data:image/${fileType};base64,${base64}`,
+          refetchData: false
+        })
+      })
+      .catch(error => {
+        this.setState({error})
+      })
   }
 
   render() {
