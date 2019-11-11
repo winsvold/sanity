@@ -10,7 +10,7 @@ import styles from './BusinessCard.css'
 
 const fileType = 'png'
 const cardServiceHost = 'https://json-to-pdf.sanity-io.now.sh' // 'http://localhost:3000'
-const cardServiceBaseUrl = `${cardServiceHost}/api/business-card?fileType=${fileType}`
+const cardServiceBaseUrl = `${cardServiceHost}/api/business-card`
 const request = getIt([promise()])
 
 const builder = imageUrlBuilder(sanityClient)
@@ -47,9 +47,10 @@ class BusinessCard extends React.PureComponent {
 
   state = {
     businessCardImage: null,
+    cardServiceUrls: null,
     refetchData: true,
-    error: null,
-    isFlipped: false
+    isFlipped: false,
+    error: null
   }
 
   componentDidMount() {
@@ -63,7 +64,7 @@ class BusinessCard extends React.PureComponent {
     }
   }
 
-  assembleCardServiceUrl = () => {
+  assembleCardServiceUrls = () => {
     const {document} = this.props
     return sanityClient.fetch('*[_id == "global-config"][0]').then(siteConfig => {
       if (siteConfig.logo) {
@@ -73,18 +74,22 @@ class BusinessCard extends React.PureComponent {
         document.imageUrl = siteLogoImageUrl
       }
       const stringifiedDoc = JSON.stringify(document)
-      return `${cardServiceBaseUrl}&document=${stringifiedDoc}`
+      return {
+        png: `${cardServiceBaseUrl}?fileType=png&document=${stringifiedDoc}`,
+        pdf: `${cardServiceBaseUrl}?fileType=pdf&document=${stringifiedDoc}`
+      }
     })
   }
 
   fetchData = async () => {
-    const cardServiceUrl = await this.assembleCardServiceUrl()
-    request({url: cardServiceUrl, rawBody: true})
+    const cardServiceUrls = await this.assembleCardServiceUrls()
+    request({url: cardServiceUrls.png, rawBody: true})
       .then(response => {
         const base64 = arrayBufferToBase64(response.body)
         this.setState({
           businessCardImage: `data:image/${fileType};base64,${base64}`,
-          refetchData: false
+          refetchData: false,
+          cardServiceUrls
         })
       })
       .catch(error => {
@@ -101,11 +106,16 @@ class BusinessCard extends React.PureComponent {
 
   render() {
     const {document} = this.props
-    const {businessCardImage, error, isFlipped} = this.state
+    const {businessCardImage, cardServiceUrls, isFlipped, error} = this.state
     const {name} = document
 
     if (error) {
-      return <pre>{JSON.stringify(error, null, 2)}</pre>
+      return (
+        <div>
+          <p>Ooops. Got an error while fetching preview :/</p>
+          <pre>{JSON.stringify(error, null, 2)}</pre>
+        </div>
+      )
     }
     if (!businessCardImage) {
       return <Spinner message="Fetching business card" />
@@ -121,6 +131,11 @@ class BusinessCard extends React.PureComponent {
             </div>
             <div className={`${styles.cardFace} ${styles.cardBack}`} />
           </div>
+        </div>
+        <div>
+          <a className={styles.downloadLink} href={cardServiceUrls.pdf}>
+            Download PDF
+          </a>
         </div>
       </div>
     )
