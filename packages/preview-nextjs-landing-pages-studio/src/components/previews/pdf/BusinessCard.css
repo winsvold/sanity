@@ -1,6 +1,10 @@
 
 .root {
-  margin: 15px;
+  margin: 0 1rem;
+}
+
+.downloadLink {
+  margin-top: 1rem;
 }
 
 .cardScene {
@@ -18,6 +22,8 @@
   cursor: pointer;
   transition: transform 0.7s;
   transform-style: preserve-3d;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  border-radius: 1.5rem;
 }
 
 .cardFace {
@@ -26,11 +32,12 @@
   height: 100%;
   width: 100%;
   backface-visibility: hidden;
-
+  border-radius: 1.5rem;
   @nest & img {
     display: flex;
     height: 100%;
     width: 100%;
+    border-radius: 1.5rem;
   }
 }
 
@@ -38,8 +45,6 @@
   transform: rotateY(180deg);
   background: linear-gradient(90deg, currentColor 5px, currentColor 5px, transparent 5px, transparent 15px) repeat 10px 10px / 10px 10px;
   background-color: white;
-  border-radius: 1.5rem;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
 }
 
 .isFlipped {

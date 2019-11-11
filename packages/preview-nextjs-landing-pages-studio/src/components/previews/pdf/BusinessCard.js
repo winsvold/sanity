@@ -123,7 +123,7 @@ class BusinessCard extends React.PureComponent {
 
     return (
       <div className={styles.root}>
-        <h3>{`Here's your business card, ${name}`}</h3>
+        <h3>{`Business card for: ${name}`}</h3>
         <div className={styles.cardScene} onClick={this.handleCardFlip}>
           <div className={`${styles.card} ${isFlipped ? styles.isFlipped : ''}`}>
             <div className={styles.cardFace}>
@@ -132,10 +132,8 @@ class BusinessCard extends React.PureComponent {
             <div className={`${styles.cardFace} ${styles.cardBack}`} />
           </div>
         </div>
-        <div>
-          <a className={styles.downloadLink} href={cardServiceUrls.pdf}>
-            Download PDF
-          </a>
+        <div className={styles.downloadLink}>
+          <a href={cardServiceUrls.pdf}>Download PDF</a>
         </div>
       </div>
     )
