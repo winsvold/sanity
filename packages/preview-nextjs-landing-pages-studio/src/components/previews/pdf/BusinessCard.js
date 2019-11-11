@@ -9,7 +9,8 @@ import promise from 'get-it/lib/middleware/promise'
 import styles from './BusinessCard.css'
 
 const fileType = 'png'
-const cardServiceBaseUrl = `http://localhost:3000/api/business-card?fileType=${fileType}`
+const cardServiceHost = 'https://json-to-pdf.sanity-io.now.sh' // 'http://localhost:3000'
+const cardServiceBaseUrl = `${cardServiceHost}/api/business-card?fileType=${fileType}`
 const request = getIt([promise()])
 
 const builder = imageUrlBuilder(sanityClient)
