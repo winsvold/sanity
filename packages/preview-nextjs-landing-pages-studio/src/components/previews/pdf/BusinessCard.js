@@ -18,6 +18,8 @@ const urlFor = source => {
   return builder.image(source)
 }
 
+let memoizedDocument = null
+
 class BusinessCard extends React.PureComponent {
   static propTypes = {
     document: PropTypes.object
@@ -27,13 +29,37 @@ class BusinessCard extends React.PureComponent {
     document: null
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const nextDoc = JSON.stringify(nextProps.document)
+    if (memoizedDocument !== nextDoc) {
+      memoizedDocument = nextDoc
+      return {
+        refetchData: true
+      }
+    }
+    return null
+  }
+
   state = {
     businessCardImage: null,
+    refetchData: true,
     error: null
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
+    memoizedDocument = JSON.stringify(this.props.document)
+    this.fetchData()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.refetchData) {
+      this.fetchData()
+    }
+  }
+
+  fetchData = () => {
     const {document} = this.props
+
     sanityClient.fetch('*[_id == "global-config"][0]').then(siteConfig => {
       const siteLogoImageUrl = urlFor(siteConfig.logo)
         .width(500)
@@ -50,7 +76,10 @@ class BusinessCard extends React.PureComponent {
               ''
             )
           )
-          this.setState({businessCardImage: `data:image/${fileType};base64,${base64}`})
+          this.setState({
+            businessCardImage: `data:image/${fileType};base64,${base64}`,
+            refetchData: false
+          })
         })
         .catch(error => {
           this.setState({error})
