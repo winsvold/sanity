@@ -48,7 +48,8 @@ class BusinessCard extends React.PureComponent {
   state = {
     businessCardImage: null,
     refetchData: true,
-    error: null
+    error: null,
+    isFlipped: false
   }
 
   componentDidMount() {
@@ -91,9 +92,16 @@ class BusinessCard extends React.PureComponent {
       })
   }
 
+  handleCardFlip = () => {
+    const flipped = this.state.isFlipped
+    this.setState({
+      isFlipped: !flipped
+    })
+  }
+
   render() {
     const {document} = this.props
-    const {businessCardImage, error} = this.state
+    const {businessCardImage, error, isFlipped} = this.state
     const {name} = document
 
     if (error) {
@@ -106,7 +114,14 @@ class BusinessCard extends React.PureComponent {
     return (
       <div className={styles.root}>
         <h3>{`Here's your business card, ${name}`}</h3>
-        <img className={styles.cardWrapper} src={businessCardImage} />
+        <div className={styles.cardScene} onClick={this.handleCardFlip}>
+          <div className={`${styles.card} ${isFlipped ? styles.isFlipped : ''}`}>
+            <div className={styles.cardFace}>
+              <img src={businessCardImage} />
+            </div>
+            <div className={`${styles.cardFace} ${styles.cardBack}`} />
+          </div>
+        </div>
       </div>
     )
   }

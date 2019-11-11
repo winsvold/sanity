@@ -3,11 +3,45 @@
   margin: 15px;
 }
 
-.cardWrapper {
-  width: 50%;
+.cardScene {
+  perspective: 500px;
+  height: 600px;
+  width: 1050px;
+  max-width: calc(1050px / 2);
+  max-height: calc(600px / 2);
 }
 
-.tempBorder {
-  border: solid 3px gold;
-  width: 100px;
+.card {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.7s;
+  transform-style: preserve-3d;
+}
+
+.cardFace {
+  display: flex;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  backface-visibility: hidden;
+
+  @nest & img {
+    display: flex;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.cardBack {
+  transform: rotateY(180deg);
+  background: linear-gradient(90deg, currentColor 5px, currentColor 5px, transparent 5px, transparent 15px) repeat 10px 10px / 10px 10px;
+  background-color: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+}
+
+.isFlipped {
+  transform: rotateY(180deg);
 }
