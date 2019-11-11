@@ -6,14 +6,14 @@ import filters from './filters.svg'
 import styles from './ColorblindPreview.css'
 
 const FILTER_ITEMS = [
-  {title: 'Protanopia (red/green)', value: 'protanopia'},
-  {title: 'Deuteranopia (green/red)', value: 'deuteranopia'},
-  {title: 'Tritanopia (blue/yellow)', value: 'tritanopia'},
-  {title: 'Achromatopsia (greyscale)', value: 'achromatopsia'},
-  {title: 'Protanomaly (red/green)', value: 'protanomaly'},
-  {title: 'Deuteranomaly (green/red)', value: 'deuteranomaly'},
-  {title: 'Tritanomaly (blue/yellow)', value: 'tritanomaly'},
-  {title: 'Achromatomaly (greyscale)', value: 'achromatomaly'},
+  {title: 'Protanopia', value: 'protanopia'},
+  {title: 'Deuteranopia', value: 'deuteranopia'},
+  {title: 'Tritanopia', value: 'tritanopia'},
+  {title: 'Achromatopsia', value: 'achromatopsia'},
+  {title: 'Protanomaly', value: 'protanomaly'},
+  {title: 'Deuteranomaly', value: 'deuteranomaly'},
+  {title: 'Tritanomaly', value: 'tritanomaly'},
+  {title: 'Achromatomaly', value: 'achromatomaly'},
   {title: 'No filter', value: ''}
 ]
 
