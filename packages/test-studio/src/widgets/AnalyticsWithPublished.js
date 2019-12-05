@@ -20,7 +20,7 @@ import historyStore from 'part:@sanity/base/datastore/history'
 import {from as observableOf} from 'rxjs'
 import {getPublishedId} from 'part:@sanity/base/util/draft-utils'
 import {map} from 'rxjs/operators'
-import {format} from 'date-fns'
+import {format, parse} from 'date-fns'
 import styles from './AnalyticsWithPublished.css'
 import {route} from '@sanity/state-router'
 import {StateLink, withRouterHOC} from 'part:@sanity/base/router'
@@ -56,12 +56,7 @@ class AnalyticsWithPublished extends React.Component {
   }
 
   convertNumberToDate = value => {
-    const s = `${value}`
-    const date = new Date()
-    date.setFullYear( Number(s.substr(0,4)))
-    date.setMonth( Number(s.substr(4,2)))
-    date.setDate( Number(s.substr(6,2)))
-    return date
+    return parse(`${value}`, 'yyyyLLdd', new Date())
   }
 
   handleClickPublished = rev => {
@@ -126,17 +121,18 @@ class AnalyticsWithPublished extends React.Component {
               interval={0}
             />
 
-            <Area name={labels[1]} type="monotone" dataKey="u" stroke="#156dff" fill="url(#usersGradient)" dot={false} />
-            <Line name={labels[3]} type="monotone" dataKey="nu" stroke="#a935f0" opacity="1" dot={false} />
+            <Area name={labels[1]} type="monotone" dataKey="u" stroke="#156dff" fill="url(#usersGradient)" dot={false} isAnimationActive={false} />
+            <Line name={labels[3]} type="monotone" dataKey="nu" stroke="#a935f0" opacity="1" dot={false} isAnimationActive={false} />
 
             <Brush
               dataKey="date"
               height={30}
               stroke="#156dff"
               tickFormatter={this.renderBrushTick}
+              isAnimationActive={false}
             >
               <ComposedChart data={formattedData}>
-                <Line type="monotone" dataKey="u" stroke="#c4daff" dot={false} />
+                <Line type="monotone" dataKey="u" stroke="#c4daff" dot={false} isAnimationActive={false} />
               </ComposedChart>
             </Brush>
             <Tooltip labelFormatter={this.formatTooltipLabel} />
