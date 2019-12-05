@@ -21,6 +21,9 @@ export default {
             'end-date': 'yesterday'
           },
           chart: {
+            legend: {
+              position: 'none' // bottom is broken in google material charts
+            },
             axes: {
               x: {
                 0: { label: 'Date' }
@@ -76,7 +79,7 @@ export default {
           reportType: 'ga',
           query: {
             dimensions: 'ga:country',
-            metrics: 'ga:users, ga:newUsers',
+            metrics: 'ga:users',
             'start-date': '30daysAgo',
             'end-date': 'yesterday',
             sort: '-ga:users',
@@ -86,6 +89,9 @@ export default {
             type: 'BAR',
             width: '100%',
             title: 'Title',
+            legend: {
+              position: 'none' // Bottom does not work in material
+            },
             axes: {
               x: {
                 0: { label: 'Country' }
