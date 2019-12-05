@@ -113,7 +113,7 @@ class AnalyticsWithPublished extends React.Component {
               interval={0}
             />
 
-            <Line name={labels[1]} type="monotone" dataKey="b" stroke="#156dff" />
+            <Line name={labels[1]} type="monotone" dataKey="b" stroke="#156dff" isAnimationActive={false} />
             <Tooltip
               labelFormatter={this.renderXtick}
               formatter={(value, name, props) => ([`${Math.round(value)}%`, name])}/>
@@ -123,6 +123,7 @@ class AnalyticsWithPublished extends React.Component {
               const x = format(endTime, 'YYYYMMDD')
               return (
                 <ReferenceLine
+                  isAnimationActive={false}
                   x={x}
                   stroke="#fa1607"
                   key={event.rev}
@@ -134,6 +135,7 @@ class AnalyticsWithPublished extends React.Component {
             })}
             {
               historical &&  (<ReferenceLine
+                isAnimationActive={false}
                 x={format(historical._updatedAt, 'YYYYMMDD')}
                 stroke="#ffda15"
                 strokeWidth={3}
