@@ -34,14 +34,22 @@ function Preview(props) {
 
 
 function AnalyticsCustomComponent(props) {
-  const {pathname} = props.displayedDocument
+  console.log('AnalyticsCustomComponent', props)
+  const {document = {}} = props
+  const {draft, published, historical, displayed} = document
+  const pathname = displayed && displayed.pathname
+
+  if (!pathname) {
+    <div>No pathname in document</div>
+  }
+
   return (
     <>
       <AnalyticsWithPublished
         title="Users all pages last year"
-        draft={props.draft}
-        published={props.published}
-        historical={props.historical}
+        draft={draft}
+        published={published}
+        historical={historical}
         labels={['Date', 'Users', 'Sessions', 'New users']}
         config={{
           reportType: 'ga',
@@ -57,9 +65,9 @@ function AnalyticsCustomComponent(props) {
       {pathname && (
         <BouncesOverTime
           title={`Bounce rate for ${pathname} last 30 days`}
-          draft={props.draft}
-          published={props.published}
-          historical={props.historical}
+          draft={draft}
+          published={published}
+          historical={historical}
           labels={['Date', 'Bounce rate']}
           config={{
             reportType: 'ga',
@@ -83,8 +91,8 @@ function AnalyticsComponent(props) {
       <h3>Users, sessions and new users last 30 days</h3>
       <AnalyticsWidget
         config={{
-          onSelect: (selectedItem, cell, chart) => {
-            console.log('select', selectedItem, cell, chart)
+          onSelect: (selectedItem, cell, chart, router) => {
+            console.log('select', selectedItem, cell, chart, router)
           },
           reportType: 'ga',
           query: {
