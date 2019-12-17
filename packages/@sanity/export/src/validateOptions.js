@@ -47,7 +47,7 @@ function validateOptions(opts) {
   }
 
   if (options.concurrency && options.concurrency > 24) {
-    throw new Error('`options.concurrency` must be <= 24')
+    throw new Error('`concurrency` must be <= 24')
   }
 
   return options
