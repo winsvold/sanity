@@ -29,7 +29,7 @@ Before contributing, please read our [code of conduct](https://github.com
 
 ## What is the Sanity Studio?
 
-The [Sanity Studio](https://www.sanity.io/docs/content-studio) is an open-source editing environment built with React.
+The [Sanity Studio](https://www.sanity.io/docs/sanity-studio) is an open-source editing environment built with React.
 
 # Submitting requests or reporting issues
 
@@ -41,14 +41,14 @@ Want to submit a security issue, bug report or feature request? Pleas
 - Feature requests
 - Bug fixes
 - Smaller improvements/enhancements of existing features
-- New features\*
+- New features
 - Documentation improvements
 
-\*New features are unlikely to be accepted and are better developed and published as plugins that extend the existing functionality of the Sanity Studio. See [New features](#new-features) for more info.
+New features are unlikely to be accepted and are better developed and published as plugins that extend the existing functionality of the Sanity Studio. See [New features](#new-features) for more info.
 
 ### Security issues
 
-If you find a security vulnerability, do \***\*NOT\*\*** open an issue.
+If you find a security vulnerability, do **NOT** open an issue.
 
 Email security@sanity.io instead.
 
@@ -76,7 +76,7 @@ Have you found yourself wishing for a feature that doesn't exist in 
 
 To submit a Feature Request, please make sure that a request like your own doesn't already exist by searching through our [open issues](https://github.com/sanity-io/sanity/issues), before you create a new one. If someone already submitted the same feature requests you wanted to submit, please let us know you also want this feature by reacting with/adding a :+1: on the original comment, or leave a new comment expressing your need/excitement for this feature.
 
-If the same Feature Requests doesn't already exist, create a new issue and use the Feature Requests template. Be sure to provide all the necessary information about your new feature to help us understand what you are requesting.
+If the same Feature Request doesn't already exist, create a new issue and use the Feature Requests template. Be sure to provide all the necessary information about your new feature to help us understand what you are requesting.
 
 ### Pull Requests
 
@@ -86,11 +86,11 @@ When you are done working on a fix or improvement to the Sanity Stu
 git pull upstream next --rebase
 ```
 
-Once this is done and there are no conflicts, push your changes and create a Pull Request from your branch and provide the neccessary information for your fix or improvement. Be sure to follow the Pull Request template to the best of your ability, to help us easily review it and provide feedback faster.
+Once this is done and there are no conflicts, push your changes and create a Pull Request from your branch and provide the necessary information for your fix or improvement. Be sure to follow the Pull Request template to the best of your ability, to help us easily review it and provide feedback faster.
 
 # Setting up Sanity locally
 
-Make sure you have **Node.js version 4 or newer** and **npm version 5 or newer**.
+Make sure you have _Node.js version 4 or newer_ and _npm version 5 or newer_.
 
 To start contributing to the Sanity Studio, you need to set it up locally first. Fork this repository and clone it onto to your computer in your desired location.
 
@@ -151,14 +151,14 @@ git pull upstream next --rebase
 
 ### New features
 
-Please note that if you would like to develop a new feature for the Sanity Studio, it's unlikely that we will be able to accept your contribution. However, we highly recommend that you develop and publish your new feature as a plugin. Plugins can be [parts](https://www.sanity.io/docs/extending/parts), [custom input components](https://www.sanity.io/docs/extending/custom-input-widgets), [dashboard widgets](https://www.sanity.io/docs/dashboard/creating-your-own-widget), and [Studio themes](https://www.sanity.io/docs/guides/how-to-brand-your-studio) that you and others can use to customize and extend the functionality of the Sanity Studio.
+Please note that if you would like to develop a new feature for the Sanity Studio, it's unlikely that we will be able to accept your contribution. However, we highly recommend that you develop and publish your new feature as a plugin. Plugins can be [parts](https://www.sanity.io/docs/extending/parts), [custom input components](https://www.sanity.io/docs/extending/custom-input-widgets), [dashboard widgets](https://www.sanity.io/docs/dashboard/creating-your-own-widget), and [Studio themes](https://www.sanity.io/docs/guides/how-to-brand-your-studio) that you and others can use to customize and extend the functionality of the Studio.
 
 # General info
 
 - Anything in the `next` branch is scheduled for the next release
 - To work on a fix or something new, create a descriptively named branch off of `next` (ie: feature/new-oauth2-scopes)
 - Commit to that branch locally and regularly push your work to the same named branch
-- Rebase your feature branch regularily against `next`. Make sure its even with `next` before creating a Pull Request or merging
+- Rebase your feature branch regularly against `next`. Make sure its even with `next` before creating a Pull Request or merging
 - Pull Requests should be as ready as possible for merge and the Pull Request template should be filled out to the best of your ability or in a way that is appropriate. Unless stated otherwise, it should also be safe to assume that:
   - The changes/feature are reviewed and tested by you
   - You think it's production ready
@@ -171,8 +171,11 @@ If you run into build issues, you might want to run `npm run init`, 
 
 ## Testing
 
-```
-npm test
-```
+Some tests are based on compiled files, so you will need to build the repository first before running the tests:
+
+```sh
+ npm run build
+ npm test
+ ```
 
 Note: this runs `npm test` for all the Sanity packages - the output can be quite hard to read. If you encounter an issue, it's usually best to figure out which module is failing, then run `npm test` in that individual module.
