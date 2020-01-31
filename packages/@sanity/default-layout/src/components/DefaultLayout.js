@@ -1,3 +1,4 @@
+import {Button} from '@sanity/ui'
 import PropTypes from 'prop-types'
 import React from 'react'
 import AppLoadingScreen from 'part:@sanity/base/app-loading-screen'
@@ -174,6 +175,7 @@ export default withRouterHOC(
             />
           </div>
           <div className={styles.mainArea}>
+            <Button />
             <div className={styles.toolContainer}>
               <RouteScope scope={router.state.tool}>
                 <RenderTool tool={router.state.tool} />

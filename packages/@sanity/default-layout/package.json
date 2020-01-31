@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@sanity/check": "0.147.0",
+    "@sanity/ui": "0.147.9",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "mocha": "^5.0.1",
@@ -48,6 +49,7 @@
   },
   "peerDependencies": {
     "@sanity/base": "^0.147.0",
+    "@sanity/ui": "0.147.9",
     "prop-types": "^15.6 || ^16",
     "react": "^16.9",
     "react-dom": "^16.9"
