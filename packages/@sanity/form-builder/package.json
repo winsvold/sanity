@@ -57,6 +57,7 @@
     "speakingurl": "^13.0.0"
   },
   "devDependencies": {
+    "@sanity/ui": "0.147.9",
     "@types/diff-match-patch": "^1.0.32",
     "@types/moment": "^2.13.0",
     "assert": "^1.4.1",
@@ -72,6 +73,7 @@
     "zen-observable": "^0.7.1"
   },
   "peerDependencies": {
+    "@sanity/ui": "0.147.9",
     "prop-types": "^15.6 || ^16",
     "react": "^16.9",
     "react-dom": "^16.9"
