@@ -7,6 +7,7 @@ import VersionChecker from './VersionChecker'
 import MissingProjectConfig from './MissingProjectConfig'
 import styles from './styles/SanityRoot.css'
 import DevServerStatus from './DevServerStatus'
+import {ThemeProvider} from '@sanity/ui'
 
 function SanityRoot() {
   const {projectId, dataset} = config.api || {}
@@ -16,12 +17,14 @@ function SanityRoot() {
 
   return (
     <div className={styles.root}>
-      <SnackbarProvider>
-        <DevServerStatus />
-        <ErrorHandler />
-        <RootComponent />
-        <VersionChecker />
-      </SnackbarProvider>
+      <ThemeProvider>
+        <SnackbarProvider>
+          <DevServerStatus />
+          <ErrorHandler />
+          <RootComponent />
+          <VersionChecker />
+        </SnackbarProvider>
+      </ThemeProvider>
     </div>
   )
 }

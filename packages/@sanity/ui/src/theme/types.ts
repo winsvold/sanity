@@ -1,3 +1,3 @@
 export interface Theme {
-  // TODO
+  bg1: string
 }

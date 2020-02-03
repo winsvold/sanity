@@ -2,9 +2,13 @@ import React from 'react'
 import styled from 'styled-components'
 
 const RootButton = styled.div`
-  background: #fe0;
+  background: ${props => props.theme.bg1};
 `
 
 export function Button() {
-  return <RootButton>Button</RootButton>
+  return (
+    <RootButton>
+      <span>Button</span>
+    </RootButton>
+  )
 }

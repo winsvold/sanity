@@ -61,6 +61,7 @@
     "rimraf": "^2.7.1"
   },
   "peerDependencies": {
+    "@sanity/ui": "0.147.9",
     "prop-types": "^15.6 || ^16",
     "react": "^16.9",
     "react-dom": "^16.9"
