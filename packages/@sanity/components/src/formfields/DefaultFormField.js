@@ -1,14 +1,14 @@
 /* eslint-disable complexity */
+
 import PropTypes from 'prop-types'
 import React from 'react'
-
 import styles from 'part:@sanity/components/formfields/default-style'
-import DefaultLabel from 'part:@sanity/components/labels/default'
 import ValidationStatus from 'part:@sanity/components/validation/status'
 import ValidationList from 'part:@sanity/components/validation/list'
-import AnimateHeight from 'react-animate-height'
+// import AnimateHeight from 'react-animate-height'
+import {Heading, Text} from '@sanity/ui'
 
-export default class DefaultFormField extends React.Component {
+export default class DefaultFormField extends React.PureComponent {
   static propTypes = {
     label: PropTypes.string,
     className: PropTypes.string,
@@ -30,15 +30,15 @@ export default class DefaultFormField extends React.Component {
     markers: []
   }
 
-  state = {
-    showValidationMessages: false
-  }
+  // state = {
+  //   showValidationMessages: false
+  // }
 
-  handleToggleShowValidation = event => {
-    this.setState(prevState => ({
-      showValidationMessages: !prevState.showValidationMessages
-    }))
-  }
+  // handleToggleShowValidation = event => {
+  //   this.setState(prevState => ({
+  //     showValidationMessages: !prevState.showValidationMessages
+  //   }))
+  // }
 
   render() {
     const {
@@ -49,49 +49,56 @@ export default class DefaultFormField extends React.Component {
       children,
       inline,
       wrapped,
-      className,
+      className: classNameProp,
       markers
     } = this.props
 
-    const {showValidationMessages} = this.state
+    // const {showValidationMessages} = this.state
 
     const levelClass = `level_${level}`
 
+    const className = `
+      ${inline ? styles.inline : styles.block}
+      ${styles[levelClass] || ''}
+      ${wrapped ? styles.wrapped : ''}
+      ${classNameProp || ''}
+    `
+
     return (
-      <div
-        className={`
-          ${inline ? styles.inline : styles.block}
-          ${styles[levelClass] || ''}
-          ${wrapped ? styles.wrapped : ''}
-          ${className || ''}`}
-      >
-        <label className={styles.inner} htmlFor={labelFor}>
-          {label && (
-            <div className={styles.header}>
-              <div className={styles.headerMain}>
+      <div className={className}>
+        {label && (
+          <div className={styles.header}>
+            <div className={styles.headerMain}>
+              <label className={styles.label} htmlFor={labelFor}>
                 {label && (
-                  <DefaultLabel className={styles.label} level={level}>
+                  <Heading as="div" size={2}>
                     {label}
-                  </DefaultLabel>
+                  </Heading>
                 )}
-                {description && <div className={styles.description}>{description}</div>}
-              </div>
-              <div className={styles.headerStatus}>
-                <div onClick={this.handleToggleShowValidation} className={styles.validationStatus}>
-                  <ValidationStatus markers={markers} />
+              </label>
+
+              {description && (
+                <div className={styles.description}>
+                  <Text as="p" size={1}>
+                    {description}
+                  </Text>
                 </div>
+              )}
+            </div>
+
+            <div className={styles.headerStatus}>
+              <div onClick={this.handleToggleShowValidation} className={styles.validationStatus}>
+                <ValidationStatus markers={markers} />
               </div>
             </div>
-          )}
-          <AnimateHeight
-            height={showValidationMessages ? 'auto' : 0}
-            contentClassName={styles.validationList}
-            animateOpacity
-          >
-            <ValidationList markers={markers} />
-          </AnimateHeight>
-          <div className={styles.content}>{children}</div>
-        </label>
+          </div>
+        )}
+
+        <div contentClassName={styles.validationList}>
+          <ValidationList markers={markers} />
+        </div>
+
+        <div className={styles.content}>{children}</div>
       </div>
     )
   }

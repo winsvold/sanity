@@ -1,3 +1,5 @@
 export * from './button'
+export * from './heading'
 export * from './stringInput'
+export * from './text'
 export * from './theme'

@@ -1,6 +1,7 @@
 @import 'part:@sanity/base/theme/variables-style';
 
 .root {
+  background: #ccc;
   display: block;
   width: 100%;
   box-sizing: border-box;
@@ -20,7 +21,10 @@
 }
 
 .label {
+  background: #fe0;
   display: block;
+  vertical-align: top;
+  /* line-height: 1; */
 }
 
 .content {
@@ -38,75 +42,75 @@
 }
 
 .description {
-  composes: description from 'part:@sanity/base/theme/typography/text-blocks-style';
+  /* composes: description from 'part:@sanity/base/theme/typography/text-blocks-style';
 
   @nest .inline & {
     font-size: var(--font-size-tiny);
-  }
+  } */
 }
 
 .label + .description {
-  margin-top: calc(var(--small-padding) / 3);
+  /* margin-top: calc(var(--small-padding) / 3); */
 }
 
 .description + .content {
-  margin-top: var(--small-padding);
+  /* margin-top: var(--small-padding); */
 }
 
 .header {
-  display: flex;
-  align-items: center;
-  margin-bottom: var(--small-padding);
+  /* display: flex; */
+  /* align-items: center; */
+  /* margin-bottom: var(--small-padding); */
 }
 
 .headerMain {
-  flex-grow: 1;
+  /* flex-grow: 1; */
 }
 
 .headerStatus {
-  display: flex;
-  padding: 0 var(--small-padding);
-  align-content: center;
+  /* display: flex; */
+  /* padding: 0 var(--small-padding); */
+  /* align-content: center; */
 }
 
 .validationStatus {
-  cursor: default;
+  /* cursor: default; */
 }
 
 .validationIconError {
-  composes: validationIconError from 'part:@sanity/base/theme/forms/validation-style';
+  /* composes: validationIconError from 'part:@sanity/base/theme/forms/validation-style';
 
   @nest .root:focus-within & {
     text-shadow: 0 0 5px var(--state-danger-color);
     color: var(--state-danger-color);
-  }
+  } */
 }
 
 .validationList {
-  composes: validationList from 'part:@sanity/base/theme/forms/validation-style';
-  padding-bottom: var(--small-padding);
+  /* composes: validationList from 'part:@sanity/base/theme/forms/validation-style';
+  padding-bottom: var(--small-padding); */
 }
 
 .validationListClosed {
-  composes: validationListClosed from 'part:@sanity/base/theme/forms/validation-style';
+  /* composes: validationListClosed from 'part:@sanity/base/theme/forms/validation-style'; */
 }
 
 .labelAndDescriptionWrapper {
-  display: block;
+  /* display: block; */
 
-  @nest .inline & {
+  /* @nest .inline & {
     flex-basis: 33%;
     flex-grow: 1;
-  }
+  } */
 }
 
 .wrapped {
-  composes: root;
+  /* composes: root;
   padding: 1rem;
   background-color: var(--component-bg);
   border: 1px solid var(--gray-light);
   overflow: hidden;
-  max-width: 100%;
+  max-width: 100%; */
 }
 
 .inner {
