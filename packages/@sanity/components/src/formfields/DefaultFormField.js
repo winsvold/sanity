@@ -8,6 +8,39 @@ import ValidationList from 'part:@sanity/components/validation/list'
 // import AnimateHeight from 'react-animate-height'
 import {Heading, Text} from '@sanity/ui'
 
+function FieldHeader(props) {
+  return (
+    <div className={styles.header}>
+      <div className={styles.headerMain}>
+        <label className={styles.label} htmlFor={props.labelFor}>
+          <Heading as="div" size={2}>
+            {props.label}
+          </Heading>
+        </label>
+
+        {props.description && (
+          <div className={styles.description}>
+            <Text as="p" size={1}>
+              {props.description}
+            </Text>
+          </div>
+        )}
+      </div>
+
+      <div className={styles.headerStatus}>
+        <div onClick={props.onToggleValidation} className={styles.validationStatus}>
+          <ValidationStatus markers={props.markers} />
+        </div>
+      </div>
+
+      <div contentClassName={styles.validationList}>
+        <ValidationList markers={props.markers} />
+      </div>
+    </div>
+  )
+}
+
+// eslint-disable-next-line react/no-multi-comp
 export default class DefaultFormField extends React.PureComponent {
   static propTypes = {
     label: PropTypes.string,
@@ -42,7 +75,6 @@ export default class DefaultFormField extends React.PureComponent {
 
   render() {
     const {
-      level,
       label,
       labelFor,
       description,
@@ -55,11 +87,8 @@ export default class DefaultFormField extends React.PureComponent {
 
     // const {showValidationMessages} = this.state
 
-    const levelClass = `level_${level}`
-
     const className = `
       ${inline ? styles.inline : styles.block}
-      ${styles[levelClass] || ''}
       ${wrapped ? styles.wrapped : ''}
       ${classNameProp || ''}
     `
@@ -67,36 +96,14 @@ export default class DefaultFormField extends React.PureComponent {
     return (
       <div className={className}>
         {label && (
-          <div className={styles.header}>
-            <div className={styles.headerMain}>
-              <label className={styles.label} htmlFor={labelFor}>
-                {label && (
-                  <Heading as="div" size={2}>
-                    {label}
-                  </Heading>
-                )}
-              </label>
-
-              {description && (
-                <div className={styles.description}>
-                  <Text as="p" size={1}>
-                    {description}
-                  </Text>
-                </div>
-              )}
-            </div>
-
-            <div className={styles.headerStatus}>
-              <div onClick={this.handleToggleShowValidation} className={styles.validationStatus}>
-                <ValidationStatus markers={markers} />
-              </div>
-            </div>
-          </div>
+          <FieldHeader
+            description={description}
+            label={label}
+            labelFor={labelFor}
+            markers={markers}
+            onToggleValidation={this.handleToggleShowValidation}
+          />
         )}
-
-        <div contentClassName={styles.validationList}>
-          <ValidationList markers={markers} />
-        </div>
 
         <div className={styles.content}>{children}</div>
       </div>
