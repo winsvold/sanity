@@ -56,19 +56,63 @@ Array [
 ]
 `;
 
-exports[`bateson tests image test 1`] = `
+exports[`bateson tests google maps example 1`] = `
 Array [
   Object {
-    "changes": Array [
-      Object {
-        "from": "ref-123",
-        "op": "my-custom-action",
-        "to": "ref-456",
+    "from": Object {
+      "lat": 23.23,
+      "long": 40.4,
+    },
+    "op": "venueLocationChanged",
+    "to": Object {
+      "lat": 24,
+      "long": 30.3,
+    },
+  },
+]
+`;
+
+exports[`bateson tests simple object stuff 1`] = `
+Array [
+  Object {
+    "from": Object {
+      "_type": "human",
+      "head": Object {
+        "face": Object {
+          "nose": "slim",
+        },
       },
-    ],
-    "field": "profile",
-    "op": "modifyField",
-    "type": "image",
+    },
+    "op": "eyesAdded",
+    "to": Object {
+      "_type": "human",
+      "head": Object {
+        "face": Object {
+          "eyes": 2,
+          "nose": "big",
+        },
+      },
+    },
+  },
+  Object {
+    "from": Object {
+      "_type": "human",
+      "head": Object {
+        "face": Object {
+          "nose": "slim",
+        },
+      },
+    },
+    "op": "noseChanged",
+    "to": Object {
+      "_type": "human",
+      "head": Object {
+        "face": Object {
+          "eyes": 2,
+          "nose": "big",
+        },
+      },
+    },
   },
 ]
 `;
@@ -108,6 +152,36 @@ Array [
 ]
 `;
 
+exports[`when diffing given summarizer for object, should defer execution of un-handled fields to the algorithm 1`] = `
+Array [
+  Object {
+    "changes": Array [
+      Object {
+        "from": "ref-123",
+        "op": "my-custom-action",
+        "to": "ref-456",
+      },
+      Object {
+        "changes": Array [
+          Object {
+            "from": "my-fancy-source",
+            "op": "editText",
+            "to": "my-fancy-source-2",
+            "type": "string",
+          },
+        ],
+        "field": "source",
+        "op": "modifyField",
+        "type": "string",
+      },
+    ],
+    "field": "profile",
+    "op": "modifyField",
+    "type": "image",
+  },
+]
+`;
+
 exports[`when diffing given summarizer for object, should use custom summarizer 1`] = `
 Array [
   Object {
@@ -125,7 +199,41 @@ Array [
 ]
 `;
 
-exports[`when modifying strings given string is edited, should generate editText operation 1`] = `
+exports[`when modifying booleans should generate edit operation 1`] = `
+Array [
+  Object {
+    "changes": Array [
+      Object {
+        "from": false,
+        "op": "edit",
+        "to": true,
+      },
+    ],
+    "field": "isPublished",
+    "op": "modifyField",
+    "type": "boolean",
+  },
+]
+`;
+
+exports[`when modifying numbers should generate edit operation 1`] = `
+Array [
+  Object {
+    "changes": Array [
+      Object {
+        "from": 1,
+        "op": "edit",
+        "to": 2,
+      },
+    ],
+    "field": "rating",
+    "op": "modifyField",
+    "type": "number",
+  },
+]
+`;
+
+exports[`when modifying strings should generate editText operation 1`] = `
 Array [
   Object {
     "changes": Array [
@@ -134,6 +242,23 @@ Array [
         "op": "editText",
         "to": "J. K. Rowling",
         "type": "string",
+      },
+    ],
+    "field": "author",
+    "op": "modifyField",
+    "type": "string",
+  },
+]
+`;
+
+exports[`when providing custom summarizer for built-in type should use the provided one 1`] = `
+Array [
+  Object {
+    "changes": Array [
+      Object {
+        "from": "J. R. R. Tolkien",
+        "op": "changeText",
+        "to": "J. K. Rowling",
       },
     ],
     "field": "author",

@@ -19,9 +19,7 @@ export function isSameType(a, b) {
   if (a === null && b !== null) return false
   if (a !== null && b === null) return false
   if (typeof a !== typeof b) return false
-  if (typeof a === 'object') {
-    if (a._type !== b._type) return false
-  }
+  if (typeof a === 'object' && a._type !== b._type) return false
   return true
 }
 
@@ -30,16 +28,36 @@ function sanityType(value) {
   return typeOf(value)
 }
 
-function summarizerExistForTypeOperation(a, b, type, path, summarizers) {
-  const summarizerForTypeOperation = summarizers[type]
-  if (summarizerForTypeOperation) {
-    const summary = summarizerForTypeOperation.resolve(a, b)
-    if (summary) {
-      return summary
-    }
+function goDeeper(a, b, path, options, newResult) {
+  const result = []
+  if (newResult) {
+    newResult.forEach(item => result.push(item))
   }
+  const [aFields, bFields] = [
+    difference(Object.keys(a), options.ignoreFields || []),
+    difference(Object.keys(b), options.ignoreFields || [])
+  ]
 
-  return null
+  const removed = difference(aFields, bFields)
+  removed.forEach(field => {
+    result.push({op: 'remove', field})
+  })
+  const added = difference(bFields, aFields)
+  added.forEach(field => {
+    result.push({op: 'add', field, value: b[field]})
+  })
+  const kept = intersection(aFields, bFields)
+  kept.forEach(field => {
+    const fieldA = a[field]
+    const fieldB = b[field]
+    const changes = diff(fieldA, fieldB, path.concat(field), options)
+    const type = isSameType(fieldA, fieldB) ? sanityType(fieldA) : null
+    if (changes.length > 0) {
+      result.push({op: 'modifyField', type, field, changes})
+    }
+  })
+
+  return result
 }
 
 function diff(a, b, path, options) {
@@ -51,46 +69,31 @@ function diff(a, b, path, options) {
 
   switch (typeWeAreOperatingOn) {
     case 'object': {
-      const result = []
-
-      const summarizerForTypeOperation = summarizerExistForTypeOperation(
-        a,
-        b,
-        sanityType(a),
-        path,
-        options.summarizers
-      )
+      const summarizerForTypeOperation = options.summarizers[sanityType(a)]
+      if (summarizerForTypeOperation) {
+        const summary = summarizerForTypeOperation.resolve(a, b, (ignoreFields, newResult) =>
+          goDeeper(
+            a,
+            b,
+            path,
+            {
+              ...options,
+              ignoreFields: [...options.ignoreFields, ...ignoreFields]
+            },
+            newResult
+          )
+        )
+        if (summary) {
+          return summary
+        }
+      }
 
       if (summarizerForTypeOperation) {
         //  There might be a differ for this type, but maybe not for every operation imaginable
         return summarizerForTypeOperation
       }
 
-      const [aFields, bFields] = [
-        difference(Object.keys(a), options.ignoreFields || []),
-        difference(Object.keys(b), options.ignoreFields || [])
-      ]
-      const removed = difference(aFields, bFields)
-      removed.forEach(field => {
-        result.push({op: 'remove', field})
-      })
-      const added = difference(bFields, aFields)
-      added.forEach(field => {
-        result.push({op: 'add', field, value: b[field]})
-      })
-      const kept = intersection(aFields, bFields)
-      kept.forEach(field => {
-        const fieldA = a[field]
-        const fieldB = b[field]
-        const changes = diff(fieldA, fieldB, path.concat(field), options)
-        const type = isSameType(fieldA, fieldB) ? sanityType(fieldA) : null
-        if (changes.length > 0) {
-          // console.log('superpath', path)
-          result.push({op: 'modifyField', type, field, changes})
-        }
-      })
-
-      return result
+      return goDeeper(a, b, path, options, [])
     }
 
     case 'array': {
@@ -139,3 +142,15 @@ export default function bateson(a, b, opts = {}) {
   const options = {...defaultOptions, ...opts}
   return diff(a, b, [], options)
 }
+
+// export interface BatesonOptions {
+//   summarizers?: Summarizers
+// }
+
+// export interface Summarizers {
+//   [key: string]: Summarizer
+// }
+
+// interface Summarizer {
+//   resolve: (a: any, b: any, summarize: Function) => Array<any>
+// }
