@@ -4,13 +4,21 @@
 
 In Studio context, a developer can import a component (e.g. `<VisualDiff>`) which takes two versions of a document as props and renders a complete diff.
 
+```
+import VisualDiff from '@sanity/visual-diff'
+
+render() {
+  return <VisualDiff original={originalDocument} modified={modifiedDocument} />
+}
+```
+
 The `<VisualDiff>` component does three things:
 
-  1. Resolves all `summarizers` and `visualizers` which are available in the Studio context, both from Sanity defaults, from the current Studio and from third-party plugins
+  1. Calls a resolver which determines which `summarizers` and `visualizers` are available in the Studio context, both from Sanity defaults, from the current Studio and via third-party plugins
   2. Calls a function (currently located in `bateson.js`) which, based on the summarizers and the two document versions, creates a list of `change summaries` which describe the differences between the two documents. See "The Change Summary" below for more details.
-  3. Renders a component which takes the change summaries and visualizers (and probably the two document versions) and produces a nice, humanly understandable, description of all the changes.
+  3. Renders a component which takes the change summaries and visualizers and produces a nice, humanly understandable, description of all the changes.
 
-It should be possible to pass styling and other useful UI options to the <VisualDiff> component.
+It should also be possible to pass styling and other useful UI options to the `<VisualDiff>` component.
 
 
 ## The Change Summary
@@ -67,17 +75,17 @@ If the `zoo.location` had been set (where there previously was no value) this is
 }
 ```
 
-If the `zoo.primates` array has a new member:
+If the `zoo.primates` array has lost one of its members:
 
 ```
 {
-  "operation": "add",
+  "operation": "remove",
   "path": [
     "primates",
     {"_key": "abc123"}
   ],
   "field": "primates",
-  "to": {
+  "from": {
     "_type": "primate",
     "_key": "abc123",
     "name": "Bob",
@@ -89,9 +97,29 @@ If the `zoo.primates` array has a new member:
 **Note**: The `path` array contains `{"_key": "abc123"}` which refers to the added element
 
 
+## Custom Summarizers and Visualizers
+
+A developer can implement the part `part:@sanity/visual-diff/custom` to define her own custom summarizers and visualizers. The implementation of this part should export summarizers and visualizers on separate keys, e.g.:
+
+```
+const summarizers = {
+  // custom summarizers
+}
+
+const visualizers = {
+  // custom visualizers
+}
+
+export default {
+  summarizers,
+  visualizers
+}
+```
+
+
 ## Custom Summarizers
 
-`Summarizers` produce `change summaries`. A summarizer's task is to describe a distinct change which has happened between the two documents. A summarizer is defined per schema type, and returns a function which returns an array of one or more change summaries. A developer can implement a `part:@sanity/visual-diff/summarizers` to define her own custom Summarizers. E.g.:
+`Summarizers` produce `change summaries`. A summarizer's task is to describe a distinct change which has happened between the two documents. A summarizer is defined per schema type, and returns a function which returns an array of one or more change summaries. A developer can implement `part:@sanity/visual-diff/custom` to define her own custom summarizers. E.g.:
 
 ```
 const summarizers = {
@@ -125,7 +153,9 @@ const summarizers = {
   }
 }
 
-export default summarizers
+export default {
+  summarizers
+}
 ```
 
 The `resolve` function of a summarizer takes the parameters...
@@ -147,18 +177,24 @@ Thus, defining a summarizer for type `a` will supersede any other summarizers fo
 
 ### Custom Visualizers
 
-A developer can implement `part:@sanity/visual-diff/visualizers` to define custom `visualizers`. A Visualizer is defined per type _and_ operation. It's output is a user-friendly rendering of a particular change. An example could look like:
+A developer can implement `part:@sanity/visual-diff/custom` to define custom `visualizers`. A Visualizer is defined per type _and_ operation. It's output is a user-friendly rendering of a particular change. An example could look like:
 
 ```
-string: {
-  editText: {
-    component: props => {
-      const {op: operation, field, from, to} = props.item
-      return (
-        <div>{field} [{operation}] "{from}" --> "{to}"</div>
-      )
+const visualizers = {
+  string: {
+    editText: {
+      component: props => {
+        const {op: operation, field, from, to} = props.item
+        return (
+          <div>{field} [{operation}] "{from}" --> "{to}"</div>
+        )
+      }
     }
   }
+}
+
+export default {
+  visualizers
 }
 ```
 
@@ -197,14 +233,13 @@ Hook up Mendoza to enable this 🐉
 
 `!important`
 
-## TODO
 
-- Reverting
-  - If notrevert function is defined for a type, use default revert based on path
-- Gracfully handle data which doesn't match the current schema? E.g. docA has a different (typically unmigrated data) structure than docB
+## Notes
+
+- Visualizer should nest through the schema, and for each type check if there is a change summary for that particular field to be rendered
+- Be sure to gracfully handle data which doesn't match the current schema? E.g. docA has a different (typically unmigrated data) structure than docB
 - Should we support that a summarizer can return `fields: ['key.deeperKey']`?
 - Make bateson apply `path` and `field` key to all change summaries after being produced by the summarizer
 - On startup, when resolving all implemented summarizers and visualizers, console.log if there are overlapping implementations
-- Visualizer should nest through the schema, and for each type check if there is a change summary for that particular field to be rendered
 
 
