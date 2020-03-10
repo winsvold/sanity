@@ -15,7 +15,7 @@ render() {
 The `<VisualDiff>` component does three things:
 
   1. Calls a resolver which determines which `summarizers` and `visualizers` are available in the Studio context, both from Sanity defaults, from the current Studio and via third-party plugins
-  2. Calls a function (currently located in `bateson.js`) which, based on the summarizers and the two document versions, creates a list of `change summaries` which describe the differences between the two documents. See "The Change Summary" below for more details.
+  2. Calls a function (currently located in `bateson.ts`) which, based on the summarizers and the two document versions, creates a list of `change summaries` which describe the differences between the two documents. See "The Change Summary" below for more details.
   3. Renders a component which takes the change summaries and visualizers and produces a nice, humanly understandable, description of all the changes.
 
 It should also be possible to pass styling and other useful UI options to the `<VisualDiff>` component.
