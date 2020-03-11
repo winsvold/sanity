@@ -10,7 +10,7 @@ const defaultOptions: BatesonOptions = {
   ignoreFields: ['_id', '_updatedAt', '_createdAt', '_rev', '_weak']
 }
 
-function typeOf(value): string {
+function typeOf(value: any): string {
   if (Array.isArray(value)) return 'array'
   if (typeof value === 'object') return 'object'
   if (value === null || value === undefined) return 'null'
@@ -26,20 +26,20 @@ export function isSameType(a: any, b: any): boolean {
   return true
 }
 
-function sanityType(value): string {
+function sanityType(value: any): string {
   if (value._type) return value._type
   return typeOf(value)
 }
 
 function accumulateChangeSummaries(a: any, b: any, path: string[], options: BatesonOptions): Operation[] {
   if (!isSameType(a, b)) {
-    return [{operation: 'replace', from: a, to: b}]
+    return [{operation: 'replace', path, from: a, to: b}]
   }
 
   const typeWeAreOperatingOn = typeOf(a) // We can use this, as a and b are guaranteed to be the same type
   switch (typeWeAreOperatingOn) {
     case 'object': {
-      const result = []
+      const result: Operation[] = []
       const summarizerForTypeOperation = options.summarizers[sanityType(a)]
       const summary = summarizerForTypeOperation
         ? summarizerForTypeOperation.resolve(a, b, path)
@@ -52,7 +52,6 @@ function accumulateChangeSummaries(a: any, b: any, path: string[], options: Bate
           // An empty fields array means the whole thing has been handled
           return summary.changes.map(change => ({
             ...change,
-            // TODO: Decide on path format
             path
           }))
         }
@@ -87,7 +86,7 @@ function accumulateChangeSummaries(a: any, b: any, path: string[], options: Bate
         const fieldB = b[field]
         const changes = accumulateChangeSummaries(fieldA, fieldB, path.concat(field), options)
         if (changes.length > 0) {
-          result.push(changes)
+          changes.forEach(change => result.push(change))
         }
       })
 
@@ -95,7 +94,7 @@ function accumulateChangeSummaries(a: any, b: any, path: string[], options: Bate
     }
 
     case 'array': {
-      const result = []
+      const result: Operation[] = []
       const aElements = {}
       const bElements = {}
 
@@ -112,7 +111,7 @@ function accumulateChangeSummaries(a: any, b: any, path: string[], options: Bate
         const elementB = bElements[key]
         const changes = accumulateChangeSummaries(elementA, elementB, path.concat(key), options)
         if (changes.length > 0) {
-          result.push(changes)
+          changes.forEach(change => result.push(change))
         }
       })
 
@@ -137,16 +136,15 @@ function accumulateChangeSummaries(a: any, b: any, path: string[], options: Bate
           : null
 
         if (summary && summary.changes) {
-          return summary.changes.map(change => {
-            // TODO: Use another type to specify Operation with path field?
-            change.path = path
-            return change
-          })
+          return summary.changes.map(change => ({
+            ...change,
+            path
+          }))
         }
 
-        // TODO: Use another type to specify Operation with path field?
         return [{operation: 'edit', path, from: a, to: b}]
       }
+
       return []
   }
 }

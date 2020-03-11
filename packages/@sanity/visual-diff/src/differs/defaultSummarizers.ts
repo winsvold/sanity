@@ -1,6 +1,5 @@
 /* eslint-disable id-length */
-
-import {Summarizers, Summary} from '../@types/visual-diff'
+import {Summarizers, DiffSummary} from '../@types/visual-diff'
 
 // If the differ takes responsibility for the change in question
 // --> return an array of summaries, empty array means no summary needed
@@ -15,7 +14,7 @@ function extractText(blockContent): string {
 
 const summarizers: Summarizers = {
   block: {
-    resolve: (a, b, _): Summary => {
+    resolve: (a, b, _): DiffSummary => {
       const aText = extractText(a)
       const bText = extractText(b)
 
@@ -25,7 +24,6 @@ const summarizers: Summarizers = {
           changes: [
             {
               operation: 'editText',
-              // type: 'block',
               from: aText,
               to: bText
             }
@@ -40,7 +38,7 @@ const summarizers: Summarizers = {
   },
 
   string: {
-    resolve: (a, b, _): Summary => {
+    resolve: (a, b, _): DiffSummary => {
       return {
         fields: [],
         changes: [
@@ -55,7 +53,7 @@ const summarizers: Summarizers = {
   },
 
   image: {
-    resolve: (a, b, _): Summary => {
+    resolve: (a, b, _): DiffSummary => {
       const changes = []
       if (!a.asset && b.asset) {
         changes.push({operation: 'addImage', to: b.asset._ref})

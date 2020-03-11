@@ -1,4 +1,3 @@
-// TODO: More defined types...
 declare module 'part:@sanity/visual-diff/summarizers?'
 declare module 'part:@sanity/visual-diff/visualizers?'
 
@@ -12,17 +11,24 @@ export interface Summarizers {
 }
 
 export interface Summarizer {
-  resolve(a: any, b: any, path: string[]): Summary
+  resolve(a: any, b: any, path: string[]): DiffSummary
 }
 
-export interface Summary {
+export interface DiffSummary {
   fields: string[]
-  changes: Operation[]
+  changes: IntermediateOperation[]
+}
+
+// Operation without path. TODO: Rename
+export interface IntermediateOperation {
+  operation: string
+  from?: any
+  to?: any
 }
 
 export interface Operation {
   operation: string
-  path?: string // TODO: Should be required, define another interface with this one?
+  path: string[]
   from?: any
   to?: any
 }
