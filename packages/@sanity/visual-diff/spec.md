@@ -50,7 +50,7 @@ A breakdown of the change summary properties:
   - `remove` - A value has been removed
   - `replace` - The object type has changed
 - `path` - An array of strings which when put together denotes the absolute path to a point in the JSON data structure where the change has occured. A `string` entry in this array signifies that an object or a primitive has changed. An `object` entry signifies that an array has been changed (the `_key: 'abc123'` key refers to which object, see example below)
-- `field` - The name of the Sanity schema field where the change has occurred
+- `field` - The name of the Sanity schema field where the change has occurred (the need for this property in still under consideration)
 - `from` - The old value
 - `to` - The new value
 
@@ -212,6 +212,7 @@ If a developer has implemented a custom summarizer, we may not be unable to asse
 ```
 {
   "operation": "replaceImage",
+  "path": ["mainImage"],
   "field": "mainImage",
   "from": "image-ref-123",
   "to": "image-ref-456",
