@@ -49,7 +49,7 @@ A breakdown of the change summary properties:
   - `add` - A value has appeared where there was none
   - `remove` - A value has been removed
   - `replace` - The object type has changed
-- `path` - An array of strings which when put together denotes the absolute path to a point in the JSON data structure where the change has occured. A `string` entry in this array signifies that an object or a primitive has changed. An `object` entry signifies that an array has been changed (the `_key: 'abc123'` key refers to which object, see example below)
+- `path` - An array of strings which when put together denotes the absolute path to a point in the JSON data structure where the change has occured. A `string` entry in this array signifies that an object or a primitive has changed. An `object` entry signifies that an alement in an array has been affected (the `_key: 'abc123'` key refers to which object, see example below)
 - `field` - The name of the Sanity schema field where the change has occurred (the need for this property in still under consideration)
 - `from` - The old value
 - `to` - The new value
@@ -99,7 +99,7 @@ The `zoo.primates` array has lost one of its members:
 
 ## Custom Summarizers and Visualizers
 
-A developer can implement the part `part:@sanity/visual-diff/custom` to define her own custom summarizers and visualizers. The implementation of this part should export summarizers and visualizers on separate keys, e.g.:
+A developer can implement the part `part:@sanity/visual-diff/custom` to define custom summarizers and visualizers. The implementation of this part should export summarizers and visualizers on separate keys, e.g.:
 
 ```
 const summarizers = {
@@ -165,7 +165,7 @@ The `resolve` function of a summarizer takes the parameters...
 
 ...and returns an object with two keys:
 
-- `changes` - An array of changes summaries (see above). These need not contain the `path` and `type` fields, as they will be automatically added by the internal diff logic.
+- `changes` - An array of change summaries (see above). These need not contain the `path` and `type` fields, as they will be automatically added by the internal diff logic.
 - `fields` - An array of strings which name the fields this custom summarizer has handled. An empty array means "I've handle all fields" on this object. A `null` or `undefined` value means it has handled no fields. The internal diff logic will take responsibility for handling any _other_ fields _not_ handled by this summarizer.
 
 **Note**: In the example above, the image summarizer returns `{fields: ['asset'], changes}`. This means the custom summarizer has handled the `asset` field, but any other fields on the same image object (e.g. `caption`) has not been handled.
@@ -177,7 +177,7 @@ Thus, defining a summarizer for type `a` will supersede any other summarizers fo
 
 ### Custom Visualizers
 
-A developer can implement `part:@sanity/visual-diff/custom` to define custom `visualizers`. A Visualizer is defined per type _and_ operation. It's output is a user-friendly rendering of a particular change. An example could look like:
+A developer can implement `part:@sanity/visual-diff/custom` to define custom `visualizers`. A Visualizer is defined per type _and_ operation. It's output is a React component which renders a visualization of a particular change. An example could look like:
 
 ```
 const visualizers = {
@@ -236,8 +236,8 @@ Hook up Mendoza to enable this 🐉
 
 ## Notes
 
-- Visualizer should nest through the schema, and for each type check if there is a change summary for that particular field to be rendered
-- Be sure to gracfully handle data which doesn't match the current schema? E.g. docA has a different (typically unmigrated data) structure than docB
+- VisualDiff should nest through the schema, and for each type, check if there is a change summary for that particular field to be rendered
+- Be sure to gracfully handle data which doesn't match the current schema. E.g. docA has a different (typically unmigrated data) structure than docB
 - Should we support that a summarizer can return `fields: ['key.deeperKey']`?
 - Make bateson apply `path` and `field` key to all change summaries after being produced by the summarizer
 - On startup, when resolving all implemented summarizers and visualizers, console.log if there are overlapping implementations
