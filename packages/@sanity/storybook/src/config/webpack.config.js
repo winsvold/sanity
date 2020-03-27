@@ -40,7 +40,8 @@ function getWebpackConfig(baseConfig, env) {
   const jsonHackLoader = {
     test: /\.json$/,
     resourceQuery: /sanityPart=/,
-    loader: require.resolve('./jsonHackLoader.js')
+    loader: require.resolve('./jsonHackLoader.js'),
+    type: 'javascript/auto'
   }
 
   if (jsonLoaderAt !== -1) {

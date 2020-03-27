@@ -2,10 +2,10 @@ import fs from 'fs'
 import path from 'path'
 import webpack from 'webpack'
 import resolveFrom from 'resolve-from'
-import webpackIntegration from '@sanity/webpack-integration/v3'
-import ExtractTextPlugin from 'extract-text-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import rxPaths from 'rxjs/_esm5/path-mapping'
 import getStaticBasePath from '../util/getStaticBasePath'
+import webpackIntegration from '@sanity/webpack-integration/v3'
 
 const resolve = mod => require.resolve(mod)
 
@@ -53,9 +53,9 @@ export default (config = {}) => {
   const cssLoader =
     isProd && !skipMinify ? `${baseCssLoader}&minimize` : `${baseCssLoader}&sourceMap`
 
-  const commonChunkPlugin =
-    (typeof config.commonChunkPlugin === 'undefined' || config.commonChunkPlugin) &&
-    new webpack.optimize.CommonsChunkPlugin({name: 'vendor', filename: 'js/vendor.bundle.js'})
+  // const commonChunkPlugin =
+  //   (typeof config.commonChunkPlugin === 'undefined' || config.commonChunkPlugin) &&
+  //   new webpack.optimize.CommonsChunkPlugin({name: 'vendor', filename: 'js/vendor.bundle.js'})
 
   return {
     entry: {
@@ -154,7 +154,7 @@ export default (config = {}) => {
       new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en|nb/),
       webpackIntegration.getPartResolverPlugin(wpIntegrationOptions),
       cssExtractor,
-      commonChunkPlugin
+      // commonChunkPlugin
     ].filter(Boolean)
   }
 }
