@@ -33,6 +33,7 @@ import styles from './Editor.css'
 import {Validation} from './editor/Validation'
 import LanguageFilter from 'part:@sanity/desk-tool/language-select-component?'
 import {DocumentOperationResults} from './DocumentOperationResults'
+import ChangesInspector from './ChangesInspector'
 
 declare const __DEV__: boolean
 
@@ -806,18 +807,18 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
       canShowHistoryList: this.canShowHistoryList()
     })
 
+    const isHistoryOpen = this.historyIsOpen()
+
     return (
       <DocumentActionShortcuts
         id={options.id}
         type={typeName}
         onKeyUp={this.handleKeyUp}
         className={
-          this.historyIsOpen()
-            ? documentPaneStyles.paneWrapperWithHistory
-            : documentPaneStyles.paneWrapper
+          isHistoryOpen ? documentPaneStyles.paneWrapperWithHistory : documentPaneStyles.paneWrapper
         }
       >
-        {this.historyIsOpen() && this.canShowHistoryList() && (
+        {isHistoryOpen && this.canShowHistoryList() && (
           <History
             key="history"
             documentId={getPublishedId(options.id)}
@@ -847,7 +848,7 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
           onAction={this.handleMenuAction}
           menuItems={menuItems}
           footer={
-            this.historyIsOpen() && selectedHistoryEvent
+            isHistoryOpen && selectedHistoryEvent
               ? this.renderHistoryFooter(selectedHistoryEvent)
               : this.renderFooter()
           }
@@ -857,10 +858,10 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
         >
           {this.renderHistorySpinner()}
           {this.renderCurrentView()}
-          {inspect && this.historyIsOpen() && historical && (
+          {inspect && isHistoryOpen && historical && (
             <InspectHistory document={historical} onClose={this.handleHideInspector} />
           )}
-          {inspect && !this.historyIsOpen() && value && (
+          {inspect && !isHistoryOpen && value && (
             <InspectView value={value} onClose={this.handleHideInspector} />
           )}
           {connectionState === 'reconnecting' && (
@@ -872,6 +873,8 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
           )}
           <DocumentOperationResults id={options.id} type={options.type} />
         </TabbedPane>
+
+        {isHistoryOpen && <ChangesInspector />}
       </DocumentActionShortcuts>
     )
   }
