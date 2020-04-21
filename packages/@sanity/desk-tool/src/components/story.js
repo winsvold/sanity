@@ -1,4 +1,7 @@
-/* eslint-disable complexity */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/jsx-no-bind */
+
 import React, {Fragment} from 'react'
 import {storiesOf} from 'part:@sanity/storybook'
 import Dialog from 'part:@sanity/components/dialogs/fullscreen'

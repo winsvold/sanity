@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import * as React from 'react'
 import Snackbar from 'part:@sanity/components/snackbar/default'
 import {useDocumentOperationEvent} from '@sanity/react-hooks'
@@ -66,3 +68,5 @@ export const DocumentOperationResults = React.memo((props: Props) => {
 
   return null
 })
+
+DocumentOperationResults.displayName = 'DocumentOperationResults'
