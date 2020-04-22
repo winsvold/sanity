@@ -4,6 +4,7 @@
 /* eslint-disable react/no-multi-comp */
 
 import * as React from 'react'
+import {PreviewFields} from 'part:@sanity/base/preview'
 import schema from 'part:@sanity/base/schema'
 import Spinner from 'part:@sanity/components/loading/spinner'
 import TabbedPane from 'part:@sanity/components/panes/tabbed'
@@ -61,11 +62,11 @@ interface Props {
     template?: string
   }
   paneKey: string
+  paneTitle?: string
   publishedId: string
   selectedHistoryEvent?: any
   selectedIsLatest: boolean
   showValidationTooltip: boolean
-  title: string
   value: null | Doc
   views: any
 }
@@ -242,6 +243,37 @@ function DocumentView({
   }
 }
 
+function DocumentHeaderTitle({
+  options,
+  paneTitle,
+  value
+}: {
+  options: {
+    id: string
+    type: string
+    template?: string
+  }
+  paneTitle?: string
+  value: Doc | null
+}) {
+  const typeName = options.type
+  const type = schema.get(typeName)
+
+  if (paneTitle) {
+    return <span>{paneTitle}</span>
+  }
+
+  if (!value) {
+    return <>New {type.title || type.name}</>
+  }
+
+  return (
+    <PreviewFields document={value} type={type} fields={['title']}>
+      {({title}) => (title ? <span>{title}</span> : <em>Untitled</em>)}
+    </PreviewFields>
+  )
+}
+
 function Editor(props: Props) {
   const {
     activeViewId,
@@ -273,20 +305,59 @@ function Editor(props: Props) {
     onToggleValidationResults,
     options,
     paneKey,
+    paneTitle,
     publishedId,
     selectedHistoryEvent,
     selectedIsLatest,
     showValidationTooltip,
-    title,
     value,
     views
   } = props
+
+  const paneHeaderTitle = (
+    <DocumentHeaderTitle options={options} paneTitle={paneTitle} value={value} />
+  )
+
+  const renderPaneHeaderActions = React.useCallback(
+    () =>
+      isHistoryOpen ? null : (
+        <PaneHeaderActions
+          markers={markers}
+          onCloseValidationResults={onCloseValidationResults}
+          onSetFocus={onSetFocus}
+          onToggleValidationResults={onToggleValidationResults}
+          options={options}
+          showValidationTooltip={showValidationTooltip}
+        />
+      ),
+    [
+      isHistoryOpen,
+      markers,
+      onCloseValidationResults,
+      onSetFocus,
+      onToggleValidationResults,
+      options,
+      showValidationTooltip
+    ]
+  )
+
+  const paneFooter = (
+    <EditorFooter
+      historyState={historyState}
+      initialValue={initialValue}
+      isHistoryOpen={isHistoryOpen}
+      onOpenHistory={onOpenHistory}
+      options={options}
+      selectedHistoryEvent={selectedHistoryEvent}
+      value={value}
+    />
+  )
 
   return (
     <TabbedPane
       key="pane"
       idPrefix={paneKey}
-      title={title}
+      title={paneHeaderTitle}
       views={views}
       activeView={activeViewId}
       onSetActiveView={onSetActiveView}
@@ -299,29 +370,8 @@ function Editor(props: Props) {
       onExpand={onExpand}
       onAction={onAction}
       menuItems={menuItems}
-      footer={
-        <EditorFooter
-          historyState={historyState}
-          initialValue={initialValue}
-          isHistoryOpen={isHistoryOpen}
-          onOpenHistory={onOpenHistory}
-          options={options}
-          selectedHistoryEvent={selectedHistoryEvent}
-          value={value}
-        />
-      }
-      renderActions={() =>
-        isHistoryOpen ? null : (
-          <PaneHeaderActions
-            options={options}
-            markers={markers}
-            onCloseValidationResults={onCloseValidationResults}
-            onSetFocus={onSetFocus}
-            onToggleValidationResults={onToggleValidationResults}
-            showValidationTooltip={showValidationTooltip}
-          />
-        )
-      }
+      footer={paneFooter}
+      renderActions={renderPaneHeaderActions}
       isClosable={isClosable}
       hasSiblings={hasSiblings}
     >
