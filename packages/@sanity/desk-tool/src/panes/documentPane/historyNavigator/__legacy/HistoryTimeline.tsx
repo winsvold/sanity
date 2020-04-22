@@ -10,7 +10,7 @@ interface Props {
   onItemSelect: (historyEvent: HistoryEventType) => void
   onSelectNext: () => void
   onSelectPrev: () => void
-  selectedEvent: HistoryEventType
+  selectedEvent?: HistoryEventType
 }
 
 const HistoryTimeline = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) => {

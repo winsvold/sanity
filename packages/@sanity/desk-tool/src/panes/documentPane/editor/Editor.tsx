@@ -10,6 +10,7 @@ import Spinner from 'part:@sanity/components/loading/spinner'
 import TabbedPane from 'part:@sanity/components/panes/tabbed'
 import Snackbar from 'part:@sanity/components/snackbar/default'
 import LanguageFilter from 'part:@sanity/desk-tool/language-select-component?'
+import {CURRENT_REVISION_FLAG} from '../../../constants'
 import Delay from '../../../utils/Delay'
 import {DocumentOperationResults} from './DocumentOperationResults'
 import InspectHistory from './InspectHistory'
@@ -64,6 +65,7 @@ interface Props {
   paneKey: string
   paneTitle?: string
   publishedId: string
+  rev: string
   selectedHistoryEvent?: any
   selectedIsLatest: boolean
   showValidationTooltip: boolean
@@ -120,6 +122,7 @@ function EditorFooter({
   isHistoryOpen,
   onOpenHistory,
   options,
+  rev,
   selectedHistoryEvent,
   value: valueProp
 }: {
@@ -128,10 +131,11 @@ function EditorFooter({
   isHistoryOpen: boolean
   onOpenHistory: () => void
   options: any
+  rev: string
   selectedHistoryEvent: any
   value: any
 }) {
-  if (isHistoryOpen && selectedHistoryEvent) {
+  if (isHistoryOpen && rev !== CURRENT_REVISION_FLAG && selectedHistoryEvent) {
     const {events} = historyState
 
     return (
@@ -168,6 +172,7 @@ function DocumentView({
   onChange,
   options,
   publishedId,
+  rev,
   selectedHistoryEvent,
   selectedIsLatest,
   value,
@@ -184,6 +189,7 @@ function DocumentView({
   onChange: (patches: any[]) => void
   options: any
   publishedId: string
+  rev: string
   selectedHistoryEvent: any
   selectedIsLatest: boolean
   value: null | Doc
@@ -235,7 +241,7 @@ function DocumentView({
 
   switch (activeView.type) {
     case 'form':
-      return <FormView ref={formRef} id={formProps.documentId} {...formProps} />
+      return <FormView {...formProps} id={formProps.documentId} ref={formRef} rev={rev} />
     case 'component':
       return <activeView.component {...viewProps} />
     default:
@@ -307,6 +313,7 @@ function Editor(props: Props) {
     paneKey,
     paneTitle,
     publishedId,
+    rev,
     selectedHistoryEvent,
     selectedIsLatest,
     showValidationTooltip,
@@ -348,6 +355,7 @@ function Editor(props: Props) {
       isHistoryOpen={isHistoryOpen}
       onOpenHistory={onOpenHistory}
       options={options}
+      rev={rev}
       selectedHistoryEvent={selectedHistoryEvent}
       value={value}
     />
@@ -389,6 +397,7 @@ function Editor(props: Props) {
         publishedId={publishedId}
         onChange={onChange}
         options={options}
+        rev={rev}
         selectedHistoryEvent={selectedHistoryEvent}
         selectedIsLatest={selectedIsLatest}
         value={value}

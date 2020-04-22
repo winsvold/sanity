@@ -5,7 +5,7 @@ import {from, Subscription} from 'rxjs'
 import HistoryListItem from 'part:@sanity/components/history/list-item'
 import userStore from 'part:@sanity/base/user'
 import {format, isYesterday, isToday} from 'date-fns'
-import {PaneRouterContext} from '../../../contexts/PaneRouterContext'
+import {PaneRouterContext} from '../../../../contexts/PaneRouterContext'
 import {HistoryEventType} from './types'
 
 interface Props extends HistoryEventType {

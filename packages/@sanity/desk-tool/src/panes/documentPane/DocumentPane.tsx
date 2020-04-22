@@ -11,11 +11,13 @@ import {getPublishedId} from 'part:@sanity/base/util/draft-utils'
 import isNarrowScreen from '../../utils/isNarrowScreen'
 import windowWidth$ from '../../utils/windowWidth'
 import {HistoryNavigator} from './historyNavigator'
-import {HistoryEventType, historyIsEnabled} from './history'
+import {HistoryEventType} from './historyNavigator/__legacy'
+import {historyIsEnabled} from './history'
 import {getMenuItems, getProductionPreviewItem} from './documentPaneMenuItems'
 import {PaneRouterContext} from '../../contexts/PaneRouterContext'
 import {DocumentActionShortcuts} from './DocumentActionShortcuts'
 import {ChangesInspector} from './changesInspector'
+import {CURRENT_REVISION_FLAG} from '../../constants'
 import {Editor} from './editor'
 import {ErrorPane} from '../errorPane'
 import {LoadingPane} from '../loadingPane'
@@ -25,7 +27,6 @@ import styles from './DocumentPane.css'
 declare const __DEV__: boolean
 
 const DEBUG_HISTORY_TRANSITION = false
-const CURRENT_REVISION_FLAG = '-'
 const KEY_I = 73
 const KEY_O = 79
 
@@ -576,7 +577,8 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     const menuItems = getMenuItems({
       value,
       isLiveEditEnabled: this.isLiveEditEnabled(),
-      revision: selectedHistoryEvent && selectedHistoryEvent._rev,
+      revision: selectedHistoryEvent && selectedHistoryEvent.rev,
+      // revision: selectedHistoryEvent && selectedHistoryEvent._rev,
       canShowHistoryList: this.canShowHistoryList()
     })
 
@@ -637,6 +639,7 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
             paneTitle={this.props.title}
             paneKey={paneKey}
             publishedId={this.getPublishedId()}
+            rev={this.props.urlParams.rev}
             selectedHistoryEvent={selectedHistoryEvent}
             selectedIsLatest={selectedIsLatest}
             showValidationTooltip={showValidationTooltip}

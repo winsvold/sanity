@@ -11,6 +11,7 @@ import Button from 'part:@sanity/components/buttons/default'
 import schema from 'part:@sanity/base/schema'
 import afterEditorComponents from 'all:part:@sanity/desk-tool/after-editor-component'
 import filterFieldFn$ from 'part:@sanity/desk-tool/filter-fields-fn?'
+import {CURRENT_REVISION_FLAG} from '../../../constants'
 import EditForm from './EditForm'
 import HistoryForm from './HistoryForm'
 
@@ -50,13 +51,16 @@ export default class FormView extends React.PureComponent {
         isLoading: PropTypes.bool.isRequired,
         snapshot: PropTypes.shape({_type: PropTypes.string})
       })
-    }).isRequired
+    }).isRequired,
+
+    rev: PropTypes.string
   }
 
   static defaultProps = {
     markers: [],
     isConnected: true,
-    initialValue: undefined
+    initialValue: undefined,
+    rev: CURRENT_REVISION_FLAG
   }
 
   state = INITIAL_STATE
@@ -96,7 +100,7 @@ export default class FormView extends React.PureComponent {
   }
 
   render() {
-    const {document, id, history, schemaType, markers, patchChannel, initialValue} = this.props
+    const {document, id, initialValue, history, markers, patchChannel, rev, schemaType} = this.props
     const {draft, published, displayed} = document
     const {focusPath, filterField} = this.state
     const value = draft || published
@@ -116,9 +120,11 @@ export default class FormView extends React.PureComponent {
       )
     }
 
+    const showHistoricDocument = history.isOpen && rev !== CURRENT_REVISION_FLAG
+
     return (
       <div className={styles.root}>
-        {history.isOpen ? (
+        {showHistoricDocument ? (
           <HistoryForm document={displayed} schema={schema} schemaType={schemaType} />
         ) : (
           <EditForm
