@@ -1,0 +1,6 @@
+@import 'part:@sanity/base/theme/variables-style';
+
+.iconWrapper {
+  padding-left: var(--small-padding);
+  display: flex;
+}

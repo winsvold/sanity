@@ -29,6 +29,26 @@
   }
 }
 
+.color_info {
+  background-color: color(var(--state-info-color) a(90%));
+  color: var(--state-info-color--inverted);
+}
+
+.color_success {
+  background-color: color(var(--state-success-color) a(90%));
+  color: var(--state-success-color--inverted);
+}
+
+.color_warning {
+  background-color: color(var(--state-warning-color) a(90%));
+  color: var(--state-warning-color--inverted);
+}
+
+.color_danger {
+  background-color: color(var(--state-danger-color) a(90%));
+  color: var(--state-danger-color--inverted);
+}
+
 .isDisabled {
   display: none; /* hide on mobile */
 

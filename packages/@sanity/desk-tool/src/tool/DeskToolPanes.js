@@ -20,7 +20,7 @@ import {PaneRouterContext, getPaneRouterContextFactory} from '../contexts/PaneRo
 const COLLAPSED_WIDTH = 55
 
 function getPaneMinSize(pane) {
-  return pane.type === 'document' ? 500 : 320
+  return pane.type === 'document' ? 800 : 320
 }
 
 function getPaneDefaultSize(pane) {

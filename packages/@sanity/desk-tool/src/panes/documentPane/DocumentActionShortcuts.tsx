@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-multi-comp */
 
 import React from 'react'
@@ -7,7 +8,7 @@ import {RenderActionCollectionState} from 'part:@sanity/base/actions/utils'
 import {useEditState} from '@sanity/react-hooks'
 import resolveDocumentActions from 'part:@sanity/base/document-actions/resolver'
 import isHotkey from 'is-hotkey'
-import {ActionStateDialog} from './DocumentStatusBar/ActionStateDialog'
+import {ActionStateDialog} from './editor/statusBar/ActionStateDialog'
 
 interface ResponderProps extends React.ComponentProps<'div'> {
   states: any[]

@@ -5,7 +5,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import FormBuilder from 'part:@sanity/form-builder'
-import styles from '../Editor.css'
+
+import styles from './HistoryForm.css'
 
 const noop = () => null
 const noopPatchChannel = {onPatch: () => noop, receivePatches: noop}
@@ -14,18 +15,18 @@ export default class HistoryForm extends React.PureComponent {
   static propTypes = {
     schema: PropTypes.object.isRequired,
     schemaType: PropTypes.shape({name: PropTypes.string}).isRequired,
-    document: PropTypes.shape({_type: PropTypes.string})
+    document: PropTypes.shape({_type: PropTypes.string}),
   }
 
   static defaultProps = {
-    document: undefined
+    document: undefined,
   }
 
   state = {
-    focusPath: []
+    focusPath: [],
   }
 
-  handleFocus = focusPath => {
+  handleFocus = (focusPath) => {
     this.setState({focusPath})
   }
 

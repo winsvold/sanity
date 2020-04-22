@@ -9,7 +9,7 @@ import {from} from 'rxjs'
 import HistoryListItem from 'part:@sanity/components/history/list-item'
 import historyStore from 'part:@sanity/base/user'
 import {format, isYesterday, isToday} from 'date-fns'
-import {PaneRouterContext} from '../../contexts/PaneRouterContext'
+import {PaneRouterContext} from '../../../contexts/PaneRouterContext'
 
 const EMPTY_PARAMS = {}
 const dateFormat = 'MMM D, YYYY, hh:mm A'

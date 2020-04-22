@@ -30,6 +30,7 @@ const isMenuButton = negate(isActionButton)
 
 class Pane extends React.PureComponent {
   static propTypes = {
+    color: PropTypes.oneOf(['danger', 'warning', 'success', 'info']),
     hasTabs: PropTypes.bool,
     tabIdPrefix: PropTypes.string,
     viewId: PropTypes.string,
@@ -70,6 +71,7 @@ class Pane extends React.PureComponent {
   }
 
   static defaultProps = {
+    color: undefined,
     index: 0,
     footer: undefined,
     hasTabs: false,
@@ -301,6 +303,7 @@ class Pane extends React.PureComponent {
   // eslint-disable-next-line complexity
   render() {
     const {
+      color,
       title,
       children,
       hasTabs,
@@ -331,7 +334,8 @@ class Pane extends React.PureComponent {
       <div
         className={classNames([
           isCollapsed ? styles.isCollapsed : styles.root,
-          isSelected ? styles.isActive : styles.isDisabled
+          isSelected ? styles.isActive : styles.isDisabled,
+          color ? styles[`color_${color}`] : null
         ])}
         onClick={this.handleRootClick}
       >

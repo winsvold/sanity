@@ -16,7 +16,7 @@ import {ActionMenu} from './ActionMenu'
 import {RenderActionCollectionState} from 'part:@sanity/base/actions/utils'
 import resolveDocumentActions from 'part:@sanity/base/document-actions/resolver'
 import {ActionStateDialog} from './ActionStateDialog'
-import {HistoryRestoreAction} from '../../../actions/HistoryRestoreAction'
+import {HistoryRestoreAction} from '../../../../actions/HistoryRestoreAction'
 
 const TOUCH_SUPPORT = 'ontouchstart' in document.documentElement
 

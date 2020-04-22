@@ -4,11 +4,10 @@
 import React from 'react'
 import PublicIcon from 'part:@sanity/base/public-icon'
 import BinaryIcon from 'part:@sanity/base/binary-icon'
-
 import HistoryIcon from 'part:@sanity/base/history-icon'
 import resolveProductionPreviewUrl from 'part:@sanity/transitional/production-preview/resolve-production-url?'
 import Hotkeys from 'part:@sanity/components/typography/hotkeys'
-import {historyIsEnabled} from './editor/history'
+import {historyIsEnabled} from './history'
 import styles from './documentPaneMenuItems.css'
 
 const getHistoryMenuItem = ({value, isLiveEditEnabled, isHistoryEnabled, canShowHistoryList}) => {

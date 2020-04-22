@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import * as React from 'react'
 import {useDocumentOperation} from '@sanity/react-hooks'
 import ContentCopyIcon from 'part:@sanity/base/content-copy-icon'
