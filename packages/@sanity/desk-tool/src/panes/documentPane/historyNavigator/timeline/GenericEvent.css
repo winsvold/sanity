@@ -1,0 +1,78 @@
+.root {
+  -webkit-appearance: none;
+  -webkit-font-smoothing: inherit;
+  position: relative;
+  display: block;
+  text-align: inherit;
+  font: inherit;
+  background: none;
+  color: inherit;
+  box-sizing: border-box;
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  padding: 1em 1em 1em 2.5em;
+  margin: 0;
+  outline: none;
+  cursor: pointer;
+
+  @nest &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 1.5em;
+    height: calc(1em - 1px);
+    border-left: 1px solid #ccc;
+  }
+
+  @nest &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: calc(1em - 1px + 17px);
+    left: 1.5em;
+    bottom: 0;
+    border-left: 1px solid #ccc;
+  }
+}
+
+.root:not(.isSelected):hover {
+  background: #acf;
+
+  @nest &:before, &:after {
+    border-color: #fff;
+  }
+}
+
+.isSelected {
+  composes: root;
+  background: #06f;
+  color: #fff;
+
+  @nest &:before, &:after {
+    border-color: #fff;
+  }
+}
+
+.iconContainer {
+  width: 17px;
+  height: 17px;
+  background: currentColor;
+  position: absolute;
+  top: calc(1em - 1px);
+  left: 1em;
+}
+
+.heading {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dateline {
+  font-size: 13px;
+  line-height: 17px;
+}

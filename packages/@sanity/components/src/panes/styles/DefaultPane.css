@@ -30,22 +30,22 @@
 }
 
 .color_info {
-  background-color: color(var(--state-info-color) a(90%));
+  background-color: var(--state-info-color);
   color: var(--state-info-color--inverted);
 }
 
 .color_success {
-  background-color: color(var(--state-success-color) a(90%));
+  background-color: var(--state-success-color);
   color: var(--state-success-color--inverted);
 }
 
 .color_warning {
-  background-color: color(var(--state-warning-color) a(90%));
+  background-color: var(--state-warning-color);
   color: var(--state-warning-color--inverted);
 }
 
 .color_danger {
-  background-color: color(var(--state-danger-color) a(90%));
+  background-color: var(--state-danger-color);
   color: var(--state-danger-color--inverted);
 }
 
@@ -64,17 +64,13 @@
 .isCollapsed {
   @media (--screen-medium) {
     composes: root;
-    margin-right: 0;
     border-color: var(--hairline-color);
     padding: 0;
     flex-direction: row;
-    transition: box-shadow var(--pane-animation-time) var(--pane-animation-time) linear;
-    background-image: linear-gradient(90deg, transparent, color(var(--text-color) a(10%)));
-    background-size: 0.8rem 100%;
-    background-repeat: no-repeat;
-    background-position: right;
+    border-right: 1px solid var(--hairline-color);
     height: 100%;
     overflow: hidden;
+    width: 49px;
   }
 }
 
