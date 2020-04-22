@@ -12,7 +12,7 @@ import {getPublishedId} from 'part:@sanity/base/util/draft-utils'
 import isNarrowScreen from '../../utils/isNarrowScreen'
 import windowWidth$ from '../../utils/windowWidth'
 import {HistoryNavigator} from './historyNavigator'
-import {historyIsEnabled} from './history'
+import {HistoryEventType, historyIsEnabled} from './history'
 import {getMenuItems, getProductionPreviewItem} from './documentPaneMenuItems'
 import {PaneRouterContext} from '../../contexts/PaneRouterContext'
 import {DocumentActionShortcuts} from './DocumentActionShortcuts'
@@ -63,13 +63,12 @@ interface HistoryState {
   isEnabled: boolean
   isLoading: boolean
   error: null | Error
-  events: any[]
+  events: HistoryEventType[]
 }
 
 interface State {
   historical: HistoricalDocumentState
   historyState: HistoryState
-  history: any
   hasNarrowScreen: boolean
   inspect: boolean
   isMenuOpen: boolean
@@ -95,8 +94,7 @@ const INITIAL_STATE: State = {
   inspect: false,
   showValidationTooltip: false,
   historical: INITIAL_HISTORICAL_DOCUMENT_STATE,
-  historyState: INITIAL_HISTORY_STATE,
-  history: {}
+  historyState: INITIAL_HISTORY_STATE
 }
 
 interface Props {
@@ -273,8 +271,7 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
 
   handleHistorySelect = (event: any) => {
     const paneContext = this.context
-
-    const eventisCurrent = this.state.history.events[0] === event
+    const eventisCurrent = this.state.historyState.events[0] === event
 
     paneContext.setParams(
       {...paneContext.params, rev: eventisCurrent ? CURRENT_REVISION_FLAG : event.rev},
@@ -626,12 +623,10 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
         className={isHistoryOpen ? styles.withHistoryMode : styles.root}
       >
         {isHistoryOpen && this.canShowHistoryList() && (
-          <div className={styles.navigatorContainer}>
+          <div className={styles.navigatorContainer} key="navigator">
             <HistoryNavigator
-              key="history"
               documentId={getPublishedId(options.id)}
               onItemSelect={this.handleHistorySelect}
-              lastEdited={value && new Date(value._updatedAt)}
               events={historyState.events}
               isLoading={historyState.isLoading}
               error={historyState.error}
@@ -682,7 +677,7 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
         </div>
 
         {isHistoryOpen && this.canShowChangesList() && (
-          <div className={styles.inspectorContainer}>
+          <div className={styles.inspectorContainer} key="inspector">
             <ChangesInspector onHistoryClose={this.handleCloseHistory} />
           </div>
         )}
