@@ -3,7 +3,7 @@
 import React from 'react'
 import styles from './DocumentStatusBar.css'
 import {HistoryStatusBarActions} from './DocumentStatusBarActions'
-import TimeAgo from '../../../components/TimeAgo'
+import TimeAgo from '../../../../components/TimeAgo'
 
 interface Props {
   id: string

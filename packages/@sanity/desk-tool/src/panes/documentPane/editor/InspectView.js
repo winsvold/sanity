@@ -15,9 +15,9 @@ import RadioButtons from 'part:@sanity/components/selects/radio'
 
 import {isObject} from 'lodash'
 import HLRU from 'hashlru'
-import settings from '../../settings'
+import settings from '../../../settings'
 import {withPropsStream} from 'react-props-stream'
-import DocTitle from '../../components/DocTitle'
+import DocTitle from '../../../components/DocTitle'
 
 const lru = HLRU(1000)
 

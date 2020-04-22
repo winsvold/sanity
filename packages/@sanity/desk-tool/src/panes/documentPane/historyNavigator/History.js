@@ -7,8 +7,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import scroll from 'scroll'
-import CloseIcon from 'part:@sanity/base/close-icon'
-import Button from 'part:@sanity/components/buttons/default'
 import Snackbar from 'part:@sanity/components/snackbar/default'
 import Spinner from 'part:@sanity/components/loading/spinner'
 import HistoryItem from './HistoryItem'
@@ -34,32 +32,32 @@ export default class History extends React.PureComponent {
     isLoading: true
   }
 
-  state = {
-    headerShadowOpacity: 0
-  }
+  // state = {
+  //   headerShadowOpacity: 0
+  // }
 
   _listElement = React.createRef()
 
   componentDidMount() {
-    if (this._listElement && this._listElement.current) {
-      this._listElement.current.addEventListener('scroll', this.handleListScroll, {passive: true})
-    }
+    // if (this._listElement && this._listElement.current) {
+    //   this._listElement.current.addEventListener('scroll', this.handleListScroll, {passive: true})
+    // }
 
     this.handleScrollToSelected()
   }
 
-  componentWillUnmount() {
-    if (this._listElement && this._listElement.current) {
-      this._listElement.current.removeEventListener('scroll', this.handleListScroll)
-    }
-  }
+  // componentWillUnmount() {
+  //   if (this._listElement && this._listElement.current) {
+  //     this._listElement.current.removeEventListener('scroll', this.handleListScroll)
+  //   }
+  // }
 
-  handleListScroll = event => {
-    const {scrollTop} = event.target
-    this.setState({
-      headerShadowOpacity: Math.min(scrollTop, 50) / 100
-    })
-  }
+  // handleListScroll = event => {
+  //   const {scrollTop} = event.target
+  //   this.setState({
+  //     headerShadowOpacity: Math.min(scrollTop, 50) / 100
+  //   })
+  // }
 
   componentDidUpdate(prevProps) {
     const {selectedRev, events, historyValue, isLoading} = this.props
@@ -109,26 +107,18 @@ export default class History extends React.PureComponent {
   }
 
   render() {
-    const {onClose, events, onItemSelect, selectedEvent, isLoading, error} = this.props
-    const {headerShadowOpacity} = this.state
+    const {events, onItemSelect, selectedEvent, isLoading, error} = this.props
+
     return (
       <div className={styles.root}>
-        <div
-          className={styles.header}
-          style={{boxShadow: `0 0px 2px rgba(0, 0, 0, ${headerShadowOpacity})`}}
-        >
-          History
-          <Button
-            onClick={onClose}
-            title="Close"
-            icon={CloseIcon}
-            bleed
-            kind="simple"
-            className={styles.closeButton}
-          />
-        </div>
+        <header className={styles.header}>
+          <div className={styles.title}>History</div>
+        </header>
+
         {isLoading && <Spinner center message="Loading history" />}
+
         {error && <p>Could not load history</p>}
+
         <div className={styles.list} ref={this._listElement}>
           {!(isLoading || error) &&
             events.map((event, i) => (
@@ -143,6 +133,7 @@ export default class History extends React.PureComponent {
               />
             ))}
         </div>
+
         {error && <Snackbar kind="error" isPersisted title={error} />}
       </div>
     )

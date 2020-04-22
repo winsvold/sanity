@@ -9,6 +9,8 @@ import ValidationList from 'part:@sanity/components/validation/list'
 import ChevronDown from 'part:@sanity/base/chevron-down-icon'
 import WarningIcon from 'part:@sanity/base/warning-icon'
 
+import styles from './Validation.css'
+
 interface ValidationProps {
   id: string
   type: string
@@ -64,7 +66,7 @@ export function Validation(props: ValidationProps) {
         onClick={onToggleValidationResults}
       >
         {errors.length + warnings.length}
-        <span style={{paddingLeft: '0.5em', display: 'flex'}}>
+        <span className={styles.iconWrapper}>
           <ChevronDown />
         </span>
       </Button>

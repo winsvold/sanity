@@ -35,6 +35,7 @@
 
 .isSyncing {
   composes: rotatingStatusIcon;
+
   @nest & svg {
     color: var(--state-success-color);
   }
@@ -42,6 +43,7 @@
 
 .isDisconnected {
   composes: rotatingStatusIcon;
+
   @nest & svg {
     color: var(--state-danger-color);
   }

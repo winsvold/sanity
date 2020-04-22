@@ -1,28 +1,13 @@
 @import 'part:@sanity/base/theme/variables-style';
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+.root {
+  background-color: color(var(--component-bg) shade(7%));
+  height: 100%;
 }
 
-.paneWrapper {
-  @media (--screen-medium) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    height: 100%;
-    width: 100%;
-  }
-}
-
-.paneWrapperWithHistory {
-  composes: paneWrapper;
+.withHistoryMode {
+  composes: root;
+  flex: 3;
 
   @media (--screen-medium) {
     justify-content: stretch;
@@ -30,89 +15,29 @@
   }
 }
 
-.pane {
-  display: block;
-  position: relative; /* Needed to keep the spinners in place */
-
-  @media (--screen-medium) {
-    background-color: transparent;
-    height: 100%;
-  }
-}
-
-.loading {
-  min-height: 100%;
-}
-
-.publishInfoUndoButton {
-  position: relative;
-  grid-area: publishInfoUndoButton;
-  min-width: fit-content;
-
-  @nest & > * {
-    display: flex;
-    width: 100%;
-  }
-}
-
-.popOverText {
-  font-size: 1em;
-  line-height: 1.25;
-  margin-bottom: 1em;
-  text-align: center;
-  max-width: 18em;
-}
-
-.errors {
-  margin-left: 1rem;
-  color: var(--state-danger-color);
-}
-
-.warnings {
-  margin-left: 1rem;
-  color: var(--state-warning-color);
-}
-
-.editor {
-  padding: var(--medium-padding);
-  padding-bottom: 8rem;
-  flex-grow: 1;
-}
-
-.overlay {
-  position: absolute;
-  background-color: rgba(255, 255, 255, 0.8);
+.navigatorContainer {
+  flex: 1;
+  min-width: 200px;
+  max-width: 240px;
   height: 100%;
-  width: 100%;
-  z-index: 200;
 }
 
-.typeMisMatchMessage {
-  padding: 10em 3em;
-}
-
-.paneFunctions {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: stretch;
-  padding-right: 0;
-
-  @media (--screen-medium) {
-    font-size: 1em;
-  }
-}
-
-.spinnerContainer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 10;
+.editorContainer {
+  flex: 3;
   height: 100%;
-  background-color: color(var(--component-bg) a(60%));
+  min-width: 300px;
 
-  @media (--screen-medium) {
-    position: absolute;
-    height: calc(100vh - 6rem); /* 6rem is aprox the height of the header stuff */
+  @nest .withHistoryMode & {
+    margin: 0.5em 0;
+    border-radius: 4px;
+    overflow: hidden;
+    height: calc(100% - (0.5em * 2));
   }
+}
+
+.inspectorContainer {
+  flex: 2;
+  min-width: 300px;
+  max-width: 540px;
+  height: 100%;
 }

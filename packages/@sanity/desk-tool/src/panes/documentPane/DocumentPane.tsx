@@ -1,50 +1,36 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react/jsx-no-bind */
 
 import React from 'react'
 import {noop} from 'lodash'
-import {format, isToday, isYesterday} from 'date-fns'
 import {from, Subscription} from 'rxjs'
 import {map} from 'rxjs/operators'
 import schema from 'part:@sanity/base/schema'
-import Button from 'part:@sanity/components/buttons/default'
 import {PreviewFields} from 'part:@sanity/base/preview'
-import Spinner from 'part:@sanity/components/loading/spinner'
 import historyStore from 'part:@sanity/base/datastore/history'
-import TabbedPane from 'part:@sanity/components/panes/tabbed'
-import Snackbar from 'part:@sanity/components/snackbar/default'
-import {getDraftId, getPublishedId} from 'part:@sanity/base/util/draft-utils'
-import UseState from '../../utils/UseState'
-import InspectView from './InspectView'
-import InspectHistory from './InspectHistory'
-import {DocumentStatusBar, HistoryStatusBar} from './DocumentStatusBar'
-import Delay from '../../utils/Delay'
+import {getPublishedId} from 'part:@sanity/base/util/draft-utils'
 import isNarrowScreen from '../../utils/isNarrowScreen'
 import windowWidth$ from '../../utils/windowWidth'
-import History from './History'
-import _documentPaneStyles from './DocumentPane.css'
-import FormView from './editor/FormView'
-import {historyIsEnabled} from './editor/history'
+import {HistoryNavigator} from './historyNavigator'
+import {historyIsEnabled} from './history'
 import {getMenuItems, getProductionPreviewItem} from './documentPaneMenuItems'
 import {PaneRouterContext} from '../../contexts/PaneRouterContext'
 import {DocumentActionShortcuts} from './DocumentActionShortcuts'
-import styles from './Editor.css'
-import {Validation} from './editor/Validation'
-import LanguageFilter from 'part:@sanity/desk-tool/language-select-component?'
-import {DocumentOperationResults} from './DocumentOperationResults'
-import ChangesInspector from './ChangesInspector'
+import {ChangesInspector} from './changesInspector'
+import {Editor} from './editor'
+import {ErrorPane} from '../errorPane'
+import {LoadingPane} from '../loadingPane'
+
+import styles from './DocumentPane.css'
 
 declare const __DEV__: boolean
-
-const documentPaneStyles: any = _documentPaneStyles
 
 const DEBUG_HISTORY_TRANSITION = false
 const CURRENT_REVISION_FLAG = '-'
 const KEY_I = 73
 const KEY_O = 79
 
-function debugHistory(...args) {
+function debugHistory(...args: any[]) {
   if (DEBUG_HISTORY_TRANSITION) {
     const logLine = typeof args[0] === 'string' ? `[HISTORY] ${args[0]}` : '[HISTORY] '
     // eslint-disable-next-line no-console
@@ -86,9 +72,7 @@ interface State {
   history: any
   hasNarrowScreen: boolean
   inspect: boolean
-
   isMenuOpen: boolean
-
   showValidationTooltip: boolean
 }
 
@@ -108,7 +92,6 @@ const INITIAL_HISTORY_STATE: HistoryState = {
 const INITIAL_STATE: State = {
   isMenuOpen: false,
   hasNarrowScreen: isNarrowScreen(),
-
   inspect: false,
   showValidationTooltip: false,
   historical: INITIAL_HISTORICAL_DOCUMENT_STATE,
@@ -117,7 +100,6 @@ const INITIAL_STATE: State = {
 }
 
 interface Props {
-  styles?: {error?: string; errorInner?: string}
   title?: string
   paneKey: string
   type: any
@@ -172,12 +154,12 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
   state = {...INITIAL_STATE, hasNarrowScreen: isNarrowScreen()}
   formRef: React.RefObject<HTMLFormElement> = React.createRef()
 
-  constructor(props, context) {
+  constructor(props: Props, context: any) {
     super(props)
     this.setup(props.options.id, context)
   }
 
-  setup(documentId, context?) {
+  setup(documentId: any, context?: any) {
     this.dispose()
 
     if (this.props.urlParams.rev) {
@@ -194,15 +176,11 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     return this.context.params.view || (views[0] && views[0].id)
   }
 
-  getDraftId() {
-    return getDraftId(this.props.options.id)
-  }
-
   getPublishedId() {
     return getPublishedId(this.props.options.id)
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps: Props, prevState: State) {
     if (prevProps.options.id !== this.props.options.id) {
       this.setup(this.props.options.id)
     }
@@ -210,19 +188,17 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     this.handleHistoryTransition(prevProps, prevState)
   }
 
-  handleHistoryTransition(prevProps, prevState) {
+  handleHistoryTransition(prevProps: Props, prevState: State) {
     const next = this.props.urlParams
     const prev = prevProps.urlParams
     const selectedRev = next.rev
     const revChanged = next.rev !== prev.rev
     const {rev, ...params} = next
-
     const historyEvents = this.state.historyState.events
     const historicalSnapshot = this.state.historical.snapshot
     const isLoadingSnapshot = this.state.historical.isLoading
     const shouldLoadHistoricalSnapshot =
       revChanged || (!isLoadingSnapshot && selectedRev && !historicalSnapshot)
-
     const shouldLoadHistory = Boolean(historyEvents.length === 0 && selectedRev)
 
     if (prevState.historyState.isEnabled && !this.state.historyState.isEnabled) {
@@ -255,7 +231,7 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     }
   }
 
-  handleFetchHistoricalDocument(atRev?) {
+  handleFetchHistoricalDocument(atRev?: any) {
     const isCurrent = atRev === CURRENT_REVISION_FLAG
     if (isCurrent) {
       return
@@ -295,7 +271,7 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     )
   }
 
-  handleHistorySelect = event => {
+  handleHistorySelect = (event: any) => {
     const paneContext = this.context
 
     const eventisCurrent = this.state.history.events[0] === event
@@ -310,7 +286,7 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     this.context.duplicateCurrent()
   }
 
-  handleSetActiveView = (...args) => {
+  handleSetActiveView = (...args: any[]) => {
     this.context.setView(...args)
   }
 
@@ -326,6 +302,17 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
   }
 
   canShowHistoryList() {
+    return (
+      this.context.siblingIndex === 0 &&
+      !this.props.isCollapsed &&
+      this.state.historyState.isEnabled
+    )
+  }
+
+  canShowChangesList() {
+    // console.log(this.context)
+    // TODO: make it possible to find out if this pane is the last sibling in a group
+
     return (
       this.context.siblingIndex === 0 &&
       !this.props.isCollapsed &&
@@ -392,7 +379,7 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     this.setState(prevState => ({inspect: !prevState.inspect}))
   }
 
-  handleKeyUp = event => {
+  handleKeyUp = (event: any) => {
     if (event.keyCode === 'Escape' && this.state.showValidationTooltip) {
       return this.setState({showValidationTooltip: false})
     }
@@ -415,7 +402,7 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     this.setState({inspect: false})
   }
 
-  handleMenuAction = item => {
+  handleMenuAction = (item: any) => {
     if (item.action === 'production-preview') {
       window.open(item.url)
       return true
@@ -443,7 +430,7 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     this.setState(prevState => ({showValidationTooltip: !prevState.showValidationTooltip}))
   }
 
-  setHistoryState = (nextHistoryState, cb = noop) => {
+  setHistoryState = (nextHistoryState: any, cb = noop) => {
     this.setState(
       ({historyState: currentHistoryState}) => ({
         historyState: {...currentHistoryState, ...nextHistoryState}
@@ -481,7 +468,7 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     )
   }
 
-  handleCloseHistory = (ctx?) => {
+  handleCloseHistory = (ctx?: any) => {
     const context = this.context || ctx
     if (this._historyEventsSubscription) {
       this._historyEventsSubscription.unsubscribe()
@@ -494,7 +481,7 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     }
   }
 
-  handleMenuToggle = evt => {
+  handleMenuToggle = (evt: any) => {
     evt.stopPropagation()
     this.setState(prevState => ({isMenuOpen: !prevState.isMenuOpen}))
   }
@@ -511,69 +498,10 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     })
   }
 
-  handleSetFocus = path => {
+  handleSetFocus = (path: any) => {
     if (this.formRef.current) {
       this.formRef.current.handleFocus(path)
     }
-  }
-
-  renderError(error) {
-    return (
-      <div className={documentPaneStyles.error}>
-        <div className={documentPaneStyles.errorInner}>
-          <h3>We’re sorry, but your changes could not be applied.</h3>
-          <UseState startWith={false}>
-            {([isExpanded, setExpanded]) => (
-              <>
-                <Button onClick={() => this.setup(this.props.options.id)}>Reload</Button>
-                <Button inverted onClick={() => setExpanded(!isExpanded)}>
-                  {isExpanded ? 'Hide' : 'Show'} details
-                </Button>
-                <div>
-                  {isExpanded && (
-                    <textarea
-                      className={documentPaneStyles.errorDetails}
-                      onFocus={e => e.currentTarget.select()}
-                      value={error.stack}
-                    />
-                  )}
-                </div>
-              </>
-            )}
-          </UseState>
-        </div>
-      </div>
-    )
-  }
-
-  renderUnknownSchemaType() {
-    const {options} = this.props
-    const {value} = this.props
-    const typeName = options.type
-    return (
-      <div className={documentPaneStyles.unknownSchemaType}>
-        <div className={documentPaneStyles.unknownSchemaTypeInner}>
-          <h3>Unknown schema type</h3>
-          {typeName && (
-            <p>
-              This document has the schema type <code>{typeName}</code>, which is not defined as a
-              type in the local content studio schema.
-            </p>
-          )}
-          {!typeName && (
-            <p>This document does not exist, and no schema type was specified for it.</p>
-          )}
-          {__DEV__ && value && (
-            <div>
-              <h4>Here is the JSON representation of the document:</h4>
-              <pre>
-                <code>{JSON.stringify(value, null, 2)}</code>
-              </pre>
-            </div>
-          )}
-        </div>
-      </div>
-    )
   }
 
   getTitle(value: any) {
@@ -606,199 +534,78 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     )
   }
 
-  renderActions = () => {
-    const {options, markers} = this.props
-    const {showValidationTooltip} = this.state
-    if (this.historyIsOpen()) {
-      return null
-    }
-
-    return (
-      <div className={styles.paneFunctions}>
-        {LanguageFilter && <LanguageFilter />}
-        <Validation
-          id={options.id}
-          type={options.type}
-          markers={markers}
-          showValidationTooltip={showValidationTooltip}
-          onCloseValidationResults={this.handleCloseValidationResults}
-          onToggleValidationResults={this.handleToggleValidationResults}
-          onFocus={this.handleSetFocus}
-        />
-      </div>
-    )
-  }
-
   findSelectedHistoryEvent() {
     const selectedRev = this.props.urlParams.rev
     return this.findHistoryEventByRev(selectedRev)
   }
 
-  findHistoryEventByRev(rev) {
+  findHistoryEventByRev(rev: any) {
     const {events} = this.state.historyState
     return rev === CURRENT_REVISION_FLAG
       ? events[0]
       : events.find(event => event.rev === rev || event.transactionIds.includes(rev))
   }
 
-  renderHistoryFooter = selectedEvent => {
-    const {events} = this.state.historyState
-    const {options} = this.props
-
-    return (
-      <HistoryStatusBar
-        id={options.id}
-        type={options.type}
-        selectedEvent={selectedEvent}
-        isLatestEvent={events[0] === selectedEvent}
-      />
-    )
-  }
-
-  renderFooter = () => {
-    const {initialValue, options} = this.props
-    const value = this.props.value || initialValue
-
-    return (
-      <DocumentStatusBar
-        id={options.id}
-        type={options.type}
-        lastUpdated={value && value._updatedAt}
-        onLastUpdatedButtonClick={this.handleOpenHistory}
-      />
-    )
-  }
-
-  getHistoryEventDateString() {
-    const event = this.findSelectedHistoryEvent()
-    const dateFormat = 'MMM D, YYYY, hh:mm A'
-    const date = event && event.endTime
-    if (!date) {
-      return ''
-    }
-
-    if (isToday(date)) {
-      return `Today, ${format(date, 'hh:mm A')}`
-    }
-    if (isYesterday(date)) {
-      return `Yesterday, ${format(date, 'hh:mm A')}`
-    }
-    return format(date, dateFormat)
-  }
-
-  renderHistorySpinner() {
-    const isLoading = this.state.historical.isLoading
-    if (!isLoading) {
-      return null
-    }
-
-    const eventDate = this.getHistoryEventDateString()
-    return (
-      <Delay ms={600}>
-        <div className={documentPaneStyles.spinnerContainer}>
-          <Spinner center message={`Loading revision${eventDate ? ` from ${eventDate}` : ''}…`} />
-        </div>
-      </Delay>
-    )
-  }
-
-  renderCurrentView() {
-    const initialValue = this.getInitialValue()
-    const {views, options, urlParams, value, onChange, connectionState, markers} = this.props
-    const {historical, historyState} = this.state
-
-    const selectedHistoryEvent = this.findSelectedHistoryEvent()
-
-    const typeName = options.type
-    const schemaType = schema.get(typeName)
-
-    const activeViewId = this.getActiveViewId()
-    const activeView = views.find(view => view.id === activeViewId) || views[0] || {type: 'form'}
-
-    const selectedIsLatest =
-      urlParams.rev === CURRENT_REVISION_FLAG && selectedHistoryEvent === historyState.events[0]
-
-    // Should be null if not displaying a historical revision
-    const historicalSnapshot = selectedIsLatest
-      ? value
-      : historical.snapshot || historical.prevSnapshot
-
-    const viewProps = {
-      // "Documents"
-      document: {
-        published: value,
-        draft: value,
-        historical: historicalSnapshot,
-        displayed: historicalSnapshot || value || initialValue
-      },
-
-      // Other stuff
-      documentId: this.getPublishedId(),
-      options: activeView.options,
-      schemaType
-    }
-
-    const formProps = {
-      ...viewProps,
-      value: value,
-      connectionState,
-      markers,
-      history: {
-        isOpen: this.historyIsOpen(),
-        selectedEvent: selectedHistoryEvent,
-        isLoadingEvents: historyState.isLoading,
-        isLoadingSnapshot: historical.isLoading,
-        document: selectedIsLatest
-          ? {
-              isLoading: !selectedHistoryEvent,
-              snapshot: value
-            }
-          : historical
-      },
-      onChange
-    }
-
-    switch (activeView.type) {
-      case 'form':
-        return <FormView ref={this.formRef} id={formProps.documentId} {...formProps} />
-      case 'component':
-        return <activeView.component {...viewProps} />
-      default:
-        return null
-    }
-  }
-
   render() {
     const {
       isSelected,
-      value,
       isCollapsed,
       isClosable,
+      markers,
+      menuItemGroups,
+      onChange,
       onCollapse,
       connectionState,
       onExpand,
-      menuItemGroups,
-      views,
       options,
-      paneKey
+      paneKey,
+      urlParams,
+      value,
+      views
     } = this.props
-
-    const {historical, hasNarrowScreen, inspect, historyState} = this.state
 
     const typeName = options.type
     const schemaType = schema.get(typeName)
-    if (!schemaType) {
-      return this.renderUnknownSchemaType()
-    }
 
-    if (connectionState === 'connecting') {
+    if (!schemaType) {
       return (
-        <div className={documentPaneStyles.loading}>
-          <Spinner center message={`Loading ${schemaType.title}…`} delay={600} />
-        </div>
+        <ErrorPane
+          {...this.props}
+          color="warning"
+          title={
+            <>
+              Unknown document type: <code>{typeName}</code>
+            </>
+          }
+        >
+          {typeName && (
+            <p>
+              This document has the schema type <code>{typeName}</code>, which is not defined as a
+              type in the local content studio schema.
+            </p>
+          )}
+          {!typeName && (
+            <p>This document does not exist, and no schema type was specified for it.</p>
+          )}
+          {__DEV__ && value && (
+            <div>
+              <h4>Here is the JSON representation of the document:</h4>
+              <pre>
+                <code>{JSON.stringify(value, null, 2)}</code>
+              </pre>
+            </div>
+          )}
+        </ErrorPane>
       )
     }
 
+    if (connectionState === 'connecting') {
+      return <LoadingPane {...this.props} delay={600} message={`Loading ${schemaType.title}…`} />
+    }
+
+    const {hasNarrowScreen, historical, historyState, inspect, showValidationTooltip} = this.state
+    const initialValue = this.getInitialValue()
+    const activeViewId = this.getActiveViewId()
     const selectedHistoryEvent = this.findSelectedHistoryEvent()
     const menuItems = getMenuItems({
       value,
@@ -808,73 +615,77 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     })
 
     const isHistoryOpen = this.historyIsOpen()
+    const selectedIsLatest =
+      urlParams.rev === CURRENT_REVISION_FLAG && selectedHistoryEvent === historyState.events[0]
 
     return (
       <DocumentActionShortcuts
         id={options.id}
         type={typeName}
         onKeyUp={this.handleKeyUp}
-        className={
-          isHistoryOpen ? documentPaneStyles.paneWrapperWithHistory : documentPaneStyles.paneWrapper
-        }
+        className={isHistoryOpen ? styles.withHistoryMode : styles.root}
       >
         {isHistoryOpen && this.canShowHistoryList() && (
-          <History
-            key="history"
-            documentId={getPublishedId(options.id)}
-            onClose={this.handleCloseHistory}
-            onItemSelect={this.handleHistorySelect}
-            lastEdited={value && new Date(value._updatedAt)}
-            events={historyState.events}
-            isLoading={historyState.isLoading}
-            error={historyState.error}
-            selectedEvent={selectedHistoryEvent}
-          />
-        )}
-        <TabbedPane
-          key="pane"
-          idPrefix={paneKey}
-          title={this.getTitle(value)}
-          views={views}
-          activeView={this.getActiveViewId()}
-          onSetActiveView={this.handleSetActiveView}
-          onSplitPane={hasNarrowScreen ? undefined : this.handleSplitPane}
-          onCloseView={this.handleClosePane}
-          menuItemGroups={menuItemGroups}
-          isSelected={isSelected}
-          isCollapsed={isCollapsed}
-          onCollapse={onCollapse}
-          onExpand={onExpand}
-          onAction={this.handleMenuAction}
-          menuItems={menuItems}
-          footer={
-            isHistoryOpen && selectedHistoryEvent
-              ? this.renderHistoryFooter(selectedHistoryEvent)
-              : this.renderFooter()
-          }
-          renderActions={this.renderActions}
-          isClosable={isClosable}
-          hasSiblings={this.context.hasGroupSiblings}
-        >
-          {this.renderHistorySpinner()}
-          {this.renderCurrentView()}
-          {inspect && isHistoryOpen && historical && (
-            <InspectHistory document={historical} onClose={this.handleHideInspector} />
-          )}
-          {inspect && !isHistoryOpen && value && (
-            <InspectView value={value} onClose={this.handleHideInspector} />
-          )}
-          {connectionState === 'reconnecting' && (
-            <Snackbar
-              kind="warning"
-              title="Connection lost. Reconnecting when online…"
-              isPersisted
+          <div className={styles.navigatorContainer}>
+            <HistoryNavigator
+              key="history"
+              documentId={getPublishedId(options.id)}
+              onItemSelect={this.handleHistorySelect}
+              lastEdited={value && new Date(value._updatedAt)}
+              events={historyState.events}
+              isLoading={historyState.isLoading}
+              error={historyState.error}
+              selectedEvent={selectedHistoryEvent}
             />
-          )}
-          <DocumentOperationResults id={options.id} type={options.type} />
-        </TabbedPane>
+          </div>
+        )}
 
-        {isHistoryOpen && <ChangesInspector />}
+        <div className={styles.editorContainer} key="editor">
+          <Editor
+            activeViewId={activeViewId}
+            connectionState={connectionState}
+            formRef={this.formRef}
+            hasSiblings={this.context.hasGroupSiblings}
+            historical={historical}
+            historyState={historyState}
+            initialValue={initialValue}
+            inspect={inspect}
+            isClosable={isClosable}
+            isCollapsed={isCollapsed}
+            isHistoryOpen={isHistoryOpen}
+            isSelected={isSelected}
+            menuItemGroups={menuItemGroups}
+            menuItems={menuItems}
+            onAction={this.handleMenuAction}
+            onChange={onChange}
+            onCloseValidationResults={this.handleCloseValidationResults}
+            onCloseView={this.handleClosePane}
+            onCollapse={onCollapse}
+            onExpand={onExpand}
+            onHideInspector={this.handleHideInspector}
+            onOpenHistory={this.handleOpenHistory}
+            onSetActiveView={this.handleSetActiveView}
+            onSetFocus={this.handleSetFocus}
+            onSplitPane={hasNarrowScreen ? undefined : this.handleSplitPane}
+            onToggleValidationResults={this.handleToggleValidationResults}
+            options={options}
+            markers={markers}
+            paneKey={paneKey}
+            publishedId={this.getPublishedId()}
+            selectedHistoryEvent={selectedHistoryEvent}
+            selectedIsLatest={selectedIsLatest}
+            showValidationTooltip={showValidationTooltip}
+            title={this.getTitle(value)}
+            value={value}
+            views={views}
+          />
+        </div>
+
+        {isHistoryOpen && this.canShowChangesList() && (
+          <div className={styles.inspectorContainer}>
+            <ChangesInspector onHistoryClose={this.handleCloseHistory} />
+          </div>
+        )}
       </DocumentActionShortcuts>
     )
   }

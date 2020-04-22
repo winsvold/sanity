@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import * as React from 'react'
 import Snackbar from 'part:@sanity/components/snackbar/default'

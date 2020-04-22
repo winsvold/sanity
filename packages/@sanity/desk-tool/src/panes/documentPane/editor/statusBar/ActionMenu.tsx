@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-handler-names */
 /* eslint-disable react/no-array-index-key */
 
