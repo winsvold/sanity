@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import React from 'react'
+import React, {FormEvent} from 'react'
 import {FormBuilder} from 'part:@sanity/form-builder'
 import documentStore from 'part:@sanity/base/datastore/document'
 import {tap} from 'rxjs/operators'
@@ -9,7 +9,8 @@ import {Subscription} from 'rxjs'
 
 import styles from './EditForm.css'
 
-const preventDefault = (ev: any) => ev.preventDefault()
+const preventDefault = (ev: FormEvent) => ev.preventDefault()
+
 type Doc = any
 type Schema = any
 type SchemaType = any
@@ -62,6 +63,7 @@ export default class EditForm extends React.PureComponent<Props> {
       schema,
       type,
     } = this.props
+
     return (
       <>
         <form className={styles.editor} onSubmit={preventDefault}>
