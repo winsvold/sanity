@@ -6,7 +6,6 @@ import {noop} from 'lodash'
 import {from, Subscription} from 'rxjs'
 import {map} from 'rxjs/operators'
 import schema from 'part:@sanity/base/schema'
-import {PreviewFields} from 'part:@sanity/base/preview'
 import historyStore from 'part:@sanity/base/datastore/history'
 import {getPublishedId} from 'part:@sanity/base/util/draft-utils'
 import isNarrowScreen from '../../utils/isNarrowScreen'
@@ -501,36 +500,6 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     }
   }
 
-  getTitle(value: any) {
-    const {title: paneTitle, options} = this.props
-    const typeName = options.type
-    const type = schema.get(typeName)
-    if (paneTitle) {
-      return <span>{paneTitle}</span>
-    }
-
-    if (this.historyIsOpen()) {
-      return (
-        <>
-          History of{' '}
-          <PreviewFields document={value} type={type} fields={['title']}>
-            {({title}) => (title ? <em>{title}</em> : <em>Untitled</em>)}
-          </PreviewFields>
-        </>
-      )
-    }
-
-    if (!value) {
-      return `New ${type.title || type.name}`
-    }
-
-    return (
-      <PreviewFields document={value} type={type} fields={['title']}>
-        {({title}) => (title ? <span>{title}</span> : <em>Untitled</em>)}
-      </PreviewFields>
-    )
-  }
-
   findSelectedHistoryEvent() {
     const selectedRev = this.props.urlParams.rev
     return this.findHistoryEventByRev(selectedRev)
@@ -649,6 +618,7 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
             isCollapsed={isCollapsed}
             isHistoryOpen={isHistoryOpen}
             isSelected={isSelected}
+            markers={markers}
             menuItemGroups={menuItemGroups}
             menuItems={menuItems}
             onAction={this.handleMenuAction}
@@ -664,13 +634,12 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
             onSplitPane={hasNarrowScreen ? undefined : this.handleSplitPane}
             onToggleValidationResults={this.handleToggleValidationResults}
             options={options}
-            markers={markers}
+            paneTitle={this.props.title}
             paneKey={paneKey}
             publishedId={this.getPublishedId()}
             selectedHistoryEvent={selectedHistoryEvent}
             selectedIsLatest={selectedIsLatest}
             showValidationTooltip={showValidationTooltip}
-            title={this.getTitle(value)}
             value={value}
             views={views}
           />
