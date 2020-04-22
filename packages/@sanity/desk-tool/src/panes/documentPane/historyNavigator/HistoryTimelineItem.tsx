@@ -1,15 +1,20 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable react/require-default-props */
 
-import PropTypes from 'prop-types'
 import React from 'react'
-import {from} from 'rxjs'
+import {from, Subscription} from 'rxjs'
 import HistoryListItem from 'part:@sanity/components/history/list-item'
-import historyStore from 'part:@sanity/base/user'
+import userStore from 'part:@sanity/base/user'
 import {format, isYesterday, isToday} from 'date-fns'
 import {PaneRouterContext} from '../../../contexts/PaneRouterContext'
+import {HistoryEventType} from './types'
+
+interface Props extends HistoryEventType {
+  isCurrentVersion: boolean
+  isSelected: boolean
+  onClick: () => void
+  onSelectNext: () => void
+  onSelectPrev: () => void
+}
 
 const EMPTY_PARAMS = {}
 const dateFormat = 'MMM D, YYYY, hh:mm A'
@@ -31,7 +36,7 @@ function getHumanReadableStatus(type) {
   return type
 }
 
-export default class HistoryItem extends React.PureComponent {
+export default class HistoryTimelineItem extends React.PureComponent<Props> {
   static contextType = PaneRouterContext
 
   static defaultProps = {
@@ -39,26 +44,7 @@ export default class HistoryItem extends React.PureComponent {
     userIds: undefined
   }
 
-  static propTypes = {
-    endTime: PropTypes.string.isRequired,
-    isCurrentVersion: PropTypes.bool.isRequired,
-    isSelected: PropTypes.bool,
-    onClick: PropTypes.func.isRequired,
-    onSelectNext: PropTypes.func,
-    onSelectPrev: PropTypes.func,
-    rev: PropTypes.string.isRequired,
-    type: PropTypes.oneOf([
-      'created',
-      'deleted',
-      'edited',
-      'published',
-      'unpublished',
-      'truncated',
-      'discardDraft',
-      'unknown'
-    ]).isRequired,
-    userIds: PropTypes.arrayOf(PropTypes.string)
-  }
+  usersSubscription: Subscription | null = null
 
   componentDidMount() {
     const {userIds} = this.props
@@ -66,7 +52,7 @@ export default class HistoryItem extends React.PureComponent {
       return
     }
 
-    this.usersSubscription = from(historyStore.getUsers(userIds)).subscribe(users => {
+    this.usersSubscription = from(userStore.getUsers(userIds)).subscribe(users => {
       this.setState({users})
     })
   }
@@ -95,7 +81,10 @@ export default class HistoryItem extends React.PureComponent {
     const {ParameterizedLink, params} = this.context
     const {type, endTime, isSelected, isCurrentVersion, rev, onClick} = this.props
     const {users} = this.state
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {rev: oldRev, ...linkParams} = params
+
     return (
       <HistoryListItem
         linkComponent={ParameterizedLink}
