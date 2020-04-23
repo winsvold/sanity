@@ -30,7 +30,6 @@ export default class HistoryForm extends React.PureComponent {
     this.setState({focusPath})
   }
 
-  // eslint-disable-next-line complexity
   render() {
     const {schema, schemaType, document} = this.props
     const {focusPath} = this.state
