@@ -24,7 +24,7 @@ export function formatDate(now: number, date: Date | number): string {
       return `${diff.minutes}m`
     }
 
-    if (diff.seconds) {
+    if (diff.seconds > 0) {
       return `${diff.seconds}s`
     }
 
