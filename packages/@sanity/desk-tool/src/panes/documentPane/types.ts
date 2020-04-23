@@ -19,3 +19,11 @@ export interface HistoryState {
   error: null | Error
   events: HistoryEventType[]
 }
+
+export interface MenuAction {
+  action: string
+  icon?: React.FunctionComponent | React.Component
+  isDisabled?: boolean
+  title: React.ReactNode
+  url?: string
+}

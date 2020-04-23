@@ -1,22 +1,23 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable react/forbid-prop-types */
-/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React from 'react'
-import PropTypes from 'prop-types'
 import FormBuilder from 'part:@sanity/form-builder'
+import {Doc} from '../types'
 
 import styles from './HistoryForm.css'
+
+interface Props {
+  schema: any
+  schemaType: {name: string}
+  document: Doc | null // {_type: string}
+}
 
 const noop = () => null
 const noopPatchChannel = {onPatch: () => noop, receivePatches: noop}
 
-export default class HistoryForm extends React.PureComponent {
-  static propTypes = {
-    schema: PropTypes.object.isRequired,
-    schemaType: PropTypes.shape({name: PropTypes.string}).isRequired,
-    document: PropTypes.shape({_type: PropTypes.string}),
-  }
+export default class HistoryForm extends React.PureComponent<Props> {
+  static propTypes = {}
 
   static defaultProps = {
     document: undefined,
@@ -26,7 +27,7 @@ export default class HistoryForm extends React.PureComponent {
     focusPath: [],
   }
 
-  handleFocus = (focusPath) => {
+  handleFocus = (focusPath: any[]) => {
     this.setState({focusPath})
   }
 

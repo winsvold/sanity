@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-filename-extension */
 
 import React from 'react'
@@ -8,6 +9,7 @@ import HistoryIcon from 'part:@sanity/base/history-icon'
 import resolveProductionPreviewUrl from 'part:@sanity/transitional/production-preview/resolve-production-url?'
 import Hotkeys from 'part:@sanity/components/typography/hotkeys'
 import styles from './documentPaneMenuItems.css'
+import {MenuAction} from './types'
 
 interface Params {
   canShowHistoryList?: boolean
@@ -18,7 +20,7 @@ interface Params {
   value: any
 }
 
-const getHistoryMenuItem = (params: Params) => {
+const getHistoryMenuItem = (params: Params): MenuAction | null => {
   const {value, isLiveEditEnabled, isHistoryEnabled, isHistoryOpen, canShowHistoryList} = params
 
   if (isLiveEditEnabled || !canShowHistoryList) {
@@ -33,10 +35,11 @@ const getHistoryMenuItem = (params: Params) => {
       isDisabled: isHistoryOpen || !value
     }
   }
+
   return null
 }
 
-const getInspectItem = ({value}: Params) => ({
+const getInspectItem = ({value}: Params): MenuAction => ({
   action: 'inspect',
   title: (
     <span className={styles.menuItem}>
@@ -50,11 +53,13 @@ const getInspectItem = ({value}: Params) => ({
   isDisabled: !value
 })
 
-export const getProductionPreviewItem = ({value, rev}: Params) => {
+export const getProductionPreviewItem = ({value, rev}: Params): MenuAction | null => {
   if (!value || !resolveProductionPreviewUrl) {
     return null
   }
+
   let previewUrl
+
   try {
     previewUrl = resolveProductionPreviewUrl(value, rev)
   } catch (error) {
@@ -83,8 +88,10 @@ export const getProductionPreviewItem = ({value, rev}: Params) => {
   }
 }
 
-export const getMenuItems = (params: Params) =>
-  [getProductionPreviewItem, getHistoryMenuItem, getInspectItem]
+export const getMenuItems = (params: Params): MenuAction[] => {
+  const items = [getProductionPreviewItem, getHistoryMenuItem, getInspectItem]
     .filter(Boolean)
     .map(fn => fn(params))
-    .filter(Boolean)
+
+  return items.filter(i => i !== null) as MenuAction[]
+}

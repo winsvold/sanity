@@ -18,7 +18,7 @@ import {ErrorPane} from '../errorPane'
 import {LoadingPane} from '../loadingPane'
 import {isInspectHotkey, isPreviewHotkey} from './helpers'
 import {useDocumentHistory} from './history'
-import {Doc} from './types'
+import {Doc, MenuAction} from './types'
 
 import styles from './DocumentPane.css'
 
@@ -39,7 +39,7 @@ interface Props {
   isClosable: boolean
   onExpand?: () => void
   onCollapse?: () => void
-  menuItems: {title: string}[]
+  menuItems: MenuAction[]
   menuItemGroups: {id: string}[]
   views: {
     type: string
@@ -124,14 +124,15 @@ function DocumentPane(props: Props) {
 
   const initialValue = getInitialValue(props)
   const activeViewId = paneRouter.params.view || (views[0] && views[0].id)
-  const menuItems = getMenuItems({
-    value,
-    isHistoryEnabled,
-    isHistoryOpen,
-    isLiveEditEnabled: schemaType.liveEdit === true,
-    rev: selectedHistoryEvent && selectedHistoryEvent.rev,
-    canShowHistoryList
-  })
+  const menuItems =
+    getMenuItems({
+      value,
+      isHistoryEnabled,
+      isHistoryOpen,
+      isLiveEditEnabled: schemaType.liveEdit === true,
+      rev: selectedHistoryEvent && selectedHistoryEvent.rev,
+      canShowHistoryList
+    }) || []
 
   // Callbacks
 
@@ -192,10 +193,7 @@ function DocumentPane(props: Props) {
     )
   }
 
-  const handleMenuAction = (item: {
-    action: 'production-preview' | 'inspect' | 'browseHistory'
-    url?: string
-  }) => {
+  const handleMenuAction = (item: MenuAction) => {
     if (item.action === 'production-preview') {
       window.open(item.url)
       return true
@@ -357,7 +355,6 @@ function DocumentPane(props: Props) {
           onToggleValidationResults={handleToggleValidationResults}
           paneTitle={title}
           paneKey={paneKey}
-          publishedId={documentId}
           rev={rev}
           selectedHistoryEvent={selectedHistoryEvent}
           selectedHistoryEventIsLatest={selectedHistoryEventIsLatest}

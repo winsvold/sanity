@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable react/no-multi-comp */
+/* eslint-disable react/no-array-index-key */
 
 import {useEditState} from '@sanity/react-hooks'
 import React from 'react'

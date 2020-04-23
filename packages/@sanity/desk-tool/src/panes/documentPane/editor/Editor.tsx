@@ -19,7 +19,7 @@ import {Validation} from './Validation'
 import {DocumentStatusBar, HistoryStatusBar} from './statusBar'
 import FormView from './FormView'
 import {getHistoryEventDateString} from './helpers'
-import {HistoryState} from '../types'
+import {MenuAction, HistoryState} from '../types'
 
 import styles from './Editor.css'
 
@@ -46,13 +46,19 @@ interface Props {
   isSelected: boolean
   markers: any
   menuItemGroups: {id: string}[]
-  menuItems: {title: string}[]
-  onAction: () => void
+  menuItems: Array<{
+    action: string
+    title: React.ReactNode
+    icon?: any
+    url?: string
+  }>
+  // menuItems: {title: string}[]
+  onAction: (item: MenuAction) => boolean
   onChange: (patches: any[]) => void
   onCloseValidationResults: () => void
   onCloseView: () => void
-  onCollapse: () => void
-  onExpand: () => void
+  onCollapse?: () => void
+  onExpand?: () => void
   onHideInspector: () => void
   onOpenHistory: () => void
   onSetActiveView: () => void
@@ -62,7 +68,7 @@ interface Props {
   paneKey: string
   paneTitle?: string
   revision: any
-  rev: string
+  rev: string | null
   selectedHistoryEvent?: any
   selectedHistoryEventIsLatest: boolean
   showValidationTooltip: boolean
@@ -139,7 +145,7 @@ function EditorFooter({
   initialValue: any
   isHistoryOpen: boolean
   onOpenHistory: () => void
-  rev: string
+  rev: string | null
   selectedHistoryEvent: any
   value: any
 }) {
@@ -197,7 +203,7 @@ function DocumentView({
   isHistoryOpen: boolean
   markers: any
   onChange: (patches: any[]) => void
-  rev: string
+  rev: string | null
   selectedHistoryEvent: any
   selectedHistoryEventIsLatest: boolean
   value: null | Doc
