@@ -1,0 +1,1 @@
+export const BREAKPOINT_SCREEN_MEDIUM = 512

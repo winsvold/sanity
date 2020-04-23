@@ -7,26 +7,36 @@ import BinaryIcon from 'part:@sanity/base/binary-icon'
 import HistoryIcon from 'part:@sanity/base/history-icon'
 import resolveProductionPreviewUrl from 'part:@sanity/transitional/production-preview/resolve-production-url?'
 import Hotkeys from 'part:@sanity/components/typography/hotkeys'
-import {historyIsEnabled} from './history'
 import styles from './documentPaneMenuItems.css'
 
-const getHistoryMenuItem = ({value, isLiveEditEnabled, isHistoryEnabled, canShowHistoryList}) => {
+interface Params {
+  canShowHistoryList?: boolean
+  isHistoryOpen?: boolean
+  isHistoryEnabled?: boolean
+  isLiveEditEnabled?: boolean
+  rev: string
+  value: any
+}
+
+const getHistoryMenuItem = (params: Params) => {
+  const {value, isLiveEditEnabled, isHistoryEnabled, isHistoryOpen, canShowHistoryList} = params
+
   if (isLiveEditEnabled || !canShowHistoryList) {
     return null
   }
 
-  if (historyIsEnabled()) {
+  if (isHistoryEnabled) {
     return {
       action: 'browseHistory',
       title: 'Browse history',
       icon: HistoryIcon,
-      isDisabled: isHistoryEnabled || !value
+      isDisabled: isHistoryOpen || !value
     }
   }
   return null
 }
 
-const getInspectItem = ({value}) => ({
+const getInspectItem = ({value}: Params) => ({
   action: 'inspect',
   title: (
     <span className={styles.menuItem}>
@@ -40,13 +50,13 @@ const getInspectItem = ({value}) => ({
   isDisabled: !value
 })
 
-export const getProductionPreviewItem = ({value, revision}) => {
+export const getProductionPreviewItem = ({value, rev}: Params) => {
   if (!value || !resolveProductionPreviewUrl) {
     return null
   }
   let previewUrl
   try {
-    previewUrl = resolveProductionPreviewUrl(value, revision)
+    previewUrl = resolveProductionPreviewUrl(value, rev)
   } catch (error) {
     error.message = `An error was thrown while trying to get production preview url: ${error.message}`
     // eslint-disable-next-line no-console
@@ -73,14 +83,8 @@ export const getProductionPreviewItem = ({value, revision}) => {
   }
 }
 
-export const getMenuItems = ({
-  value,
-  isLiveEditEnabled,
-  isHistoryEnabled,
-  revision,
-  canShowHistoryList
-}) =>
+export const getMenuItems = (params: Params) =>
   [getProductionPreviewItem, getHistoryMenuItem, getInspectItem]
     .filter(Boolean)
-    .map(fn => fn({value, isLiveEditEnabled, isHistoryEnabled, revision, canShowHistoryList}))
+    .map(fn => fn(params))
     .filter(Boolean)
