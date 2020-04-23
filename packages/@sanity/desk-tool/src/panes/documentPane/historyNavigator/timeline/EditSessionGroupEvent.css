@@ -1,3 +1,5 @@
+@import 'part:@sanity/base/theme/variables-style';
+
 .root > button {
   -webkit-appearance: none;
   -webkit-font-smoothing: inherit;
@@ -23,7 +25,7 @@
     top: 0;
     left: 1.5em;
     height: calc(1em - 1px);
-    border-left: 1px solid #ccc;
+    border-left: 1px solid var(--hairline-color);
   }
 
   @nest &:after {
@@ -33,23 +35,31 @@
     top: calc(1em - 1px + 17px);
     left: 1.5em;
     bottom: 0;
-    border-left: 1px solid #ccc;
+    border-left: 1px solid var(--hairline-color);
   }
 }
 
-.root:not(.isSelected) > button:hover {
-  background: #acf;
+.root.isFirst > button:before {
+  display: none;
+}
 
-  @nest &:before, &:after {
+.root.isLast > button:after {
+  display: none;
+}
+
+.root:not(.isSelected) > button:hover {
+  background: color(var(--selectable-item-base) alpha(20%));
+
+  /* @nest &:before, &:after {
     border-color: #fff;
-  }
+  } */
 }
 
 .isSelected {
   composes: root;
 
   @nest & > button {
-    background: #06f;
+    background: var(--selectable-item-base);
     color: #fff;
 
     @nest &:before, &:after {
@@ -61,10 +71,15 @@
 .iconContainer {
   width: 17px;
   height: 17px;
-  background: currentColor;
   position: absolute;
   top: calc(1em - 1px);
   left: 1em;
+
+  @nest & > svg {
+    display: block;
+    width: 17px;
+    height: 17px;
+  }
 }
 
 .heading {
