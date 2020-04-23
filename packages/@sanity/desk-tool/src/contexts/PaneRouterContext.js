@@ -39,6 +39,9 @@ export const PaneRouterContext = React.createContext({
   // Whether or not the pane has any siblings (within the same group)
   hasGroupSiblings: false,
 
+  // The length of the current group
+  groupLength: 0,
+
   // Current router state for the "panes" property
   routerPanesState: [],
 
@@ -214,6 +217,9 @@ export function getPaneRouterContextFactory(instance) {
 
       // Whether or not the pane has any siblings (within the same group)
       hasGroupSiblings: getCurrentGroup().length > 1,
+
+      // The length of the current group
+      groupLength: getCurrentGroup().length,
 
       // Current router state for the "panes" property
       routerPanesState: instance.props.router.state.panes || [],

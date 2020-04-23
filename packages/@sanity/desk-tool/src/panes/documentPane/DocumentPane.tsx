@@ -318,14 +318,9 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
   }
 
   canShowChangesList() {
-    // console.log(this.context)
-    // TODO: make it possible to find out if this pane is the last sibling in a group
+    const isLastSibling = this.context.siblingIndex === this.context.groupLength - 1
 
-    return (
-      this.context.siblingIndex === 0 &&
-      !this.props.isCollapsed &&
-      this.state.historyState.isEnabled
-    )
+    return isLastSibling && !this.props.isCollapsed && this.state.historyState.isEnabled
   }
 
   componentDidMount() {
