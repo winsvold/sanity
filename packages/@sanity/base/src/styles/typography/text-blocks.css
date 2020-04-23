@@ -29,8 +29,10 @@
 }
 
 .description {
-  composes: small;
+  /* composes: small; */
   color: var(--text-color-secondary);
+  font-size: 12px;
+  line-height: 15px;
 }
 
 .paragraph {

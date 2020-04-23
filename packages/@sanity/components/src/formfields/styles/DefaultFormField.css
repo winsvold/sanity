@@ -36,13 +36,15 @@
 .description {
   composes: description from 'part:@sanity/base/theme/typography/text-blocks-style';
 
-  @nest .inline & {
+  /* @nest .inline & {
     font-size: var(--font-size-tiny);
-  }
+  } */
 }
 
 .label + .description {
-  margin-top: calc(var(--small-padding) / 3);
+  /* margin-top: calc(var(--small-padding) / 3); */
+
+  margin-top: 0.25em;
 }
 
 .description + .content {
