@@ -5,6 +5,7 @@ import EditIcon from 'part:@sanity/base/edit-icon'
 import * as React from 'react'
 import {formatDate} from '../format'
 import {HistoryTimelineEditSessionGroupEvent} from '../types'
+import EditSessionList from './EditSessionList'
 
 import styles from './EditSessionGroupEvent.css'
 
@@ -46,6 +47,10 @@ export function EditSessionGroupEvent({
         <div className={styles.heading}>Edited</div>
         <div className={styles.dateline}>{formatDate(now, event.timestamp)}</div>
       </button>
+
+      <div className={styles.content}>
+        <EditSessionList sessions={event.sessions} />
+      </div>
     </div>
   )
 }

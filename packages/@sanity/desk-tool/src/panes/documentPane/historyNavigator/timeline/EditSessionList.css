@@ -1,0 +1,57 @@
+@import 'part:@sanity/base/theme/variables-style';
+
+.root {
+  position: relative;
+  padding: 0 0 1em 0;
+
+  @nest &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    height: 1em;
+    left: 1.5em;
+    bottom: 0;
+    border-left: 1px solid var(--hairline-color);
+  }
+}
+
+.session {
+  position: relative;
+  -webkit-appearance: none;
+  font: inherit;
+  background: none;
+  border: 0;
+  color: inherit;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  text-align: left;
+  white-space: nowrap;
+  margin: 0;
+  padding: 2px 1em 2px 2.5em;
+  line-height: 0;
+  outline: none;
+  cursor: pointer;
+
+  @nest & > div {
+    display: inline-block;
+    vertical-align: top;
+    width: 2px;
+    height: 7px;
+    background: #000;
+  }
+
+  @nest &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 1.5em;
+    bottom: 0;
+    border-left: 1px solid var(--hairline-color);
+  }
+
+  @nest &:hover {
+    background: color(var(--selectable-item-base) alpha(20%));
+  }
+}

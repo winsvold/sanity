@@ -1,3 +1,10 @@
+export interface EditSession {
+  type: 'editSession'
+  edits: string[]
+  length: number
+  offset: number
+}
+
 export interface HistoryTimelineCreateEvent {
   type: 'create'
   timestamp: number
@@ -24,12 +31,7 @@ export interface HistoryTimelineDiscardDraftEvent {
 
 export interface HistoryTimelineEditSessionGroupEvent {
   type: 'editSessionGroup'
-  sessions: Array<{
-    type: 'editSession'
-    edits: string[]
-    length: number
-    offset: number
-  }>
+  sessions: Array<EditSession>
   timestamp: number
   userIds: string[]
   offset: number
