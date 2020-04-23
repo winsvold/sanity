@@ -1,7 +1,6 @@
 @import 'part:@sanity/base/theme/variables-style';
 
 .root {
-  padding: var(--medium-padding);
-  padding-bottom: 8rem;
+  padding: 2em var(--medium-padding) 6em;
   flex-grow: 1;
 }
