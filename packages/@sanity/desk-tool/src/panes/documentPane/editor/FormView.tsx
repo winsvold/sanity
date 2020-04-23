@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable react/forbid-prop-types */
-/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-array-index-key */
-/* eslint-disable react/require-default-props */
 
 import React from 'react'
-import PropTypes from 'prop-types'
 import {isActionEnabled} from 'part:@sanity/base/util/document-action-utils'
 import Button from 'part:@sanity/components/buttons/default'
 import schema from 'part:@sanity/base/schema'
@@ -14,8 +11,34 @@ import filterFieldFn$ from 'part:@sanity/desk-tool/filter-fields-fn?'
 import {CURRENT_REVISION_FLAG} from '../../../constants'
 import EditForm from './EditForm'
 import HistoryForm from './HistoryForm'
+import {Doc} from '../types'
 
 import styles from './FormView.css'
+
+interface Props {
+  id: string
+  patchChannel?: any
+  document: {
+    draft: Doc | null // {_id: string; _type: string}
+    published: Doc | null // {_id: string; _type: string}
+    displayed: Doc | null // {_id: string; _type: string}
+  }
+  initialValue: {_type: string}
+  isConnected: boolean
+  onChange: (patches: any[]) => void
+  schemaType: {name: string; title: string}
+  markers: Array<{path: any[]}>
+  history: {
+    isLoadingEvents: boolean
+    isOpen: boolean
+    selectedEvent: any
+    document: {
+      isLoading: boolean
+      snapshot: {_type: string}
+    }
+  }
+  rev: string | null
+}
 
 const noop = () => undefined
 
@@ -24,38 +47,7 @@ const INITIAL_STATE = {
   filterField: () => true
 }
 
-export default class FormView extends React.PureComponent {
-  static propTypes = {
-    id: PropTypes.string,
-    patchChannel: PropTypes.object,
-    document: PropTypes.shape({
-      draft: PropTypes.shape({_id: PropTypes.string, _type: PropTypes.string}),
-      published: PropTypes.shape({_id: PropTypes.string, _type: PropTypes.string}),
-      displayed: PropTypes.shape({_id: PropTypes.string, _type: PropTypes.string})
-    }).isRequired,
-    initialValue: PropTypes.shape({_type: PropTypes.string}),
-    isConnected: PropTypes.bool,
-    onChange: PropTypes.func.isRequired,
-    schemaType: PropTypes.shape({name: PropTypes.string, title: PropTypes.string}).isRequired,
-    markers: PropTypes.arrayOf(
-      PropTypes.shape({
-        path: PropTypes.array
-      })
-    ),
-
-    history: PropTypes.shape({
-      isLoadingEvents: PropTypes.bool.isRequired,
-      isOpen: PropTypes.bool.isRequired,
-      selectedEvent: PropTypes.object,
-      document: PropTypes.shape({
-        isLoading: PropTypes.bool.isRequired,
-        snapshot: PropTypes.shape({_type: PropTypes.string})
-      })
-    }).isRequired,
-
-    rev: PropTypes.string
-  }
-
+export default class FormView extends React.PureComponent<Props> {
   static defaultProps = {
     markers: [],
     isConnected: true,
@@ -65,9 +57,11 @@ export default class FormView extends React.PureComponent {
 
   state = INITIAL_STATE
 
+  filterFieldFnSubscription: any
+
   componentDidMount() {
     if (filterFieldFn$) {
-      this.filterFieldFnSubscription = filterFieldFn$.subscribe(filterField =>
+      this.filterFieldFnSubscription = filterFieldFn$.subscribe((filterField: any) =>
         this.setState({filterField})
       )
     }
@@ -79,12 +73,16 @@ export default class FormView extends React.PureComponent {
     }
   }
 
-  handleFocus = path => {
+  handleFocus = (path: any[]) => {
     this.setState({focusPath: path})
   }
 
   handleBlur = () => {
     // do nothing
+  }
+
+  handleEditAsActualType = () => {
+    // TODO
   }
 
   isReadOnly() {
@@ -103,7 +101,7 @@ export default class FormView extends React.PureComponent {
     const {document, id, initialValue, history, markers, patchChannel, rev, schemaType} = this.props
     const {draft, published, displayed} = document
     const {focusPath, filterField} = this.state
-    const value = draft || published
+    const value = draft || published || ({} as Doc)
     const readOnly = this.isReadOnly()
     const documentId = displayed && displayed._id && displayed._id.replace(/^drafts\./, '')
 
@@ -143,7 +141,7 @@ export default class FormView extends React.PureComponent {
           />
         )}
 
-        {afterEditorComponents.map((AfterEditorComponent, i) => (
+        {afterEditorComponents.map((AfterEditorComponent: any, i: number) => (
           <AfterEditorComponent key={i} documentId={documentId} />
         ))}
       </div>

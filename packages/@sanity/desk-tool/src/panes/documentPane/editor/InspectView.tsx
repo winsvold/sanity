@@ -1,27 +1,32 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable react/forbid-prop-types */
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable react/require-default-props */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 import React from 'react'
-import {combineLatest} from 'rxjs'
+import {combineLatest, Observable} from 'rxjs'
 import {map} from 'rxjs/operators'
-import './JSONInspector.css'
-import styles from './InspectView.css'
 import JSONInspector from 'react-json-inspector'
 import FullScreenDialog from 'part:@sanity/components/dialogs/fullscreen'
 import RadioButtons from 'part:@sanity/components/selects/radio'
-
 import {isObject} from 'lodash'
 import HLRU from 'hashlru'
 import settings from '../../../settings'
 import {withPropsStream} from 'react-props-stream'
 import DocTitle from '../../../components/DocTitle'
 
+import './JSONInspector.css'
+import styles from './InspectView.css'
+
+interface Props {
+  value: any
+  onClose: () => void
+  onViewModeChange: () => void
+  viewMode: {id: string; title: string}
+}
+
 const lru = HLRU(1000)
 
-function isExpanded(keyPath, value) {
+function isExpanded(keyPath: any, value: any) {
   const cached = lru.get(keyPath)
   if (cached === undefined) {
     lru.set(keyPath, Array.isArray(value) || isObject(value))
@@ -30,7 +35,7 @@ function isExpanded(keyPath, value) {
   return cached
 }
 
-function toggleExpanded(event) {
+function toggleExpanded(event: any) {
   const {path} = event
   const current = lru.get(path)
   if (current === undefined) {
@@ -40,19 +45,23 @@ function toggleExpanded(event) {
   lru.set(path, !current)
 }
 
-function selectElement(element) {
+function selectElement(element: HTMLElement) {
   const sel = window.getSelection()
-  sel.removeAllRanges()
-  const range = document.createRange()
-  range.selectNodeContents(element)
-  sel.addRange(range)
+
+  if (sel) {
+    const range = document.createRange()
+
+    sel.removeAllRanges()
+    range.selectNodeContents(element)
+    sel.addRange(range)
+  }
 }
 
-function select(event) {
+function select(event: any) {
   selectElement(event.currentTarget)
 }
 
-function maybeSelectAll(event) {
+function maybeSelectAll(event: any) {
   const selectAll = event.keyCode === 65 && (event.metaKey || event.ctrlKey)
   if (!selectAll) {
     return
@@ -67,19 +76,19 @@ const VIEW_MODES = [VIEW_MODE_PARSED, VIEW_MODE_RAW]
 
 const viewModeSettings = settings.forKey('inspect-view-preferred-view-mode')
 
-function mapReceivedPropsToChildProps(props$) {
-  const onViewModeChange = nextViewMode => viewModeSettings.set(nextViewMode.id)
+function mapReceivedPropsToChildProps(props$: Observable<any>) {
+  const onViewModeChange = (nextViewMode: any) => viewModeSettings.set(nextViewMode.id)
 
   const viewModeSetting$ = viewModeSettings
     .listen('parsed')
-    .pipe(map(id => VIEW_MODES.find(mode => mode.id === id)))
+    .pipe(map((id: any) => VIEW_MODES.find(mode => mode.id === id)))
 
   return combineLatest(props$, viewModeSetting$).pipe(
     map(([props, viewMode]) => ({...props, viewMode, onViewModeChange}))
   )
 }
 
-function InspectView(props) {
+function InspectView(props: Props) {
   const {value, viewMode, onClose, onViewModeChange} = props
   return (
     <FullScreenDialog
@@ -115,13 +124,6 @@ function InspectView(props) {
       </div>
     </FullScreenDialog>
   )
-}
-
-InspectView.propTypes = {
-  value: PropTypes.object,
-  onClose: PropTypes.func,
-  onViewModeChange: PropTypes.func,
-  viewMode: PropTypes.shape({id: PropTypes.string, title: PropTypes.string})
 }
 
 export default withPropsStream(mapReceivedPropsToChildProps, InspectView)

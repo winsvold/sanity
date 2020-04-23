@@ -9,6 +9,7 @@ import {
   useEditState,
   useValidationStatus
 } from '@sanity/react-hooks'
+import {MenuAction} from './types'
 
 interface Props {
   title?: string
@@ -21,7 +22,7 @@ interface Props {
   isClosable: boolean
   onExpand?: () => void
   onCollapse?: () => void
-  menuItems: {title: string}[]
+  menuItems: MenuAction[]
   menuItemGroups: {id: string}[]
   views: {
     type: string

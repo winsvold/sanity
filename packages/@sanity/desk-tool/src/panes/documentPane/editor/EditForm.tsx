@@ -20,8 +20,8 @@ interface Props {
   value: Doc
 
   filterField: () => boolean
-  focusPath: []
-  markers: []
+  focusPath: any[]
+  markers: any[]
 
   onBlur: () => void
   onChange: (event: any) => void
@@ -29,6 +29,9 @@ interface Props {
   readOnly: boolean
   schema: Schema
   type: SchemaType
+
+  // TODO
+  patchChannel: any
 }
 
 export default class EditForm extends React.PureComponent<Props> {

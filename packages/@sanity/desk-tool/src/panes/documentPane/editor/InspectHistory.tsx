@@ -1,20 +1,16 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React from 'react'
-import PropTypes from 'prop-types'
 import Spinner from 'part:@sanity/components/loading/spinner'
 import InspectView from './InspectView'
 
-export default class InspectHistory extends React.PureComponent {
-  static propTypes = {
-    document: PropTypes.shape({
-      isLoading: PropTypes.bool.isRequired,
-      snapshot: PropTypes.shape({_type: PropTypes.string})
-    }).isRequired,
-    onClose: PropTypes.func.isRequired
-  }
+interface Props {
+  document: {isLoading: boolean; snapshot: any}
+  onClose: () => void
+}
 
+export default class InspectHistory extends React.PureComponent<Props> {
   render() {
     const {onClose, document} = this.props
     const {isLoading, snapshot} = document
