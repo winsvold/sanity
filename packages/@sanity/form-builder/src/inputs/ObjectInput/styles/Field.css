@@ -5,3 +5,9 @@
   width: 100%;
   box-sizing: border-box;
 }
+
+.root + .root {
+  /* margin-top: var(--large-padding); */
+
+  margin-top: 2em;
+}

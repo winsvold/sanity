@@ -1,4 +1,4 @@
-@import "part:@sanity/base/theme/variables-style";
+@import 'part:@sanity/base/theme/variables-style';
 
 .root {
   display: block;
@@ -6,11 +6,17 @@
 }
 
 .level_1 {
-  composes: headingLevel_1 from 'part:@sanity/base/theme/typography/forms-style';
+  /* composes: headingLevel_1 from 'part:@sanity/base/theme/typography/forms-style'; */
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 600;
 }
 
 .level_2,
 .level_3,
 .level_4 {
-  composes: label from 'part:@sanity/base/theme/typography/forms-style';
+  /* composes: label from 'part:@sanity/base/theme/typography/forms-style'; */
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 600;
 }

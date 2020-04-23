@@ -41,20 +41,20 @@
 .icon {
   display: block;
   padding: 1px;
-  height: calc(15 / 16 * 1em);
+  height: calc(17 / 16 * 1em);
 
   @nest & > svg {
     display: block;
-    font-size: calc(15 / 16 * 1em);
+    font-size: calc(16 / 16 * 1em);
     line-height: 1;
   }
 }
 
 .label {
   display: block;
-  font-size: calc(13 / 16 * 1em);
-  line-height: calc(17 / 13);
-  height: calc(17 / 13 * 1em);
+  font-size: calc(14 / 16 * 1em);
+  line-height: calc(17 / 14);
+  height: calc(17 / 14 * 1em);
 
   @nest .icon + & {
     margin-left: 0.25rem;

@@ -160,7 +160,10 @@
 }
 
 .legend {
-  composes: headingLevel_1 from 'part:@sanity/base/theme/typography/forms-style';
+  /* composes: headingLevel_1 from 'part:@sanity/base/theme/typography/forms-style'; */
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 600;
   color: var(--legend-color);
   display: block;
   width: 100%;
