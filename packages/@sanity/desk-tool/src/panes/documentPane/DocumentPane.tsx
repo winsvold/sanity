@@ -244,6 +244,16 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
       return
     }
 
+    if (event.type === 'unknown') {
+      debugHistory('Encountered unknown event type: %s', event.type)
+      return
+    }
+
+    if (!event.displayDocumentId) {
+      debugHistory('Missing display document ID: %s', event.type)
+      return
+    }
+
     if (this._historyFetchDocSubscription) {
       this._historyFetchDocSubscription.unsubscribe()
     }
@@ -260,6 +270,7 @@ export default class DocumentPane extends React.PureComponent<Props, State> {
     const {displayDocumentId: id, rev} = event
 
     debugHistory('Fetch historical document for rev %s', atRev)
+
     this._historyFetchDocSubscription = from(historyStore.getDocumentAtRevision(id, rev)).subscribe(
       (newSnapshot: any) => {
         this.setState(({historical}) => ({

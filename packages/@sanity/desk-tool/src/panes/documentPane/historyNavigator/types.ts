@@ -48,4 +48,3 @@ export type HistoryTimelineEvent =
   | HistoryTimelineEditSessionGroupEvent
   | HistoryTimelinePublishEvent
   | HistoryTimelineUnpublishEvent
-  | HistoryTimelineUnknownEvent

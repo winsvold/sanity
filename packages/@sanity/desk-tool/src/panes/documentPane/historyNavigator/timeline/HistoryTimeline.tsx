@@ -77,17 +77,6 @@ function HistoryTimelineEventResolver({
     )
   }
 
-  if (event.type === 'unknown') {
-    return (
-      <GenericEvent
-        isSelected={event.rev === selectedRev}
-        now={now}
-        onClick={() => onOpenRevision(event.rev)}
-        title={event.message}
-      />
-    )
-  }
-
   return (
     <GenericEvent
       isSelected={(event as any).rev === selectedRev}
