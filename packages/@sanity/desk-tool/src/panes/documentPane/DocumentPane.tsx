@@ -2,100 +2,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React from 'react'
-import {noop} from 'lodash'
-import {from, Subscription} from 'rxjs'
-import {map} from 'rxjs/operators'
 import schema from 'part:@sanity/base/schema'
-import historyStore from 'part:@sanity/base/datastore/history'
 import {getPublishedId} from 'part:@sanity/base/util/draft-utils'
 import isNarrowScreen from '../../utils/isNarrowScreen'
 import windowWidth$ from '../../utils/windowWidth'
 import {HistoryNavigator} from './historyNavigator'
-import {HistoryEventType} from './historyNavigator/__legacy'
-import {historyIsEnabled} from './history'
 import {getMenuItems, getProductionPreviewItem} from './documentPaneMenuItems'
 import {PaneRouterContext} from '../../contexts/PaneRouterContext'
 import {DocumentActionShortcuts} from './DocumentActionShortcuts'
 import {ChangesInspector} from './changesInspector'
 import {CURRENT_REVISION_FLAG} from '../../constants'
+import {BREAKPOINT_SCREEN_MEDIUM} from './constants'
 import {Editor} from './editor'
 import {ErrorPane} from '../errorPane'
 import {LoadingPane} from '../loadingPane'
+import {isInspectHotkey, isPreviewHotkey} from './helpers'
+import {useDocumentHistory} from './history'
+import {Doc} from './types'
 
 import styles from './DocumentPane.css'
 
 declare const __DEV__: boolean
-
-const DEBUG_HISTORY_TRANSITION = false
-const KEY_I = 73
-const KEY_O = 79
-
-function debugHistory(...args: any[]) {
-  if (DEBUG_HISTORY_TRANSITION) {
-    const logLine = typeof args[0] === 'string' ? `[HISTORY] ${args[0]}` : '[HISTORY] '
-    // eslint-disable-next-line no-console
-    console.log(logLine, ...args.slice(1))
-  }
-}
-
-function isInspectHotkey(event) {
-  return event.ctrlKey && event.keyCode === KEY_I && event.altKey && !event.shiftKey
-}
-
-function isPreviewHotkey(event) {
-  return event.ctrlKey && event.keyCode === KEY_O && event.altKey && !event.shiftKey
-}
-
-interface Doc {
-  _id: string
-  _type: string
-  _rev: string
-  _updatedAt: string
-}
-
-interface HistoricalDocumentState {
-  isLoading: boolean
-  snapshot: null | Doc
-  prevSnapshot: null | Doc
-}
-
-interface HistoryState {
-  isEnabled: boolean
-  isLoading: boolean
-  error: null | Error
-  events: HistoryEventType[]
-}
-
-interface State {
-  historical: HistoricalDocumentState
-  historyState: HistoryState
-  hasNarrowScreen: boolean
-  inspect: boolean
-  isMenuOpen: boolean
-  showValidationTooltip: boolean
-}
-
-const INITIAL_HISTORICAL_DOCUMENT_STATE: HistoricalDocumentState = {
-  isLoading: false,
-  snapshot: null,
-  prevSnapshot: null
-}
-
-const INITIAL_HISTORY_STATE: HistoryState = {
-  isEnabled: historyIsEnabled(),
-  isLoading: true,
-  error: null,
-  events: []
-}
-
-const INITIAL_STATE: State = {
-  isMenuOpen: false,
-  hasNarrowScreen: isNarrowScreen(),
-  inspect: false,
-  showValidationTooltip: false,
-  historical: INITIAL_HISTORICAL_DOCUMENT_STATE,
-  historyState: INITIAL_HISTORY_STATE
-}
 
 interface Props {
   title?: string
@@ -133,533 +60,320 @@ interface Props {
   }
 }
 
-export default class DocumentPane extends React.PureComponent<Props, State> {
-  _historyEventsSubscription?: Subscription
-  _historyFetchDocSubscription?: Subscription
-  resizeSubscriber?: Subscription
-  _isMounted?: boolean
-  subscription?: Subscription
+function getInitialValue(props: Props) {
+  const {initialValue = {}, options, value} = props
+  const base = {_type: options.type}
 
-  static contextType = PaneRouterContext
+  return value ? base : {...base, ...initialValue}
+}
 
-  static defaultProps = {
-    title: '',
-    views: [],
-    menuItems: [],
-    menuItemGroups: []
+function usePaneRouterContext() {
+  return React.useContext(PaneRouterContext)
+}
+
+function DocumentPane(props: Props) {
+  const {
+    isSelected,
+    isCollapsed,
+    isClosable,
+    markers,
+    menuItemGroups = [],
+    onChange,
+    onCollapse,
+    connectionState,
+    onExpand,
+    options,
+    paneKey,
+    title = '',
+    urlParams,
+    value,
+    views = []
+  } = props
+
+  const documentId = getPublishedId(options.id)
+  const typeName = options.type
+  const schemaType = schema.get(typeName)
+  const rev = urlParams.rev || null
+
+  // Contexts
+  const paneRouter: any = usePaneRouterContext()
+  const {
+    historyState,
+    revision,
+    selectedHistoryEvent,
+    selectedHistoryEventIsLatest
+  } = useDocumentHistory({documentId, rev})
+
+  // Refs
+  const formRef = React.useRef<any | null>(null)
+  const documentIdRef = React.useRef<string>(documentId)
+
+  // States
+  const [hasNarrowScreen, setHasNarrowScreen] = React.useState<boolean>(isNarrowScreen())
+  const [isHistoryEnabled, setIsHistoryEnabled] = React.useState<boolean>(
+    window && window.innerWidth > BREAKPOINT_SCREEN_MEDIUM
+  )
+  const [inspect, setInspect] = React.useState<boolean>(false)
+  const [showValidationTooltip, setShowValidationTooltip] = React.useState<boolean>(false)
+
+  // Inferred values
+  const canShowHistoryList = paneRouter.siblingIndex === 0 && !isCollapsed && isHistoryEnabled
+  const isLastSibling = paneRouter.siblingIndex === paneRouter.groupLength - 1
+  const canShowChangesList = isLastSibling && !isCollapsed && isHistoryEnabled
+  const isHistoryOpen = Boolean(urlParams.rev)
+
+  const initialValue = getInitialValue(props)
+  const activeViewId = paneRouter.params.view || (views[0] && views[0].id)
+  const menuItems = getMenuItems({
+    value,
+    isHistoryEnabled,
+    isHistoryOpen,
+    isLiveEditEnabled: schemaType.liveEdit === true,
+    rev: selectedHistoryEvent && selectedHistoryEvent.rev,
+    canShowHistoryList
+  })
+
+  // Callbacks
+
+  const handleToggleInspect = () => {
+    if (!value) return
+    setInspect(val => !val)
   }
 
-  state = {...INITIAL_STATE, hasNarrowScreen: isNarrowScreen()}
-  formRef: React.RefObject<HTMLFormElement> = React.createRef()
+  const handleKeyUp = (event: any) => {
+    if (event.key === 'Escape' && showValidationTooltip) {
+      setShowValidationTooltip(false)
+    }
 
-  constructor(props: Props, context: any) {
-    super(props)
-    this.setup(props.options.id, context)
-  }
+    if (isInspectHotkey(event) && !isHistoryOpen) {
+      handleToggleInspect()
+    }
 
-  setup(documentId: any, context?: any) {
-    this.dispose()
+    if (isPreviewHotkey(event)) {
+      // const {draft, published} = props
+      const item = getProductionPreviewItem({
+        value,
+        rev: selectedHistoryEvent && selectedHistoryEvent.rev
+      })
 
-    if (this.props.urlParams.rev) {
-      if (historyIsEnabled()) {
-        this.handleFetchHistoricalDocument()
-      } else {
-        this.handleCloseHistory(context)
-      }
+      if (item && item.url) window.open(item.url)
     }
   }
 
-  getActiveViewId() {
-    const views = this.props.views
-    return this.context.params.view || (views[0] && views[0].id)
-  }
+  const handleHistorySelect = (historyEvent: any) => {
+    const eventisCurrent = historyState.events[0] === historyEvent
 
-  getPublishedId() {
-    return getPublishedId(this.props.options.id)
-  }
-
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    if (prevProps.options.id !== this.props.options.id) {
-      this.setup(this.props.options.id)
-    }
-
-    this.handleHistoryTransition(prevProps, prevState)
-  }
-
-  handleHistoryTransition(prevProps: Props, prevState: State) {
-    const next = this.props.urlParams
-    const prev = prevProps.urlParams
-    const selectedRev = next.rev
-    const revChanged = next.rev !== prev.rev
-    const {rev, ...params} = next
-    const historyEvents = this.state.historyState.events
-    const historicalSnapshot = this.state.historical.snapshot
-    const isLoadingSnapshot = this.state.historical.isLoading
-    const shouldLoadHistoricalSnapshot =
-      revChanged || (!isLoadingSnapshot && selectedRev && !historicalSnapshot)
-    const shouldLoadHistory = Boolean(historyEvents.length === 0 && selectedRev)
-
-    if (prevState.historyState.isEnabled && !this.state.historyState.isEnabled) {
-      this.handleCloseHistory()
-    }
-
-    if (shouldLoadHistory) {
-      debugHistory('Fetch history events')
-      this.handleFetchHistoryEvents()
-    }
-
-    // A new revision was selected, and we're not currently loading the snapshot
-    if (shouldLoadHistoricalSnapshot) {
-      this.handleFetchHistoricalDocument(rev)
-    }
-
-    // Transitioned to a different document
-    if (rev && prevProps.options.id !== this.props.options.id) {
-      debugHistory('Document ID changed, remove revision from URL')
-      // Tear out the revision from the URL, as well as the selected revision
-      this.context.setParams(params, {recurseIfInherited: true})
-      return
-    }
-
-    // History was closed
-    if (!rev && prev.rev) {
-      debugHistory('History closed, reset history state')
-      this.setHistoryState(INITIAL_HISTORY_STATE)
-      this.setState({historical: INITIAL_HISTORICAL_DOCUMENT_STATE})
-    }
-  }
-
-  handleFetchHistoricalDocument(atRev?: any) {
-    const isCurrent = atRev === CURRENT_REVISION_FLAG
-    if (isCurrent) {
-      return
-    }
-
-    const event = atRev ? this.findHistoryEventByRev(atRev) : this.findSelectedHistoryEvent()
-    if (!event) {
-      debugHistory(
-        'Could not find history event %s',
-        atRev ? `for revision ${atRev}` : ' (selected)'
-      )
-      return
-    }
-
-    if (event.type === 'unknown') {
-      debugHistory('Encountered unknown event type: %s', event.type)
-      return
-    }
-
-    if (!event.displayDocumentId) {
-      debugHistory('Missing display document ID: %s', event.type)
-      return
-    }
-
-    if (this._historyFetchDocSubscription) {
-      this._historyFetchDocSubscription.unsubscribe()
-    }
-
-    this.setState(({historical}) => ({
-      historical: {
-        ...historical,
-        snapshot: null,
-        prevSnapshot: historical.snapshot || historical.prevSnapshot,
-        isLoading: true
-      }
-    }))
-
-    const {displayDocumentId: id, rev} = event
-
-    debugHistory('Fetch historical document for rev %s', atRev)
-
-    this._historyFetchDocSubscription = from(historyStore.getDocumentAtRevision(id, rev)).subscribe(
-      (newSnapshot: any) => {
-        this.setState(({historical}) => ({
-          historical: {...historical, isLoading: false, snapshot: newSnapshot, prevSnapshot: null}
-        }))
-      }
-    )
-  }
-
-  handleHistorySelect = (event: any) => {
-    const paneContext = this.context
-    const eventisCurrent = this.state.historyState.events[0] === event
-
-    paneContext.setParams(
-      {...paneContext.params, rev: eventisCurrent ? CURRENT_REVISION_FLAG : event.rev},
+    paneRouter.setParams(
+      {...paneRouter.params, rev: eventisCurrent ? CURRENT_REVISION_FLAG : historyEvent.rev},
       {recurseIfInherited: true}
     )
   }
 
-  handleSplitPane = () => {
-    this.context.duplicateCurrent()
+  const handleCloseValidationResults = () => {
+    setShowValidationTooltip(false)
   }
 
-  handleSetActiveView = (...args: any[]) => {
-    this.context.setView(...args)
+  const handleClosePane = () => {
+    paneRouter.closeCurrent()
   }
 
-  handleClosePane = () => {
-    this.context.closeCurrent()
+  const handleHideInspector = () => {
+    setInspect(false)
   }
 
-  getInitialValue() {
-    const {value} = this.props
-    const typeName = this.props.options.type
-    const base = {_type: typeName}
-    return value ? base : {...base, ...this.props.initialValue}
-  }
-
-  canShowHistoryList() {
-    return (
-      this.context.siblingIndex === 0 &&
-      !this.props.isCollapsed &&
-      this.state.historyState.isEnabled
-    )
-  }
-
-  canShowChangesList() {
-    const isLastSibling = this.context.siblingIndex === this.context.groupLength - 1
-
-    return isLastSibling && !this.props.isCollapsed && this.state.historyState.isEnabled
-  }
-
-  componentDidMount() {
-    this._isMounted = true
-
-    this.resizeSubscriber = windowWidth$.subscribe(() => {
-      const historyEnabled = historyIsEnabled()
-      const hasNarrowScreen = isNarrowScreen()
-      if (this.state.historyState.isEnabled !== historyEnabled) {
-        this.setHistoryState({isEnabled: historyEnabled})
-      }
-
-      if (this.state.hasNarrowScreen !== hasNarrowScreen) {
-        this.setState({hasNarrowScreen})
-      }
-    })
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false
-
-    if (this.resizeSubscriber) {
-      this.resizeSubscriber.unsubscribe()
-    }
-
-    this.dispose()
-  }
-
-  isLiveEditEnabled() {
-    const selectedSchemaType = schema.get(this.props.options.type)
-    return selectedSchemaType.liveEdit === true
-  }
-
-  historyIsOpen() {
-    return Boolean(this.props.urlParams.rev)
-  }
-
-  dispose() {
-    if (this.subscription) {
-      this.subscription.unsubscribe()
-      this.subscription = undefined
-    }
-
-    if (this._historyEventsSubscription) {
-      this._historyEventsSubscription.unsubscribe()
-    }
-
-    if (this._historyFetchDocSubscription) {
-      this._historyFetchDocSubscription.unsubscribe()
-    }
-  }
-
-  handleToggleInspect = () => {
-    const {value} = this.props
-    if (!value) {
+  const handleOpenHistory = () => {
+    if (!canShowHistoryList || isHistoryOpen) {
       return
     }
 
-    this.setState(prevState => ({inspect: !prevState.inspect}))
+    paneRouter.setParams(
+      {...paneRouter.params, rev: CURRENT_REVISION_FLAG},
+      {recurseIfInherited: true}
+    )
   }
 
-  handleKeyUp = (event: any) => {
-    if (event.keyCode === 'Escape' && this.state.showValidationTooltip) {
-      return this.setState({showValidationTooltip: false})
-    }
-
-    if (isInspectHotkey(event) && !this.historyIsOpen()) {
-      return this.handleToggleInspect()
-    }
-
-    if (isPreviewHotkey(event)) {
-      //todo
-      const {draft, published} = this.props
-      const item = getProductionPreviewItem({draft, published})
-      return item && item.url && window.open(item.url)
-    }
-
-    return null
-  }
-
-  handleHideInspector = () => {
-    this.setState({inspect: false})
-  }
-
-  handleMenuAction = (item: any) => {
+  const handleMenuAction = (item: {
+    action: 'production-preview' | 'inspect' | 'browseHistory'
+    url?: string
+  }) => {
     if (item.action === 'production-preview') {
       window.open(item.url)
       return true
     }
-
     if (item.action === 'inspect') {
-      this.setState({inspect: true})
+      setInspect(true)
       return true
     }
-
     if (item.action === 'browseHistory') {
-      this.handleOpenHistory()
+      handleOpenHistory()
       return true
     }
-
-    this.setState({isMenuOpen: false})
     return false
   }
 
-  handleCloseValidationResults = () => {
-    this.setState({showValidationTooltip: false})
+  const handleSetActiveView = (...args: any[]) => {
+    paneRouter.setView(...args)
   }
 
-  handleToggleValidationResults = () => {
-    this.setState(prevState => ({showValidationTooltip: !prevState.showValidationTooltip}))
-  }
-
-  setHistoryState = (nextHistoryState: any, cb = noop) => {
-    this.setState(
-      ({historyState: currentHistoryState}) => ({
-        historyState: {...currentHistoryState, ...nextHistoryState}
-      }),
-      cb
-    )
-  }
-
-  handleFetchHistoryEvents() {
-    const {options} = this.props
-
-    if (this._historyEventsSubscription) {
-      this._historyEventsSubscription.unsubscribe()
-    }
-
-    this._historyEventsSubscription = historyStore
-      .historyEventsFor(getPublishedId(options.id))
-      .pipe(
-        map(events => {
-          this.setHistoryState({events, isLoading: false})
-          return events
-        })
-      )
-      .subscribe()
-  }
-
-  handleOpenHistory = () => {
-    if (!this.canShowHistoryList() || this.historyIsOpen()) {
-      return
-    }
-
-    this.context.setParams(
-      {...this.context.params, rev: CURRENT_REVISION_FLAG},
-      {recurseIfInherited: true}
-    )
-  }
-
-  handleCloseHistory = (ctx?: any) => {
-    const context = this.context || ctx
-    if (this._historyEventsSubscription) {
-      this._historyEventsSubscription.unsubscribe()
-    }
-
-    const {rev, ...params} = context.params
-    if (rev) {
-      // If there is a revision in the URL, remove it and let componentDidUpdate handle closing transition
-      context.setParams(params, {recurseIfInherited: true})
+  const handleSetFocus = (path: any) => {
+    if (formRef.current) {
+      formRef.current.handleFocus(path)
     }
   }
 
-  handleMenuToggle = (evt: any) => {
-    evt.stopPropagation()
-    this.setState(prevState => ({isMenuOpen: !prevState.isMenuOpen}))
+  const handleSplitPane = () => {
+    if (hasNarrowScreen) return
+    paneRouter.duplicateCurrent()
   }
 
-  handleEditAsActualType = () => {
-    const paneContext = this.context
-    const {value} = this.props
-    if (!value) {
-      throw new Error("Can't navigate to unknown document")
+  const handleToggleValidationResults = () => {
+    setShowValidationTooltip(val => !val)
+  }
+
+  const handleCloseHistory = React.useCallback(() => {
+    const {rev: revParam, ...params} = paneRouter.params
+
+    if (revParam) {
+      paneRouter.setParams(params, {recurseIfInherited: true})
     }
-    paneContext.navigateIntent('edit', {
-      id: getPublishedId(value._id),
-      type: value._type
-    })
-  }
+  }, [paneRouter])
 
-  handleSetFocus = (path: any) => {
-    if (this.formRef.current) {
-      this.formRef.current.handleFocus(path)
-    }
-  }
+  const handleResize = React.useCallback(() => {
+    const historyEnabled = window && window.innerWidth > BREAKPOINT_SCREEN_MEDIUM
+    const newHasNarrowScreen = isNarrowScreen()
 
-  findSelectedHistoryEvent() {
-    const selectedRev = this.props.urlParams.rev
-    return this.findHistoryEventByRev(selectedRev)
-  }
-
-  findHistoryEventByRev(rev: any) {
-    const {events} = this.state.historyState
-    return rev === CURRENT_REVISION_FLAG
-      ? events[0]
-      : events.find(event => event.rev === rev || event.transactionIds.includes(rev))
-  }
-
-  render() {
-    const {
-      isSelected,
-      isCollapsed,
-      isClosable,
-      markers,
-      menuItemGroups,
-      onChange,
-      onCollapse,
-      connectionState,
-      onExpand,
-      options,
-      paneKey,
-      urlParams,
-      value,
-      views
-    } = this.props
-
-    const typeName = options.type
-    const schemaType = schema.get(typeName)
-
-    if (!schemaType) {
-      return (
-        <ErrorPane
-          {...this.props}
-          color="warning"
-          title={
-            <>
-              Unknown document type: <code>{typeName}</code>
-            </>
-          }
-        >
-          {typeName && (
-            <p>
-              This document has the schema type <code>{typeName}</code>, which is not defined as a
-              type in the local content studio schema.
-            </p>
-          )}
-          {!typeName && (
-            <p>This document does not exist, and no schema type was specified for it.</p>
-          )}
-          {__DEV__ && value && (
-            <div>
-              <h4>Here is the JSON representation of the document:</h4>
-              <pre>
-                <code>{JSON.stringify(value, null, 2)}</code>
-              </pre>
-            </div>
-          )}
-        </ErrorPane>
-      )
+    if (isHistoryEnabled !== historyEnabled) {
+      setIsHistoryEnabled(historyEnabled)
     }
 
-    if (connectionState === 'connecting') {
-      return <LoadingPane {...this.props} delay={600} message={`Loading ${schemaType.title}…`} />
+    if (hasNarrowScreen !== newHasNarrowScreen) {
+      setHasNarrowScreen(newHasNarrowScreen)
     }
+  }, [isHistoryEnabled, setIsHistoryEnabled, hasNarrowScreen, setHasNarrowScreen])
 
-    const {hasNarrowScreen, historical, historyState, inspect, showValidationTooltip} = this.state
-    const initialValue = this.getInitialValue()
-    const activeViewId = this.getActiveViewId()
-    const selectedHistoryEvent = this.findSelectedHistoryEvent()
-    const menuItems = getMenuItems({
-      value,
-      isLiveEditEnabled: this.isLiveEditEnabled(),
-      revision: selectedHistoryEvent && selectedHistoryEvent.rev,
-      // revision: selectedHistoryEvent && selectedHistoryEvent._rev,
-      canShowHistoryList: this.canShowHistoryList()
-    })
+  // Monitor screen size, and disable history on narrow screens
+  React.useEffect(() => {
+    const resizeSubscriber = windowWidth$.subscribe(handleResize)
+    return () => resizeSubscriber.unsubscribe()
+  }, [isHistoryEnabled])
 
-    const isHistoryOpen = this.historyIsOpen()
-    const selectedIsLatest =
-      urlParams.rev === CURRENT_REVISION_FLAG && selectedHistoryEvent === historyState.events[0]
+  // Reset document state
+  React.useEffect(() => {
+    const prevPublishedId = documentIdRef.current
+    documentIdRef.current = documentId
+    if (documentId !== prevPublishedId) {
+      console.log('TODO: reset state')
+    }
+  }, [documentId])
 
+  if (!schemaType) {
     return (
-      <DocumentActionShortcuts
-        id={options.id}
-        type={typeName}
-        onKeyUp={this.handleKeyUp}
-        className={isHistoryOpen ? styles.withHistoryMode : styles.root}
+      <ErrorPane
+        {...props}
+        color="warning"
+        title={
+          <>
+            Unknown document type: <code>{typeName}</code>
+          </>
+        }
       >
-        {isHistoryOpen && this.canShowHistoryList() && (
-          <div className={styles.navigatorContainer} key="navigator">
-            <HistoryNavigator
-              documentId={getPublishedId(options.id)}
-              onItemSelect={this.handleHistorySelect}
-              events={historyState.events}
-              isLoading={historyState.isLoading}
-              error={historyState.error}
-              selectedEvent={selectedHistoryEvent}
-            />
+        {typeName && (
+          <p>
+            This document has the schema type <code>{typeName}</code>, which is not defined as a
+            type in the local content studio schema.
+          </p>
+        )}
+        {!typeName && <p>This document does not exist, and no schema type was specified for it.</p>}
+        {__DEV__ && value && (
+          <div>
+            <h4>Here is the JSON representation of the document:</h4>
+            <pre>
+              <code>{JSON.stringify(value, null, 2)}</code>
+            </pre>
           </div>
         )}
+      </ErrorPane>
+    )
+  }
 
-        <div className={styles.editorContainer} key="editor">
-          <Editor
-            activeViewId={activeViewId}
-            connectionState={connectionState}
-            formRef={this.formRef}
-            hasSiblings={this.context.hasGroupSiblings}
-            historical={historical}
-            historyState={historyState}
-            initialValue={initialValue}
-            inspect={inspect}
-            isClosable={isClosable}
-            isCollapsed={isCollapsed}
-            isHistoryOpen={isHistoryOpen}
-            isSelected={isSelected}
-            markers={markers}
-            menuItemGroups={menuItemGroups}
-            menuItems={menuItems}
-            onAction={this.handleMenuAction}
-            onChange={onChange}
-            onCloseValidationResults={this.handleCloseValidationResults}
-            onCloseView={this.handleClosePane}
-            onCollapse={onCollapse}
-            onExpand={onExpand}
-            onHideInspector={this.handleHideInspector}
-            onOpenHistory={this.handleOpenHistory}
-            onSetActiveView={this.handleSetActiveView}
-            onSetFocus={this.handleSetFocus}
-            onSplitPane={hasNarrowScreen ? undefined : this.handleSplitPane}
-            onToggleValidationResults={this.handleToggleValidationResults}
-            options={options}
-            paneTitle={this.props.title}
-            paneKey={paneKey}
-            publishedId={this.getPublishedId()}
-            rev={this.props.urlParams.rev}
-            selectedHistoryEvent={selectedHistoryEvent}
-            selectedIsLatest={selectedIsLatest}
-            showValidationTooltip={showValidationTooltip}
-            value={value}
-            views={views}
+  if (connectionState === 'connecting') {
+    return <LoadingPane {...props} delay={600} message={`Loading ${schemaType.title}…`} />
+  }
+
+  if (!documentId) {
+    return <div>No document ID</div>
+  }
+
+  return (
+    <DocumentActionShortcuts
+      id={options.id}
+      type={typeName}
+      onKeyUp={handleKeyUp}
+      className={isHistoryOpen ? styles.withHistoryMode : styles.root}
+    >
+      {isHistoryOpen && canShowHistoryList && (
+        <div className={styles.navigatorContainer} key="navigator">
+          <HistoryNavigator
+            documentId={documentId}
+            onItemSelect={handleHistorySelect}
+            events={historyState.events}
+            isLoading={historyState.isLoading}
+            error={historyState.error}
+            selectedEvent={selectedHistoryEvent}
           />
         </div>
+      )}
 
-        {isHistoryOpen && this.canShowChangesList() && (
-          <div className={styles.inspectorContainer} key="inspector">
-            <ChangesInspector onHistoryClose={this.handleCloseHistory} />
-          </div>
-        )}
-      </DocumentActionShortcuts>
-    )
-  }
+      <div className={styles.editorContainer} key="editor">
+        <Editor
+          activeViewId={activeViewId}
+          connectionState={connectionState}
+          documentId={options.id}
+          documentType={options.type}
+          formRef={formRef}
+          hasSiblings={paneRouter.hasGroupSiblings}
+          revision={revision}
+          historyState={historyState}
+          initialValue={initialValue}
+          inspect={inspect}
+          isClosable={isClosable}
+          isCollapsed={isCollapsed}
+          isHistoryOpen={isHistoryOpen}
+          isSelected={isSelected}
+          markers={markers}
+          menuItemGroups={menuItemGroups}
+          menuItems={menuItems}
+          onAction={handleMenuAction}
+          onChange={onChange}
+          onCloseValidationResults={handleCloseValidationResults}
+          onCloseView={handleClosePane}
+          onCollapse={onCollapse}
+          onExpand={onExpand}
+          onHideInspector={handleHideInspector}
+          onOpenHistory={handleOpenHistory}
+          onSetActiveView={handleSetActiveView}
+          onSetFocus={handleSetFocus}
+          onSplitPane={handleSplitPane}
+          onToggleValidationResults={handleToggleValidationResults}
+          paneTitle={title}
+          paneKey={paneKey}
+          publishedId={documentId}
+          rev={rev}
+          selectedHistoryEvent={selectedHistoryEvent}
+          selectedHistoryEventIsLatest={selectedHistoryEventIsLatest}
+          showValidationTooltip={showValidationTooltip}
+          value={value}
+          views={views}
+        />
+      </div>
+
+      {isHistoryOpen && canShowChangesList && (
+        <div className={styles.inspectorContainer} key="inspector">
+          <ChangesInspector onHistoryClose={handleCloseHistory} />
+        </div>
+      )}
+    </DocumentActionShortcuts>
+  )
 }
+
+export default DocumentPane
