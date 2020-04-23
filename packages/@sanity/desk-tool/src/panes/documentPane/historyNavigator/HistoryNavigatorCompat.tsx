@@ -3,12 +3,14 @@
 import * as React from 'react'
 import {HistoryNavigatorProps} from './__legacy'
 import {HistoryNavigator} from './HistoryNavigator'
-import {HistoryTimelineEvent} from './types'
+import {HistoryTimelineEvent, HistoryTimelineUnknownEvent} from './types'
 
 export function HistoryNavigatorCompat(props: HistoryNavigatorProps) {
   // console.log('HistoryNavigatorCompat', props)
 
-  const events: HistoryTimelineEvent[] = props.events.map(event => {
+  const eventsIncludingUnknowns: Array<
+    HistoryTimelineEvent | HistoryTimelineUnknownEvent
+  > = props.events.map(event => {
     if (event.type === 'created') {
       return {
         type: 'create',
@@ -76,12 +78,16 @@ export function HistoryNavigatorCompat(props: HistoryNavigatorProps) {
       }
     }
 
+    console.warn('unknown event', event)
+
     return {
       type: 'unknown',
       message: `unknown type: ${event.type}`,
       rev: event.rev
     }
   })
+
+  const events = eventsIncludingUnknowns.filter(e => e.type !== 'unknown') as HistoryTimelineEvent[]
 
   const handleOpenRevision = (rev: string) => {
     const item = props.events.find(e => e.rev === rev)
