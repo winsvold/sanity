@@ -4,21 +4,19 @@
 import React from 'react'
 import schema from 'part:@sanity/base/schema'
 import {getPublishedId} from 'part:@sanity/base/util/draft-utils'
+import {usePaneRouter} from '../../contexts/PaneRouterContext'
 import isNarrowScreen from '../../utils/isNarrowScreen'
 import windowWidth$ from '../../utils/windowWidth'
-import {HistoryNavigator} from './historyNavigator'
-import {getMenuItems, getProductionPreviewItem} from './documentPaneMenuItems'
-import {usePaneRouter} from '../../contexts/PaneRouterContext'
-import {DocumentActionShortcuts} from './DocumentActionShortcuts'
-import {ChangesInspector} from './changesInspector'
-import {CURRENT_REVISION_FLAG} from '../../constants'
-import {BREAKPOINT_SCREEN_MEDIUM} from './constants'
-import {Editor} from './editor'
 import {ErrorPane} from '../errorPane'
 import {LoadingPane} from '../loadingPane'
-import {decodeRevisionRange, encodeRevisionRange, isInspectHotkey, isPreviewHotkey} from './helpers'
+import {ChangesInspector} from './changesInspector'
+import {BREAKPOINT_SCREEN_MEDIUM} from './constants'
+import {Editor} from './editor'
 import {useDocumentHistory} from './history'
-import {Doc, MenuAction, RevisionRange} from './types'
+import {HistoryNavigator} from './historyNavigator'
+import {getMenuItems, getProductionPreviewItem} from './menuItems'
+import {DocumentActionShortcuts, isInspectHotkey, isPreviewHotkey} from './keyboardShortcuts'
+import {Doc, DocumentViewType, MenuAction} from './types'
 
 import styles from './DocumentPane.css'
 
@@ -41,14 +39,8 @@ interface Props {
   onCollapse?: () => void
   menuItems: MenuAction[]
   menuItemGroups: {id: string}[]
-  views: {
-    type: string
-    id: string
-    title: string
-    options: {}
-    component: React.ComponentType<any>
-  }[]
-  initialValue?: {[field: string]: any}
+  views: DocumentViewType[]
+  initialValue?: Doc
   options: {
     id: string
     type: string
@@ -60,7 +52,7 @@ interface Props {
   }
 }
 
-function getInitialValue(props: Props) {
+function getInitialValue(props: Props): Doc {
   const {initialValue = {}, options, value} = props
   const base = {_type: options.type}
 
@@ -89,17 +81,18 @@ function DocumentPane(props: Props) {
   const documentId = getPublishedId(options.id)
   const typeName = options.type
   const schemaType = schema.get(typeName)
-  const selection = decodeRevisionRange(urlParams.rev || null)
-  const rev = selection && selection[1]
 
   // Contexts
   const paneRouter: any = usePaneRouter()
   const {
     historyState,
+    openHistory,
     revision,
     selectedHistoryEvent,
-    selectedHistoryEventIsLatest
-  } = useDocumentHistory({documentId, selection})
+    selectedHistoryEventIsLatest,
+    selection,
+    setSelection
+  } = useDocumentHistory({documentId, urlParams})
 
   // Refs
   const formRef = React.useRef<any | null>(null)
@@ -133,6 +126,14 @@ function DocumentPane(props: Props) {
 
   // Callbacks
 
+  const handleOpenHistory = () => {
+    if (!canShowHistoryList || isHistoryOpen) {
+      return
+    }
+
+    openHistory()
+  }
+
   const handleToggleInspect = () => {
     if (!value) return
     setInspect(val => !val)
@@ -158,32 +159,6 @@ function DocumentPane(props: Props) {
     }
   }
 
-  const handleHistorySelect = (historyEvent: any) => {
-    // TODO: remove this
-    // const eventisCurrent = historyState.events[0] === historyEvent
-    // paneRouter.setParams(
-    //   {...paneRouter.params, rev: eventisCurrent ? CURRENT_REVISION_FLAG : historyEvent.rev},
-    //   {recurseIfInherited: true}
-    // )
-  }
-
-  const setSelection = (selection: RevisionRange) => {
-    console.log('set selection', selection)
-
-    if (selection) {
-      paneRouter.setParams(
-        {...paneRouter.params, rev: encodeRevisionRange(selection)},
-        {recurseIfInherited: true}
-      )
-    } else {
-      const {rev: revParam, ...routerParams} = paneRouter.params
-
-      if (revParam) {
-        paneRouter.setParams(routerParams, {recurseIfInherited: true})
-      }
-    }
-  }
-
   const handleCloseValidationResults = () => {
     setShowValidationTooltip(false)
   }
@@ -194,17 +169,6 @@ function DocumentPane(props: Props) {
 
   const handleHideInspector = () => {
     setInspect(false)
-  }
-
-  const handleOpenHistory = () => {
-    if (!canShowHistoryList || isHistoryOpen) {
-      return
-    }
-
-    paneRouter.setParams(
-      {...paneRouter.params, rev: CURRENT_REVISION_FLAG},
-      {recurseIfInherited: true}
-    )
   }
 
   const handleMenuAction = (item: MenuAction) => {
@@ -316,6 +280,9 @@ function DocumentPane(props: Props) {
     return <div>No document ID</div>
   }
 
+  const showHistoryNavigator = isHistoryOpen && canShowHistoryList
+  const showChangesInspector = isHistoryOpen && canShowChangesList
+
   return (
     <DocumentActionShortcuts
       id={options.id}
@@ -323,11 +290,9 @@ function DocumentPane(props: Props) {
       onKeyUp={handleKeyUp}
       className={isHistoryOpen ? styles.withHistoryMode : styles.root}
     >
-      {isHistoryOpen && canShowHistoryList && (
+      {showHistoryNavigator && (
         <div className={styles.navigatorContainer} key="navigator">
           <HistoryNavigator
-            documentId={documentId}
-            onItemSelect={handleHistorySelect}
             events={historyState.events}
             isLoading={historyState.isLoading}
             error={historyState.error}
@@ -370,7 +335,7 @@ function DocumentPane(props: Props) {
           onToggleValidationResults={handleToggleValidationResults}
           paneTitle={title}
           paneKey={paneKey}
-          rev={rev}
+          // rev={rev}
           selectedHistoryEvent={selectedHistoryEvent}
           selectedHistoryEventIsLatest={selectedHistoryEventIsLatest}
           showValidationTooltip={showValidationTooltip}
@@ -379,7 +344,7 @@ function DocumentPane(props: Props) {
         />
       </div>
 
-      {isHistoryOpen && canShowChangesList && (
+      {showChangesInspector && (
         <div className={styles.inspectorContainer} key="inspector">
           <ChangesInspector onHistoryClose={handleCloseHistory} />
         </div>

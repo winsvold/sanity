@@ -3,18 +3,26 @@
 
 import historyStore from 'part:@sanity/base/datastore/history'
 import * as React from 'react'
-import {from, Subscription} from 'rxjs'
-import {tap} from 'rxjs/operators'
-import {CURRENT_REVISION_FLAG} from '../../constants'
-import {HistoricalDocumentState, HistoryState, RevisionRange} from './types'
+import {from, Observable, Subscription} from 'rxjs'
+import {map, tap} from 'rxjs/operators'
+import {usePaneRouter} from '../../../contexts/PaneRouterContext'
+import {mapLegacyEventsToEvents} from '../historyNavigator/mapLegacyEventsToEvents'
+import {CURRENT_REVISION_FLAG} from './constants'
+import {decodeRevisionRange, encodeRevisionRange, findHistoryEventByRev} from './helpers'
+import {
+  HistoryRevisionState,
+  HistoryEventsState,
+  LegacyHistoryEventType,
+  RevisionRange
+} from './types'
 
-const INITIAL_REVISION: HistoricalDocumentState = {
+const INITIAL_REVISION: HistoryRevisionState = {
   isLoading: false,
   snapshot: null,
   prevSnapshot: null
 }
 
-const INITIAL_HISTORY_STATE: HistoryState = {
+const INITIAL_HISTORY_STATE: HistoryEventsState = {
   isLoading: false,
   isLoaded: false,
   error: null,
@@ -31,38 +39,63 @@ function debugHistory(...args: any[]) {
   }
 }
 
-function findHistoryEventByRev(rev: string | null, events: any[]) {
-  return rev === CURRENT_REVISION_FLAG
-    ? events[0]
-    : events.find(event => event.rev === rev || event.transactionIds.includes(rev))
-}
-
 export function useDocumentHistory({
   documentId,
-  selection
+  urlParams
 }: {
   documentId: string
-  selection: RevisionRange
+  urlParams: {
+    view: string
+    rev: string
+  }
 }) {
-  const revRef = React.useRef<string | null>(null)
+  const paneRouter: any = usePaneRouter()
+  const selection = decodeRevisionRange(urlParams.rev || null)
   const rev = selection && selection[1]
 
-  const [historyState, setHistoryState] = React.useState<HistoryState>({
-    ...INITIAL_HISTORY_STATE
-  })
-
-  const [revision, setRevision] = React.useState<HistoricalDocumentState>(INITIAL_REVISION)
-
+  // Refs
+  const loadedRevRef = React.useRef<string | null>(null)
   const historyEventsSubscriptionRef = React.useRef<Subscription | null>(null)
   const documentRevisionSubscriptionRef = React.useRef<Subscription | null>(null)
 
+  // States
+  const [historyState, setHistoryEventsState] = React.useState<HistoryEventsState>({
+    ...INITIAL_HISTORY_STATE
+  })
+  const [revision, setRevision] = React.useState<HistoryRevisionState>(INITIAL_REVISION)
+
+  // Values
   const selectedHistoryEvent = findHistoryEventByRev(rev, historyState.events)
   const selectedHistoryEventIsLatest =
     rev === CURRENT_REVISION_FLAG && selectedHistoryEvent === historyState.events[0]
 
+  // Callbacks
+
+  const setSelection = (selection: RevisionRange) => {
+    if (selection) {
+      paneRouter.setParams(
+        {...paneRouter.params, rev: encodeRevisionRange(selection)},
+        {recurseIfInherited: true}
+      )
+    } else {
+      const {rev: revParam, ...routerParams} = paneRouter.params
+
+      if (revParam) {
+        paneRouter.setParams(routerParams, {recurseIfInherited: true})
+      }
+    }
+  }
+
+  const openHistory = () => {
+    paneRouter.setParams(
+      {...paneRouter.params, rev: CURRENT_REVISION_FLAG},
+      {recurseIfInherited: true}
+    )
+  }
+
   // Load revision
   React.useEffect(() => {
-    const prevRev = revRef.current
+    const prevRev = loadedRevRef.current
 
     if (!rev || rev === CURRENT_REVISION_FLAG) {
       // No revision ID to load
@@ -83,7 +116,7 @@ export function useDocumentHistory({
     if (rev !== prevRev) {
       const event = findHistoryEventByRev(rev, historyState.events)
 
-      revRef.current = rev
+      loadedRevRef.current = rev
 
       if (!event) {
         debugHistory(
@@ -145,21 +178,26 @@ export function useDocumentHistory({
         historyEventsSubscriptionRef.current.unsubscribe()
       }
 
-      setHistoryState(val => ({...val, isLoading: true}))
+      setHistoryEventsState(val => ({...val, isLoading: true}))
 
-      historyEventsSubscriptionRef.current = historyStore
-        .historyEventsFor(documentId)
+      const legacyHistoryEvents$: Observable<LegacyHistoryEventType[]> = historyStore.historyEventsFor(
+        documentId
+      )
+
+      const historyEvents$ = legacyHistoryEvents$.pipe(map(mapLegacyEventsToEvents))
+
+      historyEventsSubscriptionRef.current = historyEvents$
         .pipe(
-          tap((events: any) => {
-            setHistoryState(val => ({...val, events, isLoaded: true, isLoading: false}))
-          })
+          tap(events =>
+            setHistoryEventsState(val => ({...val, events, isLoaded: true, isLoading: false}))
+          )
         )
         .subscribe()
     }
 
     if (!rev) {
       // reset history state
-      setHistoryState(INITIAL_HISTORY_STATE)
+      setHistoryEventsState(INITIAL_HISTORY_STATE)
 
       if (historyEventsSubscriptionRef.current) {
         historyEventsSubscriptionRef.current.unsubscribe()
@@ -167,7 +205,7 @@ export function useDocumentHistory({
     }
   }, [rev, historyState.isLoaded, historyState.isLoading, documentId])
 
-  // Unsubscribe from observables
+  // Unsubscribe from observables on unmount
   React.useEffect(() => {
     return () => {
       if (historyEventsSubscriptionRef.current) {
@@ -182,8 +220,11 @@ export function useDocumentHistory({
 
   return {
     historyState,
+    openHistory,
     revision,
     selectedHistoryEvent,
-    selectedHistoryEventIsLatest
+    selectedHistoryEventIsLatest,
+    selection,
+    setSelection
   }
 }

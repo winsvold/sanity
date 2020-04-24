@@ -9,15 +9,15 @@ import HistoryIcon from 'part:@sanity/base/history-icon'
 import resolveProductionPreviewUrl from 'part:@sanity/transitional/production-preview/resolve-production-url?'
 import Hotkeys from 'part:@sanity/components/typography/hotkeys'
 import styles from './documentPaneMenuItems.css'
-import {MenuAction} from './types'
+import {Doc, MenuAction} from '../types'
 
 interface Params {
   canShowHistoryList?: boolean
   isHistoryOpen?: boolean
   isHistoryEnabled?: boolean
   isLiveEditEnabled?: boolean
-  rev: string
-  value: any
+  rev: string | null
+  value: Doc | null
 }
 
 const getHistoryMenuItem = (params: Params): MenuAction | null => {

@@ -8,7 +8,7 @@ import Button from 'part:@sanity/components/buttons/default'
 import schema from 'part:@sanity/base/schema'
 import afterEditorComponents from 'all:part:@sanity/desk-tool/after-editor-component'
 import filterFieldFn$ from 'part:@sanity/desk-tool/filter-fields-fn?'
-import {CURRENT_REVISION_FLAG} from '../../../constants'
+// import {CURRENT_REVISION_FLAG} from '../history/constants'
 import EditForm from './EditForm'
 import HistoryForm from './HistoryForm'
 import {Doc} from '../types'
@@ -21,23 +21,17 @@ interface Props {
   document: {
     draft: Doc | null // {_id: string; _type: string}
     published: Doc | null // {_id: string; _type: string}
+    revision: Doc | null // {_id: string; _type: string}
     displayed: Doc | null // {_id: string; _type: string}
   }
-  initialValue: {_type: string}
+  initialValue: Doc
   isConnected: boolean
+  isHistoryOpen: boolean
   onChange: (patches: any[]) => void
   schemaType: {name: string; title: string}
   markers: Array<{path: any[]}>
-  history: {
-    isLoadingEvents: boolean
-    isOpen: boolean
-    selectedEvent: any
-    document: {
-      isLoading: boolean
-      snapshot: {_type: string}
-    }
-  }
-  rev: string | null
+  selectedHistoryEvent: any
+  selectedHistoryEventIsLatest: boolean
 }
 
 const noop = () => undefined
@@ -50,9 +44,9 @@ const INITIAL_STATE = {
 export default class FormView extends React.PureComponent<Props> {
   static defaultProps = {
     markers: [],
-    isConnected: true,
-    initialValue: undefined,
-    rev: CURRENT_REVISION_FLAG
+    isConnected: true
+    // initialValue: undefined,
+    // rev: CURRENT_REVISION_FLAG
   }
 
   state = INITIAL_STATE
@@ -98,7 +92,16 @@ export default class FormView extends React.PureComponent<Props> {
   }
 
   render() {
-    const {document, id, initialValue, history, markers, patchChannel, rev, schemaType} = this.props
+    const {
+      document,
+      id,
+      initialValue,
+      isHistoryOpen,
+      markers,
+      patchChannel,
+      schemaType,
+      selectedHistoryEventIsLatest
+    } = this.props
     const {draft, published, displayed} = document
     const {focusPath, filterField} = this.state
     const value = draft || published || ({} as Doc)
@@ -118,7 +121,8 @@ export default class FormView extends React.PureComponent<Props> {
       )
     }
 
-    const showHistoricDocument = history.isOpen && rev !== CURRENT_REVISION_FLAG
+    const showHistoricDocument = isHistoryOpen && selectedHistoryEventIsLatest
+    // rev !== CURRENT_REVISION_FLAG && selectedHistoryEvent
 
     return (
       <div className={styles.root}>

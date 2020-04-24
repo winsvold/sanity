@@ -1,25 +1,13 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import {HistoryTimelineEvent, LegacyHistoryEventType} from '../history/types'
 
-import * as React from 'react'
-import {RevisionRange} from '../types'
-import {HistoryNavigatorProps} from './__legacy'
-import {HistoryNavigator} from './HistoryNavigator'
-import {HistoryTimelineEvent, HistoryTimelineUnknownEvent} from './types'
-
-export function HistoryNavigatorCompat(
-  props: HistoryNavigatorProps & {
-    selection: RevisionRange
-    onSelect: (selection: RevisionRange) => void
-  }
-) {
-  // console.log('HistoryNavigatorCompat', props)
-
-  const eventsIncludingUnknowns: Array<
-    HistoryTimelineEvent | HistoryTimelineUnknownEvent
-  > = props.events.map(event => {
+export function mapLegacyEventsToEvents(
+  legacyEvents: LegacyHistoryEventType[]
+): HistoryTimelineEvent[] {
+  const eventsIncludingUnknowns: Array<HistoryTimelineEvent> = legacyEvents.map(event => {
     if (event.type === 'created') {
       return {
         type: 'create',
+        displayDocumentId: event.displayDocumentId,
         timestamp: Date.parse(event.endTime),
         userId: event.userIds[0],
         offset: 0,
@@ -30,6 +18,7 @@ export function HistoryNavigatorCompat(
     if (event.type === 'edited') {
       return {
         type: 'editSessionGroup',
+        displayDocumentId: event.displayDocumentId,
         sessions: [
           {
             type: 'editSession',
@@ -67,6 +56,7 @@ export function HistoryNavigatorCompat(
     if (event.type === 'deleted') {
       return {
         type: 'delete',
+        displayDocumentId: event.displayDocumentId,
         timestamp: Date.parse(event.endTime),
         userId: event.userIds[0],
         offset: 0,
@@ -77,6 +67,7 @@ export function HistoryNavigatorCompat(
     if (event.type === 'discardDraft') {
       return {
         type: 'discardDraft',
+        displayDocumentId: event.displayDocumentId,
         timestamp: Date.parse(event.endTime),
         userId: event.userIds[0],
         offset: 0,
@@ -87,6 +78,7 @@ export function HistoryNavigatorCompat(
     if (event.type === 'published') {
       return {
         type: 'publish',
+        displayDocumentId: event.displayDocumentId,
         timestamp: Date.parse(event.endTime),
         userId: event.userIds[0],
         offset: 0,
@@ -97,6 +89,7 @@ export function HistoryNavigatorCompat(
     if (event.type === 'unpublished') {
       return {
         type: 'unpublish',
+        displayDocumentId: event.displayDocumentId,
         timestamp: Date.parse(event.endTime),
         userId: event.userIds[0],
         offset: 0,
@@ -107,6 +100,7 @@ export function HistoryNavigatorCompat(
     if (event.type === 'truncated') {
       return {
         type: 'truncate',
+        displayDocumentId: event.displayDocumentId,
         timestamp: Date.parse(event.endTime),
         userIds: event.userIds,
         offset: 0,
@@ -118,12 +112,12 @@ export function HistoryNavigatorCompat(
 
     return {
       type: 'unknown',
+      displayDocumentId: event.displayDocumentId,
+      timestamp: Date.parse(event.endTime),
       message: `unknown type: ${event.type}`,
       rev: event.rev
     }
   })
 
-  const events = eventsIncludingUnknowns.filter(e => e.type !== 'unknown') as HistoryTimelineEvent[]
-
-  return <HistoryNavigator events={events} onSelect={props.onSelect} selection={props.selection} />
+  return eventsIncludingUnknowns.filter(e => e.type !== 'unknown') as HistoryTimelineEvent[]
 }
