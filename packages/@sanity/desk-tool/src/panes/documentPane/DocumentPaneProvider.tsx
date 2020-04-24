@@ -9,7 +9,7 @@ import {
   useEditState,
   useValidationStatus
 } from '@sanity/react-hooks'
-import {MenuAction} from './types'
+import {Doc, MenuAction} from './types'
 
 interface Props {
   title?: string
@@ -31,7 +31,7 @@ interface Props {
     options: {}
     component: React.ComponentType<any>
   }[]
-  initialValue?: {[field: string]: any}
+  initialValue?: Doc
   options: {
     id: string
     type: string

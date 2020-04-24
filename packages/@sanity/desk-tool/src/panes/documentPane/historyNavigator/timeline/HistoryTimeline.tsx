@@ -9,9 +9,8 @@ import TruncateIcon from 'part:@sanity/base/truncate-icon'
 import UndoIcon from 'part:@sanity/base/undo-icon'
 import UnpublishIcon from 'part:@sanity/base/unpublish-icon'
 import * as React from 'react'
-import {RevisionRange} from '../../types'
-import {HistoryTimelineEvent} from '../types'
-import {getIsSelected} from './helpers'
+import {CURRENT_REVISION_FLAG} from '../../history/constants'
+import {HistoryTimelineEvent, RevisionRange} from '../../history/types'
 import {EditSessionGroupEvent} from './EditSessionGroupEvent'
 import {GenericEvent} from './GenericEvent'
 
@@ -46,12 +45,12 @@ function HistoryTimelineEventResolver({
 
     if (ev.shiftKey && selection) {
       const fromRev = Array.isArray(selection) ? selection[0] : selection
-      const toRev = isFirst ? '-' : event.rev
+      const toRev = isFirst ? CURRENT_REVISION_FLAG : event.rev
 
       return onSelect([fromRev, toRev])
     }
 
-    onSelect(isFirst ? '-' : event.rev)
+    onSelect(isFirst ? CURRENT_REVISION_FLAG : event.rev)
   }
 
   if (event.type === 'create') {
@@ -188,11 +187,12 @@ function HistoryTimelineEventResolver({
 export function HistoryTimeline(props: Props) {
   const {events, onSelect, selection} = props
   const len = events.length
-
   const leftRev = selection && Array.isArray(selection) ? selection[0] : selection
   const rightRev = selection && Array.isArray(selection) ? selection[1] : selection
-  const leftEvent = events.find(e => e.rev === leftRev)
-  const rightEvent = events.find(e => e.rev === rightRev)
+  const leftEvent =
+    leftRev === CURRENT_REVISION_FLAG ? events[0] : events.find(e => e.rev === leftRev)
+  const rightEvent =
+    rightRev === CURRENT_REVISION_FLAG ? events[0] : events.find(e => e.rev === rightRev)
   const leftIndex = leftEvent ? events.indexOf(leftEvent) : -1
   const rightIndex = rightEvent ? events.indexOf(rightEvent) : -1
   const toIndex = Math.min(leftIndex, rightIndex)

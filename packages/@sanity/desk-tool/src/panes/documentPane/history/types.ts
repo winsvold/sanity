@@ -1,3 +1,40 @@
+import {Doc} from '../types'
+
+export interface HistoryRevisionState {
+  isLoading: boolean
+  snapshot: Doc | null
+  prevSnapshot: Doc | null
+}
+
+export interface HistoryEventsState {
+  isLoading: boolean
+  isLoaded: boolean
+  error: null | Error
+  events: HistoryTimelineEvent[]
+}
+
+export type RevisionRange = string[] | string | null
+
+// TODO: remove this
+export interface LegacyHistoryEventType {
+  startTime: string
+  endTime: string
+  displayDocumentId: string
+  documentIds: string[]
+  rev: string
+  transactionIds: string[]
+  type:
+    | 'created'
+    | 'deleted'
+    | 'edited'
+    | 'published'
+    | 'unpublished'
+    | 'truncated'
+    | 'discardDraft'
+    | 'unknown'
+  userIds: string[]
+}
+
 export interface EditSession {
   type: 'editSession'
   edits: string[]
@@ -7,6 +44,7 @@ export interface EditSession {
 
 export interface HistoryTimelineCreateEvent {
   type: 'create'
+  displayDocumentId: string
   timestamp: number
   userId: string
   offset: number
@@ -15,6 +53,7 @@ export interface HistoryTimelineCreateEvent {
 
 export interface HistoryTimelineDeleteEvent {
   type: 'delete'
+  displayDocumentId: string
   timestamp: number
   userId: string
   offset: number
@@ -23,6 +62,7 @@ export interface HistoryTimelineDeleteEvent {
 
 export interface HistoryTimelineDiscardDraftEvent {
   type: 'discardDraft'
+  displayDocumentId: string
   timestamp: number
   userId: string
   offset: number
@@ -31,6 +71,7 @@ export interface HistoryTimelineDiscardDraftEvent {
 
 export interface HistoryTimelineEditSessionGroupEvent {
   type: 'editSessionGroup'
+  displayDocumentId: string
   sessions: Array<EditSession>
   timestamp: number
   userIds: string[]
@@ -41,6 +82,7 @@ export interface HistoryTimelineEditSessionGroupEvent {
 
 export interface HistoryTimelinePublishEvent {
   type: 'publish'
+  displayDocumentId: string
   timestamp: number
   userId: string
   offset: number
@@ -49,6 +91,7 @@ export interface HistoryTimelinePublishEvent {
 
 export interface HistoryTimelineTruncateEvent {
   type: 'truncate'
+  displayDocumentId: string
   timestamp: number
   userIds: string[]
   offset: number
@@ -57,6 +100,7 @@ export interface HistoryTimelineTruncateEvent {
 
 export interface HistoryTimelineUnpublishEvent {
   type: 'unpublish'
+  displayDocumentId: string
   timestamp: number
   userId: string
   offset: number
@@ -65,6 +109,8 @@ export interface HistoryTimelineUnpublishEvent {
 
 export interface HistoryTimelineUnknownEvent {
   type: 'unknown'
+  displayDocumentId: string
+  timestamp: number
   message: string
   rev: string
 }
@@ -77,3 +123,4 @@ export type HistoryTimelineEvent =
   | HistoryTimelinePublishEvent
   | HistoryTimelineTruncateEvent
   | HistoryTimelineUnpublishEvent
+  | HistoryTimelineUnknownEvent

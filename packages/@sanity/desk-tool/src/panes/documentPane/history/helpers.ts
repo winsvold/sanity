@@ -1,14 +1,14 @@
-import {RevisionRange} from './types'
+import {CURRENT_REVISION_FLAG} from './constants'
+import {HistoryTimelineEvent, RevisionRange} from './types'
 
-const KEY_I = 73
-const KEY_O = 79
+export function findHistoryEventByRev(
+  rev: string | null,
+  events: HistoryTimelineEvent[]
+): HistoryTimelineEvent | null {
+  if (!rev) return null
+  if (rev === CURRENT_REVISION_FLAG) return events[0] || null
 
-export function isInspectHotkey(event: KeyboardEvent): boolean {
-  return event.ctrlKey && event.keyCode === KEY_I && event.altKey && !event.shiftKey
-}
-
-export function isPreviewHotkey(event: KeyboardEvent): boolean {
-  return event.ctrlKey && event.keyCode === KEY_O && event.altKey && !event.shiftKey
+  return events.find(event => event.rev === rev) || null
 }
 
 const RIGHT_INCLUSIVE_RANGE_LITERAL = '..'

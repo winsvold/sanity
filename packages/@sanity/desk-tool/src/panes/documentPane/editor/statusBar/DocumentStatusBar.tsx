@@ -10,7 +10,7 @@ import TimeAgo from '../../../../components/TimeAgo'
 interface Props {
   id: string
   type: string
-  lastUpdated: string
+  lastUpdated?: string
   onLastUpdatedButtonClick: () => void
 }
 
