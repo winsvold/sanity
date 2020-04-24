@@ -27,3 +27,5 @@ export interface MenuAction {
   title: React.ReactNode
   url?: string
 }
+
+export type RevisionRange = string[] | string | null

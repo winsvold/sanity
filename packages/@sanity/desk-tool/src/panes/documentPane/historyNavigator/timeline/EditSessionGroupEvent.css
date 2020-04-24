@@ -96,3 +96,10 @@
   font-size: 13px;
   line-height: 17px;
 }
+
+.content {
+  @nest .isSelected & {
+    background: var(--selectable-item-base);
+    color: #fff;
+  }
+}

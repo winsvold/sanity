@@ -7,12 +7,13 @@ import {EditSession} from '../types'
 import styles from './EditSessionList.css'
 
 interface Props {
+  isSelected: boolean
   sessions: EditSession[]
 }
 
-function EditSessionList({sessions}: Props) {
+function EditSessionList({isSelected, sessions}: Props) {
   return (
-    <div className={styles.root}>
+    <div className={isSelected ? styles.isSelected : styles.root}>
       {sessions.map((session, sessionIndex) => (
         <button className={styles.session} key={sessionIndex} type="button">
           {session.edits.map((_, editIndex) => (

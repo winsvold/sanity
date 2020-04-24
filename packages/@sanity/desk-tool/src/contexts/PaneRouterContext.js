@@ -275,3 +275,7 @@ export function getPaneRouterContextFactory(instance) {
     return ctx
   }
 }
+
+export function usePaneRouter() {
+  return React.useContext(PaneRouterContext)
+}

@@ -1,7 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react/jsx-no-bind */
-/* eslint-disable react/no-array-index-key */
 /* eslint-disable react/no-multi-comp */
 
 import QuestionIcon from 'part:@sanity/base/question-icon'
@@ -12,44 +9,60 @@ import TruncateIcon from 'part:@sanity/base/truncate-icon'
 import UndoIcon from 'part:@sanity/base/undo-icon'
 import UnpublishIcon from 'part:@sanity/base/unpublish-icon'
 import * as React from 'react'
+import {RevisionRange} from '../../types'
 import {HistoryTimelineEvent} from '../types'
+import {getIsSelected} from './helpers'
 import {EditSessionGroupEvent} from './EditSessionGroupEvent'
 import {GenericEvent} from './GenericEvent'
 
 import styles from './HistoryTimeline.css'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {
   events: HistoryTimelineEvent[]
   now: number
-  onOpenRevision: (rev: string) => void
-  selectedRev?: string
+  selection: RevisionRange
+  onSelect: (selection: RevisionRange) => void
 }
 
 function HistoryTimelineEventResolver({
   event,
   isFirst,
   isLast,
+  isSelected,
   now,
-  onOpenRevision,
-  selectedRev
+  onSelect,
+  selection
 }: {
   event: HistoryTimelineEvent
   isFirst: boolean
   isLast: boolean
+  isSelected: boolean
   now: number
-  onOpenRevision: (rev: string) => void
-  selectedRev?: string
+  onSelect: (selection: RevisionRange) => void
+  selection: RevisionRange
 }) {
+  const handleGenericEventClick = (ev: React.MouseEvent<HTMLButtonElement>) => {
+    ev.preventDefault()
+
+    if (ev.shiftKey && selection) {
+      const fromRev = Array.isArray(selection) ? selection[0] : selection
+      const toRev = isFirst ? '-' : event.rev
+
+      return onSelect([fromRev, toRev])
+    }
+
+    onSelect(isFirst ? '-' : event.rev)
+  }
+
   if (event.type === 'create') {
     return (
       <GenericEvent
         icon={<PlusIcon />}
         isFirst={isFirst}
         isLast={isLast}
-        isSelected={event.rev === selectedRev}
+        isSelected={isSelected}
         now={now}
-        onClick={() => onOpenRevision(event.rev)}
+        onClick={handleGenericEventClick}
         timestamp={event.timestamp}
         title="Created"
       />
@@ -62,9 +75,9 @@ function HistoryTimelineEventResolver({
         icon={<TrashIcon />}
         isFirst={isFirst}
         isLast={isLast}
-        isSelected={event.rev === selectedRev}
+        isSelected={isSelected}
         now={now}
-        onClick={() => onOpenRevision(event.rev)}
+        onClick={handleGenericEventClick}
         timestamp={event.timestamp}
         title="Deleted"
       />
@@ -77,9 +90,9 @@ function HistoryTimelineEventResolver({
         icon={<UndoIcon />}
         isFirst={isFirst}
         isLast={isLast}
-        isSelected={event.rev === selectedRev}
+        isSelected={isSelected}
         now={now}
-        onClick={() => onOpenRevision(event.rev)}
+        onClick={handleGenericEventClick}
         timestamp={event.timestamp}
         title="Discarded drafts"
       />
@@ -92,9 +105,10 @@ function HistoryTimelineEventResolver({
         event={event}
         isFirst={isFirst}
         isLast={isLast}
+        isSelected={isSelected}
         now={now}
-        onOpenRevision={onOpenRevision}
-        selectedRev={selectedRev}
+        onSelect={onSelect}
+        selection={selection}
       />
     )
   }
@@ -105,9 +119,9 @@ function HistoryTimelineEventResolver({
         icon={<PublishIcon />}
         isFirst={isFirst}
         isLast={isLast}
-        isSelected={event.rev === selectedRev}
+        isSelected={isSelected}
         now={now}
-        onClick={() => onOpenRevision(event.rev)}
+        onClick={handleGenericEventClick}
         timestamp={event.timestamp}
         title="Published"
       />
@@ -120,9 +134,9 @@ function HistoryTimelineEventResolver({
         icon={<UnpublishIcon />}
         isFirst={isFirst}
         isLast={isLast}
-        isSelected={event.rev === selectedRev}
+        isSelected={isSelected}
         now={now}
-        onClick={() => onOpenRevision(event.rev)}
+        onClick={handleGenericEventClick}
         timestamp={event.timestamp}
         title="Unpublished"
       />
@@ -135,9 +149,9 @@ function HistoryTimelineEventResolver({
         icon={<TruncateIcon />}
         isFirst={isFirst}
         isLast={isLast}
-        isSelected={event.rev === selectedRev}
+        isSelected={isSelected}
         now={now}
-        onClick={() => onOpenRevision(event.rev)}
+        onClick={handleGenericEventClick}
         timestamp={event.timestamp}
         title="Truncated"
       >
@@ -162,32 +176,47 @@ function HistoryTimelineEventResolver({
       icon={<QuestionIcon />}
       isFirst={isFirst}
       isLast={isLast}
-      isSelected={(event as any).rev === selectedRev}
+      isSelected={isSelected}
       now={now}
-      onClick={() => onOpenRevision((event as any).rev)}
+      onClick={handleGenericEventClick}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       title={(event as any).type}
     />
   )
 }
 
 export function HistoryTimeline(props: Props) {
-  // console.log('HistoryTimeline', props)
+  const {events, onSelect, selection} = props
+  const len = events.length
 
-  const len = props.events.length
+  const leftRev = selection && Array.isArray(selection) ? selection[0] : selection
+  const rightRev = selection && Array.isArray(selection) ? selection[1] : selection
+  const leftEvent = events.find(e => e.rev === leftRev)
+  const rightEvent = events.find(e => e.rev === rightRev)
+  const leftIndex = leftEvent ? events.indexOf(leftEvent) : -1
+  const rightIndex = rightEvent ? events.indexOf(rightEvent) : -1
+  const toIndex = Math.min(leftIndex, rightIndex)
+  const fromIndex = Math.max(leftIndex, rightIndex)
 
   return (
     <div className={styles.root}>
-      {props.events.map((event, idx) => (
-        <HistoryTimelineEventResolver
-          event={event}
-          isFirst={idx === 0}
-          isLast={idx === len - 1}
-          key={idx}
-          now={props.now}
-          onOpenRevision={props.onOpenRevision}
-          selectedRev={props.selectedRev}
-        />
-      ))}
+      {props.events.map((event, eventIndex) => {
+        const isFirst = eventIndex === 0
+        const isSelected = toIndex <= eventIndex && eventIndex <= fromIndex
+
+        return (
+          <HistoryTimelineEventResolver
+            event={event}
+            isFirst={isFirst}
+            isLast={eventIndex === len - 1}
+            isSelected={isSelected}
+            key={String(eventIndex)}
+            now={props.now}
+            onSelect={onSelect}
+            selection={selection}
+          />
+        )
+      })}
     </div>
   )
 }

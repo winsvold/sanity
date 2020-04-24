@@ -3,8 +3,10 @@
 import classNames from 'classnames'
 import EditIcon from 'part:@sanity/base/edit-icon'
 import * as React from 'react'
+import {RevisionRange} from '../../types'
 import {formatDate} from '../format'
 import {HistoryTimelineEditSessionGroupEvent} from '../types'
+// import {getIsSelected} from './helpers'
 import EditSessionList from './EditSessionList'
 
 import styles from './EditSessionGroupEvent.css'
@@ -13,23 +15,26 @@ interface Props {
   event: HistoryTimelineEditSessionGroupEvent
   isFirst: boolean
   isLast: boolean
+  isSelected: boolean
   now: number
-  onOpenRevision: (rev: string) => void
-  selectedRev?: string
+  // onSelect: (rev: string) => void
+  onSelect: (selection: RevisionRange) => void
+  selection: RevisionRange
 }
 
-export function EditSessionGroupEvent({
-  event,
-  isFirst,
-  isLast,
-  now,
-  onOpenRevision,
-  selectedRev
-}: Props) {
-  const isSelected = event.rev === selectedRev
+export function EditSessionGroupEvent(props: Props) {
+  const {event, isFirst, isLast, isSelected, now, onSelect, selection} = props
+  // const _isSelected = getIsSelected(selection, isFirst ? '-' : event.rev)
 
-  const handleHeaderClick = () => {
-    onOpenRevision(event.rev)
+  const handleHeaderClick = (ev: React.MouseEvent<HTMLButtonElement>) => {
+    if (ev.shiftKey && selection) {
+      const fromRev = Array.isArray(selection) ? selection[0] : selection
+      const toRev = isFirst ? '-' : event.rev
+
+      return onSelect([fromRev, toRev])
+    }
+
+    onSelect(isFirst ? '-' : event.rev)
   }
 
   return (
@@ -49,7 +54,7 @@ export function EditSessionGroupEvent({
       </button>
 
       <div className={styles.content}>
-        <EditSessionList sessions={event.sessions} />
+        <EditSessionList isSelected={isSelected} sessions={event.sessions} />
       </div>
     </div>
   )

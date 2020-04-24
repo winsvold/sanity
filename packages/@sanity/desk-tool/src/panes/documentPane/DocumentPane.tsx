@@ -8,7 +8,7 @@ import isNarrowScreen from '../../utils/isNarrowScreen'
 import windowWidth$ from '../../utils/windowWidth'
 import {HistoryNavigator} from './historyNavigator'
 import {getMenuItems, getProductionPreviewItem} from './documentPaneMenuItems'
-import {PaneRouterContext} from '../../contexts/PaneRouterContext'
+import {usePaneRouter} from '../../contexts/PaneRouterContext'
 import {DocumentActionShortcuts} from './DocumentActionShortcuts'
 import {ChangesInspector} from './changesInspector'
 import {CURRENT_REVISION_FLAG} from '../../constants'
@@ -16,9 +16,9 @@ import {BREAKPOINT_SCREEN_MEDIUM} from './constants'
 import {Editor} from './editor'
 import {ErrorPane} from '../errorPane'
 import {LoadingPane} from '../loadingPane'
-import {isInspectHotkey, isPreviewHotkey} from './helpers'
+import {decodeRevisionRange, encodeRevisionRange, isInspectHotkey, isPreviewHotkey} from './helpers'
 import {useDocumentHistory} from './history'
-import {Doc, MenuAction} from './types'
+import {Doc, MenuAction, RevisionRange} from './types'
 
 import styles from './DocumentPane.css'
 
@@ -67,10 +67,6 @@ function getInitialValue(props: Props) {
   return value ? base : {...base, ...initialValue}
 }
 
-function usePaneRouterContext() {
-  return React.useContext(PaneRouterContext)
-}
-
 function DocumentPane(props: Props) {
   const {
     isSelected,
@@ -93,16 +89,17 @@ function DocumentPane(props: Props) {
   const documentId = getPublishedId(options.id)
   const typeName = options.type
   const schemaType = schema.get(typeName)
-  const rev = urlParams.rev || null
+  const selection = decodeRevisionRange(urlParams.rev || null)
+  const rev = selection && selection[1]
 
   // Contexts
-  const paneRouter: any = usePaneRouterContext()
+  const paneRouter: any = usePaneRouter()
   const {
     historyState,
     revision,
     selectedHistoryEvent,
     selectedHistoryEventIsLatest
-  } = useDocumentHistory({documentId, rev})
+  } = useDocumentHistory({documentId, selection})
 
   // Refs
   const formRef = React.useRef<any | null>(null)
@@ -162,12 +159,29 @@ function DocumentPane(props: Props) {
   }
 
   const handleHistorySelect = (historyEvent: any) => {
-    const eventisCurrent = historyState.events[0] === historyEvent
+    // TODO: remove this
+    // const eventisCurrent = historyState.events[0] === historyEvent
+    // paneRouter.setParams(
+    //   {...paneRouter.params, rev: eventisCurrent ? CURRENT_REVISION_FLAG : historyEvent.rev},
+    //   {recurseIfInherited: true}
+    // )
+  }
 
-    paneRouter.setParams(
-      {...paneRouter.params, rev: eventisCurrent ? CURRENT_REVISION_FLAG : historyEvent.rev},
-      {recurseIfInherited: true}
-    )
+  const setSelection = (selection: RevisionRange) => {
+    console.log('set selection', selection)
+
+    if (selection) {
+      paneRouter.setParams(
+        {...paneRouter.params, rev: encodeRevisionRange(selection)},
+        {recurseIfInherited: true}
+      )
+    } else {
+      const {rev: revParam, ...routerParams} = paneRouter.params
+
+      if (revParam) {
+        paneRouter.setParams(routerParams, {recurseIfInherited: true})
+      }
+    }
   }
 
   const handleCloseValidationResults = () => {
@@ -317,7 +331,8 @@ function DocumentPane(props: Props) {
             events={historyState.events}
             isLoading={historyState.isLoading}
             error={historyState.error}
-            selectedEvent={selectedHistoryEvent}
+            onSelect={setSelection}
+            selection={selection}
           />
         </div>
       )}
