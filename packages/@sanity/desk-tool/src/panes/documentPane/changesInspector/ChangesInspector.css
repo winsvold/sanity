@@ -35,4 +35,8 @@
   -webkit-overflow-scrolling: touch;
   flex: 1;
   overflow: auto;
+
+  @nest & > div + div {
+    margin-top: 1em;
+  }
 }

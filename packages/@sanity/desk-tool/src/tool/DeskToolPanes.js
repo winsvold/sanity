@@ -272,9 +272,10 @@ export default class DeskToolPanes extends React.Component {
                     childItemId={childItemId}
                     onExpand={this.handlePaneExpand}
                     onCollapse={this.handlePaneCollapse}
-                    isCollapsed={isCollapsed}
-                    isSelected={i === panes.length - 1}
                     isClosable={siblingIndex > 0}
+                    isCollapsed={isCollapsed}
+                    isNarrowScreen={isNarrowScreen}
+                    isSelected={i === panes.length - 1}
                     {...pane}
                   />
                 )}

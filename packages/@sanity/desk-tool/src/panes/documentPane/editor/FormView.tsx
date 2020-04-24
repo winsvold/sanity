@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react/no-array-index-key */
 
 import React from 'react'
+import {Subscription} from 'rxjs'
 import {isActionEnabled} from 'part:@sanity/base/util/document-action-utils'
 import Button from 'part:@sanity/components/buttons/default'
 import schema from 'part:@sanity/base/schema'
 import afterEditorComponents from 'all:part:@sanity/desk-tool/after-editor-component'
 import filterFieldFn$ from 'part:@sanity/desk-tool/filter-fields-fn?'
-// import {CURRENT_REVISION_FLAG} from '../history/constants'
 import EditForm from './EditForm'
 import HistoryForm from './HistoryForm'
 import {Doc} from '../types'
@@ -17,19 +15,23 @@ import styles from './FormView.css'
 
 interface Props {
   id: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   patchChannel?: any
   document: {
-    draft: Doc | null // {_id: string; _type: string}
-    published: Doc | null // {_id: string; _type: string}
-    revision: Doc | null // {_id: string; _type: string}
-    displayed: Doc | null // {_id: string; _type: string}
+    draft: Doc | null
+    published: Doc | null
+    revision: Doc | null
+    displayed: Doc | null
   }
   initialValue: Doc
   isConnected: boolean
   isHistoryOpen: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChange: (patches: any[]) => void
   schemaType: {name: string; title: string}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   markers: Array<{path: any[]}>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   selectedHistoryEvent: any
   selectedHistoryEventIsLatest: boolean
 }
@@ -45,16 +47,16 @@ export default class FormView extends React.PureComponent<Props> {
   static defaultProps = {
     markers: [],
     isConnected: true
-    // initialValue: undefined,
-    // rev: CURRENT_REVISION_FLAG
   }
 
   state = INITIAL_STATE
 
-  filterFieldFnSubscription: any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  filterFieldFnSubscription: Subscription | null = null
 
   componentDidMount() {
     if (filterFieldFn$) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.filterFieldFnSubscription = filterFieldFn$.subscribe((filterField: any) =>
         this.setState({filterField})
       )
@@ -67,6 +69,7 @@ export default class FormView extends React.PureComponent<Props> {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleFocus = (path: any[]) => {
     this.setState({focusPath: path})
   }
@@ -121,8 +124,9 @@ export default class FormView extends React.PureComponent<Props> {
       )
     }
 
-    const showHistoricDocument = isHistoryOpen && selectedHistoryEventIsLatest
-    // rev !== CURRENT_REVISION_FLAG && selectedHistoryEvent
+    // console.log({isHistoryOpen, selectedHistoryEventIsLatest})
+
+    const showHistoricDocument = isHistoryOpen && !selectedHistoryEventIsLatest
 
     return (
       <div className={styles.root}>
@@ -145,8 +149,9 @@ export default class FormView extends React.PureComponent<Props> {
           />
         )}
 
-        {afterEditorComponents.map((AfterEditorComponent: any, i: number) => (
-          <AfterEditorComponent key={i} documentId={documentId} />
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        {afterEditorComponents.map((AfterEditorComponent: any, idx: number) => (
+          <AfterEditorComponent key={String(idx)} documentId={documentId} />
         ))}
       </div>
     )

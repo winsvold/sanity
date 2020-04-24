@@ -1,8 +1,9 @@
 export interface Doc {
   _id?: string
-  _type: string
+  _type?: string
   _rev?: string
   _updatedAt?: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
 }
 
@@ -19,5 +20,6 @@ export interface DocumentViewType {
   id: string
   title: string
   options: {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component: React.ComponentType<any>
 }

@@ -10,7 +10,7 @@ import windowWidth$ from '../../utils/windowWidth'
 import {ErrorPane} from '../errorPane'
 import {LoadingPane} from '../loadingPane'
 import {ChangesInspector} from './changesInspector'
-import {BREAKPOINT_SCREEN_MEDIUM} from './constants'
+import {HISTORY_BREAKPOINT_MIN} from './constants'
 import {Editor} from './editor'
 import {useDocumentHistory} from './history'
 import {HistoryNavigator} from './historyNavigator'
@@ -84,6 +84,10 @@ function DocumentPane(props: Props) {
 
   // Contexts
   const paneRouter: any = usePaneRouter()
+  const history = useDocumentHistory({documentId, urlParams})
+
+  // React.useEffect(() => console.log('history', history), [history])
+
   const {
     historyState,
     openHistory,
@@ -91,8 +95,9 @@ function DocumentPane(props: Props) {
     selectedHistoryEvent,
     selectedHistoryEventIsLatest,
     selection,
+    selectionRange,
     setSelection
-  } = useDocumentHistory({documentId, urlParams})
+  } = history
 
   // Refs
   const formRef = React.useRef<any | null>(null)
@@ -101,7 +106,7 @@ function DocumentPane(props: Props) {
   // States
   const [hasNarrowScreen, setHasNarrowScreen] = React.useState<boolean>(isNarrowScreen())
   const [isHistoryEnabled, setIsHistoryEnabled] = React.useState<boolean>(
-    window && window.innerWidth > BREAKPOINT_SCREEN_MEDIUM
+    window && window.innerWidth > HISTORY_BREAKPOINT_MIN
   )
   const [inspect, setInspect] = React.useState<boolean>(false)
   const [showValidationTooltip, setShowValidationTooltip] = React.useState<boolean>(false)
@@ -215,7 +220,7 @@ function DocumentPane(props: Props) {
   }, [paneRouter])
 
   const handleResize = React.useCallback(() => {
-    const historyEnabled = window && window.innerWidth > BREAKPOINT_SCREEN_MEDIUM
+    const historyEnabled = window && window.innerWidth > HISTORY_BREAKPOINT_MIN
     const newHasNarrowScreen = isNarrowScreen()
 
     if (isHistoryEnabled !== historyEnabled) {
@@ -280,6 +285,10 @@ function DocumentPane(props: Props) {
     return <div>No document ID</div>
   }
 
+  const revisionIsLoading = revision.from.isLoading && revision.to.isLoading
+  const toValue = selectedHistoryEventIsLatest ? value : revision.to.snapshot
+  const fromValue = revision.from.snapshot
+
   const showHistoryNavigator = isHistoryOpen && canShowHistoryList
   const showChangesInspector = isHistoryOpen && canShowChangesList
 
@@ -298,6 +307,7 @@ function DocumentPane(props: Props) {
             error={historyState.error}
             onSelect={setSelection}
             selection={selection}
+            selectionRange={selectionRange}
           />
         </div>
       )}
@@ -310,7 +320,7 @@ function DocumentPane(props: Props) {
           documentType={options.type}
           formRef={formRef}
           hasSiblings={paneRouter.hasGroupSiblings}
-          revision={revision}
+          revision={revision.to}
           historyState={historyState}
           initialValue={initialValue}
           inspect={inspect}
@@ -335,7 +345,6 @@ function DocumentPane(props: Props) {
           onToggleValidationResults={handleToggleValidationResults}
           paneTitle={title}
           paneKey={paneKey}
-          // rev={rev}
           selectedHistoryEvent={selectedHistoryEvent}
           selectedHistoryEventIsLatest={selectedHistoryEventIsLatest}
           showValidationTooltip={showValidationTooltip}
@@ -346,7 +355,13 @@ function DocumentPane(props: Props) {
 
       {showChangesInspector && (
         <div className={styles.inspectorContainer} key="inspector">
-          <ChangesInspector onHistoryClose={handleCloseHistory} />
+          <ChangesInspector
+            isLoading={revisionIsLoading}
+            fromValue={fromValue}
+            toValue={toValue}
+            onHistoryClose={handleCloseHistory}
+            schemaType={schemaType}
+          />
         </div>
       )}
     </DocumentActionShortcuts>

@@ -9,8 +9,12 @@ import TruncateIcon from 'part:@sanity/base/truncate-icon'
 import UndoIcon from 'part:@sanity/base/undo-icon'
 import UnpublishIcon from 'part:@sanity/base/unpublish-icon'
 import * as React from 'react'
-import {CURRENT_REVISION_FLAG} from '../../history/constants'
-import {HistoryTimelineEvent, RevisionRange} from '../../history/types'
+import {
+  CURRENT_REVISION_FLAG,
+  HistorySelectionRange,
+  HistoryTimelineEvent,
+  RevisionRange
+} from '../../history'
 import {EditSessionGroupEvent} from './EditSessionGroupEvent'
 import {GenericEvent} from './GenericEvent'
 
@@ -21,6 +25,7 @@ interface Props {
   now: number
   selection: RevisionRange
   onSelect: (selection: RevisionRange) => void
+  selectionRange: HistorySelectionRange
 }
 
 function HistoryTimelineEventResolver({
@@ -185,24 +190,15 @@ function HistoryTimelineEventResolver({
 }
 
 export function HistoryTimeline(props: Props) {
-  const {events, onSelect, selection} = props
+  const {events, onSelect, selection, selectionRange} = props
   const len = events.length
-  const leftRev = selection && Array.isArray(selection) ? selection[0] : selection
-  const rightRev = selection && Array.isArray(selection) ? selection[1] : selection
-  const leftEvent =
-    leftRev === CURRENT_REVISION_FLAG ? events[0] : events.find(e => e.rev === leftRev)
-  const rightEvent =
-    rightRev === CURRENT_REVISION_FLAG ? events[0] : events.find(e => e.rev === rightRev)
-  const leftIndex = leftEvent ? events.indexOf(leftEvent) : -1
-  const rightIndex = rightEvent ? events.indexOf(rightEvent) : -1
-  const toIndex = Math.min(leftIndex, rightIndex)
-  const fromIndex = Math.max(leftIndex, rightIndex)
+  const {from, to} = selectionRange
 
   return (
     <div className={styles.root}>
       {props.events.map((event, eventIndex) => {
         const isFirst = eventIndex === 0
-        const isSelected = toIndex <= eventIndex && eventIndex <= fromIndex
+        const isSelected = to.index <= eventIndex && eventIndex <= from.index
 
         return (
           <HistoryTimelineEventResolver
