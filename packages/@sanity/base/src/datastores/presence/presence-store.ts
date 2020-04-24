@@ -1,4 +1,4 @@
-import {EMPTY, merge, of, timer, BehaviorSubject, from} from 'rxjs'
+import {EMPTY, merge, of, timer, BehaviorSubject, defer, from} from 'rxjs'
 import {
   map,
   mapTo,
@@ -8,10 +8,11 @@ import {
   withLatestFrom,
   mergeMapTo,
   switchMap,
-  mergeMap
+  mergeMap,
+  share
 } from 'rxjs/operators'
 import {groupBy, omit} from 'lodash'
-import {createReflectorTransport} from './message-transports/reflectorTransport'
+import {createBifurTransport} from './message-transports/bifurTransport'
 
 export const CLIENT_ID = Math.random()
   .toString(32)
@@ -23,7 +24,7 @@ type PresenceLocation = {
   path?: (string | {})[]
 }
 
-const [events$, sendMessages] = createReflectorTransport<PresenceLocation[]>('presence', CLIENT_ID)
+const [events$, sendMessages] = createBifurTransport<PresenceLocation[]>(CLIENT_ID)
 
 type PrivacyType = 'anonymous' | 'private' | 'dataset' | 'visible'
 const privacy$ = new BehaviorSubject<PrivacyType>('visible')
@@ -51,17 +52,17 @@ const requestRollCall = () =>
       type: 'rollCall'
     }
   ])
-
-const reportLocation$ = merge(
-  location$.pipe(switchMap(loc => timer(0, 10000).pipe(mapTo(loc))))
-).pipe(
-  withLatestFrom(privacy$),
-  tap(([loc, privacy]) => {
-    if (privacy === 'visible') {
-      reportLocation(loc)
-    }
-  })
-)
+//
+// const reportLocation$ = merge(
+//   location$.pipe(switchMap(loc => timer(0, 10000).pipe(mapTo(loc))))
+// ).pipe(
+//   withLatestFrom(privacy$),
+//   tap(([loc, privacy]) => {
+//     if (privacy === 'visible') {
+//       reportLocation(loc)
+//     }
+//   })
+// )
 const purgeOld = clients => {
   const oldIds = Object.keys(clients).filter(
     id => new Date().getTime() - new Date(clients[id].timestamp).getTime() > 60 * 1000
@@ -71,27 +72,30 @@ const purgeOld = clients => {
 
 const purgeOld$ = timer(0, 10000).pipe(mapTo({type: 'purgeOld', clientId: CLIENT_ID}))
 
+location$.pipe(tap(reportLocation)).subscribe()
+
 export const clients$ = merge(
+  defer(() => {
+    console.log('request rollcall')
+    requestRollCall()
+    return EMPTY
+  }),
   events$.pipe(
     // tap(console.log),
-    withLatestFrom(location$, privacy$),
-    mergeMap(([event, location, privacy]) => {
-      if (event.type === 'rollCall' && privacy === 'visible') {
+    withLatestFrom(location$),
+    mergeMap(([event, location]) => {
+      console.log('Location', location)
+      if (event.type === 'rollCall') {
         reportLocation(location)
         return EMPTY
       }
       return of(event)
     })
-  ),
-  purgeOld$,
-  merge(reportLocation$).pipe(mergeMapTo(EMPTY))
+  )
+  // purgeOld$
+  // merge(reportLocation$).pipe(mergeMapTo(EMPTY))
 ).pipe(
   scan((clients, event: any) => {
-    if (event.type === 'welcome') {
-      // i am connected and can safely request a rollcall
-      requestRollCall()
-      return clients
-    }
     if (event.type === 'sync') {
       return {...clients, [event.clientId]: event}
     }
@@ -113,5 +117,6 @@ export const clients$ = merge(
         sessions: grouped[identity].map((session: any) => omit(session, 'identity'))
       }
     })
-  )
+  ),
+  share()
 )
