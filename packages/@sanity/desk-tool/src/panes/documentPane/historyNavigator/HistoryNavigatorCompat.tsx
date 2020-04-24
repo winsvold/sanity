@@ -1,11 +1,17 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import * as React from 'react'
+import {RevisionRange} from '../types'
 import {HistoryNavigatorProps} from './__legacy'
 import {HistoryNavigator} from './HistoryNavigator'
 import {HistoryTimelineEvent, HistoryTimelineUnknownEvent} from './types'
 
-export function HistoryNavigatorCompat(props: HistoryNavigatorProps) {
+export function HistoryNavigatorCompat(
+  props: HistoryNavigatorProps & {
+    selection: RevisionRange
+    onSelect: (selection: RevisionRange) => void
+  }
+) {
   // console.log('HistoryNavigatorCompat', props)
 
   const eventsIncludingUnknowns: Array<
@@ -119,17 +125,5 @@ export function HistoryNavigatorCompat(props: HistoryNavigatorProps) {
 
   const events = eventsIncludingUnknowns.filter(e => e.type !== 'unknown') as HistoryTimelineEvent[]
 
-  const handleOpenRevision = (rev: string) => {
-    const item = props.events.find(e => e.rev === rev)
-
-    if (item) props.onItemSelect(item)
-  }
-
-  return (
-    <HistoryNavigator
-      currentRev={props.selectedEvent && props.selectedEvent.rev}
-      events={events}
-      onOpenRevision={handleOpenRevision}
-    />
-  )
+  return <HistoryNavigator events={events} onSelect={props.onSelect} selection={props.selection} />
 }

@@ -6,7 +6,7 @@ import * as React from 'react'
 import {from, Subscription} from 'rxjs'
 import {tap} from 'rxjs/operators'
 import {CURRENT_REVISION_FLAG} from '../../constants'
-import {HistoricalDocumentState, HistoryState} from './types'
+import {HistoricalDocumentState, HistoryState, RevisionRange} from './types'
 
 const INITIAL_REVISION: HistoricalDocumentState = {
   isLoading: false,
@@ -37,8 +37,15 @@ function findHistoryEventByRev(rev: string | null, events: any[]) {
     : events.find(event => event.rev === rev || event.transactionIds.includes(rev))
 }
 
-export function useDocumentHistory({documentId, rev}: {documentId: string; rev: string | null}) {
+export function useDocumentHistory({
+  documentId,
+  selection
+}: {
+  documentId: string
+  selection: RevisionRange
+}) {
   const revRef = React.useRef<string | null>(null)
+  const rev = selection && selection[1]
 
   const [historyState, setHistoryState] = React.useState<HistoryState>({
     ...INITIAL_HISTORY_STATE
@@ -173,5 +180,10 @@ export function useDocumentHistory({documentId, rev}: {documentId: string; rev: 
     }
   }, [])
 
-  return {historyState, revision, selectedHistoryEvent, selectedHistoryEventIsLatest}
+  return {
+    historyState,
+    revision,
+    selectedHistoryEvent,
+    selectedHistoryEventIsLatest
+  }
 }

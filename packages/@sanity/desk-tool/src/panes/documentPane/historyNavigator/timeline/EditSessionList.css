@@ -15,6 +15,14 @@
   }
 }
 
+.isSelected {
+  composes: root;
+
+  @nest &:after {
+    border-color: #fff;
+  }
+}
+
 .session {
   position: relative;
   -webkit-appearance: none;
@@ -38,7 +46,7 @@
     vertical-align: top;
     width: 2px;
     height: 7px;
-    background: #000;
+    background: currentColor;
   }
 
   @nest &:before {
@@ -51,7 +59,11 @@
     border-left: 1px solid var(--hairline-color);
   }
 
-  @nest &:hover {
+  @nest .root:not(.isSelected) &:hover {
     background: color(var(--selectable-item-base) alpha(20%));
+  }
+
+  @nest .isSelected &:before {
+    border-color: #fff;
   }
 }
