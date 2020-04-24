@@ -15,6 +15,11 @@ export interface HistoryEventsState {
 
 export type RevisionRange = string[] | string | null
 
+export interface HistorySelectionRange {
+  from: {rev: string | null; index: number; event: HistoryTimelineEvent | null}
+  to: {rev: string | null; index: number; event: HistoryTimelineEvent | null}
+}
+
 // TODO: remove this
 export interface LegacyHistoryEventType {
   startTime: string

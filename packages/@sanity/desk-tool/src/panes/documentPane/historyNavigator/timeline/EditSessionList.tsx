@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import * as React from 'react'
-import {EditSession} from '../../history/types'
+import {EditSession} from '../../history'
 
 import styles from './EditSessionList.css'
 

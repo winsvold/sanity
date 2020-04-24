@@ -3,10 +3,12 @@
 import classNames from 'classnames'
 import EditIcon from 'part:@sanity/base/edit-icon'
 import * as React from 'react'
-import {RevisionRange} from '../../history/types'
+import {
+  CURRENT_REVISION_FLAG,
+  HistoryTimelineEditSessionGroupEvent,
+  RevisionRange
+} from '../../history'
 import {formatDate} from '../format'
-import {CURRENT_REVISION_FLAG} from '../../history/constants'
-import {HistoryTimelineEditSessionGroupEvent} from '../../history/types'
 import EditSessionList from './EditSessionList'
 
 import styles from './EditSessionGroupEvent.css'

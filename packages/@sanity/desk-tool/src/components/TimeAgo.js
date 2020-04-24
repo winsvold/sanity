@@ -39,7 +39,7 @@ export function formatTimeAgo(date) {
 export default class TimeAgo extends React.PureComponent {
   static propTypes = {
     refreshInterval: PropTypes.number,
-    time: PropTypes.string.isRequired
+    time: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
   }
 
   static defaultProps = {

@@ -1,1 +1,1 @@
-export const BREAKPOINT_SCREEN_MEDIUM = 512
+export const HISTORY_BREAKPOINT_MIN = 512

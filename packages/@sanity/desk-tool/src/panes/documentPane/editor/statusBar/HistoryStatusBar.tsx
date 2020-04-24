@@ -4,7 +4,7 @@ import React from 'react'
 import styles from './DocumentStatusBar.css'
 import {HistoryStatusBarActions} from './DocumentStatusBarActions'
 import TimeAgo from '../../../../components/TimeAgo'
-import {HistoryTimelineEvent} from '../../history/types'
+import {HistoryTimelineEvent} from '../../history'
 
 interface Props {
   id: string

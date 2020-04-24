@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import * as React from 'react'
-import {HistoryTimelineEvent, RevisionRange} from '../history/types'
+import {HistorySelectionRange, HistoryTimelineEvent, RevisionRange} from '../history'
 import {HistoryTimeline} from './timeline/HistoryTimeline'
 
 import styles from './HistoryNavigator.css'
@@ -11,11 +11,12 @@ interface Props {
   events: HistoryTimelineEvent[]
   isLoading: boolean
   selection: RevisionRange
+  selectionRange: HistorySelectionRange
   onSelect: (selection: RevisionRange) => void
 }
 
 function HistoryNavigator(props: Props) {
-  const {error, events, isLoading, selection, onSelect} = props
+  const {error, events, isLoading, selection, selectionRange, onSelect} = props
   const [now, setNow] = React.useState(Date.now())
 
   React.useEffect(() => {
@@ -34,7 +35,13 @@ function HistoryNavigator(props: Props) {
 
       {!(isLoading || error || events.length === 0) && (
         <div className={styles.timelineContainer}>
-          <HistoryTimeline events={events} now={now} selection={selection} onSelect={onSelect} />
+          <HistoryTimeline
+            events={events}
+            now={now}
+            selection={selection}
+            selectionRange={selectionRange}
+            onSelect={onSelect}
+          />
         </div>
       )}
 

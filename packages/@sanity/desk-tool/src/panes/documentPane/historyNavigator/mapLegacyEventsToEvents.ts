@@ -1,4 +1,4 @@
-import {HistoryTimelineEvent, LegacyHistoryEventType} from '../history/types'
+import {HistoryTimelineEvent, LegacyHistoryEventType} from '../history'
 
 export function mapLegacyEventsToEvents(
   legacyEvents: LegacyHistoryEventType[]
