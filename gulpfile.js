@@ -182,6 +182,6 @@ function studioTask(name, port) {
   exports[name] = studioTask(name, port)
 })
 
-exports.build = parallel(buildJSAndAssets, buildTS)
+exports.build = parallel(buildJSAndAssets)
 exports.watch = series(parallel(buildJSAndAssets, buildTS), parallel(watchJSAndAssets, watchTS))
 exports.clean = () => del(PACKAGE_PATHS.map(pth => path.join(pth, DEST_DIR)))
