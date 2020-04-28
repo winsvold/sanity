@@ -11,7 +11,6 @@ import PopoverList from './PopoverList'
 import {splitRight} from './utils'
 import {uniqBy} from 'lodash'
 import popoverListStyles from './PopoverList.css'
-import Avatar from './Avatar'
 
 type ContainerProps = {
   presence: Presence[]
@@ -60,18 +59,18 @@ function PresenceContainer({presence, position, avatarComponent: AvatarComponent
   return (
     <div className={styles.root}>
       <PopoverList
-        trigger="click"
         userList={presence}
         disabled={hiddenUsers.length <= 1}
         withStack={hiddenUsers.length >= MAX_AVATARS - 1}
       >
-        <div style={{minWidth: 55}}></div>
+        <div style={{minWidth: 55}} />
         <div className={styles.inner}>
           {avatars.map((av, i) => (
             <div
               key={av.key}
               style={{
                 position: 'absolute',
+                right: 0,
                 transform: `translate3d(${-AVATAR_WIDTH + i * -18}px, 0px, 0px)`,
                 transitionProperty: 'transform',
                 transitionDuration: '200ms',
