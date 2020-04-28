@@ -195,7 +195,17 @@ function renderDock(
         justifyContent: 'flex-end'
       }}
     >
-      {[].concat(counter || []).concat(visibleItems)}
+      <div
+        style={{
+          position: 'absolute',
+          right: 28,
+          height: 28
+        }}
+      >
+        <PopoverList userList={allPresenceItems} withStack={false} avatarSize="small" distance={24}>
+          {[].concat(counter || []).concat(visibleItems)}
+        </PopoverList>
+      </div>
     </div>
   )
 }
