@@ -39,7 +39,7 @@ export default function PresenceContainerRegion({presence, position}: RegionRepo
 const AVATAR_WIDTH = 28
 
 function PresenceContainer({presence, position, avatarComponent: AvatarComponent}: ContainerProps) {
-  const [hiddenUsers, visibleUsers] = splitRight(uniqBy(presence || [], Math.random))
+  const [hiddenUsers, visibleUsers] = splitRight(uniqBy(presence || [], user => user.identity))
 
   const avatars = [
     ...visibleUsers.map(user => ({
@@ -75,7 +75,8 @@ function PresenceContainer({presence, position, avatarComponent: AvatarComponent
                 transitionProperty: 'transform',
                 transitionDuration: '200ms',
                 transitionTimingFunction: 'cubic-bezier(0.85, 0, 0.15, 1)',
-                zIndex: -i
+                zIndex: -i,
+                marginRight: -AVATAR_WIDTH
               }}
             >
               {av.element}
