@@ -91,9 +91,11 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  display: none;
   fill: currentColor;
   z-index: 0;
+  opacity: 0;
+  transition: all 0.2s linear;
+  transform: rotate(-90deg) translate3d(0, 5px, 0);
 
   @nest & > svg {
     width: 9px;
@@ -104,15 +106,23 @@
   }
 }
 
+.arrow[data-dock='inside'] {
+  transform: rotate(-90deg) translate3d(0, 5px, 0);
+  opacity: 0;
+}
+
 .arrow[data-dock='top'] {
-  top: 1px;
   display: block;
+  top: 1px;
+  opacity: 1;
+  transform: rotate(0deg);
 }
 
 .arrow[data-dock='bottom'] {
   bottom: 1px;
   display: block;
-  transform: rotate(180deg);
+  opacity: 1;
+  transform: rotate(-180deg);
 }
 
 @keyframes spinning {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import {useId} from '@reach/auto-id'
 import styles from './Avatar.css'
 import {Position, Status, Size} from './types'
@@ -17,6 +17,8 @@ type Props = {
   size?: Size
 }
 
+let arrowTimer
+
 export default function Avatar({
   borderColor,
   fillColor = 'white',
@@ -26,15 +28,30 @@ export default function Avatar({
   isAnimating = false,
   children,
   onImageLoadError,
-  position,
+  position = 'inside',
   status = 'online',
   size = 'small'
 }: Props) {
   const elementId = useId()
+  const [arrowPosition, setArrowPosition] = useState('inside')
+
+  function animateArrow() {
+    arrowTimer = setTimeout(() => {
+      setArrowPosition(position)
+    }, 50)
+  }
+
+  useEffect(() => {
+    animateArrow()
+    return () => {
+      clearTimeout(arrowTimer)
+    }
+  }, [])
+
   return (
     <div
       className={styles.root}
-      data-dock={position}
+      data-dock={arrowPosition}
       style={{color: borderColor}}
       aria-label={label}
       title={label}
@@ -88,7 +105,7 @@ export default function Avatar({
           </svg>
           {children && <div className={styles.avatarInitials}>{children}</div>}
         </div>
-        <div className={styles.arrow} data-dock={position}>
+        <div className={styles.arrow} data-dock={arrowPosition}>
           <svg viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M0 6.4H9.6L5.44 0.853333C5.12 0.426666 4.48 0.426666 4.16 0.853333L0 6.4Z"
