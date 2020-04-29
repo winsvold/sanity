@@ -209,7 +209,14 @@ function renderDock(
           height: 28
         }}
       >
-        <PopoverList userList={allPresenceItems} withStack={false} avatarSize="small" distance={24}>
+        <PopoverList
+          disabled={hiddenUsers.length <= MAX_AVATARS}
+          userList={allPresenceItems}
+          withStack={false}
+          avatarSize="small"
+          arrowPosition={position}
+          distance={24}
+        >
           {[].concat(counter || []).concat(visibleItems)}
         </PopoverList>
       </div>
