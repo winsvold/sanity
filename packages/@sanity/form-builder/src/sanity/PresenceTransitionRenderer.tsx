@@ -9,6 +9,7 @@ import {groupBy, orderBy} from 'lodash'
 import {AvatarProvider, PopoverList} from '@sanity/components/lib/presence'
 import {DEBUG, THRESHOLD_TOP, MAX_AVATARS} from './constants'
 import {RegionWithIntersectionDetails} from './types'
+import {uniqBy} from 'lodash'
 
 const splitRight = (array, index) => {
   const idx = Math.max(0, array.length - index)
@@ -142,8 +143,11 @@ function renderDock(
   position: 'top' | 'bottom',
   regionsWithIntersectionDetails: RegionWithIntersectionDetails[]
 ) {
-  const allPresenceItems = regionsWithIntersectionDetails.flatMap(
-    withIntersection => withIntersection.region.data?.presence || []
+  const allPresenceItems = uniqBy(
+    regionsWithIntersectionDetails.flatMap(
+      withIntersection => withIntersection.region.data?.presence || []
+    ) || [],
+    user => user.identity
   )
   const [hiddenUsers, visibleUsers] = splitRight(
     allPresenceItems,
@@ -152,6 +156,7 @@ function renderDock(
 
   const counter = hiddenUsers.length > 0 && (
     <div
+      data-hidden-users
       key={hiddenUsers.length > 1 ? 'counter' : hiddenUsers[hiddenUsers.length - 1].sessionId}
       style={{
         ...ITEM_TRANSITION,
@@ -171,6 +176,7 @@ function renderDock(
 
   const visibleItems = visibleUsers.map((avatar, i) => (
     <div
+      data-visible-users
       key={avatar.sessionId}
       style={{
         ...ITEM_TRANSITION,
@@ -184,6 +190,7 @@ function renderDock(
 
   return (
     <div
+      data-dock={position}
       key={`sticky-${position}`}
       style={{
         position: 'sticky',
