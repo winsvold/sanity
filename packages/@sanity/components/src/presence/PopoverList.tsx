@@ -71,6 +71,7 @@ export default function PopoverList({
   return (
     <div className={styles.root}>
       <Tooltip
+        useContext
         title="Online collaborators"
         html={html}
         disabled={disabled}
