@@ -10,7 +10,7 @@ import {Presence, Position} from './types'
 import PopoverList from './PopoverList'
 import {splitRight} from './utils'
 import {uniqBy} from 'lodash'
-import popoverListStyles from './PopoverList.css'
+import StackCounter from './StackCounter'
 
 type ContainerProps = {
   presence: Presence[]
@@ -51,18 +51,14 @@ function PresenceContainer({presence, position, avatarComponent: AvatarComponent
     hiddenUsers.length >= MAX_AVATARS - 1
       ? {
           key: 'counter',
-          element: <div className={popoverListStyles.avatarCounter}>{hiddenUsers.length}</div>
+          element: <StackCounter count={hiddenUsers.length} />
         }
       : null
   ].filter(Boolean)
 
   return (
     <div className={styles.root}>
-      <PopoverList
-        userList={presence}
-        disabled={hiddenUsers.length <= 1}
-        withStack={hiddenUsers.length >= MAX_AVATARS - 1}
-      >
+      <PopoverList userList={presence} disabled={hiddenUsers.length <= 1}>
         <div style={{minWidth: 55}} />
         <div className={styles.inner}>
           {avatars.map((av, i) => (

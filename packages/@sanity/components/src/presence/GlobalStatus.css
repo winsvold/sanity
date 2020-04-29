@@ -2,15 +2,7 @@
 
 .root {
   position: relative;
-  padding-left: 0.5em;
   outline: none;
-
-  @nest & div[class*="avatarCounter"] {
-    border: 1px solid color(var(--main-navigation-color--inverted) a(70%));
-    color: var(--main-navigation-color--inverted);
-    font-size: var(--font-size-tiny--relative);
-    background: var(--main-navigation-color);
-  }
 
   @nest &:focus {
     background: var(--selectable-item-color-focus);

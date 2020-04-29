@@ -7,21 +7,20 @@ import AvatarProvider from './AvatarProvider'
 import {MAX_AVATARS} from './constants'
 import {splitRight} from './utils'
 import client from 'part:@sanity/base/client'
-import popoverListStyles from './PopoverList.css'
+import {uniqBy} from 'lodash'
+import StackCounter from './StackCounter'
 
 const {projectId} = client.config()
 
 export default function GlobalStatus() {
   const users = useCollaborators()
-  const [hiddenUsers, visibleUsers] = splitRight(users)
+  const [hiddenUsers, visibleUsers] = splitRight(uniqBy(users, user => user.identity))
   const showCounter = hiddenUsers.length >= MAX_AVATARS - 1 || users.length === 0
   return (
     <div className={styles.root} tabIndex={0}>
       <PopoverList
         trigger="click"
         userList={users}
-        withStack={hiddenUsers.length >= MAX_AVATARS - 1 || users.length === 0}
-        hiddenCount={hiddenUsers.length}
         avatarSize="medium"
         isGlobal
         projectId={projectId}
@@ -48,14 +47,10 @@ export default function GlobalStatus() {
           tabIndex={-1}
         >
           <div className={styles.avatars}>
-            {showCounter && (
-              <div className={styles.avatarOverlap} key="counter">
-                <div className={popoverListStyles.avatarCounter}>{hiddenUsers.length}</div>
-              </div>
-            )}
+            {showCounter && <StackCounter count={hiddenUsers.length} />}
             {visibleUsers.map(user => (
               <div className={styles.avatarOverlap} key={user.identity}>
-                <AvatarProvider userId={user.identity} showFill={false} />
+                <AvatarProvider userId={user.identity} />
               </div>
             ))}
           </div>

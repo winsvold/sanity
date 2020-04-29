@@ -5,15 +5,12 @@ import ListItem from './ListItem'
 import {User, Size, Position} from './types'
 import {Tooltip} from 'react-tippy'
 import CogIcon from 'part:@sanity/base/cog-icon'
-import popoverListStyles from './PopoverList.css'
 
 type Props = {
   userList: User[]
-  hiddenCount?: number
   avatarSize?: Size
   position?: 'top' | 'bottom'
   arrowPosition?: Position
-  withStack?: boolean
   trigger?: 'mouseenter' | 'click'
   children?: any
   distance?: number
@@ -24,11 +21,9 @@ type Props = {
 
 export default function PopoverList({
   userList = [],
-  hiddenCount,
   position = 'top',
   distance = 10,
   avatarSize,
-  withStack = true,
   trigger = 'mouseenter',
   children,
   disabled = false,

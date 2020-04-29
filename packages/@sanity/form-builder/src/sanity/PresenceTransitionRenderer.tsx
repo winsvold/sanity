@@ -6,7 +6,7 @@ import * as React from 'react'
 import {CSSProperties} from 'react'
 import {RegionIntersectionAssembler} from './RegionIntersectionAssembler'
 import {groupBy, orderBy} from 'lodash'
-import {AvatarProvider, PopoverList} from '@sanity/components/lib/presence'
+import {AvatarProvider, PopoverList, StackCounter} from '@sanity/components/lib/presence'
 import {DEBUG, THRESHOLD_TOP, MAX_AVATARS} from './constants'
 import {RegionWithIntersectionDetails} from './types'
 import {uniqBy} from 'lodash'
@@ -166,11 +166,12 @@ function renderDock(
     >
       <PopoverList
         userList={allPresenceItems}
-        hiddenCount={hiddenUsers.length}
         arrowPosition={position}
         avatarSize="small"
         distance={10}
-      />
+      >
+        <StackCounter count={hiddenUsers.length} />
+      </PopoverList>
     </div>
   )
 
@@ -212,7 +213,6 @@ function renderDock(
         <PopoverList
           disabled={hiddenUsers.length <= MAX_AVATARS}
           userList={allPresenceItems}
-          withStack={false}
           avatarSize="small"
           arrowPosition={position}
           distance={24}
