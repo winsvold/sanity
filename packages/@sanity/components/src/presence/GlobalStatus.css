@@ -86,6 +86,10 @@
 
 .avatarOverlap {
   display: flex;
+
+  @nest & div[class*="Avatar_root"] {
+    border: 1px solid var(--main-navigation-color);
+  }
 }
 
 .avatarOverlap:not(:last-of-type) {

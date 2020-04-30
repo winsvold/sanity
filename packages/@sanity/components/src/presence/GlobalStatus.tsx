@@ -37,14 +37,12 @@ export default function GlobalStatus() {
           </div>
           {/* Show avatars laid out like on a field */}
           <div className={styles.avatars}>
-            <div className={styles.avatars}>
-              {showCounter && <StackCounter count={hiddenUsers.length} />}
-              {visibleUsers.map(user => (
-                <div className={styles.avatarOverlap} key={user.identity}>
-                  <AvatarProvider userId={user.identity} />
-                </div>
-              ))}
-            </div>
+            {showCounter && <StackCounter count={hiddenUsers.length} />}
+            {visibleUsers.map(user => (
+              <div className={styles.avatarOverlap} key={user.identity}>
+                <AvatarProvider userId={user.identity} fillColor="currentColor" color="#ea5fb1" />
+              </div>
+            ))}
           </div>
         </div>
       </PopoverList>

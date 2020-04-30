@@ -14,6 +14,7 @@
   border: 0;
   display: flex;
   font: inherit;
+  padding: 0;
 
   @nest &:focus {
     background-color: color(var(--brand-primary) a(20%));

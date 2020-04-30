@@ -20,7 +20,7 @@ type Props = {
 let arrowTimer
 
 export default function Avatar({
-  borderColor,
+  borderColor = 'currentColor',
   fillColor = 'white',
   showFill = true,
   imageUrl,
@@ -35,43 +35,35 @@ export default function Avatar({
   const elementId = useId()
   const [arrowPosition, setArrowPosition] = useState('inside')
 
-  function animateArrow() {
+  useEffect(() => {
     arrowTimer = setTimeout(() => {
       setArrowPosition(position)
     }, 50)
-  }
-
-  useEffect(() => {
-    animateArrow()
     return () => {
       clearTimeout(arrowTimer)
     }
   }, [])
 
   return (
-    <div
-      className={styles.root}
-      data-dock={arrowPosition}
-      style={{color: borderColor}}
-      aria-label={label}
-      title={label}
-    >
+    <div className={styles.root} data-dock={arrowPosition} aria-label={label} title={label}>
       <div className={`${styles.avatar}`} data-status={status} data-size={size}>
         <div className={styles.avatarInner}>
           <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <ellipse
+              data-avatar-border
               cx="16"
               cy="16"
               rx="15"
               ry="15"
               transform="rotate(90 16 16)"
-              stroke="currentColor"
+              stroke={borderColor}
               className={`
                 ${styles.border}
                 ${isAnimating && styles.isAnimating}
               `}
             />
             <ellipse
+              data-avatar-fill
               cx="16"
               cy="16"
               rx="14"
@@ -80,6 +72,7 @@ export default function Avatar({
               fill={fillColor}
             />
             <circle
+              data-avatar-image
               cx="16"
               cy="16"
               r={showFill ? 13 : 14.2}

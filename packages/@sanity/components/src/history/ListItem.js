@@ -137,14 +137,13 @@ export default class HistoryListItem extends React.PureComponent {
               identity: user.id
             }))}
             disabled={availableUsers.length < 2}
-            position="top"
             avatarSize="small"
           >
             <div className={styles.users}>
               <div className={styles.userIcons}>
                 {availableUsers.slice(0, MAX_USERS).map((user, i) => (
                   <div key={user.id} className={styles.userAvatar}>
-                    <AvatarProvider userId={user.id} size="xsmall" imageUrl={user.imageUrl} />
+                    <AvatarProvider userId={user.id} imageUrl={user.imageUrl} />
                   </div>
                 ))}
               </div>

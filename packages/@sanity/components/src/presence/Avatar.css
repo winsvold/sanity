@@ -98,11 +98,11 @@
   transform: rotate(-90deg) translate3d(0, 5px, 0);
 
   @nest & > svg {
-    width: 9px;
-    height: 9px;
+    width: 0.3em;
+    height: 0.3em;
     position: absolute;
-    top: -7px;
-    left: calc((100% - 9px) / 2);
+    top: -0.25em;
+    left: calc((100% - 0.3em) / 2);
   }
 }
 

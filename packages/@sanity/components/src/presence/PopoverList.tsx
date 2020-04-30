@@ -111,7 +111,6 @@ export default function PopoverList({
         theme="light"
         distance={distance}
         className={styles.tooltip}
-        onShown={handleFocus}
       >
         <button
           aria-label={isOpen ? 'Close collaborator menu' : 'Open collaborator menu'}

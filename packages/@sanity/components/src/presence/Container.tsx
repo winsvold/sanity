@@ -36,7 +36,7 @@ export default function PresenceContainerRegion({presence, position}: RegionRepo
   )
 }
 
-const AVATAR_WIDTH = 28
+const AVATAR_WIDTH = 21
 
 function PresenceContainer({presence, position, avatarComponent: AvatarComponent}: ContainerProps) {
   const [hiddenUsers, visibleUsers] = splitRight(uniqBy(presence || [], user => user.identity))
@@ -56,7 +56,8 @@ function PresenceContainer({presence, position, avatarComponent: AvatarComponent
       : null
   ].filter(Boolean)
 
-  const width = avatars.length >= MAX_AVATARS ? AVATAR_WIDTH * avatars.length - 18 : 0
+  // Calculate a width based on avatar length to position the popoverlist in the center
+  const width = avatars.length > MAX_AVATARS ? (AVATAR_WIDTH - 8) * MAX_AVATARS + 6 : 0
 
   return (
     <div className={styles.root}>
@@ -68,7 +69,7 @@ function PresenceContainer({presence, position, avatarComponent: AvatarComponent
               style={{
                 position: 'absolute',
                 right: 0,
-                transform: `translate3d(${-AVATAR_WIDTH + i * -18}px, 0px, 0px)`,
+                transform: `translate3d(${-AVATAR_WIDTH + i * -(AVATAR_WIDTH - 8)}px, 0px, 0px)`,
                 transitionProperty: 'transform',
                 transitionDuration: '200ms',
                 transitionTimingFunction: 'cubic-bezier(0.85, 0, 0.15, 1)',

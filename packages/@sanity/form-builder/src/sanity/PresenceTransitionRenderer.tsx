@@ -7,9 +7,8 @@ import {CSSProperties} from 'react'
 import {RegionIntersectionAssembler} from './RegionIntersectionAssembler'
 import {groupBy, orderBy} from 'lodash'
 import {AvatarProvider, PopoverList, StackCounter} from '@sanity/components/lib/presence'
-import {DEBUG, THRESHOLD_TOP, MAX_AVATARS} from './constants'
+import {DEBUG, THRESHOLD_TOP, MAX_AVATARS, AVATAR_WIDTH} from './constants'
 import {RegionWithIntersectionDetails} from './types'
-import {uniqBy} from 'lodash'
 
 const splitRight = (array, index) => {
   const idx = Math.max(0, array.length - index)
@@ -143,12 +142,10 @@ function renderDock(
   position: 'top' | 'bottom',
   regionsWithIntersectionDetails: RegionWithIntersectionDetails[]
 ) {
-  const allPresenceItems = uniqBy(
+  const allPresenceItems =
     regionsWithIntersectionDetails.flatMap(
       withIntersection => withIntersection.region.data?.presence || []
-    ) || [],
-    user => user.identity
-  )
+    ) || []
   const [hiddenUsers, visibleUsers] = splitRight(
     allPresenceItems,
     allPresenceItems.length > MAX_AVATARS ? MAX_AVATARS - 1 : MAX_AVATARS
@@ -161,7 +158,7 @@ function renderDock(
       style={{
         ...ITEM_TRANSITION,
         position: 'absolute',
-        transform: `translate3d(${visibleUsers.length * -20}px, 0px, 0px)`
+        transform: `translate3d(${visibleUsers.length * -13}px, 0px, 0px)`
       }}
     >
       <PopoverList
@@ -182,21 +179,21 @@ function renderDock(
       style={{
         ...ITEM_TRANSITION,
         position: 'absolute',
-        transform: `translate3d(${(visibleUsers.length - 1 - i) * -20}px, 0px, 0px)`
+        transform: `translate3d(${(visibleUsers.length - 1 - i) * -(AVATAR_WIDTH - 8)}px, 0px, 0px)`
       }}
     >
       <AvatarProvider position={position} userId={avatar.identity} {...avatar} />
     </div>
   ))
-
+  const arrowHeight = 4
   return (
     <div
       data-dock={position}
       key={`sticky-${position}`}
       style={{
         position: 'sticky',
-        top: 8,
-        bottom: position === 'bottom' ? 38 : 0,
+        top: arrowHeight,
+        bottom: position === 'bottom' ? AVATAR_WIDTH + arrowHeight : 0,
         right: 0,
         left: 0,
         display: 'flex',
@@ -206,16 +203,15 @@ function renderDock(
       <div
         style={{
           position: 'absolute',
-          right: 28,
-          height: 28
+          right: AVATAR_WIDTH,
+          height: AVATAR_WIDTH
         }}
       >
         <PopoverList
-          disabled={hiddenUsers.length <= MAX_AVATARS}
+          disabled={allPresenceItems.length <= MAX_AVATARS}
           userList={allPresenceItems}
           avatarSize="small"
           arrowPosition={position}
-          distance={24}
         >
           {[].concat(counter || []).concat(visibleItems)}
         </PopoverList>

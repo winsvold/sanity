@@ -7,7 +7,7 @@
 .counter {
   align-self: center;
   background: var(--white);
-  min-height: calc(var(--avatar-height) - 2px);
+  min-height: calc(var(--avatar-height) - 1px);
   min-width: calc(var(--avatar-height) - 1px);
   display: flex;
   align-items: center;
@@ -15,10 +15,10 @@
   border-radius: 2rem;
   border: 1px solid var(--text-color);
   color: var(--text-color);
-  font-size: var(--font-size-xsmall);
-  padding: 0 var(--small-padding);
+  font-size: var(--font-size-tiny);
+  padding: 0 var(--extra-small-padding);
   box-sizing: border-box;
-  margin-right: 2px;
+  margin-right: 3px;
   font-weight: 600;
   user-select: none;
 }
