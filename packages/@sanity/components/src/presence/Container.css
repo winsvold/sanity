@@ -2,6 +2,7 @@
 
 .root {
   display: flex;
+  position: relative;
 }
 
 .inner {

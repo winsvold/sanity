@@ -56,11 +56,12 @@ function PresenceContainer({presence, position, avatarComponent: AvatarComponent
       : null
   ].filter(Boolean)
 
+  const width = avatars.length >= MAX_AVATARS ? AVATAR_WIDTH * avatars.length - 18 : 0
+
   return (
     <div className={styles.root}>
       <PopoverList userList={presence} disabled={hiddenUsers.length <= 1}>
-        <div style={{minWidth: 55}} />
-        <div className={styles.inner}>
+        <div className={styles.inner} style={{height: AVATAR_WIDTH, minWidth: width}}>
           {avatars.map((av, i) => (
             <div
               key={av.key}

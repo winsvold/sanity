@@ -80,7 +80,7 @@ export default function PopoverList({
         trigger={trigger}
         arrow
         theme="light"
-        distance={isGlobal || arrowPosition ? distance : 40}
+        distance={distance}
         className={styles.tooltip}
       >
         <div className={styles.outer}>{children}</div>
