@@ -1,16 +1,10 @@
 @import 'part:@sanity/base/theme/variables-style';
 
-.root {
-  color: var(--text-color);
-  user-select: none;
-}
-
 .intentLink {
+  display: flex;
+  outline: none;
   color: inherit;
   text-decoration: none;
-}
-
-.intentInner {
   composes: item from 'part:@sanity/base/theme/layout/selectable-style';
 }
 

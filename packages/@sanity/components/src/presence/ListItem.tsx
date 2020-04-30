@@ -60,22 +60,14 @@ export default function ListItem(props: Props) {
 
   if (session?.state?.documentId) {
     return (
-      <div className={styles.root}>
-        <IntentLink
-          className={styles.intentLink}
-          intent="edit"
-          params={{id: session.state.documentId}}
-        >
-          <div className={styles.intentInner}>
-            <Content user={user} {...props} />
-          </div>
-        </IntentLink>
-      </div>
+      <IntentLink
+        className={styles.intentLink}
+        intent="edit"
+        params={{id: session.state.documentId}}
+      >
+        <Content user={user} {...props} />
+      </IntentLink>
     )
   }
-  return (
-    <div className={styles.root}>
-      <Content user={user} {...props} />
-    </div>
-  )
+  return <Content user={user} {...props} />
 }

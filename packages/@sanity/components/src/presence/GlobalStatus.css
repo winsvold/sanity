@@ -1,36 +1,28 @@
 @import 'part:@sanity/base/theme/variables-style';
 
 .root {
+  display: flex;
+  text-align: center;
+  align-items: stretch;
   position: relative;
-  outline: none;
-
-  @nest &:focus {
-    background: var(--selectable-item-color-focus);
-  }
 }
 
-.mobileButton {
+.inner {
+  display: flex;
+  outline: none;
+}
+
+.mobileContent {
   display: flex;
   text-decoration: none;
   padding: 0.75em 0.5em;
   white-space: nowrap;
-  outline: none;
   flex-direction: row;
   align-items: center;
   -webkit-font-smoothing: inherit;
-  appearance: none;
-  background: none;
-  border: 0;
-  border-radius: 0;
-  font: inherit;
-  color: inherit;
   line-height: calc(25 / 16);
   margin: 0;
   height: 100%;
-
-  @nest &:focus {
-    outline: 0;
-  }
 
   @media (--screen-medium) {
     display: none;
@@ -69,7 +61,7 @@
   }
 }
 
-.avatarsButton {
+.avatars {
   display: none;
   align-items: stretch;
   flex: 1;

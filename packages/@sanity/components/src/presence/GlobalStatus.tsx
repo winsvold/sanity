@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import UsersIcon from 'part:@sanity/base/users-icon'
 import useCollaborators from 'part:@sanity/base/hooks/collaborators'
 import styles from './GlobalStatus.css'
@@ -17,44 +17,36 @@ export default function GlobalStatus() {
   const [hiddenUsers, visibleUsers] = splitRight(uniqBy(users, user => user.identity))
   const showCounter = hiddenUsers.length >= MAX_AVATARS - 1 || users.length === 0
   return (
-    <div className={styles.root} tabIndex={0}>
+    <div className={styles.root}>
       <PopoverList
-        trigger="click"
         userList={users}
         avatarSize="medium"
         isGlobal
         projectId={projectId}
+        trigger="click"
       >
-        {/* Only show this on mobile */}
-        <button
-          className={styles.mobileButton}
-          title="Show online users"
-          type="button"
-          tabIndex={-1}
-        >
-          <div className={styles.icon}>
-            {users.length > 0 && (
-              <div className={styles.statusIndicator} aria-label={`Online collaborators`} />
-            )}
-            <UsersIcon />
+        <div className={styles.inner} tabIndex={-1}>
+          {/* Only show this on mobile */}
+          <div className={styles.mobileContent}>
+            <div className={styles.icon}>
+              {users.length > 0 && (
+                <div className={styles.statusIndicator} aria-label={`Online collaborators`} />
+              )}
+              <UsersIcon />
+            </div>
           </div>
-        </button>
-        {/* Show avatars laid out like on a field */}
-        <button
-          className={styles.avatarsButton}
-          aria-label="Show online users"
-          type="button"
-          tabIndex={-1}
-        >
+          {/* Show avatars laid out like on a field */}
           <div className={styles.avatars}>
-            {showCounter && <StackCounter count={hiddenUsers.length} />}
-            {visibleUsers.map(user => (
-              <div className={styles.avatarOverlap} key={user.identity}>
-                <AvatarProvider userId={user.identity} />
-              </div>
-            ))}
+            <div className={styles.avatars}>
+              {showCounter && <StackCounter count={hiddenUsers.length} />}
+              {visibleUsers.map(user => (
+                <div className={styles.avatarOverlap} key={user.identity}>
+                  <AvatarProvider userId={user.identity} />
+                </div>
+              ))}
+            </div>
           </div>
-        </button>
+        </div>
       </PopoverList>
     </div>
   )
