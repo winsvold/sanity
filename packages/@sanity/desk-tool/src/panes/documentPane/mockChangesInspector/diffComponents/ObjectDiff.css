@@ -1,0 +1,16 @@
+.root {
+  /* empty */
+}
+
+.title {
+  margin: 0 0 0.5em;
+}
+
+.diffCardList {
+  border-left: 1px solid #cad1dc;
+  padding-left: 0.5em;
+}
+
+.diffCard + .diffCard {
+  margin-top: 1.5em;
+}
