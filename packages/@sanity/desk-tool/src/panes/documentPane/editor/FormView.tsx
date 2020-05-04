@@ -124,8 +124,6 @@ export default class FormView extends React.PureComponent<Props> {
       )
     }
 
-    // console.log({isHistoryOpen, selectedHistoryEventIsLatest})
-
     const showHistoricDocument = isHistoryOpen && !selectedHistoryEventIsLatest
 
     return (

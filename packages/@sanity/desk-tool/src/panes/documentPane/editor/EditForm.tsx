@@ -64,27 +64,25 @@ export default class EditForm extends React.PureComponent<Props> {
       onChange,
       readOnly,
       schema,
-      type,
+      type
     } = this.props
 
     return (
-      <>
-        <form className={styles.editor} onSubmit={preventDefault}>
-          <FormBuilder
-            schema={schema}
-            patchChannel={this.patchChannel}
-            value={value || {_type: type}}
-            type={type}
-            filterField={filterField}
-            readOnly={readOnly}
-            onBlur={onBlur}
-            onFocus={onFocus}
-            focusPath={focusPath}
-            onChange={onChange}
-            markers={markers}
-          />
-        </form>
-      </>
+      <form className={styles.root} onSubmit={preventDefault}>
+        <FormBuilder
+          schema={schema}
+          patchChannel={this.patchChannel}
+          value={value || {_type: type}}
+          type={type}
+          filterField={filterField}
+          readOnly={readOnly}
+          onBlur={onBlur}
+          onFocus={onFocus}
+          focusPath={focusPath}
+          onChange={onChange}
+          markers={markers}
+        />
+      </form>
     )
   }
 }
