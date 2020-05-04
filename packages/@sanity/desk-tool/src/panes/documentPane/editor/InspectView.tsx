@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-// import PropTypes from 'prop-types'
 import React from 'react'
 import {combineLatest, Observable} from 'rxjs'
 import {map} from 'rxjs/operators'

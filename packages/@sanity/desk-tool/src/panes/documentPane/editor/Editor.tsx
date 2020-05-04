@@ -332,7 +332,6 @@ function Editor(props: Props) {
       onCloseValidationResults,
       onSetFocus,
       onToggleValidationResults,
-      // options,
       showValidationTooltip
     ]
   )

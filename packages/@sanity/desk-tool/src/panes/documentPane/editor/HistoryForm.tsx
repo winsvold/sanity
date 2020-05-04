@@ -10,7 +10,7 @@ import styles from './HistoryForm.css'
 interface Props {
   schema: any
   schemaType: {name: string}
-  document: Doc | null // {_type: string}
+  document: Doc | null
 }
 
 const noop = () => null
@@ -20,11 +20,11 @@ export default class HistoryForm extends React.PureComponent<Props> {
   static propTypes = {}
 
   static defaultProps = {
-    document: undefined,
+    document: undefined
   }
 
   state = {
-    focusPath: [],
+    focusPath: []
   }
 
   handleFocus = (focusPath: any[]) => {
