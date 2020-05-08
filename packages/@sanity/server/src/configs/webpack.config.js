@@ -2,8 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import webpack from 'webpack'
 import resolveFrom from 'resolve-from'
-import webpackIntegration from '@sanity/webpack-integration/v3'
-import ExtractTextPlugin from 'extract-text-webpack-plugin'
+import webpackIntegration from '@sanity/webpack-integration/v4'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import rxPaths from 'rxjs/_esm5/path-mapping'
 import getStaticBasePath from '../util/getStaticBasePath'
 
@@ -13,9 +13,9 @@ const resolve = mod => require.resolve(mod)
 export default (config = {}) => {
   const staticPath = getStaticBasePath(config)
   const env = config.env || 'development'
-  const wpIntegrationOptions = {basePath: config.basePath, env: config.env, webpack}
+  const wpIntegrationOptions = {cache: {}, basePath: config.basePath, env: config.env, webpack}
   const basePath = config.basePath || process.cwd()
-  const skipMinify = config.skipMinify || false
+  // const skipMinify = config.skipMinify || false
 
   const reactPath = resolveFrom.silent(basePath, 'react')
   const reactDomPath = resolveFrom.silent(basePath, 'react-dom')
@@ -32,35 +32,21 @@ export default (config = {}) => {
   const babelConfig = tryRead(path.join(basePath, '.babelrc'))
   const isProd = env === 'production'
 
-  const cssExtractor = new ExtractTextPlugin({
-    filename: 'css/main.css',
-    allChunks: true,
-    ignoreOrder: true,
-    disable: !isProd
-  })
+  const cssExtractor = isProd && new MiniCssExtractPlugin({filename: 'css/main.css'})
 
   const postcssLoader = {
     loader: resolve('postcss-loader'),
-    options: {
-      config: {
-        path: path.join(__dirname, 'postcss.config.js')
-      }
-    }
+    options: {config: {path: __dirname}}
   }
 
-  const cssLoaderLocation = resolve('@sanity/css-loader')
-  const baseCssLoader = `${cssLoaderLocation}?modules&localIdentName=[name]_[local]_[hash:base64:5]&importLoaders=1`
-  const cssLoader =
-    isProd && !skipMinify ? `${baseCssLoader}&minimize` : `${baseCssLoader}&sourceMap`
-
-  const commonChunkPlugin =
-    (typeof config.commonChunkPlugin === 'undefined' || config.commonChunkPlugin) &&
-    new webpack.optimize.CommonsChunkPlugin({name: 'vendor', filename: 'js/vendor.bundle.js'})
+  // const commonChunkPlugin =
+  //   (typeof config.commonChunkPlugin === 'undefined' || config.commonChunkPlugin) &&
+  //   new webpack.optimize.CommonsChunkPlugin({name: 'vendor', filename: 'js/vendor.bundle.js'})
 
   return {
     entry: {
       app: [
-        resolve('normalize.css'),
+        `${resolve('normalize.css')}?raw`,
         path.join(__dirname, '..', 'browser', isProd ? 'entry.js' : 'entry-dev.js')
       ].filter(Boolean),
       vendor: ['react', 'react-dom']
@@ -77,12 +63,13 @@ export default (config = {}) => {
         moment$: 'moment/moment.js',
         ...rxPaths()
       },
-      extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts', '.tsx']
+      extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts', '.tsx'],
+      plugins: [webpackIntegration.getPartResolverPlugin(wpIntegrationOptions)]
     },
     module: {
       rules: [
         {
-          test: /(\.jsx?|\.tsx?)/,
+          test: /(\.jsx?|\.mjs|\.tsx?)$/,
           exclude: /(packages\/@sanity|node_modules|bower_components)/,
           use: {
             loader: resolve('babel-loader'),
@@ -100,41 +87,46 @@ export default (config = {}) => {
         {
           test: /\.css(\?|$)/,
           oneOf: [
+            // Raw CSS
             {
-              resourceQuery: /raw/, // foo.css?raw
+              resourceQuery: /raw/,
               use: isProd
-                ? ExtractTextPlugin.extract({
-                    fallback: {
-                      loader: resolve('style-loader'),
-                      options: {
-                        hmr: false
-                      }
-                    },
-                    use: [
-                      {
-                        loader: resolve('@sanity/css-loader'),
-                        options: {
-                          importLoaders: 1,
-                          minimize: true,
-                          sourceMap: true
-                        }
-                      }
-                    ]
-                  })
+                ? [
+                    {loader: resolve('style-loader'), options: {hmr: false}},
+                    {loader: MiniCssExtractPlugin.loader, options: {publicPath: `${staticPath}/`}},
+                    {loader: resolve('css-loader'), options: {importLoaders: 1, minimize: true}}
+                  ]
                 : [
-                    resolve('style-loader'),
-                    {
-                      loader: resolve('@sanity/css-loader'),
-                      options: {
-                        importLoaders: 1
-                      }
-                    }
+                    {loader: resolve('style-loader')},
+                    {loader: resolve('css-loader'), options: {importLoaders: 1, sourceMap: true}}
                   ]
             },
+            // CSS modules
             {
               use: isProd
-                ? ExtractTextPlugin.extract({use: [cssLoader, postcssLoader]})
-                : [resolve('style-loader'), cssLoader, postcssLoader]
+                ? [
+                    {loader: resolve('style-loader')},
+                    {loader: MiniCssExtractPlugin.loader, options: {publicPath: `${staticPath}/`}},
+                    {
+                      loader: resolve('css-loader'),
+                      options: {
+                        modules: {localIdentName: '[name]_[local]_[hash:base64:5]'},
+                        importLoaders: 1
+                      }
+                    },
+                    postcssLoader
+                  ]
+                : [
+                    {loader: resolve('style-loader')},
+                    {
+                      loader: resolve('css-loader'),
+                      options: {
+                        importLoaders: 1,
+                        modules: {localIdentName: '[name]_[local]_[hash:base64:5]'}
+                      }
+                    },
+                    postcssLoader
+                  ]
             }
           ]
         },
@@ -152,9 +144,9 @@ export default (config = {}) => {
     plugins: [
       webpackIntegration.getEnvPlugin(wpIntegrationOptions),
       new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en|nb/),
-      webpackIntegration.getPartResolverPlugin(wpIntegrationOptions),
-      cssExtractor,
-      commonChunkPlugin
+      webpackIntegration.getPartPlugin(wpIntegrationOptions),
+      cssExtractor
+      // commonChunkPlugin
     ].filter(Boolean)
   }
 }

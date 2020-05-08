@@ -1,13 +1,8 @@
 const resolveProjectRoot = require('@sanity/resolver').resolveProjectRoot
-const webpackIntegration = require('@sanity/webpack-integration/v3')
+const webpackIntegration = require('@sanity/webpack-integration/v4')
 
-module.exports = {
-  plugins: webpackIntegration.getPostcssPlugins({
-    basePath: resolveProjectRoot({sync: true}),
-    cssnext: {
-      features: {
-        customProperties: true
-      }
-    }
-  })
-}
+const plugins = webpackIntegration.getPostcssPlugins({
+  basePath: resolveProjectRoot({sync: true})
+})
+
+module.exports = {plugins}

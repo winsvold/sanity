@@ -4,6 +4,9 @@
     "node": true
   },
   "rules": {
-    "import/no-commonjs": "off"
+    "complexity": 0,
+    "import/no-commonjs": 0,
+    "import/order": 0,
+    "no-process-env": 0
   }
 }

@@ -1,54 +1,51 @@
-const path = require('path')
-const loaderUtils = require('loader-utils')
 const sanityUtil = require('@sanity/util')
+const {getOptions, parseQuery} = require('loader-utils')
+const path = require('path')
 const multiImplementationHandler = require('./multiImplementationHandler')
-const reduceConfig = sanityUtil.reduceConfig
-const getSanityVersions = sanityUtil.getSanityVersions
 
-/* eslint-disable no-process-env */
 const sanityEnv = process.env.SANITY_INTERNAL_ENV
 const env = typeof sanityEnv === 'undefined' ? process.env.NODE_ENV : sanityEnv
-/* eslint-enable no-process-env */
 
-function sanityPartLoader(input) {
+module.exports = function partLoader(source, sourceMap) {
   this.cacheable()
+
+  const options = getOptions(this)
+  const query = this.resourceQuery ? parseQuery(this.resourceQuery) : {}
+  const cache = this._compiler.__sanityCache
+  const basePath = cache && cache.__basePath
+  const parts = cache && cache.__parts
+
+  // Return early if the "parts" have not been cached
+  // or the query parameter is not present (i.e. this is not a "part")
+  if (!parts || !query.sanityPart) return source
 
   let buildEnv = sanityEnv
   if (!buildEnv) {
-    buildEnv = this.options.devtool ? env : 'production'
+    buildEnv = options.devtool ? env : 'production'
   }
 
-  const qs = this.resourceQuery.substring(this.resourceQuery.indexOf('?'))
-  const request = (loaderUtils.parseQuery(qs) || {}).sanityPart
+  const partId = query.sanityPart
+  const loadAll = partId.indexOf('all:') === 0
+  const partName = loadAll ? partId.substr(4) : partId
 
-  const loadAll = request.indexOf('all:') === 0
-  const partName = loadAll ? request.substr(4) : request
-
-  // In certain cases (CSS when building statically),
-  // a separate compiler instance is triggered
-  if (!this._compiler.sanity) {
-    return input
-  }
-
-  const basePath = this._compiler.sanity.basePath
-
-  if (request.indexOf('config:') === 0) {
-    const config = JSON.parse(input)
+  if (partId.indexOf('config:') === 0) {
+    const config = JSON.parse(source)
     const indent = buildEnv === 'production' ? 0 : 2
-    const reduced = reduceConfig(config, buildEnv, {studioRootPath: basePath})
-    return `module.exports = ${JSON.stringify(reduced, null, indent)}\n`
+    const reduced = sanityUtil.reduceConfig(config, buildEnv, {studioRootPath: basePath})
+    return JSON.stringify(reduced, null, indent)
   }
 
-  if (request === 'sanity:versions') {
-    const versions = getSanityVersions(basePath)
+  if (partId === 'sanity:versions') {
+    const versions = sanityUtil.getSanityVersions(basePath)
     const indent = buildEnv === 'production' ? 0 : 2
     return `module.exports = ${JSON.stringify(versions, null, indent)}\n`
   }
 
-  const parts = this._compiler.sanity.parts
+  // Gather dependencies
   const dependencies = parts.plugins.map(plugin => path.join(plugin.path, 'sanity.json'))
   const implementations = (parts.implementations[partName] || []).map(impl => impl.path)
 
+  // Add dependencies
   this.addDependency(path.join(basePath, 'sanity.json'))
   dependencies.forEach(this.addDependency)
 
@@ -58,7 +55,11 @@ function sanityPartLoader(input) {
     return `module.exports = ${JSON.stringify(debug, null, 2)}\n`
   }
 
-  return loadAll ? multiImplementationHandler(partName, implementations) : input
-}
+  const ret = loadAll ? multiImplementationHandler(partName, implementations) : source
 
-module.exports = sanityPartLoader
+  if (typeof ret !== 'string') {
+    throw new Error('must be a string')
+  }
+
+  return ret
+}

@@ -162,7 +162,7 @@ function registerLoader(options) {
       return mod._compile(`module.exports = {} `, filename)
     }
   } else {
-    const postcss = require('@sanity/webpack-integration/v3')
+    const postcss = require('@sanity/webpack-integration/v4')
     cssHook({
       generateScopedName: options.generateScopedName || '[name]__[local]___[hash:base64:5]',
       prepend: postcss

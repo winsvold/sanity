@@ -2,7 +2,7 @@
   "name": "@sanity/webpack-loader",
   "version": "1.149.7",
   "description": "Plugin loader for Sanity. Resolves parts based on a declared Sanity manifest and provides infrastructure for loading the required plugins.",
-  "main": "src/PartResolverPlugin.js",
+  "main": "src/index.js",
   "scripts": {
     "clean": "rimraf lib"
   },
@@ -30,7 +30,7 @@
   "dependencies": {
     "@sanity/resolver": "1.149.7",
     "@sanity/util": "1.149.7",
-    "loader-utils": "1.1.0"
+    "loader-utils": "^2.0.0"
   },
   "devDependencies": {
     "rimraf": "^2.7.1"

@@ -1,6 +1,6 @@
 const webpack = require('webpack')
 const sanityServer = require('@sanity/server')
-const wpIntegration = require('@sanity/webpack-integration/v3')
+const wpIntegration = require('@sanity/webpack-integration/v4')
 const genDefaultConfig = require('@storybook/react/dist/server/config/defaults/webpack.config.js')
 
 const skipCssLoader = rule => !rule.test || (rule.test && !rule.test.toString().includes('.css'))

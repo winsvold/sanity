@@ -53,7 +53,6 @@
   "devDependencies": {
     "history": "^4.6.3",
     "jest": "^24.9.0",
-    "postcss-cssnext": "^3.0.2",
     "prop-types": "^15.6.0",
     "react": "16.9.0",
     "rimraf": "^2.7.1"

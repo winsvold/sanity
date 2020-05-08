@@ -2,9 +2,11 @@ import webpack from 'webpack'
 import getBaseConfig from './webpack.config'
 
 export default config => {
-  const baseConfig = getBaseConfig(Object.assign({}, config, {env: 'production'}))
+  const baseConfig = getBaseConfig({...config, env: 'production'})
 
-  return Object.assign({}, baseConfig, {
+  return {
+    ...baseConfig,
+    mode: 'production',
     devtool: config.sourceMaps ? 'source-map' : undefined,
     plugins: (baseConfig.plugins || []).concat(
       [
@@ -13,5 +15,5 @@ export default config => {
         })
       ].filter(Boolean)
     )
-  })
+  }
 }

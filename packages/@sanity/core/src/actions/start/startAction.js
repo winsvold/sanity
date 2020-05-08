@@ -44,7 +44,7 @@ export default async (args, context) => {
 
   // "invalid" doesn't mean the bundle is invalid, but that it is *invalidated*,
   // in other words, it's recompiling
-  compiler.plugin('invalid', () => {
+  compiler.hooks.invalid.tap('sanity start', () => {
     output.clear()
     resetSpinner()
   })
@@ -57,12 +57,11 @@ export default async (args, context) => {
   }
 
   // Hold off on showing the spinner until compilation has started
-  compiler.plugin('compile', () => resetSpinner())
+  compiler.hooks.compile.tap('sanity start', () => resetSpinner())
 
   // "done" event fires when Webpack has finished recompiling the bundle.
   // Whether or not you have warnings or errors, you will get this event.
-
-  compiler.plugin('done', stats => {
+  compiler.hooks.done.tap('sanity start', stats => {
     if (compileSpinner) {
       compileSpinner.succeed()
     }
