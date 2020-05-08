@@ -1,0 +1,14 @@
+@import 'part:@sanity/base/theme.css';
+
+.root {
+  background: color-mod(var(--blue) alpha(10%));
+  padding: var(--padding-4);
+}
+
+.test {
+  composes: root;
+}
+
+.heading {
+  composes: heading1 from 'part:@sanity/base/utils.css';
+}

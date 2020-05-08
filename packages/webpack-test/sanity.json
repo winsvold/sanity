@@ -1,0 +1,28 @@
+{
+  "root": true,
+  "api": {
+    "projectId": "foo"
+  },
+  "parts": [
+    {
+      "name": "part:@sanity/base/theme.css",
+      "path": "./src/parts/theme.css"
+    },
+    {
+      "name": "part:@sanity/base/utils.css",
+      "path": "./src/parts/utils.css"
+    },
+    {
+      "name": "part:@sanity/base/schema",
+      "path": "./src/parts/schema.js"
+    },
+    {
+      "implements": "part:@sanity/base/sanity-root",
+      "path": "./src/parts/root.js"
+    },
+    {
+      "implements": "part:@sanity/base/document",
+      "path": "./src/parts/document.js"
+    }
+  ]
+}
