@@ -5,8 +5,6 @@ import React from 'react'
 import FormBuilder from 'part:@sanity/form-builder'
 import {Doc} from '../types'
 
-import styles from './HistoryForm.css'
-
 interface Props {
   schema: any
   schemaType: {name: string}
@@ -35,23 +33,21 @@ export default class HistoryForm extends React.PureComponent<Props> {
     const {schema, schemaType, document} = this.props
     const {focusPath} = this.state
 
+    if (!document) {
+      return <p>There is no data associated with this history event.</p>
+    }
+
     return (
-      <form className={styles.editor}>
-        {document ? (
-          <FormBuilder
-            onBlur={noop}
-            onFocus={this.handleFocus}
-            focusPath={focusPath}
-            readOnly
-            schema={schema}
-            type={schemaType}
-            value={document}
-            patchChannel={noopPatchChannel}
-          />
-        ) : (
-          <p>There is no data associated with this history event.</p>
-        )}
-      </form>
+      <FormBuilder
+        onBlur={noop}
+        onFocus={this.handleFocus}
+        focusPath={focusPath}
+        readOnly
+        schema={schema}
+        type={schemaType}
+        value={document}
+        patchChannel={noopPatchChannel}
+      />
     )
   }
 }

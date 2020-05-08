@@ -1,9 +1,10 @@
 @import 'part:@sanity/base/theme/variables-style';
 
 .root {
-  max-width: calc(640px + var(--medium-padding) + var(--medium-padding));
+  max-width: 640px;
   flex-grow: 1;
   margin: 0 auto;
+  padding: 2em var(--medium-padding) 6em;
 }
 
 .typeMisMatchMessage {
