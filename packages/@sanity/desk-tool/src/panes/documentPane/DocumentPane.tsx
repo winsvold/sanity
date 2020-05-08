@@ -80,7 +80,7 @@ function DocumentPane(props: Props) {
 
   const documentId = getPublishedId(options.id)
   const typeName = options.type
-  const schemaType = schema.get(typeName)
+  const schemaType: Record<string, any> | null = schema.get(typeName)
 
   // Contexts
   const paneRouter: any = usePaneRouter()
@@ -124,7 +124,7 @@ function DocumentPane(props: Props) {
       value,
       isHistoryEnabled,
       isHistoryOpen,
-      isLiveEditEnabled: schemaType.liveEdit === true,
+      isLiveEditEnabled: Boolean(schemaType && schemaType.liveEdit === true),
       rev: selectedHistoryEvent && selectedHistoryEvent.rev,
       canShowHistoryList
     }) || []
