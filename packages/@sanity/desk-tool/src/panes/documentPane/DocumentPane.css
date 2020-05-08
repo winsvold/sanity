@@ -1,7 +1,6 @@
 @import 'part:@sanity/base/theme/variables-style';
 
 .root {
-  background-color: color(var(--component-bg) shade(7%));
   height: 100%;
 }
 
