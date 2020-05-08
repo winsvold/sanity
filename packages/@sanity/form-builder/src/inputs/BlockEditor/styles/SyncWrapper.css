@@ -6,7 +6,7 @@
 
 .warning {
   padding: 2em;
-  background-color: color(var(--state-warning-color) a(90%));
+  background-color: color-mod(var(--state-warning-color) a(90%));
   color: var(--white);
 }
 

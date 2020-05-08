@@ -49,7 +49,7 @@
   position: absolute;
   height: 100%;
   width: 100%;
-  background-color: color(var(--body-bg) a(90%));
+  background-color: color-mod(var(--body-bg) a(90%));
   z-index: 1;
 }
 
@@ -87,4 +87,3 @@
   font-size: var(--font-size-large);
   margin-right: var(--small-padding);
 }
-

@@ -158,7 +158,7 @@
 
 .progress {
   position: absolute;
-  background-color: color(var(--progress-bar-bg) a(5%));
+  background-color: color-mod(var(--progress-bar-bg) a(5%));
   width: 100%;
   height: 100%;
   left: 0;
@@ -170,7 +170,7 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  background-color: color(var(--progress-bar-bg) a(20%));
+  background-color: color-mod(var(--progress-bar-bg) a(20%));
   z-index: 1;
 }
 

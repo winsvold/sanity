@@ -65,13 +65,13 @@
   @nest .vertical & {
     width: 11px;
     margin: 0 -5px;
-    border-left: 5px solid color(var(--component-border-color) a(0%));
-    border-right: 5px solid color(var(--component-border-color) a(0%));
+    border-left: 5px solid color-mod(var(--component-border-color) a(0%));
+    border-right: 5px solid color-mod(var(--component-border-color) a(0%));
     cursor: col-resize;
 
     @nest &:hover {
-      border-left: 5px solid color(var(--component-border-color) a(25%));
-      border-right: 5px solid color(var(--component-border-color) a(25%));
+      border-left: 5px solid color-mod(var(--component-border-color) a(25%));
+      border-right: 5px solid color-mod(var(--component-border-color) a(25%));
     }
   }
 

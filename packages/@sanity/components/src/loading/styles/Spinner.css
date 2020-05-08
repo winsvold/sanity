@@ -1,4 +1,4 @@
-@import "part:@sanity/base/theme/variables-style";
+@import 'part:@sanity/base/theme/variables-style';
 
 @keyframes spin {
   0% {
@@ -93,7 +93,7 @@
 }
 
 .center {
-  background-color: color(var(--body-bg) a(50%));
+  background-color: color-mod(var(--body-bg) a(50%));
   z-index: var(--zindex-spinner);
   height: 100%;
   width: 100%;
@@ -108,7 +108,7 @@
   animation-fill-mode: forwards;
 
   @media (--screen-medium) {
-    background-color: color(var(--body-bg) a(10%));
+    background-color: color-mod(var(--body-bg) a(10%));
   }
 
   @nest & .inner {
@@ -138,7 +138,7 @@
 
 .fullscreen {
   composes: center;
-  background-color: color(var(--body-bg) a(90%));
+  background-color: color-mod(var(--body-bg) a(90%));
   color: var(--body-text);
   position: fixed;
   z-index: var(--zindex-portal);

@@ -1,7 +1,7 @@
 @import 'part:@sanity/base/theme/variables-style';
 
 :root {
-  --broken-backdrop: color(var(--gray-base) lightness(+ 70%) a(50%));
+  --broken-backdrop: color-mod(var(--gray-base) lightness(70%) a(50%));
 }
 
 .root {

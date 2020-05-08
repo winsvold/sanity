@@ -2,7 +2,7 @@
   --black: #000;
   --white: #fff;
   --brand-darkest: var(--black);
-  --brand-darkest--inverted: color(var(--brand-darkest) contrast(80%));
+  --brand-darkest--inverted: color-mod(var(--brand-darkest) contrast(80%));
   --brand-lightest: var(--white);
   --brand-primary: #2276fc;
   --brand-primary--inverted: var(--brand-lightest);
@@ -10,6 +10,6 @@
   --brand-secondary--inverted: var(--brand-lightest);
 
   /* Base */
-  --brand-faded: color(var(--brand-primary) blend(var(--white) 60%));
-  --gray-base: color(var(--black) blend(var(--brand-faded) 50%));
+  --brand-faded: color-mod(var(--brand-primary) blend(var(--white) 60%));
+  --gray-base: color-mod(var(--black) blend(var(--brand-faded) 50%));
 }

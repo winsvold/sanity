@@ -124,7 +124,7 @@
 
 .functionsInGrid {
   composes: functions;
-  background-color: color(var(--component-bg) a(70%));
+  background-color: color-mod(var(--component-bg) a(70%));
   position: absolute;
   top: var(--small-padding);
   right: var(--small-padding);

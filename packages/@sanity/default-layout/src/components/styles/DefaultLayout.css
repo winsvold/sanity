@@ -1,4 +1,4 @@
-@import "part:@sanity/base/theme/variables-style";
+@import 'part:@sanity/base/theme/variables-style';
 
 :root {
   --nav-bar-box: 3.0625em; /* 49px */
@@ -16,7 +16,7 @@
 
 :global([data-env='development'] .undefined)::before {
   position: absolute;
-  background-color: color(red a(50%));
+  background-color: color-mod(red a(50%));
   color: white;
   content: 'FIXME: "undefined" as className!';
   z-index: 1000;

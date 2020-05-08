@@ -14,6 +14,6 @@
 .tagItem {
   margin-right: var(--small-padding);
   padding: var(--extra-small-padding) var(--small-padding);
-  background: color(var(--state-danger-color) shade(15%));
+  background: color-mod(var(--state-danger-color) shade(15%));
   border-radius: var(--border-radius-base);
 }

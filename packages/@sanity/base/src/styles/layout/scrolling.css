@@ -27,7 +27,7 @@
       @nest &::-webkit-scrollbar-thumb {
         background-color: var(--gray);
         border-radius: calc(var(--defaultScrollBarWidth) / 2);
-        border: 2px color(var(--black) a(2%)) solid;
+        border: 2px color-mod(var(--black) a(2%)) solid;
       }
 
       @nest &::-webkit-scrollbar-track {

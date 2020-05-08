@@ -6,20 +6,9 @@
   --text-color-secondary: var(--gray-darker);
   --text-muted: var(--gray);
   --link-color: var(--brand-primary);
-  --link-hover-color: color(var(--state-info-color) saturation(+5%) lightness(-4%));
-  --font-family-sans-serif:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    'Roboto',
-    'Oxygen',
-    'Ubuntu',
-    'Cantarell',
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
-    sans-serif;
+  --link-hover-color: color-mod(var(--state-info-color) saturation(+5%) lightness(-4%));
+  --font-family-sans-serif: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   --font-family-serif: Georgia, 'Times New Roman', Times, serif;
   --font-family-monospace: -apple-system-ui-monospace, 'SF Mono', Menlo, Monaco, Consolas, monospace;
   --font-family-base: var(--font-family-sans-serif);
@@ -53,6 +42,6 @@
   --blockquote-small-color: var(--gray-light);
   --page-header-border-color: var(--gray-lighter);
   --hr-border: var(--gray-lighter);
-  --preview-placeholder-text-color: color(var(--gray-light) a(50%));
+  --preview-placeholder-text-color: color-mod(var(--gray-light) a(50%));
   --icon-size: 1.5625rem; /* 25px based on 16px */
 }

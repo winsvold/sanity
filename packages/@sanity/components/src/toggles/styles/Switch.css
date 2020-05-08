@@ -1,5 +1,5 @@
-@import "part:@sanity/base/theme/variables-style";
-@import "part:@sanity/base/theme/animation-style";
+@import 'part:@sanity/base/theme/variables-style';
+@import 'part:@sanity/base/theme/animation-style';
 
 :root {
   --switch-color: var(--brand-primary);
@@ -24,7 +24,7 @@
 
   /* Helper */
   --switch-helper-size: calc(var(--switch-thumb-size) + 6px);
-  --switch-helper-color: color(var(--brand-primary) alpha(20%));
+  --switch-helper-color: color-mod(var(--brand-primary) alpha(20%));
 }
 
 .root {
@@ -98,8 +98,8 @@
   width: var(--switch-thumb-size);
   border-radius: 50%;
   cursor: default;
-  composes: shadow-1dp from "part:@sanity/base/theme/shadows-style";
-  composes: animation-default from "part:@sanity/base/theme/animation-style";
+  composes: shadow-1dp from 'part:@sanity/base/theme/shadows-style';
+  composes: animation-default from 'part:@sanity/base/theme/animation-style';
   transition-property: left;
   z-index: 1;
 }
@@ -135,7 +135,7 @@
   border-radius: 50%;
   background-color: transparent;
   transform: translate(-50%, -50%) scale(0.5);
-  transition: background-color 0.1s  linear, transform 0.15s linear;
+  transition: background-color 0.1s linear, transform 0.15s linear;
 }
 
 .hasFocus .focusHelper {

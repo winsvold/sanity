@@ -13,7 +13,7 @@
 
   @nest &:hover {
     color: var(--main-navigation-color--inverted);
-    background: color(var(--main-navigation-color) l(+4%));
+    background: color-mod(var(--main-navigation-color) l(+4%));
     cursor: pointer;
   }
 }

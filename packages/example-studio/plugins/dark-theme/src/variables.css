@@ -8,6 +8,6 @@
   --brand-secondary: #95bf6f;
   --component-bg: #555;
   --component-border-color: #777;
-  --component-box-shadow: 0 1px 3px color(var(--black) a(50%));
+  --component-box-shadow: 0 1px 3px color-mod(var(--black) a(50%));
   --state-danger-color: #f8495f;
 }

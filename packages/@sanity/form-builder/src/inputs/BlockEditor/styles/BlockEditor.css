@@ -47,7 +47,7 @@
     left: 0;
     height: 100vh;
     width: 100vw;
-    background-color: color(var(--body-bg) lightness(- 2%));
+    background-color: color-mod(var(--body-bg) lightness(2%));
     background-image: unset;
     border: none;
 
@@ -169,6 +169,6 @@
 
   @nest .fullscreen & {
     height: auto;
-    background-color: color(var(--body-bg) lightness(- 2%));
+    background-color: color-mod(var(--body-bg) lightness(2%));
   }
 }

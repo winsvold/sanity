@@ -54,17 +54,17 @@
 .root.selected.hasErrors > .previewContainer {
   box-shadow: none;
   border: 1px solid
-    color(var(--state-danger-color) blend(var(--form-builder-block-background-selected) 70%));
+    color-mod(var(--state-danger-color) blend(var(--form-builder-block-background-selected) 70%));
 }
 
 .root.focused.hasErrors > .previewContainer {
   box-shadow: var(--form-builder-block-shadow--invalid-focus);
-  background-color: color(var(--state-danger-color) a(25%));
+  background-color: color-mod(var(--state-danger-color) a(25%));
   border: 1px solid var(--state-danger-color);
 }
 
 .root.focused.hasErrors > .previewContainer:hover {
-  background-color: color(var(--state-danger-color) a(45%));
+  background-color: color-mod(var(--state-danger-color) a(45%));
 }
 
 .header {

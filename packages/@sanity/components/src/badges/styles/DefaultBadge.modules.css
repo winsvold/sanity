@@ -25,7 +25,7 @@
   composes: root;
   background-color: var(--text-color);
   border-color: var(--text-color);
-  color: color(var(--text-color) contrast(100%));
+  color: color-mod(var(--text-color) contrast(100%));
 
   @nest &[data-color='success'] {
     background-color: var(--state-success-color);

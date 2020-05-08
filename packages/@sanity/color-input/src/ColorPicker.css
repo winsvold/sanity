@@ -5,11 +5,7 @@
   margin-bottom: var(--small-padding);
   position: relative;
   overflow: hidden;
-  border-radius:
-    var(--border-radius-small)
-    var(--border-radius-small)
-    0
-    0;
+  border-radius: var(--border-radius-small) var(--border-radius-small) 0 0;
 }
 
 .hue {
@@ -18,7 +14,7 @@
   position: relative;
   overflow: hidden;
   border-radius: 5px;
-  box-shadow: 0 0 3px color(var(--gray) a(50%));
+  box-shadow: 0 0 3px color-mod(var(--gray) a(50%));
 }
 
 .alpha {
@@ -27,7 +23,7 @@
   overflow: hidden;
   border-radius: 5px;
   margin-bottom: var(--small-padding);
-  box-shadow: 0 0 3px color(var(--gray) a(50%));
+  box-shadow: 0 0 3px color-mod(var(--gray) a(50%));
 }
 
 .controls {
@@ -51,7 +47,7 @@
   position: relative;
   border-radius: var(--border-radius-large);
   overflow: hidden;
-  box-shadow: 0 0 3px color(var(--gray) a(50%));
+  box-shadow: 0 0 3px color-mod(var(--gray) a(50%));
 }
 
 .fields {

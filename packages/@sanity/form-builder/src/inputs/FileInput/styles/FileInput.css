@@ -23,7 +23,7 @@
 }
 
 .uploadState {
-  background-color: color(var(--component-bg) a(90%));
+  background-color: color-mod(var(--component-bg) a(90%));
   width: 100%;
   height: 100%;
   position: absolute;

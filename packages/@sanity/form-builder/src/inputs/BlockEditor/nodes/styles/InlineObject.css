@@ -26,7 +26,7 @@
 
 .root.hasErrors > .previewContainer {
   box-shadow: var(--form-builder-block-shadow--invalid);
-  background-color: color(var(--state-danger-color) a(15%));
+  background-color: color-mod(var(--state-danger-color) a(15%));
   border: 1px solid var(--form-builder-block-border-color-error);
 }
 
@@ -47,8 +47,8 @@
 .root.selected.hasErrors > .previewContainer {
   box-shadow: none;
   border: 1px solid
-    color(var(--state-danger-color) blend(var(--form-builder-block-background-selected) 70%));
-  background-color: color(
+    color-mod(var(--state-danger-color) blend(var(--form-builder-block-background-selected) 70%));
+  background-color: color-mod(
     var(--state-danger-color) blend(var(--form-builder-block-background-selected) 70%)
   );
 }
@@ -56,16 +56,16 @@
 .root.focused.hasErrors > .previewContainer {
   box-shadow: var(--form-builder-block-shadow--invalid-focus);
   border: 1px solid var(--state-danger-color);
-  background-color: color(var(--state-danger-color) a(30%));
+  background-color: color-mod(var(--state-danger-color) a(30%));
 }
 
 .root.hasErrors > .previewContainer:hover {
-  background-color: color(var(--state-danger-color) a(25%));
+  background-color: color-mod(var(--state-danger-color) a(25%));
   border: 1px solid var(--form-builder-block-border-color-error);
 }
 
 .root.focused.hasErrors > .previewContainer:hover {
-  background-color: color(var(--state-danger-color) a(45%));
+  background-color: color-mod(var(--state-danger-color) a(45%));
 }
 
 .functions {

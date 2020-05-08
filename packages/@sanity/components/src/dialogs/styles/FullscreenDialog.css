@@ -41,10 +41,10 @@
 .info {
   composes: root;
   color: var(--state-info-color--inverted);
-  background-color: color(var(--state-info-color) a(95%));
+  background-color: color-mod(var(--state-info-color) a(95%));
 
   @nest & .closeButton {
-    background-color: color(var(--state-info-color) a(30%));
+    background-color: color-mod(var(--state-info-color) a(30%));
   }
 
   @nest & .content a {
@@ -64,10 +64,10 @@
 .success {
   composes: root;
   color: var(--state-success-color--inverted);
-  background-color: color(var(--state-success-color) a(95%));
+  background-color: color-mod(var(--state-success-color) a(95%));
 
   @nest & .closeButton {
-    background-color: color(var(--state-success-color) a(30%));
+    background-color: color-mod(var(--state-success-color) a(30%));
   }
 
   @nest & .content a {
@@ -78,10 +78,10 @@
 .warning {
   composes: root;
   color: var(--state-warning-color--inverted);
-  background-color: color(var(--state-warning-color) a(95%));
+  background-color: color-mod(var(--state-warning-color) a(95%));
 
   @nest & .closeButton {
-    background-color: color(var(--state-warning-color) a(30%));
+    background-color: color-mod(var(--state-warning-color) a(30%));
   }
 
   @nest & .content a {

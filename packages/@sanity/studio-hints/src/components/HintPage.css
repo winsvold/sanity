@@ -25,7 +25,7 @@
 
   @nest &:focus {
     outline: 0;
-    background-color: color(var(--brand-primary) a(20%));
+    background-color: color-mod(var(--brand-primary) a(20%));
   }
 
   @nest & svg {
@@ -89,7 +89,7 @@
 
 .root a {
   color: var(--link-color);
-  /* background-color: color(var(--gray-base) lightness(+ 20%) a(30%));
+  /* background-color: color-mod(var(--gray-base) lightness(20%) a(30%));
   padding: 2px;
   border-radius: 3px; */
   text-decoration: inherit;
@@ -105,7 +105,7 @@
 }
 
 .root p code {
-  background: color(var(--gray-base) lightness(+ 50%) a(30%));
+  background: color-mod(var(--gray-base) lightness(50%) a(30%));
   font-size: 95%;
   padding: 1px 2px;
   border-radius: 3px;

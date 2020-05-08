@@ -23,7 +23,7 @@
   @nest &:focus {
     background-color: var(--component-bg);
     border-color: var(--selectable-item-base) a(50%);
-    box-shadow: 0 0 0 3px color(var(--selectable-item-base) a(50%));
+    box-shadow: 0 0 0 3px color-mod(var(--selectable-item-base) a(50%));
 
     @nest &:active {
       background-color: var(--selectable-item-color-active);

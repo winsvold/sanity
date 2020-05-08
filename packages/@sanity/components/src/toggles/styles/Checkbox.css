@@ -1,4 +1,4 @@
-@import "part:@sanity/base/theme/variables-style";
+@import 'part:@sanity/base/theme/variables-style';
 
 :root {
   --checkbox-label-height: 1em;
@@ -6,7 +6,7 @@
   --checkbox-color: var(--brand-primary);
   --checkbox-button-size: 1em;
   --checkbox-top-offset: 0;
-  --checkbox-focus-color: color(var(--black) a(10%));
+  --checkbox-focus-color: color-mod(var(--black) a(10%));
   --checkbox-label-font-size: 1em;
   --checkbox-padding: 0.25em;
 }
@@ -86,7 +86,7 @@
   border-radius: 10%;
   background-color: transparent;
   transform: scale(0.5);
-  transition: background-color 0.1s  linear, transform 0.15s linear;
+  transition: background-color 0.1s linear, transform 0.15s linear;
 
   @nest .hasFocus & {
     background-color: var(--focus-color);

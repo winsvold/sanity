@@ -49,7 +49,7 @@
     padding: 0;
     flex-direction: row;
     transition: box-shadow var(--pane-animation-time) var(--pane-animation-time) linear;
-    background-image: linear-gradient(90deg, transparent, color(var(--text-color) a(10%)));
+    background-image: linear-gradient(90deg, transparent, color-mod(var(--text-color) a(10%)));
     background-size: 0.8rem 100%;
     background-repeat: no-repeat;
     background-position: right;

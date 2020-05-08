@@ -85,7 +85,7 @@
   position: absolute;
   top: calc(50% - 1.375em);
   left: calc(50% - 1.375em);
-  background: color(var(--component-bg) alpha(90%));
+  background: color-mod(var(--component-bg) alpha(90%));
   width: 2.75em;
   height: 2.75em;
   border-radius: 50%;

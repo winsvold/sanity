@@ -2,7 +2,7 @@
 
 :root {
   --edit-item-fold-border-color: var(--brand-primary);
-  --edit-item-fold-dark-color: color(var(--edit-item-fold-border-color) lightness(- 20%));
+  --edit-item-fold-dark-color: color-mod(var(--edit-item-fold-border-color) lightness(20%));
   --edit-item-fold-padding: var(--medium-padding);
 }
 
@@ -28,7 +28,7 @@
 }
 
 .wrapper {
-  composes: shadow-12dp from "part:@sanity/base/theme/shadows-style";
+  composes: shadow-12dp from 'part:@sanity/base/theme/shadows-style';
   box-sizing: border-box;
   border: 1px solid var(--edit-item-fold-border-color);
   background-color: var(--component-bg);

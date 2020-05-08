@@ -6,10 +6,9 @@
   position: relative;
 
   @nest &:focus {
-    box-shadow:
-      0 0 2px 1px color(var(--input-border-color-focus)),
-      0 0 4px 0 color(var(--input-border-color-focus) a(60%)),
-      0 0 10px 5px color(var(--input-border-color-focus) a(10%));
+    box-shadow: 0 0 2px 1px color-mod(var(--input-border-color-focus)),
+      0 0 4px 0 color-mod(var(--input-border-color-focus) a(60%)),
+      0 0 10px 5px color-mod(var(--input-border-color-focus) a(10%));
   }
 }
 
@@ -20,7 +19,7 @@
   @nest .transparent & {
     transition: all 0.05s linear;
     background-color: transparent;
-    border: 1px solid color(var(--gray-base) a(8%));
+    border: 1px solid color-mod(var(--gray-base) a(8%));
 
     @nest &:hover {
       background-color: var(--white);
@@ -51,7 +50,7 @@
 }
 
 .popper {
-  composes: shadow-6dp from "part:@sanity/base/theme/shadows-style";
+  composes: shadow-6dp from 'part:@sanity/base/theme/shadows-style';
   box-sizing: border-box;
   background-color: var(--component-bg);
   position: relative;
