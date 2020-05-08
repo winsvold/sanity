@@ -7,8 +7,6 @@ import documentStore from 'part:@sanity/base/datastore/document'
 import {tap} from 'rxjs/operators'
 import {Subscription} from 'rxjs'
 
-import styles from './EditForm.css'
-
 const preventDefault = (ev: FormEvent) => ev.preventDefault()
 
 type Doc = any
@@ -68,7 +66,7 @@ export default class EditForm extends React.PureComponent<Props> {
     } = this.props
 
     return (
-      <form className={styles.root} onSubmit={preventDefault}>
+      <form onSubmit={preventDefault}>
         <FormBuilder
           schema={schema}
           patchChannel={this.patchChannel}
