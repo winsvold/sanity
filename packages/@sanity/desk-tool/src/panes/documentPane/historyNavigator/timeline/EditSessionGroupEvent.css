@@ -50,7 +50,8 @@
 }
 
 .root:not(.isSelected) > button:hover {
-  background: color(var(--selectable-item-base) alpha(20%));
+  background: color(var(--selectable-item-base) alpha(10%));
+  color: var(--component-text-color);
 
   /* @nest &:before, &:after {
     border-color: #fff;
