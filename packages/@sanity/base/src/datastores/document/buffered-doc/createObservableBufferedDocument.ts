@@ -50,6 +50,7 @@ const getUpdatedSnapshot = (bufferedDocument: BufferedDocument) => {
 
   return {
     ...LOCAL,
+    _type: (HEAD || LOCAL)._type,
     _rev: (HEAD || LOCAL)._rev,
     _updatedAt: new Date().toISOString()
   }

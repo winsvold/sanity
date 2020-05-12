@@ -51,14 +51,14 @@ export function getPairListener(client: SanityClient, idPair: IdPair) {
   )
 
   function fetchInitialDocumentSnapshots({publishedId, draftId}): Observable<Snapshots> {
-    return (client.observable.getDocuments([draftId, publishedId]) as Observable<
-      [SanityDocument, SanityDocument]
-    >).pipe(
-      map(([draft, published]) => ({
-        draft,
-        published
-      }))
-    )
+    return client.observable
+      .getDocuments<SanityDocument>([draftId, publishedId])
+      .pipe(
+        map(([draft, published]) => ({
+          draft,
+          published
+        }))
+      )
   }
 }
 

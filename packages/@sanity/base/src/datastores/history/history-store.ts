@@ -1,12 +1,44 @@
 import client from 'part:@sanity/base/client'
-import {from, merge} from 'rxjs'
-import {transactionsToEvents} from '@sanity/transaction-collator'
+import {from, merge, Observable} from 'rxjs'
+import {transactionsToEvents, HistoryEvent} from '@sanity/transaction-collator'
 import {map, mergeMap, reduce, scan} from 'rxjs/operators'
 import {getDraftId, getPublishedId} from '../../util/draftUtils'
 import {omit, isUndefined} from 'lodash'
 import jsonReduce from 'json-reduce'
 
-const documentRevisionCache = Object.create(null)
+interface PartialDocument {
+  [key: string]: unknown
+  _id: string
+  _type: string
+  _rev: string
+  _createdAt: string
+  _updatedAt: string
+}
+
+type MutationStub =
+  | {createOrReplace: {_id: string}}
+  | {create: {_id: string}}
+  | {createIfNotExists: {_id: string}}
+  | {delete: {id: string}}
+  | {patch: {id: string}}
+
+type TransactionLogEvent = {
+  id: string
+  timestamp: string
+  author: string
+  mutations: MutationStub[]
+  documentIDs: string[]
+  effects: {
+    [key: string]:
+      | {
+          apply: unknown[]
+          revert: unknown[]
+        }
+      | undefined
+  }
+}
+
+const documentRevisionCache: {[key: string]: Promise<PartialDocument>} = Object.create(null)
 
 const compileTransactions = (acc, curr) => {
   if (acc[curr.id]) {
@@ -18,36 +50,37 @@ const compileTransactions = (acc, curr) => {
   return acc
 }
 
-const ndjsonToArray = ndjson => {
+function ndjsonToArray<T = unknown>(ndjson: string | ArrayBuffer): T[] {
   return ndjson
-    .toString('utf8')
+    .toString()
     .split('\n')
     .filter(Boolean)
     .map(line => JSON.parse(line))
 }
 
-const getHistory = (documentIds, options = {}) => {
-  const ids = Array.isArray(documentIds) ? documentIds : [documentIds]
-  const {time, revision} = options
+type GetHistoryOptions = {time: string} | {revision: string} | {}
 
-  if (time && revision) {
+const getHistory = (documentIds: string[], options: GetHistoryOptions = {}) => {
+  const ids = Array.isArray(documentIds) ? documentIds : [documentIds]
+
+  if ('time' in options && 'revision' in options) {
     throw new Error(`getHistory can't handle both time and revision parameters`)
   }
 
   const dataset = client.clientConfig.dataset
   let url = `/data/history/${dataset}/documents/${ids.join(',')}`
 
-  if (revision) {
-    url = `${url}?revision=${revision}`
+  if ('revision' in options) {
+    url = `${url}?revision=${options.revision}`
   } else {
-    const timestamp = time || new Date().toISOString()
+    const timestamp = 'time' in options ? options.time : new Date().toISOString()
     url = `${url}?time=${timestamp}`
   }
 
   return client.request({url})
 }
 
-const getDocumentAtRevision = (documentId, revision) => {
+const getDocumentAtRevision = (documentId: string, revision: string): Promise<PartialDocument> => {
   const publishedId = getPublishedId(documentId)
   const draftId = getDraftId(documentId)
 
@@ -65,14 +98,14 @@ const getDocumentAtRevision = (documentId, revision) => {
   return documentRevisionCache[cacheKey]
 }
 
-const getTransactions = documentIds => {
+const getTransactions = (documentIds: string | string[]) => {
   const ids = Array.isArray(documentIds) ? documentIds : [documentIds]
   const dataset = client.clientConfig.dataset
   const url = `/data/history/${dataset}/transactions/${ids.join(',')}?excludeContent=true`
-  return client.request({url}).then(ndjsonToArray)
+  return client.request({url}).then(body => ndjsonToArray<TransactionLogEvent>(body))
 }
 
-function historyEventsFor(documentId) {
+function historyEventsFor(documentId: string): Observable<HistoryEvent[]> {
   const pairs = [getDraftId(documentId), getPublishedId(documentId)]
 
   const query = '*[_id in $documentIds]'
@@ -113,7 +146,7 @@ function historyEventsFor(documentId) {
   )
 }
 
-const getAllRefIds = doc =>
+const getAllRefIds = (doc: {[key: string]: unknown}): string[] =>
   jsonReduce(
     doc,
     (acc, node) =>
@@ -123,7 +156,7 @@ const getAllRefIds = doc =>
     []
   )
 
-function jsonMap(value, mapFn) {
+function jsonMap(value: any, mapFn: Function): typeof value {
   if (Array.isArray(value)) {
     return mapFn(value.map(item => jsonMap(item, mapFn)).filter(item => !isUndefined(item)))
   }
@@ -144,20 +177,21 @@ function jsonMap(value, mapFn) {
   return mapFn(value)
 }
 
-const mapRefNodes = (doc, mapFn) =>
+const mapRefNodes = (doc: PartialDocument, mapFn: Function): typeof doc =>
   jsonMap(doc, node => {
-    return node && typeof node === 'object' && typeof node._ref === 'string'
-      ? mapFn(node)
-      : node
+    return node && typeof node === 'object' && typeof node._ref === 'string' ? mapFn(node) : node
   })
 
-export const removeMissingReferences = (doc, existingIds) =>
+export const removeMissingReferences = (
+  doc: PartialDocument,
+  existingIds: string[]
+): PartialDocument =>
   mapRefNodes(doc, refNode => {
     const documentExists = existingIds[refNode._ref]
     return documentExists ? refNode : undefined
   })
 
-function restore(id, targetId, rev) {
+function restore(id: string, targetId: string, rev: string) {
   return from(getDocumentAtRevision(id, rev)).pipe(
     mergeMap(documentAtRevision => {
       const existingIdsQuery = getAllRefIds(documentAtRevision)
@@ -172,7 +206,8 @@ function restore(id, targetId, rev) {
       // Remove _updatedAt and create a new draft from the document at given revision
       ({
         ...omit(documentAtRevision, '_updatedAt'),
-        _id: targetId
+        _id: targetId,
+        _type: documentAtRevision._type
       })
     ),
     mergeMap(restoredDraft =>
@@ -184,12 +219,4 @@ function restore(id, targetId, rev) {
   )
 }
 
-export default function createHistoryStore() {
-  return {
-    getDocumentAtRevision,
-    getHistory,
-    getTransactions,
-    historyEventsFor,
-    restore
-  }
-}
+export default {getDocumentAtRevision, getHistory, getTransactions, historyEventsFor, restore}
