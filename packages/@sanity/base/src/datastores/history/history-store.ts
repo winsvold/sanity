@@ -60,7 +60,7 @@ function ndjsonToArray<T = unknown>(ndjson: string | ArrayBuffer): T[] {
 
 type GetHistoryOptions = {time: string} | {revision: string} | {}
 
-const getHistory = (documentIds: string[], options: GetHistoryOptions = {}) => {
+export const getHistory = (documentIds: string[], options: GetHistoryOptions = {}) => {
   const ids = Array.isArray(documentIds) ? documentIds : [documentIds]
 
   if ('time' in options && 'revision' in options) {
@@ -80,7 +80,10 @@ const getHistory = (documentIds: string[], options: GetHistoryOptions = {}) => {
   return client.request({url})
 }
 
-const getDocumentAtRevision = (documentId: string, revision: string): Promise<PartialDocument> => {
+export const getDocumentAtRevision = (
+  documentId: string,
+  revision: string
+): Promise<PartialDocument> => {
   const publishedId = getPublishedId(documentId)
   const draftId = getDraftId(documentId)
 
@@ -98,14 +101,14 @@ const getDocumentAtRevision = (documentId: string, revision: string): Promise<Pa
   return documentRevisionCache[cacheKey]
 }
 
-const getTransactions = (documentIds: string | string[]) => {
+export const getTransactions = (documentIds: string | string[]) => {
   const ids = Array.isArray(documentIds) ? documentIds : [documentIds]
   const dataset = client.clientConfig.dataset
   const url = `/data/history/${dataset}/transactions/${ids.join(',')}?excludeContent=true`
   return client.request({url}).then(body => ndjsonToArray<TransactionLogEvent>(body))
 }
 
-function historyEventsFor(documentId: string): Observable<HistoryEvent[]> {
+export function historyEventsFor(documentId: string): Observable<HistoryEvent[]> {
   const pairs = [getDraftId(documentId), getPublishedId(documentId)]
 
   const query = '*[_id in $documentIds]'
@@ -191,7 +194,7 @@ export const removeMissingReferences = (
     return documentExists ? refNode : undefined
   })
 
-function restore(id: string, targetId: string, rev: string) {
+export function restore(id: string, targetId: string, rev: string) {
   return from(getDocumentAtRevision(id, rev)).pipe(
     mergeMap(documentAtRevision => {
       const existingIdsQuery = getAllRefIds(documentAtRevision)
@@ -218,5 +221,3 @@ function restore(id: string, targetId: string, rev: string) {
     )
   )
 }
-
-export default {getDocumentAtRevision, getHistory, getTransactions, historyEventsFor, restore}
