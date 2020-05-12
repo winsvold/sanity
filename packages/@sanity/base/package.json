@@ -29,7 +29,7 @@
   "dependencies": {
     "@sanity/client": "1.149.13",
     "@sanity/generate-help-url": "1.149.0",
-    "@sanity/image-url": "0.140.15",
+    "@sanity/image-url": "^0.140.19",
     "@sanity/initial-value-templates": "1.149.7",
     "@sanity/mutator": "1.149.0",
     "@sanity/observable": "1.149.0",
