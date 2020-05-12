@@ -1993,6 +1993,16 @@ export interface SanityClient {
    * @param options Request options
    */
   request(options: RawRequestOptions): Promise<any>
+
+  /**
+   * DEPRECATED: Perform an HTTP request a `/data` sub-endpoint
+   *
+   * @deprecated Use your own request library!
+   * @param endpoint Endpoint to hit (mutate, query etc)
+   * @param body Request body
+   * @param options Request options
+   */
+  dataRequest(endpoint: string, body: unknown, options?: BaseMutationOptions): Promise<any>
 }
 
 export interface ClientConstructor {
