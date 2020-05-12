@@ -36,8 +36,8 @@ export function formatDate(now: number, date: Date | number): string {
   }
 
   if (isSameYear(now, date)) {
-    return format(date, 'MMM d @ HH:mm:ss')
+    return format(date, 'MMM Do @ HH:mm:ss')
   }
 
-  return format(date, 'MMM d, YYYY @ HH:mm:ss')
+  return format(date, 'MMM Do, YYYY @ HH:mm:ss')
 }
