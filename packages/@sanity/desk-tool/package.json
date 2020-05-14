@@ -37,6 +37,7 @@
     "hashlru": "^2.1.0",
     "leven": "^2.1.0",
     "lodash": "^4.17.15",
+    "mendoza": "^0.1.0",
     "react-json-inspector": "^7.1.1",
     "react-tiny-virtual-list": "^2.0.5",
     "react-tippy": "^1.2.3",
@@ -45,6 +46,8 @@
     "use-onclickoutside": "^0.3.1"
   },
   "devDependencies": {
+    "@sanity/client": "1.149.13",
+    "@sanity/state-router": "1.149.0",
     "jest": "^24.9.0",
     "prop-types": "^15.6.0",
     "react": "16.9.0",

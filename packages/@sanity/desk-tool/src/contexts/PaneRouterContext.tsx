@@ -1,91 +1,131 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable react/prop-types */
-
+/* eslint-disable react/prop-types, react/no-multi-comp */
 import React, {useContext} from 'react'
 import {isEqual, pick, omit} from 'lodash'
-import {StateLink} from 'part:@sanity/base/router'
+import {StateLink, Router} from 'part:@sanity/base/router'
 
-const contextCache = new WeakMap()
+const contextCache = new WeakMap<object, Map<string, PaneRouterContextShape>>()
 
-const DEFAULT_SET_PARAMS_OPTIONS = {
+interface SetParamsOptions {
+  recurseIfInherited?: boolean
+}
+
+const DEFAULT_SET_PARAMS_OPTIONS: SetParamsOptions = {
   recurseIfInherited: false
 }
 
-const missingContext = () => {
+function missingContext<T = any>(): T {
   throw new Error('Pane is missing router context')
 }
 
 export const exclusiveParams = ['view']
 
-export const PaneRouterContext = React.createContext({
+type PaneSegment = {id: string; payload?: unknown; params?: Record<string, any>}
+type RouterPanesState = Array<PaneSegment[]>
+
+export interface PaneRouterContextShape {
   // Zero-based index (position) of pane, visually
-  index: 0,
+  index: number
 
   // Zero-based index of pane group (within URL structure)
-  groupIndex: 0,
+  groupIndex: number
 
   // Zero-based index of pane within sibling group
-  siblingIndex: 0,
+  siblingIndex: number
 
   // Payload of the current pane
-  payload: undefined,
+  payload?: unknown
 
   // Params of the current pane
-  params: {},
+  params: Record<string, string>
 
   // Whether or not the pane has any siblings (within the same group)
-  hasGroupSiblings: false,
+  hasGroupSiblings: boolean
 
   // The length of the current group
-  groupLength: 0,
+  groupLength: number
 
   // Current router state for the "panes" property
-  routerPanesState: [],
+  routerPanesState: RouterPanesState
 
   // Curried StateLink that passes the correct state automatically
-  ChildLink: ({childId, childParameters, ...props}) => missingContext(),
+  ChildLink: (props: {childId: string; childParameters: Record<string, any>}) => React.ReactNode
 
   // Curried StateLink that passed the correct state, but merges params/payload
-  ParameterizedLink: ({params, payload, ...props}) => missingContext(),
+  ParameterizedLink: (props: {params?: Record<string, any>; payload?: unknown}) => React.ReactNode
 
   // Replaces the current pane with a new one
-  replaceCurrent: ({id, payload, params} = {}) => missingContext(),
+  replaceCurrent: (pane: {id?: string; payload?: unknown; params?: Record<string, any>}) => void
 
   // Removes the current pane from the group
-  closeCurrent: () => missingContext(),
+  closeCurrent: () => void
 
   // Duplicate the current pane, with optional overrides for item ID and parameters
-  duplicateCurrent: ({payload, params} = {}) => missingContext(),
+  duplicateCurrent: (pane?: {payload?: unknown; params?: Record<string, any>}) => void
 
   // Set the current "view" for the pane
-  setView: viewId => missingContext(),
+  setView: (viewId: string) => void
 
   // Set the parameters for the current pane
-  setParams: params => missingContext(),
+  setParams: (params: Record<string, any>, options?: SetParamsOptions) => void
 
   // Set the payload for the current pane
-  setPayload: payload => missingContext(),
+  setPayload: (payload: unknown) => void
 
   // Proxied navigation to a given intent. Consider just exposing `router` instead?
-  navigateIntent: (intentName, params, options = {}) => missingContext()
+  navigateIntent: (
+    intentName: string,
+    params: Record<string, any>,
+    options?: {replace?: boolean}
+  ) => void
+}
+
+export const PaneRouterContext = React.createContext<PaneRouterContextShape>({
+  index: 0,
+  groupIndex: 0,
+  siblingIndex: 0,
+  payload: undefined,
+  params: {},
+  hasGroupSiblings: false,
+  groupLength: 0,
+  routerPanesState: [],
+  ChildLink: ({}) => missingContext(),
+  ParameterizedLink: ({}) => missingContext(),
+  replaceCurrent: () => missingContext(),
+  closeCurrent: () => missingContext(),
+  duplicateCurrent: () => missingContext(),
+  setView: () => missingContext(),
+  setParams: () => missingContext(),
+  setPayload: () => missingContext(),
+  navigateIntent: () => missingContext()
 })
 
-const ChildLink = React.forwardRef(function ChildLink({childId, childPayload, ...props}, ref) {
+type ChildLinkProps = {
+  childId: string
+  childPayload?: unknown
+  children?: React.ReactNode
+}
+
+const ChildLink = React.forwardRef(function ChildLink(props: ChildLinkProps, ref) {
+  const {childId, childPayload, ...rest} = props
   const {routerPanesState, groupIndex} = useContext(PaneRouterContext)
-  const panes = routerPanesState
+  const panes: RouterPanesState = routerPanesState
     .slice(0, groupIndex + 1)
     .concat([[{id: childId, payload: childPayload}]])
 
-  return <StateLink ref={ref} {...props} state={{panes}} />
+  return <StateLink ref={ref} {...rest} state={{panes}} />
 })
 
+type ParameterizedLinkProps = {
+  params?: Record<string, any>
+  payload?: unknown
+  children?: React.ReactNode
+}
+
 const ParameterizedLink = React.forwardRef(function ParameterizedLink(
-  {params: newParams, payload: newPayload, ...props},
+  props: ParameterizedLinkProps,
   ref
 ) {
+  const {params: newParams, payload: newPayload, ...rest} = props
   const {routerPanesState} = useContext(PaneRouterContext)
 
   const panes = routerPanesState.map((group, i) => {
@@ -104,20 +144,40 @@ const ParameterizedLink = React.forwardRef(function ParameterizedLink(
     ]
   })
 
-  return <StateLink ref={ref} {...props} state={{panes}} />
+  return <StateLink ref={ref} {...rest} state={{panes}} />
 })
 
-export function getPaneRouterContextFactory(instance) {
-  let contexts = contextCache.get(instance)
-  if (!contexts) {
-    contexts = new Map()
+type PaneRouterContextFactory = (options: {
+  groupIndex: number
+  siblingIndex: number
+  flatIndex: number
+  params: Record<string, any>
+  payload: unknown
+}) => PaneRouterContextShape
+
+interface DeskToolPanesProps {
+  router: Router<{panes: RouterPanesState; payload: unknown; params: Record<string, any>}>
+}
+
+export function getPaneRouterContextFactory(
+  instance: React.Component<DeskToolPanesProps>
+): PaneRouterContextFactory {
+  const exists = contextCache.has(instance)
+  const contexts = contextCache.get(instance) || new Map<string, PaneRouterContextShape>()
+  if (!exists) {
     contextCache.set(instance, contexts)
   }
 
-  return ({groupIndex, siblingIndex, flatIndex, params: paneParams, payload: panePayload}) => {
+  return ({
+    groupIndex,
+    siblingIndex,
+    flatIndex,
+    params: paneParams,
+    payload: panePayload
+  }): PaneRouterContextShape => {
     const cacheKey = `${flatIndex}-${groupIndex}[${siblingIndex}]`
-    if (contexts.has(cacheKey)) {
-      const existing = contexts.get(cacheKey)
+    const existing = contexts.get(cacheKey)
+    if (existing) {
       const payloadEqual = isEqual(existing.payload, panePayload)
       const paramsEqual = isEqual(existing.params, paneParams)
       const panesEqual = isEqual(existing.routerPanesState, instance.props.router.state.panes)
@@ -143,7 +203,7 @@ export function getPaneRouterContextFactory(instance) {
       return newRouterState
     }
 
-    const setPayload = payload => {
+    const setPayload: PaneRouterContextShape['setPayload'] = payload => {
       modifyCurrentGroup((siblings, item) => {
         const newGroup = siblings.slice()
         newGroup[siblingIndex] = {...item, payload}
@@ -151,7 +211,7 @@ export function getPaneRouterContextFactory(instance) {
       })
     }
 
-    const setParams = (params, setOptions = {}) => {
+    const setParams: PaneRouterContextShape['setParams'] = (params, setOptions = {}) => {
       const {recurseIfInherited} = {...DEFAULT_SET_PARAMS_OPTIONS, ...setOptions}
       modifyCurrentGroup((siblings, item) => {
         const isGroupRoot = siblingIndex === 0
@@ -199,7 +259,7 @@ export function getPaneRouterContextFactory(instance) {
       })
     }
 
-    const ctx = {
+    const ctx: PaneRouterContextShape = {
       // Zero-based index (position) of pane, visually
       index: flatIndex,
 
@@ -231,19 +291,20 @@ export function getPaneRouterContextFactory(instance) {
       ParameterizedLink,
 
       // Replaces the current pane with a new one
-      replaceCurrent: ({id, payload, params} = {}) => {
+      replaceCurrent: ({id, payload, params} = {}): void => {
         modifyCurrentGroup(() => [{id, payload, params}])
       },
 
       // Removes the current pane from the group
-      closeCurrent: () => {
+      closeCurrent: (): void => {
         modifyCurrentGroup((siblings, item) =>
           siblings.length > 1 ? siblings.filter(sibling => sibling !== item) : siblings
         )
       },
 
       // Duplicate the current pane, with optional overrides for payload, parameters
-      duplicateCurrent: ({payload, params} = {}) => {
+      duplicateCurrent: (options): void => {
+        const {payload, params} = options || {}
         modifyCurrentGroup((siblings, item) => {
           const newGroup = siblings.slice()
           newGroup.splice(siblingIndex + 1, 0, {
@@ -276,6 +337,6 @@ export function getPaneRouterContextFactory(instance) {
   }
 }
 
-export function usePaneRouter() {
+export function usePaneRouter(): PaneRouterContextShape {
   return React.useContext(PaneRouterContext)
 }

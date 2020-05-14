@@ -83,7 +83,7 @@ function DocumentPane(props: Props) {
   const schemaType = schema.get(typeName)
 
   // Contexts
-  const paneRouter: any = usePaneRouter()
+  const paneRouter = usePaneRouter()
   const history = useDocumentHistory({documentId, urlParams})
 
   // React.useEffect(() => console.log('history', history), [history])
@@ -192,8 +192,8 @@ function DocumentPane(props: Props) {
     return false
   }
 
-  const handleSetActiveView = (...args: any[]) => {
-    paneRouter.setView(...args)
+  const handleSetActiveView = (id: string) => {
+    paneRouter.setView(id)
   }
 
   const handleSetFocus = (path: any) => {

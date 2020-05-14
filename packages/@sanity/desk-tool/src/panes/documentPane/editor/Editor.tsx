@@ -48,7 +48,7 @@ interface Props {
   onExpand?: () => void
   onHideInspector: () => void
   onOpenHistory: () => void
-  onSetActiveView: () => void
+  onSetActiveView: (id: string) => void
   onSetFocus: (path: any) => void
   onSplitPane?: () => void
   onToggleValidationResults: () => void

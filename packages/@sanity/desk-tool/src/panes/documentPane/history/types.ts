@@ -1,3 +1,5 @@
+import {WelcomeEvent, MutationEvent} from '@sanity/client'
+import {incremental} from 'mendoza'
 import {Doc} from '../types'
 
 export interface HistoryRevisionState {
@@ -20,24 +22,26 @@ export interface HistorySelectionRange {
   to: {rev: string | null; index: number; event: HistoryTimelineEvent | null}
 }
 
-// TODO: remove this
-export interface LegacyHistoryEventType {
-  startTime: string
-  endTime: string
-  displayDocumentId: string
-  documentIds: string[]
+export type MendozaPatch = unknown[]
+
+export type MendozaEffectPair = {
+  apply: MendozaPatch
+  revert: MendozaPatch
+}
+
+export type Transaction = {
+  author: string
+  documentIDs: string[]
+  id: string
+  mutations: unknown[]
+  timestamp: string
+  effects: Record<string, MendozaEffectPair>
+}
+
+export type PatchMetadata = {
   rev: string
-  transactionIds: string[]
-  type:
-    | 'created'
-    | 'deleted'
-    | 'edited'
-    | 'published'
-    | 'unpublished'
-    | 'truncated'
-    | 'discardDraft'
-    | 'unknown'
-  userIds: string[]
+  author: string
+  timestamp: number
 }
 
 export interface EditSession {
@@ -45,79 +49,58 @@ export interface EditSession {
   edits: string[]
   length: number
   offset: number
+  endTime: number
+  value?: incremental.Value
 }
 
-export interface HistoryTimelineCreateEvent {
+interface BaseHistoryTimelineEvent {
+  displayDocumentId: string | null
+  timestamp: number
+  offset: number
+  rev: string
+}
+
+export type HistoryTimelineCreateEvent = BaseHistoryTimelineEvent & {
   type: 'create'
-  displayDocumentId: string
-  timestamp: number
   userId: string
-  offset: number
-  rev: string
 }
 
-export interface HistoryTimelineDeleteEvent {
+export type HistoryTimelineDeleteEvent = BaseHistoryTimelineEvent & {
   type: 'delete'
-  displayDocumentId: string
-  timestamp: number
   userId: string
-  offset: number
-  rev: string
 }
 
-export interface HistoryTimelineDiscardDraftEvent {
+export type HistoryTimelineDiscardDraftEvent = BaseHistoryTimelineEvent & {
   type: 'discardDraft'
-  displayDocumentId: string
-  timestamp: number
   userId: string
-  offset: number
-  rev: string
 }
 
-export interface HistoryTimelineEditSessionGroupEvent {
+export type HistoryTimelineEditSessionGroupEvent = BaseHistoryTimelineEvent & {
   type: 'editSessionGroup'
-  displayDocumentId: string
   sessions: Array<EditSession>
-  timestamp: number
   userIds: string[]
-  offset: number
   length: number
-  rev: string
 }
 
-export interface HistoryTimelinePublishEvent {
+export type HistoryTimelinePublishEvent = BaseHistoryTimelineEvent & {
   type: 'publish'
-  displayDocumentId: string
-  timestamp: number
   userId: string
-  offset: number
-  rev: string
 }
 
-export interface HistoryTimelineTruncateEvent {
+export type HistoryTimelineTruncateEvent = BaseHistoryTimelineEvent & {
   type: 'truncate'
-  displayDocumentId: string
-  timestamp: number
   userIds: string[]
-  offset: number
-  rev: string
 }
 
-export interface HistoryTimelineUnpublishEvent {
+export type HistoryTimelineUnpublishEvent = BaseHistoryTimelineEvent & {
   type: 'unpublish'
-  displayDocumentId: string
-  timestamp: number
   userId: string
-  offset: number
-  rev: string
 }
 
-export interface HistoryTimelineUnknownEvent {
+export type HistoryTimelineUnknownEvent = BaseHistoryTimelineEvent & {
   type: 'unknown'
-  displayDocumentId: string
-  timestamp: number
-  message: string
-  rev: string
+  message?: string
+  userId: string
 }
 
 export type HistoryTimelineEvent =
@@ -129,3 +112,67 @@ export type HistoryTimelineEvent =
   | HistoryTimelineTruncateEvent
   | HistoryTimelineUnpublishEvent
   | HistoryTimelineUnknownEvent
+
+export type ComputedHistoryTimelineEvent = HistoryTimelineEvent & {
+  value: incremental.Value
+}
+
+export type TransactionLogEvent = {
+  id: string
+  timestamp: string
+  author: string
+  mutations: MutationStub[]
+  documentIDs: string[]
+  effects: Record<string, MendozaEffectPair | undefined>
+}
+
+export type NormalizedTransactionLogEvent = Omit<TransactionLogEvent, 'timestamp'> & {
+  timestamp: number
+}
+
+export type ListenEvent = MutationEvent | WelcomeEvent
+export type GroupedEvent = TransactionLogEvent | WelcomeEvent
+
+export interface CreateMutationStub {
+  _id: string
+}
+
+export interface DeleteMutationStub {
+  id: string
+}
+
+export interface PatchMutationStub {
+  id: string
+}
+
+export interface CreateOrReplaceMutation {
+  createOrReplace: CreateMutationStub
+}
+
+export interface CreateIfNotExistsMutation {
+  createIfNotExists: CreateMutationStub
+}
+
+export interface CreateSquashedMutation {
+  createSquashed: {document: CreateMutationStub; authors: string[]}
+}
+
+export interface CreateMutation {
+  create: CreateMutationStub
+}
+
+export interface DeleteMutation {
+  delete: PatchMutationStub
+}
+
+export interface PatchMutation {
+  patch: PatchMutationStub
+}
+
+export type MutationStub =
+  | CreateOrReplaceMutation
+  | CreateIfNotExistsMutation
+  | CreateSquashedMutation
+  | CreateMutation
+  | DeleteMutation
+  | PatchMutation

@@ -1,20 +1,19 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
+import client from 'part:@sanity/base/client'
 import historyStore from 'part:@sanity/base/datastore/history'
 import * as React from 'react'
 import {from, Observable, Subscription} from 'rxjs'
-import {map, tap} from 'rxjs/operators'
 import {usePaneRouter} from '../../../contexts/PaneRouterContext'
-import {mapLegacyEventsToEvents} from '../historyNavigator/mapLegacyEventsToEvents'
 import {Doc} from '../types'
 import {CURRENT_REVISION_FLAG} from './constants'
+import {getComputedCollatedEvents} from './transactionLog'
 import {decodeRevisionRange, encodeRevisionRange, findHistoryEventByRev} from './helpers'
 import {
   HistoryEventsState,
   HistoryRevisionState,
   HistorySelectionRange,
   HistoryTimelineEvent,
-  LegacyHistoryEventType,
   RevisionRange
 } from './types'
 
@@ -125,10 +124,10 @@ export function useDocumentHistory({
   // Callbacks
 
   const setSelection = React.useCallback(
-    (selection: RevisionRange) => {
-      if (selection) {
+    (newSelection: RevisionRange) => {
+      if (newSelection) {
         paneRouter.setParams(
-          {...paneRouter.params, rev: encodeRevisionRange(selection)},
+          {...paneRouter.params, rev: encodeRevisionRange(newSelection)},
           {recurseIfInherited: true}
         )
       } else {
@@ -250,19 +249,15 @@ export function useDocumentHistory({
 
       setHistoryEventsState(val => ({...val, isLoading: true}))
 
-      const legacyHistoryEvents$: Observable<LegacyHistoryEventType[]> = historyStore.historyEventsFor(
-        documentId
+      const historyEvents$ = getComputedCollatedEvents(documentId, client)
+      historyEventsSubscriptionRef.current = historyEvents$.subscribe(events =>
+        setHistoryEventsState(val => ({
+          ...val,
+          events: events.reverse(),
+          isLoaded: true,
+          isLoading: false
+        }))
       )
-
-      const historyEvents$ = legacyHistoryEvents$.pipe(map(mapLegacyEventsToEvents))
-
-      historyEventsSubscriptionRef.current = historyEvents$
-        .pipe(
-          tap(events =>
-            setHistoryEventsState(val => ({...val, events, isLoaded: true, isLoading: false}))
-          )
-        )
-        .subscribe()
     }
 
     if (!range.to.rev) {
