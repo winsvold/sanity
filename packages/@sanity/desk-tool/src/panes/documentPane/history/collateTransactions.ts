@@ -17,7 +17,8 @@ import {
   isDeleteMutation,
   isPatchMutation,
   getPublishedId,
-  getDraftId
+  getDraftId,
+  isDraftId
 } from './helpers'
 import {incremental} from 'mendoza/lib'
 
@@ -92,7 +93,7 @@ export function getComputedTransactionCollator(
         : acc.documents.draft.current
 
     if (item.type === 'editSession') {
-      // Hmmz
+      // @todo Hmmz. Add computed value to each and every session? Or is that too much?
     } else {
       const computed = item as ComputedHistoryTimelineEvent
       computed.value = document
@@ -163,6 +164,8 @@ function getHistoryTimelineItem(
       prev.userIds.push(current.author)
     }
 
+    prev.transactions.push(current)
+
     // @todo What determines whether or not it goes into the same session or not? is it actually the time?
     if (current.timestamp - lastSession.endTime < EDIT_SESSION_TIME_TRESHOLD_MS) {
       lastSession.edits.push(current.author)
@@ -196,6 +199,7 @@ function getHistoryTimelineItem(
       type: 'editSessionGroup',
       length: 1,
       userIds: [current.author],
+      transactions: [current],
       sessions: [
         {
           type: 'editSession',
@@ -214,6 +218,7 @@ function getHistoryTimelineItem(
     const event: HistoryTimelineTruncateEvent = {
       ...baseEvent,
       type,
+      transactions: [current],
       userIds: findUserIds(current, type)
     }
 
@@ -222,6 +227,7 @@ function getHistoryTimelineItem(
 
   return {
     ...baseEvent,
+    transactions: [current],
     type,
     userId: current.author
   }
@@ -252,6 +258,7 @@ export function mutationsToEventTypeAndDocumentId(
   const createValue = createOrReplaceMut || createMut || createIfNotExistsMut || null
 
   // Created
+  // @todo this wont work if we start paginating
   if (transactionIndex === 0 && createValue) {
     const documentId = createValue._id
     return {type: 'create', documentId}
@@ -259,12 +266,12 @@ export function mutationsToEventTypeAndDocumentId(
 
   // (re) created
   if (transactionIndex > 0 && mutations.length === 1 && createIfNotExistsMut) {
-    const type = createIfNotExistsMut._id.startsWith('drafts.') ? 'edit' : 'publish'
+    const type = isDraftId(createIfNotExistsMut._id) ? 'edit' : 'publish'
     return {type, documentId: createIfNotExistsMut._id}
   }
 
   // Published
-  if (createValue && deleteMut && deleteMut.id.startsWith('drafts.')) {
+  if (createValue && deleteMut && isDraftId(deleteMut.id)) {
     return {
       type: 'publish',
       documentId: createValue._id
@@ -276,7 +283,7 @@ export function mutationsToEventTypeAndDocumentId(
     withoutPatches.length === 2 &&
     (createIfNotExistsMut || createMut) &&
     deleteMut &&
-    !deleteMut.id.startsWith('drafts.')
+    !isDraftId(deleteMut.id)
   ) {
     return {
       type: 'unpublish',
@@ -286,9 +293,9 @@ export function mutationsToEventTypeAndDocumentId(
 
   // Restored to previous version
   if (
-    (createOrReplaceMut && createOrReplaceMut._id.startsWith('drafts.')) ||
-    (createMut && createMut._id.startsWith('drafts.')) ||
-    (createIfNotExistsMut && createIfNotExistsMut._id.startsWith('drafts.'))
+    (createOrReplaceMut && isDraftId(createOrReplaceMut._id)) ||
+    (createMut && isDraftId(createMut._id)) ||
+    (createIfNotExistsMut && isDraftId(createIfNotExistsMut._id))
   ) {
     return {
       type: 'edit',
@@ -297,8 +304,8 @@ export function mutationsToEventTypeAndDocumentId(
   }
 
   // Discard drafted changes
-  if (mutations.length === 1 && deleteMut && deleteMut.id.startsWith('drafts.')) {
-    return {type: 'discardDraft', documentId: deleteMut.id.replace('drafts.', '')}
+  if (mutations.length === 1 && deleteMut && isDraftId(deleteMut.id)) {
+    return {type: 'discardDraft', documentId: getPublishedId(deleteMut.id)}
   }
 
   // Truncated history
@@ -356,10 +363,10 @@ function createReduceTruncatedFn() {
     }
     if (index === arr.length - 1) {
       const draftTruncationEvent = truncated.find(
-        (evt) => evt.displayDocumentId && evt.displayDocumentId.startsWith('drafts.')
+        (evt) => evt.displayDocumentId && isDraftId(evt.displayDocumentId)
       )
       const publishedTruncationEvent = truncated.find(
-        (evt) => evt.displayDocumentId && !evt.displayDocumentId.startsWith('drafts.')
+        (evt) => evt.displayDocumentId && !isDraftId(evt.displayDocumentId)
       )
       if (draftTruncationEvent && publishedTruncationEvent) {
         acc.unshift({...draftTruncationEvent, type: 'edited'})

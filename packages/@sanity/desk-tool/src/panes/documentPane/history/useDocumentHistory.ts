@@ -6,10 +6,12 @@ import * as React from 'react'
 import {from, Observable, Subscription} from 'rxjs'
 import {usePaneRouter} from '../../../contexts/PaneRouterContext'
 import {Doc} from '../types'
+import {getMendozaDiff} from './getMendozaDiff'
 import {CURRENT_REVISION_FLAG} from './constants'
-import {getComputedCollatedEvents} from './transactionLog'
+import {getCollatedEvents} from './transactionLog'
 import {decodeRevisionRange, encodeRevisionRange, findHistoryEventByRev} from './helpers'
 import {
+  ComputedDiff,
   HistoryEventsState,
   HistoryRevisionState,
   HistorySelectionRange,
@@ -51,16 +53,19 @@ function fetchRevision(documentId: string, rev: string): Observable<Doc> {
 
 export function useDocumentHistory({
   documentId,
-  urlParams
+  urlParams,
+  draft,
+  published
 }: {
   documentId: string
   urlParams: {
     view: string
     rev: string
   }
+  draft: Doc | null
+  published: Doc | null
 }) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const paneRouter: any = usePaneRouter()
+  const paneRouter = usePaneRouter()
 
   // Refs
   const toRevRef = React.useRef<string | null>(null)
@@ -76,6 +81,7 @@ export function useDocumentHistory({
   })
   const [toRevision, setToRevision] = React.useState<HistoryRevisionState>(INITIAL_REVISION)
   const [fromRevision, setFromRevision] = React.useState<HistoryRevisionState>(INITIAL_REVISION)
+  const [diff, setDiff] = React.useState<ComputedDiff | undefined>(undefined)
 
   // Values
   const selection = React.useMemo(() => decodeRevisionRange(urlParams.rev || null), [urlParams.rev])
@@ -100,6 +106,16 @@ export function useDocumentHistory({
       to: {index: rightIndex, rev: rightRev, event: rightEvent}
     }
   }, [historyState.events, selection])
+
+  React.useEffect(() => {
+    const computed = getMendozaDiff(documentId, historyState.events || [], range, {
+      draft,
+      published
+    })
+    if (computed !== diff) {
+      setDiff(computed)
+    }
+  }, [documentId, historyState.events, draft, published])
 
   const revision = React.useMemo(() => {
     // `from` and `to` are the same
@@ -249,7 +265,7 @@ export function useDocumentHistory({
 
       setHistoryEventsState(val => ({...val, isLoading: true}))
 
-      const historyEvents$ = getComputedCollatedEvents(documentId, client)
+      const historyEvents$ = getCollatedEvents(documentId, client)
       historyEventsSubscriptionRef.current = historyEvents$.subscribe(events =>
         setHistoryEventsState(val => ({
           ...val,
@@ -293,6 +309,7 @@ export function useDocumentHistory({
     selectedHistoryEvent,
     selectedHistoryEventIsLatest,
     selection,
-    setSelection
+    setSelection,
+    diff
   }
 }

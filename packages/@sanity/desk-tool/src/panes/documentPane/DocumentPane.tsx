@@ -75,6 +75,8 @@ function DocumentPane(props: Props) {
     title = '',
     urlParams,
     value,
+    draft,
+    published,
     views = []
   } = props
 
@@ -84,7 +86,7 @@ function DocumentPane(props: Props) {
 
   // Contexts
   const paneRouter = usePaneRouter()
-  const history = useDocumentHistory({documentId, urlParams})
+  const history = useDocumentHistory({documentId, urlParams, draft, published})
 
   // React.useEffect(() => console.log('history', history), [history])
 
@@ -286,9 +288,6 @@ function DocumentPane(props: Props) {
   }
 
   const revisionIsLoading = revision.from.isLoading && revision.to.isLoading
-  const toValue = selectedHistoryEventIsLatest ? value : revision.to.snapshot
-  const fromValue = revision.from.snapshot
-
   const showHistoryNavigator = isHistoryOpen && canShowHistoryList
   const showChangesInspector = isHistoryOpen && canShowChangesList
 
@@ -356,9 +355,8 @@ function DocumentPane(props: Props) {
       {showChangesInspector && (
         <div className={styles.inspectorContainer} key="inspector">
           <ChangesInspector
+            diff={history.diff}
             isLoading={revisionIsLoading}
-            fromValue={fromValue}
-            toValue={toValue}
             onHistoryClose={handleCloseHistory}
             schemaType={schemaType}
           />

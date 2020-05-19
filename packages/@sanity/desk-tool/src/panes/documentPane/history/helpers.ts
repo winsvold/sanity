@@ -73,10 +73,14 @@ export function isTransactionLogEvent(
   return 'documentIDs' in event
 }
 
+export function isDraftId(documentId: string): boolean {
+  return documentId.startsWith('drafts.')
+}
+
 export function getPublishedId(documentId: string): string {
-  return documentId.startsWith('drafts.') ? documentId.slice(7) : documentId
+  return isDraftId(documentId) ? documentId.slice(7) : documentId
 }
 
 export function getDraftId(documentId: string): string {
-  return documentId.startsWith('drafts.') ? documentId : `drafts.${documentId}`
+  return isDraftId(documentId) ? documentId : `drafts.${documentId}`
 }

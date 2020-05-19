@@ -2,6 +2,20 @@ import {WelcomeEvent, MutationEvent} from '@sanity/client'
 import {incremental} from 'mendoza'
 import {Doc} from '../types'
 
+export type IncrementalValue = incremental.Value
+
+export type DiffOrigin = {
+  userId: string
+  timestamp: number
+  revision: string
+} | null
+
+export type ComputedDiff = {
+  from: Doc | null
+  to: Doc | null
+  value: IncrementalValue
+}
+
 export interface HistoryRevisionState {
   isLoading: boolean
   snapshot: Doc | null
@@ -54,6 +68,7 @@ export interface EditSession {
 }
 
 interface BaseHistoryTimelineEvent {
+  transactions: NormalizedTransactionLogEvent[]
   displayDocumentId: string | null
   timestamp: number
   offset: number

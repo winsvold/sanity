@@ -23,3 +23,17 @@ export interface DocumentViewType {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component: React.ComponentType<any>
 }
+
+export interface ObjectSchemaType {
+  name: string
+  jsonType: string
+  title?: string
+  fields: ObjectField[]
+}
+
+export interface ObjectField {
+  name: string
+  type: SchemaType
+}
+
+export type SchemaType = ObjectSchemaType

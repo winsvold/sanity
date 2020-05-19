@@ -1,7 +1,8 @@
 import {SanityClient} from '@sanity/client'
-import {Observable, from, of} from 'rxjs'
-import {switchMap, map, concatMap, scan, debounceTime} from 'rxjs/operators'
+import {Observable, of} from 'rxjs'
+import {map, concatMap, scan, debounceTime} from 'rxjs/operators'
 import {collateTransactions, getComputedTransactionCollator} from './collateTransactions'
+import {getJsonStream} from './ndjsonStreamer'
 import {groupTransactions} from './groupTransactions'
 import {mapMutations} from './mapMutations'
 import {isTransactionLogEvent, getPublishedId, getDraftId} from './helpers'
@@ -64,13 +65,10 @@ function getPastTransactions(
   const publishedId = getPublishedId(documentId)
   const draftId = getDraftId(documentId)
   const documentIds = [publishedId, draftId]
-
   const dataset = client.config().dataset
-  const url = `/data/history/${dataset}/transactions/${publishedId},${draftId}?effectFormat=mendoza&excludeContent=true`
-
-  return client.observable.request({url}).pipe(
-    switchMap((response: string) => from(response.trim().split('\n'))),
-    map((line: string): TransactionLogEvent => JSON.parse(line)),
+  const queryParams = 'effectFormat=mendoza&excludeContent=true'
+  const url = `/data/history/${dataset}/transactions/${publishedId},${draftId}?${queryParams}`
+  return getJsonStream(client.getUrl(url)).pipe(
     map((event: TransactionLogEvent) => filterRelevantMutations(event, documentIds))
   )
 }
