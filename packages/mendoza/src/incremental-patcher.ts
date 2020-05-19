@@ -340,14 +340,18 @@ export function rebaseValue(left: Value, right: Value): Value {
       let leftObj = model.asObject(left)
       let rightObj = model.asObject(right)
 
+      let numRebased = 0
       for (let [key, rightVal] of Object.entries(rightObj.fields)) {
         let leftVal = leftObj.fields[key]
         if (leftVal) {
           rightObj.fields[key] = rebaseValue(leftVal, rightVal)
+          if (rightObj.fields[key] !== leftVal) {
+            numRebased++
+          }
         }
       }
 
-      break
+      return numRebased === 0 ? left : right
     }
     case 'array': {
       let leftArr = model.asArray(left)
@@ -357,11 +361,15 @@ export function rebaseValue(left: Value, right: Value): Value {
         break
       }
 
+      let numRebased = 0
       for (let i = 0; i < rightArr.elements.length; i++) {
         rightArr.elements[i] = rebaseValue(leftArr.elements[i], rightArr.elements[i])
+        if (rightArr.elements[i] !== leftArr.elements[i]) {
+          numRebased++
+        }
       }
 
-      break
+      return numRebased === 0 ? left : right
     }
     case 'null':
     case 'boolean':
