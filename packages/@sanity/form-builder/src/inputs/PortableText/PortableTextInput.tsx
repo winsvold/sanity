@@ -460,7 +460,7 @@ export default withPatchSubscriber(
                 onFocus={onFocus}
                 renderBlock={this.renderBlock}
                 selection={selection}
-                isReadOnly={readOnly}
+                readOnly={readOnly}
               />
             </div>
 
