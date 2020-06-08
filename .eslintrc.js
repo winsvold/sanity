@@ -6,11 +6,12 @@ const common = {
     browser: true
   },
   rules: {
-    'newline-per-chained-call': 0,
+    'newline-per-chained-call': 'off',
     'prettier/prettier': 'error',
+    'react/jsx-no-bind': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
-    'sort-imports': 0
+    'sort-imports': 'off'
   },
   globals: {
     __DEV__: true
@@ -36,6 +37,7 @@ module.exports = {
         'prettier/react'
       ],
       rules: {
+        ...common.rules,
         'import/no-extraneous-dependencies': 'off',
         'import/no-unresolved': [
           'error',
@@ -43,6 +45,8 @@ module.exports = {
             ignore: ['.*:.*']
           }
         ],
+        'import/order': ['error', {alphabetize: {order: 'asc', caseInsensitive: true}}],
+        'import/prefer-default-export': 'off',
         'import/unambiguous': 'off'
       },
       plugins: ['import', 'prettier', 'react', 'react-hooks'],
@@ -63,7 +67,9 @@ module.exports = {
         'prettier/react'
       ],
       rules: {
-        'prettier/prettier': 'error',
+        ...common.rules,
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/no-use-before-define': 'off',
         'react/jsx-filename-extension': ['error', {extensions: ['.tsx']}]
       },
       plugins: ['@typescript-eslint', 'prettier', 'react', 'react-hooks']
