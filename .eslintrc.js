@@ -5,7 +5,6 @@ const common = {
     node: true,
     browser: true
   },
-  extends: ['./packages/eslint-config-sanity/react.js', 'prettier', 'prettier/react'],
   rules: {
     'newline-per-chained-call': 0,
     'prettier/prettier': 'error',
@@ -31,7 +30,10 @@ module.exports = {
       parser: 'babel-eslint',
       extends: [
         './packages/eslint-config-sanity/index.js',
-        './packages/eslint-config-sanity/import.js'
+        './packages/eslint-config-sanity/react.js',
+        './packages/eslint-config-sanity/import.js',
+        'prettier',
+        'prettier/react'
       ],
       rules: {
         'import/no-extraneous-dependencies': 'off',
@@ -56,7 +58,9 @@ module.exports = {
       extends: [
         // './packages/eslint-config-sanity/index.js',
         'plugin:@typescript-eslint/recommended',
-        'prettier/@typescript-eslint'
+        'prettier/@typescript-eslint',
+        'prettier',
+        'prettier/react'
       ],
       rules: {
         'prettier/prettier': 'error',
