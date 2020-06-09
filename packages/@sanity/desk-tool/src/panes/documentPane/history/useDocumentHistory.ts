@@ -115,7 +115,7 @@ export function useDocumentHistory({
     if (computed !== diff) {
       setDiff(computed)
     }
-  }, [documentId, historyState.events, draft, published])
+  }, [documentId, historyState.events, draft, published, range.from.rev, range.to.rev])
 
   const revision = React.useMemo(() => {
     // `from` and `to` are the same
