@@ -1,4 +1,4 @@
-import {SanityObject, Path, ObjectDiff, Diff} from './types'
+import {SanityObject, Path, ObjectDiff, Diff} from '../types'
 import {diffItem} from './diffItem'
 import {isNullish} from './getType'
 

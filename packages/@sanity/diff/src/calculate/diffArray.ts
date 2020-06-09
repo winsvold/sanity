@@ -1,4 +1,4 @@
-import {ArrayDiff, Maybe, Path, KeyedSanityObject, Diff} from './types'
+import {ArrayDiff, Maybe, Path, KeyedSanityObject, Diff} from '../types'
 import {diffItem} from './diffItem'
 
 export function diffArray<T = unknown>(

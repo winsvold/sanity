@@ -1,7 +1,7 @@
 {
   "name": "@sanity/diff",
   "version": "1.149.13",
-  "description": "Generates diffs between documents and primitive types",
+  "description": "Generates and display diffs between documents and primitive types",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "author": "Sanity.io <hello@sanity.io>",
@@ -32,7 +32,8 @@
     "@types/jest": "^24.0.23",
     "jest": "^24.9.0",
     "rimraf": "^2.7.1",
-    "ts-jest": "^24.2.0"
+    "ts-jest": "^24.2.0",
+    "typescript": "^3.7.3"
   },
   "repository": {
     "type": "git",

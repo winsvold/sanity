@@ -1,4 +1,4 @@
-import {ValueType} from './types'
+import {ValueType, StringDiff, Diff} from '../types'
 
 export function getType(item: unknown): ValueType {
   if (Array.isArray(item)) {
@@ -20,6 +20,10 @@ export function getType(item: unknown): ValueType {
     default:
       throw new Error(`Unsupported type passed to differ: ${type}`)
   }
+}
+
+export function isStringDiff(thing: Diff): thing is StringDiff {
+  return thing && thing.type === 'string'
 }
 
 export function isNullish(thing: unknown): boolean {

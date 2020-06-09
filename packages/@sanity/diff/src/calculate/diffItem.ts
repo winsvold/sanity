@@ -1,4 +1,4 @@
-import {Path, Diff, ValueType, Maybe, SanityObject} from './types'
+import {Path, Diff, ValueType, Maybe, SanityObject} from '../types'
 import {getType, isNullish} from './getType'
 import {diffArray} from './diffArray'
 import {diffBoolean} from './diffBoolean'

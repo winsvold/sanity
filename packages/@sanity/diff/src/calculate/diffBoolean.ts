@@ -1,4 +1,4 @@
-import {Path, BooleanDiff, Maybe} from './types'
+import {Path, BooleanDiff, Maybe} from '../types'
 
 export function diffBoolean(
   fromValue: Maybe<boolean>,

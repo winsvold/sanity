@@ -4,7 +4,7 @@ import {
   DIFF_EQUAL,
   DIFF_INSERT
 } from 'diff-match-patch'
-import {StringDiffSegment, StringDiff, Path, Maybe} from './types'
+import {StringDiffSegment, StringDiff, Path, Maybe} from '../types'
 
 const dmp = new DiffMatchPatch()
 const dmpOperations: {[key: number]: StringDiffSegment['type']} = {

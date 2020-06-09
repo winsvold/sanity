@@ -1,4 +1,4 @@
-import {Path, NumberDiff, Maybe} from './types'
+import {Path, NumberDiff, Maybe} from '../types'
 
 export function diffNumber(
   fromValue: Maybe<number>,

@@ -1,4 +1,4 @@
-import {Path, TypeChangeDiff} from './types'
+import {Path, TypeChangeDiff} from '../types'
 import {getType} from './getType'
 
 export function diffTypeChange(
