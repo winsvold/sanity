@@ -15,7 +15,7 @@ interface Props {
   diff: ComputedDiff
 }
 
-function ChangesInspector(props: Props): React.ReactNode {
+export function ChangesInspector(props: Props): React.ReactNode {
   const {diff, isLoading, onHistoryClose, schemaType} = props
   const changes = React.useMemo(() => (diff ? diffObject(diff.from, diff.to) : undefined), [
     schemaType,
@@ -55,5 +55,3 @@ function ChangesInspector(props: Props): React.ReactNode {
     </div>
   )
 }
-
-export default ChangesInspector
