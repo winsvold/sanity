@@ -352,7 +352,7 @@ function DocumentPane(props: Props) {
         />
       </div>
 
-      {showChangesInspector && (
+      {showChangesInspector && history.diff && (
         <div className={styles.inspectorContainer} key="inspector">
           <ChangesInspector
             diff={history.diff}

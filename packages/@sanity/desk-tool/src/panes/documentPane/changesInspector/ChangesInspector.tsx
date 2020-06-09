@@ -8,14 +8,13 @@ import {SchemaType} from '../types'
 import styles from './ChangesInspector.css'
 
 interface Props {
-  documentType: string
   isLoading: boolean
   onHistoryClose: () => void
   schemaType: SchemaType
   diff: ComputedDiff
 }
 
-export function ChangesInspector(props: Props): React.ReactNode {
+export function ChangesInspector(props: Props): React.ReactElement {
   const {diff, isLoading, onHistoryClose, schemaType} = props
   const changes = React.useMemo(() => (diff ? diffObject(diff.from, diff.to) : undefined), [
     schemaType,
