@@ -4,12 +4,6 @@ import {Doc} from '../types'
 
 export type IncrementalValue = incremental.Value
 
-export type DiffOrigin = {
-  userId: string
-  timestamp: number
-  revision: string
-} | null
-
 export type ComputedDiff = {
   from: Doc | null
   to: Doc | null

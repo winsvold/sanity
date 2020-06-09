@@ -33,6 +33,7 @@ export interface ObjectSchemaType {
 
 export interface ObjectField {
   name: string
+  title: string
   type: SchemaType
 }
 

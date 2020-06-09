@@ -1,12 +1,9 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable react/no-multi-comp */
-
+import * as React from 'react'
 import CloseIcon from 'part:@sanity/base/close-icon'
 import Button from 'part:@sanity/components/buttons/default'
-import * as React from 'react'
+import {diffObject, FieldDiff} from '@sanity/diff'
 import {ComputedDiff} from '../history'
 import {SchemaType} from '../types'
-import {getDocumentDiff} from './documentDiff'
 
 import styles from './ChangesInspector.css'
 
@@ -18,9 +15,12 @@ interface Props {
   diff: ComputedDiff
 }
 
-function ChangesInspector(props: Props): React.ReactElement {
+function ChangesInspector(props: Props): React.ReactNode {
   const {diff, isLoading, onHistoryClose, schemaType} = props
-  const changes = React.useMemo(() => getDocumentDiff(schemaType, diff), [schemaType, diff])
+  const changes = React.useMemo(() => (diff ? diffObject(diff.from, diff.to) : undefined), [
+    schemaType,
+    diff
+  ])
 
   return (
     <div className={styles.root}>
@@ -41,11 +41,15 @@ function ChangesInspector(props: Props): React.ReactElement {
 
       {!isLoading && changes && (
         <div className={styles.content}>
-          {Object.keys(changes.fields).map((fieldName: string, changeIndex: number) => (
-            <pre key={String(changeIndex)}>
-              {JSON.stringify(changes.fields[fieldName], null, 2)}
-            </pre>
-          ))}
+          <FieldDiff
+            type="object"
+            schemaType={schemaType}
+            toValue={diff.to}
+            fromValue={diff.from}
+            fields={changes.fields}
+            path={[]}
+            isChanged
+          />
         </div>
       )}
     </div>

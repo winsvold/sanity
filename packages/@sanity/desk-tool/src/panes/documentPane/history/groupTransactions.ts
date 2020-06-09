@@ -16,7 +16,8 @@ import {
   MutationStub
 } from './types'
 
-export function groupTransactions(maxWait: number): OperatorFunction<ListenEvent, GroupedEvent> {
+// @todo returns OperatorFunction<ListenEvent, GroupedEvent> {
+export function groupTransactions(maxWait: number): any {
   return function groupTransactionsOperatorFunction(
     source: Observable<ListenEvent>
   ): Observable<GroupedEvent> {
@@ -50,8 +51,8 @@ class GroupTransactionsOperator<T> implements Operator<T, GroupedEvent> {
 }
 
 class GroupTransactionsSubscriber extends Subscriber<ListenEvent> {
-  private timeout: any // can't deal with this right now
-  private previous: MutationEvent = undefined
+  private timeout: any // @todo can't deal with this right now (nodejs vs browser timeout)
+  private previous: any = undefined // @todo MutationEvent
   protected destination: Subscriber<GroupedEvent>
 
   constructor(destination: Subscriber<GroupedEvent>, private maxWait: number) {

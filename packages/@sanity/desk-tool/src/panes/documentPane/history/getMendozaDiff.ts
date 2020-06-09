@@ -5,11 +5,12 @@ import {
   HistorySelectionRange,
   MendozaEffectPair,
   NormalizedTransactionLogEvent,
-  ComputedDiff,
-  DiffOrigin
+  ComputedDiff
 } from './types'
 import {Doc} from '../types'
 import {getPublishedId, getDraftId, isDraftId} from './helpers'
+
+type DiffOrigin = any // @todo
 
 type Documents = {draft: Doc | null; published: Doc | null}
 
@@ -40,7 +41,11 @@ class IncrementalPatcher {
     const draftPatch = draftEffects && draftEffects[direction]
     const publishedPatch = publishedEffects && publishedEffects[direction]
 
-    if (draftPatch && draftPatch.length > 0) {
+    const isPublish = Boolean(
+      draftPatch && draftPatch[0] === 0 && draftPatch[1] === null && publishedPatch
+    )
+
+    if (!isPublish && draftPatch && draftPatch.length > 0) {
       let newDraft = incremental.applyPatch(this.draft, draftPatch, origin)
       if (this.draft !== this.lastNonNull) {
         newDraft = incremental.rebaseValue(this.lastNonNull, newDraft)
@@ -132,7 +137,7 @@ export function getMendozaDiff(
   range: HistorySelectionRange,
   currentDocuments: Documents
 ): ComputedDiff | undefined {
-  if (!events.length) {
+  if (!events.length || (!currentDocuments.draft && !currentDocuments.published)) {
     // @todo handle
     return undefined
   }
