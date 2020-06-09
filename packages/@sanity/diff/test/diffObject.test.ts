@@ -1,4 +1,4 @@
-import {diffObject} from '../src/diffObject'
+import {diffObject} from '../src/calculate/diffObject'
 
 describe('diffObject', () => {
   test('returns correct from/to value', () => {

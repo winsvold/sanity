@@ -1,4 +1,4 @@
-import {diffBoolean} from '../src/diffBoolean'
+import {diffBoolean} from '../src/calculate/diffBoolean'
 
 describe('diffBoolean', () => {
   test('returns correct from/to value', () => {

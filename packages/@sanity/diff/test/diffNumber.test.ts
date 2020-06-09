@@ -1,4 +1,4 @@
-import {diffNumber} from '../src/diffNumber'
+import {diffNumber} from '../src/calculate/diffNumber'
 
 describe('diffNumber', () => {
   test('returns correct from/to value', () => {

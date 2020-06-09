@@ -1,4 +1,4 @@
-import {diffString} from '../src/diffString'
+import {diffString} from '../src/calculate/diffString'
 
 describe('diffString', () => {
   test('returns correct from/to value', () => {

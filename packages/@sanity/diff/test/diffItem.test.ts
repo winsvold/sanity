@@ -1,4 +1,4 @@
-import {diffItem} from '../src/diffItem'
+import {diffItem} from '../src/calculate/diffItem'
 
 describe('diffItem', () => {
   test('null => null', () => {

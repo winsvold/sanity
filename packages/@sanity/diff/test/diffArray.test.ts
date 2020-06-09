@@ -1,4 +1,4 @@
-import {diffArray} from '../src/diffArray'
+import {diffArray} from '../src/calculate/diffArray'
 
 describe('diffArray', () => {
   describe('primitive/mixed values', () => {
