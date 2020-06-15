@@ -1,0 +1,4 @@
+{
+  "name": "sanity-plugin-a",
+  "main": "./package.json"
+}

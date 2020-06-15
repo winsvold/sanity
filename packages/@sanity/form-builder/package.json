@@ -2,7 +2,7 @@
   "name": "@sanity/form-builder",
   "version": "1.149.16",
   "description": "Sanity form builder",
-  "main": "lib/index.js",
+  "main": "lib/FormBuilderInput.js",
   "scripts": {
     "clean": "rimraf lib",
     "test": "NODE_ENV=test jest",

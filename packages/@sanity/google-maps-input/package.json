@@ -2,7 +2,7 @@
   "name": "@sanity/google-maps-input",
   "version": "1.149.16",
   "description": "Sanity plugin providing input handlers for geo-related input types using Google Maps",
-  "main": "lib/index.js",
+  "main": "lib/GeopointInput.js",
   "author": "Sanity.io <hello@sanity.io>",
   "license": "MIT",
   "scripts": {

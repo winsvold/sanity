@@ -32,6 +32,7 @@
     "@sanity/mutator": "1.149.16",
     "@sanity/plugin-loader": "1.149.16",
     "@sanity/resolver": "1.149.16",
+    "@sanity/runtime": "1.149.16",
     "@sanity/schema": "1.149.16",
     "@sanity/server": "1.149.16",
     "@sanity/util": "1.149.16",

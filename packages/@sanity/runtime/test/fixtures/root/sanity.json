@@ -1,0 +1,9 @@
+{
+  "plugins": ["./plugins/a", "./plugins/b"],
+  "parts": [
+    {
+      "name": "part:@sanity/base/root",
+      "path": "root"
+    }
+  ]
+}

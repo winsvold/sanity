@@ -2,7 +2,7 @@
   "name": "@sanity/components",
   "version": "1.149.16",
   "description": "Basic UX components",
-  "main": "lib/index.js",
+  "main": "package.json",
   "author": "Sanity.io <hello@sanity.io>",
   "license": "MIT",
   "scripts": {

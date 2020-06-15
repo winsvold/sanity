@@ -3,6 +3,8 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap && npm run package-yarn",
+    "dev": "cd packages/test-studio && sanity dev",
+    "start": "npm run test-studio",
     "rebuild": "gulp build",
     "build": "gulp clean && gulp build && npm run package",
     "clean": "gulp clean && lerna clean",
@@ -20,7 +22,6 @@
     "lint": "eslint . --ext=.js,.jsx,.mjs,.ts,.tsx --quiet",
     "lint:fix": "eslint . --quiet --fix",
     "typecheck": "lerna run typecheck",
-    "start": "npm run test-studio",
     "ecommerce-studio": "gulp ecommerce-studio",
     "test-studio": "gulp test-studio",
     "clean-studio": "gulp clean-studio",

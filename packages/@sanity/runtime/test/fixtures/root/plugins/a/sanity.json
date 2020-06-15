@@ -1,0 +1,7 @@
+{
+  "parts": [
+    {"name": "part:@sanity/a/a", "path": "a"},
+    {"name": "part:@sanity/a/b", "path": "b"},
+    {"name": "part:@sanity/a/c", "path": "c"}
+  ]
+}
