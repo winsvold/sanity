@@ -28,7 +28,7 @@ export const ObjectFieldDiff: DiffComponent<ObjectDiff> = function ObjectFieldDi
           }
 
           return (
-            <FieldDiffProvider key={field.name} field={field}>
+            <FieldDiffProvider key={field.name} field={field} diff={fieldDiff}>
               <FieldDiff schemaType={field.type} {...fieldDiff} />
             </FieldDiffProvider>
           )

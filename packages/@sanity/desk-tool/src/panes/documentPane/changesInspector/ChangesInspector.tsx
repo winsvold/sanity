@@ -1,13 +1,14 @@
 import * as React from 'react'
 import CloseIcon from 'part:@sanity/base/close-icon'
 import Button from 'part:@sanity/components/buttons/default'
-import {diffObject, FieldDiff} from '@sanity/diff'
+import {diffObject, FieldDiff, DiffProvider} from '@sanity/diff'
 import {ComputedDiff} from '../history'
 import {SchemaType} from '../types'
 
 import styles from './ChangesInspector.css'
 
 interface Props {
+  documentId: string
   isLoading: boolean
   onHistoryClose: () => void
   schemaType: SchemaType
@@ -15,7 +16,7 @@ interface Props {
 }
 
 export function ChangesInspector(props: Props): React.ReactElement {
-  const {diff, isLoading, onHistoryClose, schemaType} = props
+  const {diff, isLoading, onHistoryClose, schemaType, documentId} = props
   const changes = React.useMemo(() => (diff ? diffObject(diff.from, diff.to) : undefined), [
     schemaType,
     diff
@@ -40,15 +41,17 @@ export function ChangesInspector(props: Props): React.ReactElement {
 
       {!isLoading && changes && (
         <div className={styles.content}>
-          <FieldDiff
-            type="object"
-            schemaType={schemaType}
-            toValue={diff.to}
-            fromValue={diff.from}
-            fields={changes.fields}
-            path={[]}
-            isChanged
-          />
+          <DiffProvider documentId={documentId} schemaType={schemaType.name}>
+            <FieldDiff
+              type="object"
+              schemaType={schemaType}
+              toValue={diff.to}
+              fromValue={diff.from}
+              fields={changes.fields}
+              path={[]}
+              isChanged
+            />
+          </DiffProvider>
         </div>
       )}
     </div>

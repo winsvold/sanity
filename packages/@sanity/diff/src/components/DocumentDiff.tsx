@@ -1,7 +1,7 @@
 import * as React from 'react'
+import {ObjectDiff} from '../types'
 import styles from './DocumentDiff.css'
 import {DiffComponent} from './types'
-import {ObjectDiff} from '../types'
 import {FieldDiff} from './FieldDiff'
 import {FieldDiffProvider} from './fieldDiffProvider'
 
@@ -20,7 +20,7 @@ export const DocumentDiff: DiffComponent<ObjectDiff> = function DocumentDiff({sc
         }
 
         return (
-          <FieldDiffProvider key={field.name} field={field}>
+          <FieldDiffProvider key={field.name} field={field} diff={fieldDiff}>
             <FieldDiff schemaType={field.type} {...fieldDiff} />
           </FieldDiffProvider>
         )
