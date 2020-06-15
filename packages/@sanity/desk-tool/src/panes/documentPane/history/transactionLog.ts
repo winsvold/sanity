@@ -66,7 +66,7 @@ function getPastTransactions(
   const draftId = getDraftId(documentId)
   const documentIds = [publishedId, draftId]
   const dataset = client.config().dataset
-  const queryParams = 'effectFormat=mendoza&excludeContent=true'
+  const queryParams = 'effectFormat=mendoza&excludeContent=true&includeIdentifiedDocumentsOnly=true'
   const url = `/data/history/${dataset}/transactions/${publishedId},${draftId}?${queryParams}`
   return getJsonStream(client.getUrl(url)).pipe(
     map((event: TransactionLogEvent) => filterRelevantMutations(event, documentIds))
