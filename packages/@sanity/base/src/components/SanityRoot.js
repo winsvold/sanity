@@ -1,4 +1,6 @@
+import {studioTheme} from '@sanity/ui'
 import React from 'react'
+import {ThemeProvider} from 'styled-components'
 import config from 'config:sanity'
 import RootComponent from 'part:@sanity/base/root'
 import SnackbarProvider from 'part:@sanity/components/snackbar/provider'
@@ -17,12 +19,14 @@ function SanityRoot() {
 
   return (
     <div className={styles.root}>
-      <SnackbarProvider>
-        <DevServerStatus />
-        <ErrorHandler />
-        <RootComponent />
-        <VersionChecker />
-      </SnackbarProvider>
+      <ThemeProvider theme={studioTheme}>
+        <SnackbarProvider>
+          <DevServerStatus />
+          <ErrorHandler />
+          <RootComponent />
+          <VersionChecker />
+        </SnackbarProvider>
+      </ThemeProvider>
     </div>
   )
 }
