@@ -74,6 +74,7 @@ export default (config = {}) => {
       alias: {
         react: path.dirname(reactPath),
         'react-dom': path.dirname(reactDomPath),
+        'styled-components': require.resolve('styled-components'),
         moment$: 'moment/moment.js',
         ...rxPaths()
       },
