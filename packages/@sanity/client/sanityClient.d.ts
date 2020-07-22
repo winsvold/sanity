@@ -564,6 +564,7 @@ export interface ListenOptions {
   includePreviousRevision?: boolean
   visibility?: 'sync' | 'async' | 'query'
   events?: ListenEventName[]
+  effectFormat?: string
 }
 
 export type PreviousNextListenOptions = ListenOptions & {

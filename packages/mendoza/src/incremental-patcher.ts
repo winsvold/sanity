@@ -5,38 +5,38 @@ import {Patcher} from './internal-patcher'
 // The incremental patcher allows you to apply multiple patches and tracks the history of every element.
 // It also allows you to extract a simple diff between the documents.
 
-type Origin = any
-
-export type Value = {
+export type Value<T> = {
   data?: unknown
-  content?: Content
-  origin: Origin
+  content?: Content<T>
+  startMeta: T
+  endMeta: T
 }
 
 export type Type = 'array' | 'string' | 'object' | 'number' | 'boolean' | 'null'
 
-export type Content = ObjectContent | ArrayContent | StringContent
+export type Content<T> = ObjectContent<T> | ArrayContent<T> | StringContent<T>
 
-export type ObjectContent = {
+export type ObjectContent<T> = {
   type: 'object'
-  fields: {[key: string]: Value}
+  fields: {[key: string]: Value<T>}
 }
 
-export type ArrayContent = {
+export type ArrayContent<T> = {
   type: 'array'
-  elements: Value[]
+  elements: Value<T>[]
 }
 
-export type StringContent = {
+export type StringContent<T> = {
   type: 'string'
-  parts: StringPart[]
+  parts: StringPart<T>[]
 }
 
-export type StringPart = {
+export type StringPart<T> = {
   value: string
   utf8size: number
-  uses: StringContent[]
-  origin: Origin
+  uses: StringContent<T>[]
+  startMeta: T
+  endMeta: T
 }
 
 function utf8charSize(code: number): 1 | 2 | 3 | 4 {
@@ -62,60 +62,62 @@ function utf8stringSize(str: string): number {
   return b
 }
 
-class Model implements ObjectModel<Value, StringContent, ObjectContent, ArrayContent> {
-  private origin: Origin
+class Model<T>
+  implements ObjectModel<Value<T>, StringContent<T>, ObjectContent<T>, ArrayContent<T>> {
+  private meta: T
 
-  constructor(origin: Origin) {
-    this.origin = origin
+  constructor(meta: T) {
+    this.meta = meta
   }
 
-  wrap(data: any): Value {
-    return {data, origin: this.origin}
+  wrap(data: unknown): Value<T> {
+    return this.wrapWithMeta(data, this.meta, this.meta)
   }
 
-  wrapWithOrigin(data: any, origin: Origin): Value {
-    return {data, origin}
+  wrapWithMeta(data: unknown, startMeta: T, endMeta: T = this.meta): Value<T> {
+    return {data, startMeta, endMeta}
   }
 
-  asObject(value: Value): ObjectContent {
+  asObject(value: Value<T>): ObjectContent<T> {
     if (!value.content) {
-      let fields: ObjectContent['fields'] = {}
+      let fields: ObjectContent<T>['fields'] = {}
       for (let [key, val] of Object.entries(value.data as any)) {
-        fields[key] = this.wrapWithOrigin(val, value.origin)
+        fields[key] = this.wrapWithMeta(val, value.startMeta)
       }
       value.content = {type: 'object', fields}
     }
 
-    return value.content as ObjectContent
+    return value.content as ObjectContent<T>
   }
 
-  asArray(value: Value): ArrayContent {
+  asArray(value: Value<T>): ArrayContent<T> {
     if (!value.content) {
-      let elements = (value.data as unknown[]).map(item => this.wrapWithOrigin(item, value.origin))
+      let elements = (value.data as unknown[]).map(item => this.wrapWithMeta(item, value.startMeta))
       value.content = {type: 'array', elements}
     }
 
-    return value.content as ArrayContent
+    return value.content as ArrayContent<T>
   }
 
-  asString(value: Value): StringContent {
+  asString(value: Value<T>): StringContent<T> {
     if (!value.content) {
       let str = value.data as string
 
-      let part: StringPart = {
+      let part: StringPart<T> = {
         value: str,
         utf8size: utf8stringSize(str),
         uses: [],
-        origin: value.origin
+        startMeta: value.startMeta,
+        endMeta: this.meta
       }
       value.content = this.stringFromParts([part])
     }
 
-    return value.content as StringContent
+    return value.content as StringContent<T>
   }
 
-  stringFromParts(parts: StringPart[]): StringContent {
-    let str: StringContent = {
+  stringFromParts(parts: StringPart<T>[]): StringContent<T> {
+    let str: StringContent<T> = {
       type: 'string',
       parts
     }
@@ -127,29 +129,48 @@ class Model implements ObjectModel<Value, StringContent, ObjectContent, ArrayCon
     return str
   }
 
-  objectGetKeys(value: Value): string[] {
+  objectGetKeys(value: Value<T>): string[] {
     if (value.content) {
-      return Object.keys((value.content as ObjectContent).fields)
+      return Object.keys((value.content as ObjectContent<T>).fields)
     } else {
       return Object.keys(value.data as any)
     }
   }
 
-  objectGetField(value: Value, key: string): Value {
+  objectGetField(value: Value<T>, key: string): Value<T> {
     let obj = this.asObject(value)
     return obj.fields[key]
   }
 
-  arrayGetElement(value: Value, idx: number): Value {
+  arrayGetElement(value: Value<T>, idx: number): Value<T> {
     let arr = this.asArray(value)
     return arr.elements[idx]
   }
 
-  finalize(content: StringContent | ObjectContent | ArrayContent): Value {
-    return {content, origin: this.origin}
+  finalize(content: Content<T>): Value<T> {
+    this.updateEndMeta(content)
+    return {content, startMeta: this.meta, endMeta: this.meta}
   }
 
-  copyString(value: Value | null): StringContent {
+  updateEndMeta(content: Content<T>) {
+    if (content.type == 'string') {
+      for (let part of content.parts) {
+        part.endMeta = this.meta
+      }
+    } else {
+      if (content.type === 'array') {
+        for (let val of content.elements) {
+          if (val.content && val.endMeta !== this.meta) this.updateEndMeta(val.content)
+        }
+      } else {
+        for (let val of Object.values(content.fields)) {
+          if (val.content && val.endMeta !== this.meta) this.updateEndMeta(val.content)
+        }
+      }
+    }
+  }
+
+  copyString(value: Value<T> | null): StringContent<T> {
     if (value) {
       let other = this.asString(value)
       return this.stringFromParts(other.parts.slice())
@@ -161,10 +182,10 @@ class Model implements ObjectModel<Value, StringContent, ObjectContent, ArrayCon
     }
   }
 
-  copyObject(value: Value | null): ObjectContent {
-    let obj: ObjectContent = {
+  copyObject(value: Value<T> | null): ObjectContent<T> {
+    let obj: ObjectContent<T> = {
       type: 'object',
-      fields: {}
+      fields: {},
     }
 
     if (value) {
@@ -175,45 +196,45 @@ class Model implements ObjectModel<Value, StringContent, ObjectContent, ArrayCon
     return obj
   }
 
-  copyArray(value: Value | null): ArrayContent {
+  copyArray(value: Value<T> | null): ArrayContent<T> {
     let elements = value ? this.asArray(value).elements : []
 
     return {
       type: 'array',
-      elements
+      elements,
     }
   }
 
-  objectSetField(target: ObjectContent, key: string, value: Value): void {
+  objectSetField(target: ObjectContent<T>, key: string, value: Value<T>): void {
     target.fields[key] = value
   }
 
-  objectDeleteField(target: ObjectContent, key: string): void {
+  objectDeleteField(target: ObjectContent<T>, key: string): void {
     delete target.fields[key]
   }
 
-  arrayAppendValue(target: ArrayContent, value: Value): void {
+  arrayAppendValue(target: ArrayContent<T>, value: Value<T>): void {
     target.elements.push(value)
   }
 
-  arrayAppendSlice(target: ArrayContent, source: Value, left: number, right: number): void {
+  arrayAppendSlice(target: ArrayContent<T>, source: Value<T>, left: number, right: number): void {
     let slice = this.asArray(source).elements.slice(left, right)
     target.elements.push(...slice)
   }
 
-  stringAppendValue(target: StringContent, value: Value): void {
+  stringAppendValue(target: StringContent<T>, value: Value<T>): void {
     let str = this.asString(value)
     for (let part of str.parts) {
       this.stringAppendPart(target, part)
     }
   }
 
-  stringAppendPart(target: StringContent, part: StringPart): void {
+  stringAppendPart(target: StringContent<T>, part: StringPart<T>): void {
     target.parts.push(part)
     part.uses.push(target)
   }
 
-  resolveStringPart(str: StringContent, from: number, len: number): number {
+  resolveStringPart(str: StringContent<T>, from: number, len: number): number {
     if (len === 0) return from
 
     for (let i = from; i < str.parts.length; i++) {
@@ -236,7 +257,7 @@ class Model implements ObjectModel<Value, StringContent, ObjectContent, ArrayCon
     throw new Error('splitting string out of bounds')
   }
 
-  splitString(part: StringPart, idx: number) {
+  splitString(part: StringPart<T>, idx: number) {
     let leftValue
     let rightValue
     let leftSize = idx
@@ -258,11 +279,12 @@ class Model implements ObjectModel<Value, StringContent, ObjectContent, ArrayCon
     leftValue = part.value.slice(0, idx)
     rightValue = part.value.slice(idx)
 
-    let newPart: StringPart = {
+    let newPart: StringPart<T> = {
       value: rightValue,
       utf8size: rightSize,
       uses: part.uses.slice(),
-      origin: part.origin
+      startMeta: part.startMeta,
+      endMeta: part.endMeta
     }
 
     part.value = leftValue
@@ -276,7 +298,7 @@ class Model implements ObjectModel<Value, StringContent, ObjectContent, ArrayCon
     }
   }
 
-  stringAppendSlice(target: StringContent, source: Value, left: number, right: number): void {
+  stringAppendSlice(target: StringContent<T>, source: Value<T>, left: number, right: number): void {
     let str = this.asString(source)
     let firstPart = this.resolveStringPart(str, 0, left)
     let lastPart = this.resolveStringPart(str, firstPart, right - left)
@@ -289,12 +311,12 @@ class Model implements ObjectModel<Value, StringContent, ObjectContent, ArrayCon
 }
 
 // Turns a native JavaScript object into a Value with a given origin.
-export function wrap(data: any, origin: Origin): Value {
-  return {data, origin}
+export function wrap<T>(data: unknown, meta: T): Value<T> {
+  return {data, startMeta: meta, endMeta: meta}
 }
 
 // Converts a Value into a native JavaScript type.
-export function unwrap(value: Value): any {
+export function unwrap<T>(value: Value<T>): unknown {
   if (typeof value.data !== 'undefined') return value.data
 
   let result: any
@@ -319,7 +341,7 @@ export function unwrap(value: Value): any {
 }
 
 // Returns the type of a Value.
-export function getType(value: Value): Type {
+export function getType<T>(value: Value<T>): Type {
   if (value.content) return value.content.type
   if (Array.isArray(value.data!)) return 'array'
   if (value.data === null) return 'null'
@@ -328,12 +350,12 @@ export function getType(value: Value): Type {
 }
 
 // Updates the `right` value such that it reuses as much as possible from the `left` value.
-export function rebaseValue(left: Value, right: Value): Value {
+export function rebaseValue<T>(left: Value<T>, right: Value<T>): Value<T> {
   let leftType = getType(left)
   let rightType = getType(right)
   if (leftType !== rightType) return right
 
-  let model = new Model(right.origin)
+  let model = new Model(right.startMeta)
 
   switch (leftType) {
     case 'object': {
@@ -383,8 +405,8 @@ export function rebaseValue(left: Value, right: Value): Value {
   return right
 }
 
-export function applyPatch(left: Value, patch: RawPatch, origin: Origin) {
-  let model = new Model(origin)
+export function applyPatch<T>(left: Value<T>, patch: RawPatch, startMeta: T) {
+  let model = new Model(startMeta)
   let patcher = new Patcher(model, left, patch)
   return patcher.process()
 }

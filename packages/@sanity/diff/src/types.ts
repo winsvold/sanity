@@ -1,72 +1,123 @@
 export type Maybe<T> = T | null | undefined
 
-export type Diff = StringDiff | NumberDiff | BooleanDiff | ObjectDiff | ArrayDiff | TypeChangeDiff
+export type Diff<A> = StringDiff<A> | NumberDiff<A> | BooleanDiff<A> | NullDiff<A> | ObjectDiff<A> | ArrayDiff<A> | TypeChangeDiff<A>
+export type SimpleDiff<A> = StringDiff<A> | NumberDiff<A> | BooleanDiff<A> | NullDiff<A>
 export type ValueType = 'array' | 'boolean' | 'null' | 'number' | 'object' | 'string' | 'undefined'
 
 export type PathSegment = string | number | {_key: string}
 export type Path = PathSegment[]
 
-type DiffOrigin = {
-  userId: string
-  timestamp: number
-  revision: string
+export type SimpleInput<T> = StringInput<T> | NumberInput<T> | BooleanInput<T> | NullInput<T>
+
+export type Input<T> = SimpleInput<T> | ObjectInput<T> | ArrayInput<T>
+
+export interface BaseInput<A> {
+  annotation: A
 }
+
+export interface StringInput<A> extends BaseInput<A> {
+  type: 'string'
+  data: string
+  sliceAnnotation(start: number, end: number): {text: string, annotation: A}[]
+}
+
+export interface NumberInput<A> extends BaseInput<A> {
+  type: 'number'
+  data: number | null
+}
+
+export interface BooleanInput<A> extends BaseInput<A> {
+  type: 'boolean'
+  data: boolean | null
+}
+
+export interface NullInput<A> extends BaseInput<A> {
+  type: 'null'
+  data: null
+}
+
+export interface ObjectInput<A> extends BaseInput<A> {
+  type: 'object'
+  keys: string[]
+  get(key: string): Input<A> | undefined
+}
+
+export interface ArrayInput<A> extends BaseInput<A> {
+  type: 'array'
+  length: number
+  at(idx: number): Input<A>
+}
+
+export type Added<T, A> = {
+  type: 'added'
+  value: T
+  annotation: A
+}
+
+export type Removed<T, A> = {
+  type: 'removed'
+  value: T
+  annotation: A
+}
+
+export type Unchanged<T> = {
+  type: 'unchanged'
+  value: T
+}
+
+export type StringDiffSegment<A> = Added<string, A> | Removed<string, A> | Unchanged<string>
+
+export type ItemDiffSegment<A> = Added<unknown, A> | Removed<unknown, A> | Unchanged<Diff<A>>
+
+export type DiffState = 'changed' | 'unchanged' | 'unknown'
 
 interface BaseDiff {
   type: 'array' | 'boolean' | 'null' | 'number' | 'object' | 'string' | 'typeChange'
-  fromValue: unknown
-  toValue: unknown
-  path: Path
-  isChanged: boolean
+  state: DiffState
 }
 
-export interface StringDiffSegment {
-  type: 'unchanged' | 'removed' | 'added'
-  text: string
-}
-
-export type StringDiff = BaseDiff & {
+export interface StringDiff<A> extends BaseDiff {
   type: 'string'
-  fromValue: Maybe<string>
-  toValue: Maybe<string>
-  segments: StringDiffSegment[]
+  state: 'changed' | 'unchanged'
+  segments: StringDiffSegment<A>[]
 }
 
-export type NumberDiff = BaseDiff & {
+export interface NumberDiff<A> extends BaseDiff {
   type: 'number'
+  state: 'changed' | 'unchanged'
   fromValue: Maybe<number>
   toValue: Maybe<number>
 }
 
-export type BooleanDiff = BaseDiff & {
+export interface BooleanDiff<A> extends BaseDiff {
   type: 'boolean'
+  state: 'changed' | 'unchanged'
   fromValue: Maybe<boolean>
   toValue: Maybe<boolean>
 }
 
-export type ObjectDiff<T extends object = object> = BaseDiff & {
+export interface ObjectDiff<A> extends BaseDiff {
   type: 'object'
-  fromValue: Maybe<T>
-  toValue: Maybe<T>
-  fields: {[fieldName: string]: Diff}
+  fields: {[fieldName: string]: ItemDiffSegment<A>}
 }
 
-export type ArrayDiff<T = unknown> = BaseDiff & {
+export interface ArrayDiff<A> extends BaseDiff {
   type: 'array'
-  fromValue: Maybe<T[]>
-  toValue: Maybe<T[]>
-  items: Diff[]
+  elements: ItemDiffSegment<A>[]
 }
 
-export type TypeChangeDiff = BaseDiff & {
+export interface NullDiff<A> extends BaseDiff {
+  type: 'null'
+  state: 'unchanged'
+  fromValue: null
+  toValue: null
+}
+
+export interface TypeChangeDiff<A> extends BaseDiff {
   type: 'typeChange'
+  state: 'changed'
+  fromValue: unknown
   fromType: ValueType
+  toValue: unknown
   toType: ValueType
 }
-
-export interface KeyedSanityObject {
-  [key: string]: unknown
-  _key: string
-}
-
-export type SanityObject = KeyedSanityObject | Record<string, unknown>

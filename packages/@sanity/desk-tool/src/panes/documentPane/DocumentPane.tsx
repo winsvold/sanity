@@ -2,23 +2,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React from 'react'
-import schema from 'part:@sanity/base/schema'
+import client from 'part:@sanity/base/client'
 import {getPublishedId} from 'part:@sanity/base/util/draft-utils'
 import {usePaneRouter} from '../../contexts/PaneRouterContext'
-import isNarrowScreen from '../../utils/isNarrowScreen'
-import windowWidth$ from '../../utils/windowWidth'
-import {ErrorPane} from '../errorPane'
-import {LoadingPane} from '../loadingPane'
-import {ChangesInspector} from './changesInspector'
-import {HISTORY_BREAKPOINT_MIN} from './constants'
 import {Editor} from './editor'
-import {useDocumentHistory} from './history'
-import {HistoryNavigator} from './historyNavigator'
 import {getMenuItems, getProductionPreviewItem} from './menuItems'
 import {DocumentActionShortcuts, isInspectHotkey, isPreviewHotkey} from './keyboardShortcuts'
 import {Doc, DocumentViewType, MenuAction} from './types'
 
 import styles from './DocumentPane.css'
+import {createObservableController} from './history/controller'
+import {Timeline} from './history/timeline'
+import InspectView from './editor/InspectView'
+import RevisionSummary from './RevisionSummary'
+import ChangeSummary from './ChangeSummary'
+import HistoryTimeline from './HistoryTimeline'
+import {useObservable} from '@sanity/react-hooks'
 
 declare const __DEV__: boolean
 
@@ -28,7 +27,6 @@ interface Props {
   type: any
   published: null | Doc
   draft: null | Doc
-  value: null | Doc
   connectionState: 'connecting' | 'connected' | 'reconnecting'
   isSelected: boolean
   isCollapsed: boolean
@@ -41,6 +39,7 @@ interface Props {
   menuItemGroups: {id: string}[]
   views: DocumentViewType[]
   initialValue?: Doc
+  schemaType: any
   options: {
     id: string
     type: string
@@ -53,10 +52,10 @@ interface Props {
 }
 
 function getInitialValue(props: Props): Doc {
-  const {initialValue = {}, options, value} = props
+  const {initialValue = {}, options} = props
   const base = {_type: options.type}
 
-  return value ? base : {...base, ...initialValue}
+  return initialValue ? {...base, ...initialValue} : base
 }
 
 function DocumentPane(props: Props) {
@@ -74,76 +73,99 @@ function DocumentPane(props: Props) {
     paneKey,
     title = '',
     urlParams,
-    value,
     draft,
     published,
+    schemaType,
     views = []
   } = props
 
   const documentId = getPublishedId(options.id)
   const typeName = options.type
-  const schemaType = schema.get(typeName)
 
   // Contexts
   const paneRouter = usePaneRouter()
-  const history = useDocumentHistory({documentId, urlParams, draft, published})
+
+  const [timeline] = React.useState(
+    () =>
+      new Timeline({
+        publishedId: documentId,
+        draft,
+        published
+      })
+  )
+
+  const historyState = useObservable(
+    createObservableController({
+      timeline,
+      documentId,
+      client
+    }),
+    {error: new Error('should not happen')}
+  )
+
+  if (historyState.error) throw historyState.error
+  const historyController = historyState.controller
+
+  // TODO: Fetch only when open
+  React.useEffect(() => {
+    historyController.update({
+      fetchAtLeast: 5
+    })
+  })
 
   // React.useEffect(() => console.log('history', history), [history])
-
-  const {
-    historyState,
-    openHistory,
-    revision,
-    selectedHistoryEvent,
-    selectedHistoryEventIsLatest,
-    selection,
-    selectionRange,
-    setSelection
-  } = history
 
   // Refs
   const formRef = React.useRef<any | null>(null)
   const documentIdRef = React.useRef<string>(documentId)
 
-  // States
-  const [hasNarrowScreen, setHasNarrowScreen] = React.useState<boolean>(isNarrowScreen())
-  const [isHistoryEnabled, setIsHistoryEnabled] = React.useState<boolean>(
-    window && window.innerWidth > HISTORY_BREAKPOINT_MIN
-  )
-  const [inspect, setInspect] = React.useState<boolean>(false)
   const [showValidationTooltip, setShowValidationTooltip] = React.useState<boolean>(false)
 
-  // Inferred values
-  const canShowHistoryList = paneRouter.siblingIndex === 0 && !isCollapsed && isHistoryEnabled
-  const isLastSibling = paneRouter.siblingIndex === paneRouter.groupLength - 1
-  const canShowChangesList = isLastSibling && !isCollapsed && isHistoryEnabled
-  const isHistoryOpen = Boolean(urlParams.rev)
-
   const initialValue = getInitialValue(props)
+  const value = draft || published || initialValue
+
   const activeViewId = paneRouter.params.view || (views[0] && views[0].id)
+  const inspect = paneRouter.params.inspect === 'on'
+  const startTimeId = paneRouter.params.startTime
+  const startTime = React.useMemo(() => (startTimeId ? timeline.parseTimeId(startTimeId) : null), [
+    startTimeId,
+    historyController.version
+  ])
+
+  if (startTimeId && !startTime) {
+    // TODO: The chunk is not available yet
+  }
+
+  const isHistoryOpen = startTime != null
+
   const menuItems =
     getMenuItems({
       value,
-      isHistoryEnabled,
+      isHistoryEnabled: true,
+      canShowHistoryList: true,
       isHistoryOpen,
       isLiveEditEnabled: schemaType.liveEdit === true,
-      rev: selectedHistoryEvent && selectedHistoryEvent.rev,
-      canShowHistoryList
+      rev: startTime ? startTime.chunk.id : null
     }) || []
 
   // Callbacks
 
-  const handleOpenHistory = () => {
-    if (!canShowHistoryList || isHistoryOpen) {
-      return
+  const toggleInspect = (toggle: boolean = !inspect) => {
+    const {inspect, ...params} = paneRouter.params
+    if (toggle) {
+      paneRouter.setParams({inspect: 'on', ...params})
+    } else {
+      paneRouter.setParams(params)
     }
-
-    openHistory()
   }
 
-  const handleToggleInspect = () => {
-    if (!value) return
-    setInspect(val => !val)
+  const toggleHistory = (newStartTime: string | null = startTime ? null : '-') => {
+    const {startTime, ...params} = paneRouter.params
+    if (newStartTime) {
+      paneRouter.setParams({startTime: newStartTime, ...params})
+    } else {
+      paneRouter.setParams(params)
+    }
   }
 
   const handleKeyUp = (event: any) => {
@@ -151,15 +173,15 @@ function DocumentPane(props: Props) {
       setShowValidationTooltip(false)
     }
 
-    if (isInspectHotkey(event) && !isHistoryOpen) {
-      handleToggleInspect()
+    if (isInspectHotkey(event)) {
+      toggleInspect()
     }
 
     if (isPreviewHotkey(event)) {
       // const {draft, published} = props
       const item = getProductionPreviewItem({
         value,
-        rev: selectedHistoryEvent && selectedHistoryEvent.rev
+        rev: null
       })
 
       if (item && item.url) window.open(item.url)
@@ -174,21 +196,17 @@ function DocumentPane(props: Props) {
     paneRouter.closeCurrent()
   }
 
-  const handleHideInspector = () => {
-    setInspect(false)
-  }
-
   const handleMenuAction = (item: MenuAction) => {
     if (item.action === 'production-preview') {
       window.open(item.url)
       return true
     }
     if (item.action === 'inspect') {
-      setInspect(true)
+      toggleInspect(true)
       return true
     }
     if (item.action === 'browseHistory') {
-      handleOpenHistory()
+      toggleHistory('-')
       return true
     }
     return false
@@ -205,40 +223,12 @@ function DocumentPane(props: Props) {
   }
 
   const handleSplitPane = () => {
-    if (hasNarrowScreen) return
     paneRouter.duplicateCurrent()
   }
 
   const handleToggleValidationResults = () => {
     setShowValidationTooltip(val => !val)
   }
-
-  const handleCloseHistory = React.useCallback(() => {
-    const {rev: revParam, ...params} = paneRouter.params
-
-    if (revParam) {
-      paneRouter.setParams(params, {recurseIfInherited: true})
-    }
-  }, [paneRouter])
-
-  const handleResize = React.useCallback(() => {
-    const historyEnabled = window && window.innerWidth > HISTORY_BREAKPOINT_MIN
-    const newHasNarrowScreen = isNarrowScreen()
-
-    if (isHistoryEnabled !== historyEnabled) {
-      setIsHistoryEnabled(historyEnabled)
-    }
-
-    if (hasNarrowScreen !== newHasNarrowScreen) {
-      setHasNarrowScreen(newHasNarrowScreen)
-    }
-  }, [isHistoryEnabled, setIsHistoryEnabled, hasNarrowScreen, setHasNarrowScreen])
-
-  // Monitor screen size, and disable history on narrow screens
-  React.useEffect(() => {
-    const resizeSubscriber = windowWidth$.subscribe(handleResize)
-    return () => resizeSubscriber.unsubscribe()
-  }, [isHistoryEnabled])
 
   // Reset document state
   React.useEffect(() => {
@@ -249,120 +239,70 @@ function DocumentPane(props: Props) {
     }
   }, [documentId])
 
-  if (!schemaType) {
-    return (
-      <ErrorPane
-        {...props}
-        color="warning"
-        title={
-          <>
-            Unknown document type: <code>{typeName}</code>
-          </>
-        }
-      >
-        {typeName && (
-          <p>
-            This document has the schema type <code>{typeName}</code>, which is not defined as a
-            type in the local content studio schema.
-          </p>
-        )}
-        {!typeName && <p>This document does not exist, and no schema type was specified for it.</p>}
-        {__DEV__ && value && (
-          <div>
-            <h4>Here is the JSON representation of the document:</h4>
-            <pre>
-              <code>{JSON.stringify(value, null, 2)}</code>
-            </pre>
-          </div>
-        )}
-      </ErrorPane>
-    )
-  }
-
-  if (connectionState === 'connecting') {
-    return <LoadingPane {...props} delay={600} message={`Loading ${schemaType.title}…`} />
-  }
-
   if (!documentId) {
     return <div>No document ID</div>
   }
 
-  const revisionIsLoading = revision.from.isLoading && revision.to.isLoading
-  const showHistoryNavigator = isHistoryOpen && canShowHistoryList
-  const showChangesInspector = isHistoryOpen && canShowChangesList
+  // TODO: Maybe history state belongs somewhere else since `value` is a props here
+  let displayed = value
+
+  if (startTime) {
+    timeline.setRange(startTime, null)
+    displayed = timeline.endAttributes()
+  }
 
   return (
     <DocumentActionShortcuts
       id={options.id}
       type={typeName}
       onKeyUp={handleKeyUp}
-      className={isHistoryOpen ? styles.withHistoryMode : styles.root}
+      className={styles.root}
     >
-      {showHistoryNavigator && (
-        <div className={styles.navigatorContainer} key="navigator">
-          <HistoryNavigator
-            events={historyState.events}
-            isLoading={historyState.isLoading}
-            error={historyState.error}
-            onSelect={setSelection}
-            selection={selection}
-            selectionRange={selectionRange}
+      {isHistoryOpen && <RevisionSummary />}
+
+      <div className={styles.container}>
+        {isHistoryOpen && (
+          <HistoryTimeline timeline={timeline} onSelect={time => toggleHistory(time)} />
+        )}
+
+        <div className={styles.editorContainer} key="editor">
+          {inspect && <InspectView value={value} onClose={() => toggleInspect(false)} />}
+
+          <Editor
+            activeViewId={activeViewId}
+            connectionState={connectionState}
+            documentId={options.id}
+            documentType={options.type}
+            formRef={formRef}
+            hasSiblings={paneRouter.hasGroupSiblings}
+            initialValue={initialValue}
+            isClosable={isClosable}
+            isCollapsed={isCollapsed}
+            isHistoryOpen={isHistoryOpen}
+            isSelected={isSelected}
+            markers={markers}
+            menuItemGroups={menuItemGroups}
+            menuItems={menuItems}
+            onAction={handleMenuAction}
+            onChange={onChange}
+            onCloseValidationResults={handleCloseValidationResults}
+            onCloseView={handleClosePane}
+            onCollapse={onCollapse}
+            onExpand={onExpand}
+            onSetActiveView={handleSetActiveView}
+            onSetFocus={handleSetFocus}
+            onSplitPane={handleSplitPane}
+            onToggleValidationResults={handleToggleValidationResults}
+            paneTitle={title}
+            paneKey={paneKey}
+            showValidationTooltip={showValidationTooltip}
+            value={displayed}
+            views={views}
           />
         </div>
-      )}
 
-      <div className={styles.editorContainer} key="editor">
-        <Editor
-          activeViewId={activeViewId}
-          connectionState={connectionState}
-          documentId={options.id}
-          documentType={options.type}
-          formRef={formRef}
-          hasSiblings={paneRouter.hasGroupSiblings}
-          revision={revision.to}
-          historyState={historyState}
-          initialValue={initialValue}
-          inspect={inspect}
-          isClosable={isClosable}
-          isCollapsed={isCollapsed}
-          isHistoryOpen={isHistoryOpen}
-          isSelected={isSelected}
-          markers={markers}
-          menuItemGroups={menuItemGroups}
-          menuItems={menuItems}
-          onAction={handleMenuAction}
-          onChange={onChange}
-          onCloseValidationResults={handleCloseValidationResults}
-          onCloseView={handleClosePane}
-          onCollapse={onCollapse}
-          onExpand={onExpand}
-          onHideInspector={handleHideInspector}
-          onOpenHistory={handleOpenHistory}
-          onSetActiveView={handleSetActiveView}
-          onSetFocus={handleSetFocus}
-          onSplitPane={handleSplitPane}
-          onToggleValidationResults={handleToggleValidationResults}
-          paneTitle={title}
-          paneKey={paneKey}
-          selectedHistoryEvent={selectedHistoryEvent}
-          selectedHistoryEventIsLatest={selectedHistoryEventIsLatest}
-          showValidationTooltip={showValidationTooltip}
-          value={value}
-          views={views}
-        />
+        {isHistoryOpen && <ChangeSummary diff={timeline.currentDiff()} />}
       </div>
-
-      {showChangesInspector && history.diff && (
-        <div className={styles.inspectorContainer} key="inspector">
-          <ChangesInspector
-            documentId={documentId}
-            diff={history.diff}
-            isLoading={revisionIsLoading}
-            onHistoryClose={handleCloseHistory}
-            schemaType={schemaType}
-          />
-        </div>
-      )}
     </DocumentActionShortcuts>
   )
 }

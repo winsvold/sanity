@@ -43,6 +43,7 @@ export default class BufferedDocument {
   // Local mutations that are not scheduled to be committed yet
   buffer: SquashingBuffer
   onMutation: Function
+  onRemoteMutation?: Document['onRemoteMutation']
   onRebase: Function
   onDelete: Function
   commitHandler: Function
@@ -53,6 +54,7 @@ export default class BufferedDocument {
     this.buffer = new SquashingBuffer(doc)
     this.document = new Document(doc)
     this.document.onMutation = msg => this.handleDocMutation(msg)
+    this.document.onRemoteMutation = mut => this.onRemoteMutation && this.onRemoteMutation(mut)
     this.document.onRebase = msg => this.handleDocRebase(msg)
     this.document.onConsistencyChanged = msg => this.handleDocConsistencyChanged(msg)
     this.LOCAL = doc

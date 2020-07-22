@@ -4,43 +4,10 @@ import {TransactionLogEvent} from './types'
 
 type StreamResult = TransactionLogEvent | {error: {description?: string; type: string}}
 
-export function getJsonStream(url: string): Observable<TransactionLogEvent> {
+export async function getJsonStream(url: string): Promise<ReadableStream<StreamResult>> {
   const options: RequestInit = {credentials: 'include'}
-  return from(fetch(url, options)).pipe(
-    map(response => getStream(response)),
-    switchMap(stream => streamToObservable(stream))
-  )
-}
-
-function streamToObservable(stream: ReadableStream<StreamResult>): Observable<TransactionLogEvent> {
-  const reader = stream.getReader()
-  return new Observable<TransactionLogEvent>(subscriber => {
-    function read(result: ReadableStreamReadResult<StreamResult>): void {
-      if (result.done) {
-        subscriber.complete()
-        return
-      }
-
-      if ('error' in result.value) {
-        subscriber.error(new Error(result.value.error.description || result.value.error.type))
-        reader.cancel()
-        return
-      }
-
-      subscriber.next(result.value)
-      reader
-        .read()
-        .then(read)
-        .catch(err => subscriber.error(err))
-    }
-
-    reader
-      .read()
-      .then(read)
-      .catch(err => subscriber.error(err))
-
-    return (): Promise<void> => reader.cancel()
-  })
+  const response =  await fetch(url, options)
+  return getStream(response)
 }
 
 function getStream(response: Response): ReadableStream<StreamResult> {

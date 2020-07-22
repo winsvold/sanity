@@ -1,18 +1,15 @@
-import {Path, TypeChangeDiff} from '../types'
-import {getType} from './getType'
+import {TypeChangeDiff, Input} from '../types'
 
-export function diffTypeChange(
-  fromValue: unknown,
-  toValue: unknown,
-  path: Path = []
-): TypeChangeDiff {
+export function diffTypeChange<A>(
+  fromInput: Input<A>,
+  toInput: Input<A>,
+): TypeChangeDiff<A> {
   return {
     type: 'typeChange',
-    path,
-    fromValue,
-    toValue,
-    fromType: getType(fromValue),
-    toType: getType(toValue),
-    isChanged: fromValue !== toValue
+    fromValue: fromInput,
+    toValue: toInput,
+    fromType: fromInput.type,
+    toType: toInput.type,
+    state: 'changed'
   }
 }

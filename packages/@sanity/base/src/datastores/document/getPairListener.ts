@@ -35,7 +35,7 @@ export function getPairListener(client: SanityClient, idPair: IdPair) {
           publishedId,
           draftId
         },
-        {includeResult: false, events: ['welcome', 'mutation', 'reconnect']}
+        {includeResult: false, events: ['welcome', 'mutation', 'reconnect'], effectFormat: 'mendoza'}
       ) as Observable<WelcomeEvent | MutationEvent | ReconnectEvent>
   ).pipe(
     concatMap(event =>

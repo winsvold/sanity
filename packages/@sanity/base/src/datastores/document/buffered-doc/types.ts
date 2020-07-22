@@ -24,6 +24,17 @@ export interface CommittedEvent {
   type: 'committed'
 }
 
+export interface DocumentRemoteMutationEvent {
+  type: 'remoteMutation'
+  transactionId: string
+  author: string
+  timestamp: Date
+  effects: {
+    apply: unknown
+    revert: unknown
+  }
+}
+
 // HTTP API Mutation payloads
 // Note: this is *not* the same as the Mutation helper class exported by @sanity/mutator
 export interface MutationPayload {

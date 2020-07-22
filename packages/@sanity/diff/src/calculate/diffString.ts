@@ -4,33 +4,55 @@ import {
   DIFF_EQUAL,
   DIFF_INSERT
 } from 'diff-match-patch'
-import {StringDiffSegment, StringDiff, Path, Maybe} from '../types'
+import {StringDiffSegment, StringDiff, StringInput} from '../types'
 
 const dmp = new DiffMatchPatch()
-const dmpOperations: {[key: number]: StringDiffSegment['type']} = {
-  [DIFF_EQUAL]: 'unchanged',
-  [DIFF_DELETE]: 'removed',
-  [DIFF_INSERT]: 'added'
-}
 
-export function diffString(
-  fromValue: Maybe<string>,
-  toValue: Maybe<string>,
-  path: Path = []
-): StringDiff {
+export function diffString<A>(fromInput: StringInput<A>, toInput: StringInput<A>): StringDiff<A> {
   return {
     type: 'string',
-    isChanged: fromValue !== toValue,
-    fromValue,
-    toValue,
-    path,
+    state: fromInput.data === toInput.data ? 'unchanged' : 'changed',
 
     // Compute and memoize string segments only when accessed
-    get segments(): StringDiffSegment[] {
-      const dmpDiffs = dmp.diff_main(fromValue || '', toValue || '')
+    get segments(): StringDiffSegment<A>[] {
+      const dmpDiffs = dmp.diff_main(fromInput.data, toInput.data)
       dmp.diff_cleanupSemantic(dmpDiffs)
       delete this.segments
-      this.segments = dmpDiffs.map(([op, text]) => ({type: dmpOperations[op], text}))
+      let segments: StringDiffSegment<A>[] = (this.segments = [])
+
+      let fromIdx = 0
+      let toIdx = 0
+
+      for (let [op, text] of dmpDiffs) {
+        switch (op) {
+          case DIFF_EQUAL:
+            segments.push({type: 'unchanged', value: text})
+            fromIdx += text.length
+            toIdx += text.length
+            break
+          case DIFF_DELETE:
+            for (let segment of fromInput.sliceAnnotation(fromIdx, fromIdx + text.length)) {
+              segments.push({
+                type: 'removed',
+                value: segment.text,
+                annotation: segment.annotation
+              })
+            }
+            fromIdx += text.length
+            break
+          case DIFF_INSERT:
+            for (let segment of fromInput.sliceAnnotation(toIdx, fromIdx + text.length)) {
+              segments.push({
+                type: 'added',
+                value: segment.text,
+                annotation: segment.annotation
+              })
+            }
+            toIdx += text.length
+            break
+        }
+      }
+
       return this.segments
     }
   }

@@ -1,108 +1,99 @@
-import {ArrayDiff, Maybe, Path, KeyedSanityObject, Diff} from '../types'
-import {diffItem} from './diffItem'
+import {
+  ArrayDiff,
+  ArrayInput,
+  Input,
+  ItemDiffSegment
+} from '../types'
+import { lazyFlatten, lazyDiff } from './lazy'
 
-export function diffArray<T = unknown>(
-  fromValue: Maybe<T[]>,
-  toValue: Maybe<T[]>,
-  path: Path = []
-): ArrayDiff {
-  const from = fromValue || []
-  const to = toValue || []
+export function diffArray<A>(
+  fromInput: ArrayInput<A>,
+  toInput: ArrayInput<A>,
+): ArrayDiff<A> {
+  const keyedA = indexByKey(fromInput)
+  const keyedB = indexByKey(toInput)
 
-  let items: Diff[] = []
-  if (from !== to) {
-    items =
-      isUniquelyKeyed(from) && isUniquelyKeyed(to)
-        ? diffArrayByKey(from, to, path)
-        : diffArrayByIndex(from, to, path)
-  }
+  const elements =
+    keyedA && keyedB && arraysAreEqual(keyedA.keys, keyedB.keys)
+      ? diffArrayByKey(keyedA, keyedB)
+      : diffArrayByIndex(fromInput, toInput)
+
+  // TODO: Handle diffing by keys when they have also moved
+  // TODO: Handle diffing of string/number arrays
 
   return {
     type: 'array',
-    path,
-    fromValue,
-    toValue,
-    items,
-    isChanged: items.length > 0
+    elements,
+    state: fromInput === toInput ? 'unchanged' : 'unknown'
   }
 }
 
-function diffArrayByIndex(fromValue: unknown[], toValue: unknown[], path: Path): Diff[] {
-  const children: Diff[] = []
-  const length = Math.max(fromValue.length, toValue.length)
+function diffArrayByIndex<A>(fromInput: ArrayInput<A>, toInput: ArrayInput<A>): ItemDiffSegment<A>[] {
+  const elements: ItemDiffSegment<A>[] = []
+  const commonLength = Math.min(fromInput.length, toInput.length)
+
+  for (let i = 0; i < commonLength; i++) {
+    elements.push(lazyDiff({type: 'unchanged'}, fromInput.at(i), toInput.at(i)))
+  }
+
+  for (let i = commonLength; i < fromInput.length; i++) {
+    elements.push(lazyFlatten({type: 'removed', annotation: fromInput.annotation}, fromInput.at(i)))
+  }
+
+  for (let i = commonLength; i < toInput.length; i++) {
+    elements.push(lazyFlatten({type: 'added', annotation: toInput.annotation}, toInput.at(i)))
+  }
+
+  return elements
+}
+
+
+/**
+ * Diff an array when all the elements have _key in the same position.
+ */
+function diffArrayByKey<A>(
+  fromKeyIndex: KeyIndex<A>,
+  toKeyIndex: KeyIndex<A>,
+): ItemDiffSegment<A>[] {
+  const elements: ItemDiffSegment<A>[] = []
+
+  for (let i = 0; i < fromKeyIndex.keys.length; i++) {
+    const key = fromKeyIndex.keys[i]
+    const fromInput = fromKeyIndex.index.get(key)!.item
+    const toInput = toKeyIndex.index.get(key)!.item
+    elements.push(lazyDiff({type: 'unchanged'}, fromInput, toInput))
+  }
+
+  return elements
+}
+
+type KeyIndex<A> = {
+  keys: string[]
+  index: Map<string, ItemEntry<A>>
+}
+
+type ItemEntry<A> = {
+  item: Input<A>
+  index: number
+}
+
+function indexByKey<A>(arr: ArrayInput<A>): KeyIndex<A> | undefined {
+  let index = new Map<string, ItemEntry<A>>()
+  let keys: string[] = []
+  let length = arr.length
 
   for (let i = 0; i < length; i++) {
-    const diff = diffItem(fromValue[i], toValue[i], path.concat(i))
-    if (diff && diff.isChanged) {
-      children.push(diff)
-    }
+    let item = arr.at(i)
+    if (item.type !== 'object') return
+    let key = item.get('_key')
+    if (!key || key.type !== 'string') return
+    keys.push(key.data)
+    index.set(key.data, {item, index: i})
   }
 
-  return children
-}
-
-function diffArrayByKey(
-  fromValue: KeyedSanityObject[],
-  toValue: KeyedSanityObject[],
-  path: Path
-): Diff[] {
-  const children: Diff[] = []
-
-  const keyedA = indexByKey(fromValue)
-  const keyedB = indexByKey(toValue)
-
-  // There's a bunch of hard/semi-hard problems related to using keys
-  // Unless we have the exact same order, just use indexes for now
-  if (!arraysAreEqual(keyedA.keys, keyedB.keys)) {
-    return diffArrayByIndex(fromValue, toValue, path)
-  }
-
-  for (let i = 0; i < keyedB.keys.length; i++) {
-    const key = keyedB.keys[i]
-    const valueA = keyedA.index[key]
-    const valueB = keyedB.index[key]
-    const diff = diffItem(valueA, valueB, path.concat({_key: key}))
-
-    if (diff && diff.isChanged) {
-      children.push(diff)
-    }
-  }
-
-  return children
-}
-
-function isUniquelyKeyed(arr: unknown[]): arr is KeyedSanityObject[] {
-  const keys: string[] = []
-
-  for (let i = 0; i < arr.length; i++) {
-    const key = getKey(arr[i])
-    if (!key || keys.indexOf(key) !== -1) {
-      return false
-    }
-
-    keys.push(key)
-  }
-
-  return true
-}
-
-function getKey(obj: unknown): string | undefined {
-  return (typeof obj === 'object' && obj !== null && (obj as KeyedSanityObject)._key) || undefined
-}
-
-function indexByKey(
-  arr: KeyedSanityObject[]
-): {keys: string[]; index: {[key: string]: KeyedSanityObject}} {
-  return arr.reduce(
-    (acc, item) => {
-      acc.keys.push(item._key)
-      acc.index[item._key] = item
-      return acc
-    },
-    {keys: [] as string[], index: {} as {[key: string]: KeyedSanityObject}}
-  )
+  return {keys, index}
 }
 
 function arraysAreEqual(fromValue: unknown[], toValue: unknown[]): boolean {
-  return fromValue.length === toValue.length && fromValue.every((item, i) => toValue[i] === item)
+  return fromValue.length === toValue.length && fromValue.every((item, i) => item === toValue[i])
 }

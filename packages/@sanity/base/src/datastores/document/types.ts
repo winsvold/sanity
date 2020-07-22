@@ -19,7 +19,9 @@ export interface WelcomeEvent {
 export interface MutationEvent {
   type: 'mutation'
   documentId: string
+  transactionId: string
   mutations: MutationPayload[]
+  effects: { apply: unknown; revert: unknown }
 }
 
 export interface ReconnectEvent {

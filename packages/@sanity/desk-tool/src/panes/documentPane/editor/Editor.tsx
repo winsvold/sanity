@@ -11,7 +11,6 @@ import TabbedPane from 'part:@sanity/components/panes/tabbed'
 import Snackbar from 'part:@sanity/components/snackbar/default'
 import LanguageFilter from 'part:@sanity/desk-tool/language-select-component?'
 import Delay from '../../../utils/Delay'
-import {HistoryEventsState, HistoryRevisionState, HistoryTimelineEvent} from '../history'
 import {Doc, DocumentViewType, MenuAction} from '../types'
 import {DocumentOperationResults} from './DocumentOperationResults'
 import InspectHistory from './InspectHistory'
@@ -19,7 +18,6 @@ import InspectView from './InspectView'
 import {Validation} from './Validation'
 import {DocumentStatusBar, HistoryStatusBar} from './statusBar'
 import FormView from './FormView'
-import {getHistoryEventDateString} from './helpers'
 
 import styles from './Editor.css'
 
@@ -30,9 +28,7 @@ interface Props {
   documentType: string
   formRef: React.RefObject<any>
   hasSiblings: boolean
-  historyState: HistoryEventsState
   initialValue: Doc
-  inspect: boolean
   isClosable: boolean
   isCollapsed: boolean
   isHistoryOpen: boolean
@@ -46,41 +42,15 @@ interface Props {
   onCloseView: () => void
   onCollapse?: () => void
   onExpand?: () => void
-  onHideInspector: () => void
-  onOpenHistory: () => void
   onSetActiveView: (id: string) => void
   onSetFocus: (path: any) => void
   onSplitPane?: () => void
   onToggleValidationResults: () => void
   paneKey: string
   paneTitle?: string
-  revision: HistoryRevisionState
-  selectedHistoryEvent: HistoryTimelineEvent | null
-  selectedHistoryEventIsLatest: boolean
   showValidationTooltip: boolean
   value: Doc | null
   views: DocumentViewType[]
-}
-
-function HistorySpinner({
-  selectedHistoryEvent
-}: {
-  selectedHistoryEvent: HistoryTimelineEvent | null
-}) {
-  const historyEventStr = selectedHistoryEvent
-    ? getHistoryEventDateString(selectedHistoryEvent)
-    : null
-
-  return (
-    <Delay ms={600}>
-      <div className={styles.spinnerContainer}>
-        <Spinner
-          center
-          message={`Loading revision${historyEventStr ? ` from ${historyEventStr}` : ''}…`}
-        />
-      </div>
-    </Delay>
-  )
 }
 
 function PaneHeaderActions(props: {
@@ -122,32 +92,13 @@ function EditorFooter({
   documentId,
   documentType,
   initialValue,
-  isHistoryOpen,
-  onOpenHistory,
-  selectedHistoryEvent,
-  selectedHistoryEventIsLatest,
   value: valueProp
 }: {
   documentId: string
   documentType: string
   initialValue: Doc
-  isHistoryOpen: boolean
-  onOpenHistory: () => void
-  selectedHistoryEvent: HistoryTimelineEvent | null
-  selectedHistoryEventIsLatest: boolean
   value: Doc | null
 }) {
-  if (isHistoryOpen && !selectedHistoryEventIsLatest && selectedHistoryEvent) {
-    return (
-      <HistoryStatusBar
-        id={documentId}
-        type={documentType}
-        selectedEvent={selectedHistoryEvent}
-        isLatestEvent={selectedHistoryEventIsLatest}
-      />
-    )
-  }
-
   const value = valueProp || initialValue
 
   return (
@@ -155,7 +106,7 @@ function EditorFooter({
       id={documentId}
       type={documentType}
       lastUpdated={value && value._updatedAt}
-      onLastUpdatedButtonClick={onOpenHistory}
+      onLastUpdatedButtonClick={() => {}}
     />
   )
 }
@@ -166,13 +117,10 @@ function DocumentView({
   documentId,
   documentType,
   formRef,
-  revision,
   initialValue,
   isHistoryOpen,
   markers,
   onChange,
-  selectedHistoryEvent,
-  selectedHistoryEventIsLatest,
   value,
   views
 }: {
@@ -181,13 +129,10 @@ function DocumentView({
   documentId: string
   documentType: string
   formRef: React.RefObject<any>
-  revision: HistoryRevisionState
   initialValue: Doc
   isHistoryOpen: boolean
   markers: any
   onChange: (patches: any[]) => void
-  selectedHistoryEvent: HistoryTimelineEvent | null
-  selectedHistoryEventIsLatest: boolean
   value: Doc | null
   views: {
     type: string
@@ -201,20 +146,7 @@ function DocumentView({
   const schemaType = schema.get(documentType)
   const activeView = views.find(view => view.id === activeViewId) || views[0] || {type: 'form'}
 
-  // Should be null if not displaying a revision revision
-  const revisionSnapshot = selectedHistoryEventIsLatest
-    ? value
-    : revision.snapshot || revision.prevSnapshot
-
   const viewProps = {
-    // "Documents"
-    document: {
-      published: value,
-      draft: value,
-      revision: revisionSnapshot,
-      displayed: revisionSnapshot || value || initialValue
-    },
-
     // Other stuff
     documentId,
     options: activeView.options,
@@ -229,8 +161,7 @@ function DocumentView({
     isHistoryOpen,
     markers,
     onChange,
-    selectedHistoryEvent,
-    selectedHistoryEventIsLatest: selectedHistoryEventIsLatest
+    showHistoric: false
   }
 
   switch (activeView.type) {
@@ -278,7 +209,6 @@ function Editor(props: Props) {
     formRef,
     hasSiblings,
     initialValue,
-    inspect,
     isClosable,
     isCollapsed,
     isHistoryOpen,
@@ -292,17 +222,12 @@ function Editor(props: Props) {
     onCloseView,
     onCollapse,
     onExpand,
-    onHideInspector,
-    onOpenHistory,
     onSetActiveView,
     onSetFocus,
     onSplitPane,
     onToggleValidationResults,
     paneKey,
     paneTitle,
-    revision,
-    selectedHistoryEvent,
-    selectedHistoryEventIsLatest,
     showValidationTooltip,
     value,
     views
@@ -341,10 +266,6 @@ function Editor(props: Props) {
       documentId={documentId}
       documentType={documentType}
       initialValue={initialValue}
-      isHistoryOpen={isHistoryOpen}
-      onOpenHistory={onOpenHistory}
-      selectedHistoryEvent={selectedHistoryEvent}
-      selectedHistoryEventIsLatest={selectedHistoryEventIsLatest}
       value={value}
     />
   )
@@ -371,7 +292,7 @@ function Editor(props: Props) {
       isClosable={isClosable}
       hasSiblings={hasSiblings}
     >
-      {revision.isLoading && <HistorySpinner selectedHistoryEvent={selectedHistoryEvent} />}
+      {/* {revision.isLoading && <HistorySpinner selectedHistoryEvent={selectedHistoryEvent} />} */}
 
       <DocumentView
         activeViewId={activeViewId}
@@ -379,24 +300,13 @@ function Editor(props: Props) {
         documentId={documentId}
         documentType={documentType}
         formRef={formRef}
-        revision={revision}
         initialValue={initialValue}
         isHistoryOpen={isHistoryOpen}
         markers={markers}
         onChange={onChange}
-        selectedHistoryEvent={selectedHistoryEvent}
-        selectedHistoryEventIsLatest={selectedHistoryEventIsLatest}
         value={value}
         views={views}
       />
-
-      {inspect && isHistoryOpen && revision && (
-        <InspectHistory document={revision} onClose={onHideInspector} />
-      )}
-
-      {inspect && !isHistoryOpen && value && (
-        <InspectView value={value} onClose={onHideInspector} />
-      )}
 
       {connectionState === 'reconnecting' && (
         <Snackbar kind="warning" isPersisted title="Connection lost. Reconnecting…" />

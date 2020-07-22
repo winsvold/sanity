@@ -17,23 +17,16 @@ interface Props {
   id: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   patchChannel?: any
-  document: {
-    draft: Doc | null
-    published: Doc | null
-    revision: Doc | null
-    displayed: Doc | null
-  }
+  value: Doc | null
   initialValue: Doc
   isConnected: boolean
-  isHistoryOpen: boolean
+  showHistoric: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChange: (patches: any[]) => void
   schemaType: {name: string; title: string}
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   markers: Array<{path: any[]}>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  selectedHistoryEvent: any
-  selectedHistoryEventIsLatest: boolean
 }
 
 const noop = () => undefined
@@ -83,9 +76,8 @@ export default class FormView extends React.PureComponent<Props> {
   }
 
   isReadOnly() {
-    const {document, schemaType, isConnected} = this.props
-    const {draft, published} = document
-    const isNonExistent = !draft && !published
+    const {value, schemaType, isConnected} = this.props
+    const isNonExistent = !value || !value._id
 
     return (
       !isConnected ||
@@ -96,44 +88,39 @@ export default class FormView extends React.PureComponent<Props> {
 
   render() {
     const {
-      document,
       id,
+      value,
       initialValue,
-      isHistoryOpen,
+      showHistoric,
       markers,
       patchChannel,
       schemaType,
-      selectedHistoryEventIsLatest
     } = this.props
-    const {draft, published, displayed} = document
     const {focusPath, filterField} = this.state
-    const value = draft || published || ({} as Doc)
     const readOnly = this.isReadOnly()
-    const documentId = displayed && displayed._id && displayed._id.replace(/^drafts\./, '')
+    const documentId = value && value._id && value._id.replace(/^drafts\./, '')
 
     const hasTypeMismatch = value && value._type && value._type !== schemaType.name
     if (hasTypeMismatch) {
       return (
         <div className={styles.typeMisMatchMessage}>
-          This document is of type <code>{value._type}</code> and cannot be edited as{' '}
+          This document is of type <code>{value!._type}</code> and cannot be edited as{' '}
           <code>{schemaType.name}</code>
           <div>
-            <Button onClick={this.handleEditAsActualType}>Edit as {value._type} instead</Button>
+            <Button onClick={this.handleEditAsActualType}>Edit as {value!._type} instead</Button>
           </div>
         </div>
       )
     }
 
-    const showHistoricDocument = isHistoryOpen && !selectedHistoryEventIsLatest
-
     return (
       <div className={styles.root}>
-        {showHistoricDocument ? (
-          <HistoryForm document={displayed} schema={schema} schemaType={schemaType} />
+        {showHistoric ? (
+          <HistoryForm document={value} schema={schema} schemaType={schemaType} />
         ) : (
           <EditForm
             id={id}
-            value={draft || published || initialValue}
+            value={value || initialValue}
             filterField={filterField}
             focusPath={focusPath}
             markers={markers}

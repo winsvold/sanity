@@ -1,34 +1,4 @@
-import {WelcomeEvent, MutationEvent} from '@sanity/client'
-import {incremental} from 'mendoza'
-import {Doc} from '../types'
-
-export type IncrementalValue = incremental.Value
-
-export type ComputedDiff = {
-  from: Doc | null
-  to: Doc | null
-  value: IncrementalValue
-}
-
-export interface HistoryRevisionState {
-  isLoading: boolean
-  snapshot: Doc | null
-  prevSnapshot: Doc | null
-}
-
-export interface HistoryEventsState {
-  isLoading: boolean
-  isLoaded: boolean
-  error: null | Error
-  events: HistoryTimelineEvent[]
-}
-
-export type RevisionRange = string[] | string | null
-
-export interface HistorySelectionRange {
-  from: {rev: string | null; index: number; event: HistoryTimelineEvent | null}
-  to: {rev: string | null; index: number; event: HistoryTimelineEvent | null}
-}
+export {Doc} from '../types'
 
 export type MendozaPatch = unknown[]
 
@@ -37,151 +7,42 @@ export type MendozaEffectPair = {
   revert: MendozaPatch
 }
 
-export type Transaction = {
-  author: string
-  documentIDs: string[]
+// An "action" represent a single action which can be applied to a document.
+// It has information about the patches to apply to the draft and/or published version,
+// and what type of action it was.
+//
+// Be aware that `create` is not a separate action. If you're interested in this
+// you need to check if the previous action was a `delete` action.
+
+export { RemoteMutationWithVersion } from '@sanity/base/lib/datastores/document/document-pair/remoteMutations'
+
+export type ChunkType = 'create' | 'editDraft' | 'delete' | 'publish' | 'unpublish' | 'discardDraft'
+
+export type Chunk = {
   id: string
-  mutations: unknown[]
-  timestamp: string
-  effects: Record<string, MendozaEffectPair>
+  type: ChunkType
+  start: number
+  end: number
+  startTimestamp: Date
+  endTimestamp: Date
+  authors: Set<string>
 }
 
-export type PatchMetadata = {
-  rev: string
+// TODO: How should this look?
+export type Annotation = any
+
+export type Transaction = {
+  id: string
   author: string
-  timestamp: number
-}
-
-export interface EditSession {
-  type: 'editSession'
-  edits: string[]
-  length: number
-  offset: number
-  endTime: number
-  value?: incremental.Value
-}
-
-interface BaseHistoryTimelineEvent {
-  transactions: NormalizedTransactionLogEvent[]
-  displayDocumentId: string | null
-  timestamp: number
-  offset: number
-  rev: string
-}
-
-export type HistoryTimelineCreateEvent = BaseHistoryTimelineEvent & {
-  type: 'create'
-  userId: string
-}
-
-export type HistoryTimelineDeleteEvent = BaseHistoryTimelineEvent & {
-  type: 'delete'
-  userId: string
-}
-
-export type HistoryTimelineDiscardDraftEvent = BaseHistoryTimelineEvent & {
-  type: 'discardDraft'
-  userId: string
-}
-
-export type HistoryTimelineEditSessionGroupEvent = BaseHistoryTimelineEvent & {
-  type: 'editSessionGroup'
-  sessions: Array<EditSession>
-  userIds: string[]
-  length: number
-}
-
-export type HistoryTimelinePublishEvent = BaseHistoryTimelineEvent & {
-  type: 'publish'
-  userId: string
-}
-
-export type HistoryTimelineTruncateEvent = BaseHistoryTimelineEvent & {
-  type: 'truncate'
-  userIds: string[]
-}
-
-export type HistoryTimelineUnpublishEvent = BaseHistoryTimelineEvent & {
-  type: 'unpublish'
-  userId: string
-}
-
-export type HistoryTimelineUnknownEvent = BaseHistoryTimelineEvent & {
-  type: 'unknown'
-  message?: string
-  userId: string
-}
-
-export type HistoryTimelineEvent =
-  | HistoryTimelineCreateEvent
-  | HistoryTimelineDeleteEvent
-  | HistoryTimelineDiscardDraftEvent
-  | HistoryTimelineEditSessionGroupEvent
-  | HistoryTimelinePublishEvent
-  | HistoryTimelineTruncateEvent
-  | HistoryTimelineUnpublishEvent
-  | HistoryTimelineUnknownEvent
-
-export type ComputedHistoryTimelineEvent = HistoryTimelineEvent & {
-  value: incremental.Value
+  timestamp: Date
+  draftEffect?: MendozaEffectPair
+  publishedEffect?: MendozaEffectPair
 }
 
 export type TransactionLogEvent = {
   id: string
   timestamp: string
   author: string
-  mutations: MutationStub[]
   documentIDs: string[]
-  effects: Record<string, MendozaEffectPair | undefined>
+  effects: Record<string, MendozaEffectPair>
 }
-
-export type NormalizedTransactionLogEvent = Omit<TransactionLogEvent, 'timestamp'> & {
-  timestamp: number
-}
-
-export type ListenEvent = MutationEvent | WelcomeEvent
-export type GroupedEvent = TransactionLogEvent | WelcomeEvent
-
-export interface CreateMutationStub {
-  _id: string
-}
-
-export interface DeleteMutationStub {
-  id: string
-}
-
-export interface PatchMutationStub {
-  id: string
-}
-
-export interface CreateOrReplaceMutation {
-  createOrReplace: CreateMutationStub
-}
-
-export interface CreateIfNotExistsMutation {
-  createIfNotExists: CreateMutationStub
-}
-
-export interface CreateSquashedMutation {
-  createSquashed: {document: CreateMutationStub; authors: string[]}
-}
-
-export interface CreateMutation {
-  create: CreateMutationStub
-}
-
-export interface DeleteMutation {
-  delete: PatchMutationStub
-}
-
-export interface PatchMutation {
-  patch: PatchMutationStub
-}
-
-export type MutationStub =
-  | CreateOrReplaceMutation
-  | CreateIfNotExistsMutation
-  | CreateSquashedMutation
-  | CreateMutation
-  | DeleteMutation
-  | PatchMutation

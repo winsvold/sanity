@@ -1,101 +1,40 @@
-import {SanityObject, Path, ObjectDiff, Diff} from '../types'
-import {diffItem} from './diffItem'
-import {isNullish} from './getType'
+import {ObjectDiff, ObjectInput, DiffState} from '../types'
+import {lazyFlatten, lazyDiff} from './lazy'
 
-const ignoredFields = ['_id', '_type', '_createdAt', '_updatedAt', '_rev']
+const ignoredFields = new Set(['_id', '_type', '_createdAt', '_updatedAt', '_rev'])
 
-export function diffObject(
-  fromValue: SanityObject | null | undefined,
-  toValue: SanityObject | null | undefined,
-  path: Path = []
-  //schemaType?: SchemaType
-): ObjectDiff {
-  function getFields(): ObjectDiff['fields'] {
-    const fields: ObjectDiff['fields'] = {}
-    if (fromValue === toValue || (isNullish(fromValue) && isNullish(toValue))) {
-      return fields
+export function diffObject<A>(fromInput: ObjectInput<A>, toInput: ObjectInput<A>): ObjectDiff<A> {
+  const fields: ObjectDiff<A>['fields'] = {}
+  let state: DiffState = fromInput === toInput ? 'unchanged' : 'unknown'
+
+  for (let key of fromInput.keys) {
+    if (ignoredFields.has(key)) continue
+
+    let fromField = fromInput.get(key)!
+
+    let toField = toInput.get(key)
+    if (toField) {
+      fields[key] = lazyDiff({type: 'unchanged'}, fromField, toField)
+    } else {
+      fields[key] = lazyFlatten({type: 'removed', annotation: fromField.annotation}, fromField)
+      state = 'changed'
     }
+  }
 
-    const atRoot = path.length === 0
-    const from = fromValue || {}
-    const to = toValue || {}
-    const cache: {[fieldName: string]: Diff | undefined} = {}
+  for (let key of toInput.keys) {
+    if (ignoredFields.has(key)) continue
 
-    // If schema type is passed, extract the field names from it to get the correct order
-    //const definedFields = schemaType ? schemaType.fields.map(field => field.name) : []
-    const definedFields = []
+    // Already handled above
+    if (fromInput.get(key)) continue
 
-    // Find all the unique field names within from and to
-    const allFields = [...definedFields, ...Object.keys(from), ...Object.keys(to)].filter(
-      (fieldName, index, siblings) => siblings.indexOf(fieldName) === index
-    )
-
-    // Create lazy differs for each field within the object
-    allFields.forEach(fieldName => {
-      if (
-        // Don't diff _rev, _createdAt etc
-        (atRoot && ignoredFields.includes(fieldName)) ||
-        // Don't diff two nullish values (null/undefined)
-        (isNullish(from[fieldName]) && isNullish(to[fieldName]))
-      ) {
-        return
-      }
-
-      // Create lazy getter/differ for each field
-      Object.defineProperty(fields, fieldName, {
-        configurable: true,
-        enumerable: true,
-        get() {
-          if (fieldName in cache) {
-            return cache[fieldName]
-          }
-
-          /* const fieldType = schemaType
-          ? schemaType.fields.find(field => field.name === fieldName)?.type
-          : undefined */
-
-          const fieldDiff = diffItem(
-            from[fieldName],
-            to[fieldName],
-            path.concat(fieldName)
-            //fieldType
-          )
-
-          const diff = fieldDiff && fieldDiff.isChanged ? fieldDiff : undefined
-          cache[fieldName] = diff
-
-          if (!diff) {
-            delete fields[fieldName]
-          }
-
-          return cache[fieldName]
-        }
-      })
-    })
-
-    return fields
+    let toField = toInput.get(key)!
+    fields[key] = lazyFlatten({type: 'added', annotation: toField.annotation}, toField)
+    state = 'changed'
   }
 
   return {
     type: 'object',
-    path,
-    fromValue,
-    toValue,
-
-    // Discouraged: prefer looping over children unless you need to check every field!
-    get isChanged(): boolean {
-      return (
-        (isNullish(fromValue) && isNullish(toValue) && fromValue !== toValue) ||
-        Object.keys(this.fields).some(
-          key => typeof this.fields[key] !== 'undefined' && this.fields[key].isChanged
-        )
-      )
-    },
-
-    get fields(): ObjectDiff['fields'] {
-      delete this.fields
-      this.fields = getFields()
-      return this.fields
-    }
+    state,
+    fields
   }
 }
