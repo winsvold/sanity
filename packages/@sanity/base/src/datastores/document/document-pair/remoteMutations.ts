@@ -1,12 +1,14 @@
-import {IdPair} from '../types'
 import {merge, Observable} from 'rxjs'
 import {filter, publishReplay, refCount, switchMap} from 'rxjs/operators'
-import {memoizedPair} from './memoizedPair'
 import {DocumentRemoteMutationEvent} from '../buffered-doc/types'
+import {IdPair} from '../types'
 import {memoize} from '../utils/createMemoizer'
+import {memoizedPair} from './memoizedPair'
 import {DocumentVersion} from './checkoutPair'
 
-export type RemoteMutationWithVersion = DocumentRemoteMutationEvent & {version: 'published' | 'draft'}
+export type RemoteMutationWithVersion = DocumentRemoteMutationEvent & {
+  version: 'published' | 'draft'
+}
 
 function withRemoteMutation(version: DocumentVersion) {
   return version.events.pipe(
@@ -19,7 +21,9 @@ function withRemoteMutation(version: DocumentVersion) {
 export const remoteMutations = memoize(
   (idPair: IdPair): Observable<RemoteMutationWithVersion> => {
     return memoizedPair(idPair).pipe(
-      switchMap(({published, draft}) => merge(withRemoteMutation(published), withRemoteMutation(draft))),
+      switchMap(({published, draft}) =>
+        merge(withRemoteMutation(published), withRemoteMutation(draft))
+      ),
       publishReplay(1),
       refCount()
     )
