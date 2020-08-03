@@ -1,6 +1,5 @@
 import {Timeline} from './timeline'
 import {SanityClient} from '@sanity/client'
-import {getPublishedId, getDraftId} from './helpers'
 import {getJsonStream} from './ndjsonStreamer'
 import {Observable, fromEventPattern} from 'rxjs'
 import {
@@ -63,7 +62,7 @@ export class Controller {
 
   handleRemoteMutation(ev: RemoteMutationWithVersion) {
     this.timeline.addRemoteMutation(ev)
-    this.timeline.updateChunks() // TODO: A bit async? 
+    this.timeline.updateChunks() // TODO: A bit async?
     this.markChange()
   }
 

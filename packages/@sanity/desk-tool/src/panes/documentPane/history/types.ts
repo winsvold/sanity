@@ -14,7 +14,7 @@ export type MendozaEffectPair = {
 // Be aware that `create` is not a separate action. If you're interested in this
 // you need to check if the previous action was a `delete` action.
 
-export { RemoteMutationWithVersion } from '@sanity/base/lib/datastores/document/document-pair/remoteMutations'
+export {RemoteMutationWithVersion} from '@sanity/base/lib/datastores/document/document-pair/remoteMutations'
 
 export type ChunkType = 'create' | 'editDraft' | 'delete' | 'publish' | 'unpublish' | 'discardDraft'
 

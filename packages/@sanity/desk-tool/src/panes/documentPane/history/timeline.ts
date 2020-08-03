@@ -1,7 +1,8 @@
-import {Transaction, TransactionLogEvent, Chunk, Doc, RemoteMutationWithVersion} from './types'
-import {applyPatch, incremental} from 'mendoza'
-import {diffValue} from './mendozaDiffer'
+/* eslint-disable max-depth, complexity */
 import {Diff} from '@sanity/diff'
+import {applyPatch, incremental, RawPatch} from 'mendoza'
+import {Transaction, TransactionLogEvent, Chunk, Doc, RemoteMutationWithVersion} from './types'
+import {diffValue} from './mendozaDiffer'
 import {TwoEndedArray} from './twoEndedArray'
 import {mergeChunk, chunkFromTransaction} from './chunker'
 
@@ -32,13 +33,13 @@ type DocumentVersion = {
 
 function createVersion(document: Doc | null): DocumentVersion | undefined {
   if (document) {
-    let attributes = {...document} as Attributes
+    const attributes = {...document} as Attributes
     delete attributes._rev
     if (!document._rev) throw new Error('document must have _rev')
     return {rev: document._rev, attributes}
-  } else {
-    return undefined
   }
+
+  return undefined
 }
 
 /**
@@ -82,10 +83,10 @@ export class Timeline {
 
   /** Maps over the chunk from newest to oldest. */
   mapChunks<T>(mapper: (chunk: Chunk, idx: number) => T): T[] {
-    let result: T[] = []
+    const result: T[] = []
 
-    let firstIdx = this._chunks.firstIdx
-    let lastIdx = this._chunks.lastIdx
+    const firstIdx = this._chunks.firstIdx
+    const lastIdx = this._chunks.lastIdx
 
     for (let idx = lastIdx; idx >= firstIdx; idx--) {
       result.push(mapper(this._chunks.get(idx), idx))
@@ -104,30 +105,30 @@ export class Timeline {
    * the mutation for the draft is out of order.
    */
   addRemoteMutation(entry: RemoteMutationWithVersion) {
-    let pending = this._possiblePendingTransactions.get(entry.id)
+    const pending = this._possiblePendingTransactions.get(entry.transactionId)
 
-    let transaction: Transaction = pending
+    const transaction: Transaction = pending
       ? pending.transaction
       : {
-          id: entry.id,
+          id: entry.transactionId,
           timestamp: entry.timestamp,
           author: entry.author
         }
 
     if (entry.version === 'published') {
-      transaction.publishedEffect = entry.effects
-      this._publishedVersion = applyPatch(this._publishedVersion, entry.effects.apply)
+      transaction.publishedEffect = entry.effects as any
+      this._publishedVersion = applyPatch(this._publishedVersion, entry.effects.apply as RawPatch)
     } else {
-      transaction.draftEffect = entry.effects
-      this._draftVersion = applyPatch(this._publishedVersion, entry.effects.apply)
+      transaction.draftEffect = entry.effects as any
+      this._draftVersion = applyPatch(this._publishedVersion, entry.effects.apply as RawPatch)
     }
 
     if (pending) {
-      this._possiblePendingTransactions.delete(entry.id)
+      this._possiblePendingTransactions.delete(entry.transactionId)
       this._invalidateTransactionFrom(pending.idx)
     } else {
       this._transactions.addToEnd(transaction)
-      this._possiblePendingTransactions.set(entry.id, {
+      this._possiblePendingTransactions.set(entry.transactionId, {
         transaction,
         idx: this._transactions.lastIdx
       })
@@ -157,7 +158,7 @@ export class Timeline {
   updateChunks() {
     if (this._recreateTransactionsFrom) {
       while (this._chunks.length > 0) {
-        let chunk = this._chunks.last
+        const chunk = this._chunks.last
         if (this._recreateTransactionsFrom < chunk.end) {
           this._chunks.removeFromEnd()
         } else {
@@ -167,23 +168,23 @@ export class Timeline {
       this._recreateTransactionsFrom = undefined
     }
 
-    let firstIdx = this._transactions.firstIdx
-    let lastIdx = this._transactions.lastIdx
+    const firstIdx = this._transactions.firstIdx
+    const lastIdx = this._transactions.lastIdx
 
     // Add transactions at the end:
-    let nextTransactionToChunk = this._chunks.length > 0 ? this._chunks.last.end : firstIdx
+    const nextTransactionToChunk = this._chunks.length > 0 ? this._chunks.last.end : firstIdx
     for (let idx = nextTransactionToChunk; idx <= lastIdx; idx++) {
-      let transaction = this._transactions.get(idx)
+      const transaction = this._transactions.get(idx)
       this._chunks.mergeAtEnd(chunkFromTransaction(transaction, idx), mergeChunk)
     }
 
     // Add transactions at the beginning:
     if (this._chunks.length == 0) return
 
-    let firstTransactionChunked = this._chunks.first.start
+    const firstTransactionChunked = this._chunks.first.start
 
     for (let idx = firstTransactionChunked - 1; idx >= firstIdx; idx--) {
-      let transaction = this._transactions.get(idx)
+      const transaction = this._transactions.get(idx)
       this._chunks.mergeAtBeginning(chunkFromTransaction(transaction, idx), mergeChunk)
     }
   }
@@ -208,15 +209,15 @@ export class Timeline {
 
     if (id === '-') return this.createTimeRef(this._chunks.lastIdx)
 
-    let [timestampStr, chunkId] = id.split('/', 2)
-    let timestamp = Number(timestampStr)
+    const [timestampStr, chunkId] = id.split('/', 2)
+    const timestamp = Number(timestampStr)
 
     // TODO: Use the chunkId for something
 
-    let firstIdx = this._chunks.firstIdx
-    let lastIdx = this._chunks.lastIdx
+    const firstIdx = this._chunks.firstIdx
+    const lastIdx = this._chunks.lastIdx
     for (let idx = lastIdx; idx >= firstIdx; idx--) {
-      let chunk = this._chunks.get(idx)
+      const chunk = this._chunks.get(idx)
       if (
         timestamp >= chunk.startTimestamp.valueOf() &&
         timestamp <= chunk.endTimestamp.valueOf()
@@ -234,7 +235,9 @@ export class Timeline {
 
   /** Creates a time reference from a chunk. */
   private createTimeRef(chunkIdx: number, chunk = this._chunks.get(chunkIdx)): TimeRef {
-    let timestamp = Math.round((chunk.startTimestamp.valueOf() + chunk.endTimestamp.valueOf()) / 2)
+    const timestamp = Math.round(
+      (chunk.startTimestamp.valueOf() + chunk.endTimestamp.valueOf()) / 2
+    )
 
     return {
       id: `${timestamp}/${chunk.id}`,
@@ -244,7 +247,6 @@ export class Timeline {
   }
 
   // We maintain a single "reconstruction" of a range in the history.
-
   private _reconstruction?: Reconstruction
 
   /**
@@ -260,7 +262,7 @@ export class Timeline {
     const endIdx = endRef ? endRef.chunkIdx : this._chunks.lastIdx
     const end = endRef ? endRef.chunk : this._chunks.get(endIdx)
 
-    let current = this._reconstruction
+    const current = this._reconstruction
     if (current && current.start === start) {
       if (current.end !== end) {
         current.diff = undefined
@@ -277,19 +279,29 @@ export class Timeline {
 
   /** Returns the attributes as seen at the end of the range. */
   endAttributes() {
-    let current = this._reconstruction
-    if (!current) throw new Error('range required')
+    const current = this._reconstruction
+    if (!current) {
+      throw new Error('range required')
+    }
 
-    if (!current.endDocument) this.calculateAttributes(current)
+    if (!current.endDocument) {
+      this.calculateAttributes(current)
+    }
+
     return getAttrs(current.endDocument!)
   }
 
   /** Returns the attributes as seen at the end of the range. */
   startAttributes() {
-    let current = this._reconstruction
-    if (!current) throw new Error('range required')
+    const current = this._reconstruction
+    if (!current) {
+      throw new Error('range required')
+    }
 
-    if (!current.startDocument) this.calculateAttributes(current)
+    if (!current.startDocument) {
+      this.calculateAttributes(current)
+    }
+
     return getAttrs(current.startDocument!)
   }
 
@@ -298,13 +310,13 @@ export class Timeline {
     let draft: any = this._draftVersion ? this._draftVersion.attributes : null
     let published: any = this._publishedVersion ? this._publishedVersion.attributes : null
 
-    let firstIdx = this._transactions.firstIdx
-    let lastIdx = this._transactions.lastIdx
+    const firstIdx = this._transactions.firstIdx
+    const lastIdx = this._transactions.lastIdx
 
     // Iterate backwards over the transactions and apply revert effects.
 
     for (let idx = lastIdx; idx >= firstIdx; idx--) {
-      let transaction = this._transactions.get(idx)
+      const transaction = this._transactions.get(idx)
 
       // The end-index points to the transaction which is _not_
       // included in the chunk. By subtracting 1 we get the transaction
@@ -332,17 +344,24 @@ export class Timeline {
 
   /** Returns the diff between the start and the end range. */
   currentDiff() {
-    let current = this._reconstruction
-    if (!current) return null
+    const current = this._reconstruction
+    if (!current) {
+      return null
+    }
 
-    if (current.diff) return current.diff
+    if (current.diff) {
+      return current.diff
+    }
 
-    if (!current.startDocument) this.calculateAttributes(current)
-    let doc = current.startDocument!
+    if (!current.startDocument) {
+      this.calculateAttributes(current)
+    }
+
+    const doc = current.startDocument!
 
     let draftValue = incremental.wrap<Chunk | null>(doc.draft, null)
     let publishedValue = incremental.wrap<Chunk | null>(doc.published, null)
-    let initialValue = incremental.getType(draftValue) !== 'null' ? draftValue : publishedValue
+    const initialValue = incremental.getType(draftValue) === 'null' ? publishedValue : draftValue
 
     let chunk = current.start
     let chunkIdx = current.startIdx
@@ -350,7 +369,7 @@ export class Timeline {
     // Loop over all of the chunks:
     while (true) {
       for (let idx = chunk.start; idx < chunk.end; idx++) {
-        let transaction = this._transactions.get(idx)
+        const transaction = this._transactions.get(idx)
 
         if (transaction.draftEffect) {
           draftValue = incremental.applyPatch(draftValue, transaction.draftEffect.apply, chunk)
@@ -366,14 +385,17 @@ export class Timeline {
       }
 
       // We reached the final chunk
-      if (chunkIdx == current.endIdx) break
+      if (chunkIdx == current.endIdx) {
+        break
+      }
+
       chunkIdx++
       chunk = this._chunks.get(chunkIdx)
     }
 
     // TODO: Rebase to not lose track of history
 
-    let value = incremental.getType(draftValue) !== 'null' ? draftValue : publishedValue
+    const value = incremental.getType(draftValue) === 'null' ? publishedValue : draftValue
     current.diff = diffValue(initialValue, value)
     return current.diff
   }
