@@ -1,9 +1,13 @@
-import {ObjectDiff, ObjectInput, DiffState} from '../types'
+import {ObjectDiff, ObjectInput, DiffState, DiffOptions} from '../types'
 import {lazyFlatten, lazyDiff} from './lazy'
 
 const ignoredFields = new Set(['_id', '_type', '_createdAt', '_updatedAt', '_rev'])
 
-export function diffObject<A>(fromInput: ObjectInput<A>, toInput: ObjectInput<A>): ObjectDiff<A> {
+export function diffObject<A>(
+  fromInput: ObjectInput<A>,
+  toInput: ObjectInput<A>,
+  options: DiffOptions
+): ObjectDiff<A> {
   const fields: ObjectDiff<A>['fields'] = {}
   let state: DiffState = fromInput === toInput ? 'unchanged' : 'unknown'
 

@@ -1,14 +1,10 @@
-import {
-  ArrayDiff,
-  ArrayInput,
-  Input,
-  ItemDiffSegment
-} from '../types'
-import { lazyFlatten, lazyDiff } from './lazy'
+import {ArrayDiff, ArrayInput, Input, ItemDiffSegment, DiffOptions} from '../types'
+import {lazyFlatten, lazyDiff} from './lazy'
 
 export function diffArray<A>(
   fromInput: ArrayInput<A>,
   toInput: ArrayInput<A>,
+  options: DiffOptions
 ): ArrayDiff<A> {
   const keyedA = indexByKey(fromInput)
   const keyedB = indexByKey(toInput)
@@ -28,7 +24,10 @@ export function diffArray<A>(
   }
 }
 
-function diffArrayByIndex<A>(fromInput: ArrayInput<A>, toInput: ArrayInput<A>): ItemDiffSegment<A>[] {
+function diffArrayByIndex<A>(
+  fromInput: ArrayInput<A>,
+  toInput: ArrayInput<A>
+): ItemDiffSegment<A>[] {
   const elements: ItemDiffSegment<A>[] = []
   const commonLength = Math.min(fromInput.length, toInput.length)
 
@@ -47,13 +46,12 @@ function diffArrayByIndex<A>(fromInput: ArrayInput<A>, toInput: ArrayInput<A>): 
   return elements
 }
 
-
 /**
  * Diff an array when all the elements have _key in the same position.
  */
 function diffArrayByKey<A>(
   fromKeyIndex: KeyIndex<A>,
-  toKeyIndex: KeyIndex<A>,
+  toKeyIndex: KeyIndex<A>
 ): ItemDiffSegment<A>[] {
   const elements: ItemDiffSegment<A>[] = []
 

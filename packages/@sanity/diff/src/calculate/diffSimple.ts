@@ -1,8 +1,9 @@
-import {Path, BooleanDiff, Maybe, SimpleInput, SimpleDiff} from '../types'
+import {Path, BooleanDiff, Maybe, SimpleInput, SimpleDiff, DiffOptions} from '../types'
 
 export function diffSimple<A>(
   fromInput: SimpleInput<A>,
   toInput: SimpleInput<A>,
+  options: DiffOptions
 ): SimpleDiff<A> {
   return {
     type: fromInput.type,

@@ -1,42 +1,61 @@
-import {Diff, Input, ArrayInput, StringInput, ObjectInput, SimpleInput, BooleanInput} from '../types'
+import {Diff, Input, ArrayInput, StringInput, ObjectInput, SimpleInput, DiffOptions} from '../types'
 import {diffArray} from './diffArray'
 import {diffString} from './diffString'
 import {diffTypeChange} from './diffTypeChange'
 import {diffObject} from './diffObject'
 import {diffSimple} from './diffSimple'
 
-export function diffInput<A>(fromInput: Input<A>, toInput: Input<A>): Diff<A> {
+export function diffInput<A>(
+  fromInput: Input<A>,
+  toInput: Input<A>,
+  options: DiffOptions = {}
+): Diff<A> {
   // eg: null/undefined => string
   if (fromInput.type === 'null' && toInput.type !== 'null') {
-    return diffWithType(toInput.type, createEmpty(toInput.type, fromInput.annotation), toInput)
+    return diffWithType(
+      toInput.type,
+      createEmpty(toInput.type, fromInput.annotation),
+      toInput,
+      options
+    )
   }
 
   // eg: number => null/undefined
   if (toInput.type === 'null' && fromInput.type !== 'null') {
-    return diffWithType(fromInput.type, fromInput, createEmpty(fromInput.type, toInput.annotation))
+    return diffWithType(
+      fromInput.type,
+      fromInput,
+      createEmpty(fromInput.type, toInput.annotation),
+      options
+    )
   }
 
   // eg: array => array
   if (fromInput.type === toInput.type) {
-    return diffWithType(fromInput.type, fromInput, toInput)
+    return diffWithType(fromInput.type, fromInput, toInput, options)
   }
 
   // eg: number => string
-  return diffTypeChange(fromInput, toInput)
+  return diffTypeChange(fromInput, toInput, options)
 }
 
-function diffWithType<A>(type: Input<A>['type'], fromInput: Input<A>, toInput: Input<A>): Diff<A> {
+function diffWithType<A>(
+  type: Input<A>['type'],
+  fromInput: Input<A>,
+  toInput: Input<A>,
+  options: DiffOptions
+): Diff<A> {
   switch (type) {
     case 'boolean':
     case 'number':
     case 'null':
-      return diffSimple(fromInput as SimpleInput<A>, toInput as SimpleInput<A>)
+      return diffSimple(fromInput as SimpleInput<A>, toInput as SimpleInput<A>, options)
     case 'string':
-      return diffString(fromInput as StringInput<A>, toInput as StringInput<A>)
+      return diffString(fromInput as StringInput<A>, toInput as StringInput<A>, options)
     case 'array':
-      return diffArray(fromInput as ArrayInput<A>, toInput as ArrayInput<A>)
+      return diffArray(fromInput as ArrayInput<A>, toInput as ArrayInput<A>, options)
     case 'object':
-      return diffObject(fromInput as ObjectInput<A>, toInput as ObjectInput<A>)
+      return diffObject(fromInput as ObjectInput<A>, toInput as ObjectInput<A>, options)
   }
 }
 
@@ -70,7 +89,7 @@ const emptyInputs: {[P in Input<unknown>['type']]: any} = {
   object: {
     type: 'object',
     keys: [],
-    get() { }
+    get() {}
   }
 }
 

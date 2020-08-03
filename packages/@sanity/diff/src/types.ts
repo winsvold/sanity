@@ -1,5 +1,7 @@
 export type Maybe<T> = T | null | undefined
 
+export type DiffOptions = {}
+
 export type Diff<A> = StringDiff<A> | NumberDiff<A> | BooleanDiff<A> | NullDiff<A> | ObjectDiff<A> | ArrayDiff<A> | TypeChangeDiff<A>
 export type SimpleDiff<A> = StringDiff<A> | NumberDiff<A> | BooleanDiff<A> | NullDiff<A>
 export type ValueType = 'array' | 'boolean' | 'null' | 'number' | 'object' | 'string' | 'undefined'
