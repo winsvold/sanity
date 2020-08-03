@@ -116,19 +116,22 @@ const isTSProject = packageDir => {
 // that needs to be built serially is listed below.
 // Note: If you run into problems with packages that errors during TS compile due to issues with
 // another package in this monorepo it might help adding it to this array
-const BUILD_SERIALLY = [['packages/@sanity/mutator', 'packages/@sanity/base']]
+const BUILD_SERIALLY = [
+  ['packages/@sanity/transaction-collator', 'packages/@sanity/mutator', 'packages/@sanity/base']
+]
+
 const TS_PROJECTS = BUILD_SERIALLY.concat(
   PACKAGE_PATHS.filter(isTSProject).filter(
     packagePath => !BUILD_SERIALLY.some(entry => entry.some(pkgPath => pkgPath === packagePath))
   )
 )
 
-const buildTS = parallel(
-  TS_PROJECTS.map(projectPath =>
-    Array.isArray(projectPath)
-      ? series(projectPath.map(buildTypeScript))
-      : buildTypeScript(projectPath)
-  )
+const serialTsProjects = TS_PROJECTS.filter(projectPath => Array.isArray(projectPath)).flat()
+const parallelTsProjects = TS_PROJECTS.filter(projectPath => !Array.isArray(projectPath))
+
+const buildTS = series(
+  series(serialTsProjects.map(buildTypeScript)),
+  parallel(parallelTsProjects.map(buildTypeScript))
 )
 
 const watchTS = parallel(
