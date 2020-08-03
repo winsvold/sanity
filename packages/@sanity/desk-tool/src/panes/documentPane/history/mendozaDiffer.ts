@@ -1,10 +1,5 @@
 import {Input, ArrayInput, ObjectInput, StringInput, wrap, Diff, diffInput} from '@sanity/diff'
-import {
-  Value,
-  ArrayContent,
-  ObjectContent,
-  StringContent,
-} from 'mendoza/lib/incremental-patcher'
+import {Value, ArrayContent, ObjectContent, StringContent} from 'mendoza/lib/incremental-patcher'
 import {Chunk, Annotation} from './types'
 
 export type Meta = Chunk | null
@@ -91,8 +86,34 @@ class StringContentWrapper implements StringInput<Annotation> {
     return this._data
   }
 
-  sliceAnnotation(start: number, end: number): never {
-    throw new Error("todo")
+  sliceAnnotation(start: number, end: number): {text: string; annotation: Annotation}[] {
+    let result: {text: string; annotation: Annotation}[] = []
+    let idx = 0
+
+    for (let part of this.content.parts) {
+      let length = part.value.length
+
+      let subStart = Math.max(0, start - idx)
+      if (subStart < length) {
+        // The start of the slice is inside this part somewhere.
+
+        // Figure out where the end is:
+        let subEnd = Math.min(length, end - idx)
+
+        // If the end of the slice is before this part, then we're guaranteed
+        // that there are no more parts.
+        if (subEnd <= 0) break
+
+        result.push({
+          text: part.value.slice(subStart, subEnd),
+          annotation: part[this.accessor]
+        })
+      }
+
+      idx += length
+    }
+
+    return result
   }
 }
 

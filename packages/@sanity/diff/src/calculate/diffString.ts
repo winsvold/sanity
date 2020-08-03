@@ -41,7 +41,7 @@ export function diffString<A>(fromInput: StringInput<A>, toInput: StringInput<A>
             fromIdx += text.length
             break
           case DIFF_INSERT:
-            for (let segment of fromInput.sliceAnnotation(toIdx, fromIdx + text.length)) {
+            for (let segment of toInput.sliceAnnotation(toIdx, toIdx + text.length)) {
               segments.push({
                 type: 'added',
                 value: segment.text,
