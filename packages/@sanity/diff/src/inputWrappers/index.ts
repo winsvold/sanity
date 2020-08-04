@@ -1,8 +1,8 @@
-import ArrayWrapper from "./array"
-import ObjectWrapper from "./object"
-import StringWrapper from "./string"
-import BasicWrapper from "./basic"
-import { Input } from "../types"
+import ArrayWrapper from './array'
+import ObjectWrapper from './object'
+import StringWrapper from './string'
+import BasicWrapper from './basic'
+import {Input} from '../types'
 
 export function wrap<A>(input: unknown, annotation: A): Input<A> {
   if (Array.isArray(input)) {
@@ -20,7 +20,7 @@ export function wrap<A>(input: unknown, annotation: A): Input<A> {
         return new ObjectWrapper(input as object, annotation)
       case 'string':
         return new StringWrapper(input as string, annotation)
-      }
+    }
 
     throw new Error(`cannot wrap value of type: ${type}`)
   }

@@ -1,18 +1,18 @@
-import { ArrayInput, Input } from "../types"
-import { wrap } from "."
+import {ArrayInput, Input} from '../types'
+import {wrap} from '.'
 
 export default class ArrayWrapper<A> implements ArrayInput<A> {
   type: 'array' = 'array'
   length: number
+  value: unknown[]
   annotation: A
 
-  private data: unknown[]
   private elements: Input<A>[] = []
 
-  constructor(data: unknown[], annotation: A) {
+  constructor(value: unknown[], annotation: A) {
     this.annotation = annotation
-    this.data = data
-    this.length = data.length
+    this.value = value
+    this.length = value.length
   }
 
   at(idx: number) {
@@ -21,7 +21,7 @@ export default class ArrayWrapper<A> implements ArrayInput<A> {
     if (input) {
       return input
     } else {
-      return (this.elements[idx] = wrap(this.data[idx], this.annotation))
+      return (this.elements[idx] = wrap(this.value[idx], this.annotation))
     }
   }
 }

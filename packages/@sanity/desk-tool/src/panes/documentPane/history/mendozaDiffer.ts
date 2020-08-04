@@ -1,4 +1,13 @@
-import {Input, ArrayInput, ObjectInput, StringInput, wrap, Diff, diffInput} from '@sanity/diff'
+import {
+  Input,
+  ArrayInput,
+  ObjectInput,
+  StringInput,
+  wrap,
+  Diff,
+  diffInput,
+  NoDiff
+} from '@sanity/diff'
 import {Value, ArrayContent, ObjectContent, StringContent} from 'mendoza/lib/incremental-patcher'
 import {Chunk, Annotation} from './types'
 
@@ -12,6 +21,7 @@ function reverseAccessor(accessor: Accessor): Accessor {
 
 class ArrayContentWrapper implements ArrayInput<Annotation> {
   type: 'array' = 'array'
+  value: unknown[]
   length: number
   annotation: Annotation
   accessor: Accessor
@@ -19,8 +29,14 @@ class ArrayContentWrapper implements ArrayInput<Annotation> {
   private content: ArrayContent<Meta>
   private elements: Input<Annotation>[] = []
 
-  constructor(content: ArrayContent<Meta>, annotation: Annotation, accessor: Accessor) {
+  constructor(
+    content: ArrayContent<Meta>,
+    value: unknown[],
+    annotation: Annotation,
+    accessor: Accessor
+  ) {
     this.content = content
+    this.value = value
     this.annotation = annotation
     this.accessor = accessor
     this.length = content.elements.length
@@ -28,17 +44,21 @@ class ArrayContentWrapper implements ArrayInput<Annotation> {
 
   at(idx: number) {
     if (idx >= this.length) throw new Error('out of bounds')
-    let input = this.elements[idx]
+    const input = this.elements[idx]
     if (input) {
       return input
-    } else {
-      return (this.elements[idx] = wrapValue(this.content.elements[idx], this.accessor))
     }
+    return (this.elements[idx] = wrapValue(
+      this.content.elements[idx],
+      this.value[idx],
+      this.accessor
+    ))
   }
 }
 
 class ObjectContentWrapper implements ObjectInput<Annotation> {
   type: 'object' = 'object'
+  value: object
   keys: string[]
   annotation: Annotation
   accessor: Accessor
@@ -46,62 +66,68 @@ class ObjectContentWrapper implements ObjectInput<Annotation> {
   private content: ObjectContent<Meta>
   private fields: Record<string, Input<Meta>> = {}
 
-  constructor(content: ObjectContent<Meta>, annotation: Annotation, accessor: Accessor) {
+  constructor(
+    content: ObjectContent<Meta>,
+    value: object,
+    annotation: Annotation,
+    accessor: Accessor
+  ) {
     this.content = content
+    this.value = value
     this.annotation = annotation
     this.accessor = accessor
     this.keys = Object.keys(content.fields)
   }
 
   get(key: string) {
-    let input = this.fields[key]
+    const input = this.fields[key]
     if (input) {
       return input
-    } else {
-      let value = this.content.fields[key]
-      if (!value) return
-      return (this.fields[key] = wrapValue(value, this.accessor))
     }
+    const value = this.content.fields[key]
+    if (!value) return undefined
+    return (this.fields[key] = wrapValue(value, this.value[key], this.accessor))
   }
 }
 
 class StringContentWrapper implements StringInput<Annotation> {
   type: 'string' = 'string'
+  value: string
   annotation: Annotation
   accessor: Accessor
 
   private content: StringContent<Meta>
   private _data?: string
 
-  constructor(content: StringContent<Meta>, annotation: Annotation, accessor: Accessor) {
+  constructor(
+    content: StringContent<Meta>,
+    value: string,
+    annotation: Annotation,
+    accessor: Accessor
+  ) {
     this.content = content
+    this.value = value
     this.annotation = annotation
     this.accessor = accessor
   }
 
-  get data() {
-    if (this._data == null) {
-      this._data = this.content.parts.map(part => part.value).join('')
-    }
-    return this._data
-  }
-
   sliceAnnotation(start: number, end: number): {text: string; annotation: Annotation}[] {
-    let result: {text: string; annotation: Annotation}[] = []
+    const result: {text: string; annotation: Annotation}[] = []
     let idx = 0
 
-    for (let part of this.content.parts) {
-      let length = part.value.length
+    for (const part of this.content.parts) {
+      const length = part.value.length
 
-      let subStart = Math.max(0, start - idx)
+      const subStart = Math.max(0, start - idx)
       if (subStart < length) {
         // The start of the slice is inside this part somewhere.
 
         // Figure out where the end is:
-        let subEnd = Math.min(length, end - idx)
+        const subEnd = Math.min(length, end - idx)
 
         // If the end of the slice is before this part, then we're guaranteed
         // that there are no more parts.
+        // eslint-disable-next-line max-depth
         if (subEnd <= 0) break
 
         result.push({
@@ -117,26 +143,32 @@ class StringContentWrapper implements StringInput<Annotation> {
   }
 }
 
-function wrapValue(input: Value<Meta>, accessor: Accessor): Input<Annotation> {
-  let annotation = input[accessor]
+function wrapValue(value: Value<Meta>, raw: unknown, accessor: Accessor): Input<Annotation> {
+  const annotation = value[accessor]
 
-  if (input.content) {
-    switch (input.content.type) {
+  if (value.content) {
+    switch (value.content.type) {
       case 'array':
-        return new ArrayContentWrapper(input.content, annotation, accessor)
+        return new ArrayContentWrapper(value.content, raw as unknown[], annotation, accessor)
       case 'object':
-        return new ObjectContentWrapper(input.content, annotation, accessor)
+        return new ObjectContentWrapper(value.content, raw as object, annotation, accessor)
       case 'string':
-        return new StringContentWrapper(input.content, annotation, accessor)
+        return new StringContentWrapper(value.content, raw as string, annotation, accessor)
+      default:
+      // do nothing
     }
   }
 
-  let data = input.data!
-  return wrap(data, annotation)
+  return wrap(raw, annotation)
 }
 
-export function diffValue(from: Value<Meta>, to: Value<Meta>): Diff<Annotation> {
-  let fromInput = wrapValue(from, 'endMeta')
-  let toInput = wrapValue(to, 'startMeta')
+export function diffValue(
+  from: Value<Meta>,
+  fromRaw: unknown,
+  to: Value<Meta>,
+  toRaw: unknown
+): Diff<Annotation> | NoDiff {
+  const fromInput = wrapValue(from, fromRaw, 'endMeta')
+  const toInput = wrapValue(to, toRaw, 'startMeta')
   return diffInput(fromInput, toInput)
 }

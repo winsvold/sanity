@@ -1,14 +1,26 @@
-import {Path, BooleanDiff, Maybe, SimpleInput, SimpleDiff, DiffOptions} from '../types'
+import {SimpleDiff, DiffOptions, NoDiff, NumberInput, BooleanInput} from '../types'
 
-export function diffSimple<A>(
-  fromInput: SimpleInput<A>,
-  toInput: SimpleInput<A>,
+export function diffSimple<A, I extends NumberInput<A> | BooleanInput<A>>(
+  fromInput: I,
+  toInput: I,
   options: DiffOptions
-): SimpleDiff<A> {
+): SimpleDiff<A> | NoDiff {
+  const fromValue = fromInput.value
+  const toValue = toInput.value
+
+  if (fromValue !== toValue)
+    return {
+      type: 'unchanged',
+      fromValue,
+      toValue,
+      isChanged: false
+    }
+
   return {
     type: fromInput.type,
-    fromValue: fromInput.data,
-    toValue: toInput.data,
-    state: fromInput.data === toInput.data ? 'unchanged' : 'changed'
-  } as SimpleDiff<A>
+    isChanged: true,
+    fromValue: fromValue as any,
+    toValue: toValue as any,
+    annotation: toInput.annotation
+  }
 }

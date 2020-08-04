@@ -1,16 +1,16 @@
-import { StringInput } from "../types"
+import {StringInput} from '../types'
 
 export default class StringWrapper<A> implements StringInput<A> {
   type: 'string' = 'string'
-  data: string
+  value: string
   annotation: A
 
-  constructor(data: string, annotation: A) {
-    this.data = data 
+  constructor(value: string, annotation: A) {
+    this.value = value
     this.annotation = annotation
   }
 
   sliceAnnotation(start: number, end: number) {
-    return [{text: this.data.slice(start, end), annotation: this.annotation}]
+    return [{text: this.value.slice(start, end), annotation: this.annotation}]
   }
 }

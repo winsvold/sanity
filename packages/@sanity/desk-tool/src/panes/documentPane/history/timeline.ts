@@ -1,5 +1,5 @@
 /* eslint-disable max-depth, complexity */
-import {Diff} from '@sanity/diff'
+import {Diff, NoDiff} from '@sanity/diff'
 import {applyPatch, incremental, RawPatch} from 'mendoza'
 import {Transaction, TransactionLogEvent, Chunk, Doc, RemoteMutationWithVersion} from './types'
 import {diffValue} from './mendozaDiffer'
@@ -381,6 +381,7 @@ export class Timeline {
     let draftValue = incremental.wrap<Chunk | null>(doc.draft, null)
     let publishedValue = incremental.wrap<Chunk | null>(doc.published, null)
     const initialValue = incremental.getType(draftValue) === 'null' ? publishedValue : draftValue
+    const initialAttributes = getAttrs(doc)
 
     let chunk = current.start
     let chunkIdx = current.startIdx
@@ -414,8 +415,9 @@ export class Timeline {
 
     // TODO: Rebase to not lose track of history
 
-    const value = incremental.getType(draftValue) === 'null' ? publishedValue : draftValue
-    current.diff = diffValue(initialValue, value)
+    const finalValue = incremental.getType(draftValue) === 'null' ? publishedValue : draftValue
+    const finalAttributes = getAttrs(current.endDocument!)
+    current.diff = diffValue(initialValue, initialAttributes, finalValue, finalAttributes)
     return current.diff
   }
 }
@@ -437,5 +439,5 @@ type Reconstruction = {
   end: Chunk
   startDocument?: CombinedDocument
   endDocument?: CombinedDocument
-  diff?: Diff<any>
+  diff?: Diff<any> | NoDiff
 }

@@ -3,16 +3,16 @@ import {wrap} from '.'
 
 export default class ObjectWrapper<A> implements ObjectInput<A> {
   type: 'object' = 'object'
+  value: object
   keys: string[]
   annotation: A
 
-  private data: object
   private fields: Record<string, Input<A>> = {}
 
-  constructor(data: object, annotation: A) {
-    this.data = data
+  constructor(value: object, annotation: A) {
+    this.value = value
     this.annotation = annotation
-    this.keys = Object.keys(data)
+    this.keys = Object.keys(value)
   }
 
   get(key: string) {
@@ -20,8 +20,8 @@ export default class ObjectWrapper<A> implements ObjectInput<A> {
     if (input) {
       return input
     } else {
-      if (!this.data.hasOwnProperty(key)) return
-      let raw = this.data[key]
+      if (!this.value.hasOwnProperty(key)) return
+      let raw = this.value[key]
       return (this.fields[key] = wrap(raw, this.annotation))
     }
   }

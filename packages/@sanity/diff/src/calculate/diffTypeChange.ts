@@ -7,10 +7,11 @@ export function diffTypeChange<A>(
 ): TypeChangeDiff<A> {
   return {
     type: 'typeChange',
+    isChanged: true,
     fromValue: fromInput,
     toValue: toInput,
     fromType: fromInput.type,
     toType: toInput.type,
-    state: 'changed'
+    annotation: toInput.annotation
   }
 }

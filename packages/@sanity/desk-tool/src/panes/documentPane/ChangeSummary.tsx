@@ -1,9 +1,9 @@
 import React from 'react'
 import {Annotation} from './history/types'
-import {Diff} from '@sanity/diff'
+import {Diff, NoDiff} from '@sanity/diff'
 
 type Props = {
-  diff: Diff<Annotation> | null
+  diff: Diff<Annotation> | NoDiff | null
 }
 
 export default function ChangeSummary({diff}: Props) {
