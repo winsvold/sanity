@@ -31,7 +31,7 @@ type DocumentVersion = {
   attributes: Attributes
 }
 
-function createVersion(document: Doc | null): DocumentVersion | undefined {
+function createVersion(document: Doc | null): DocumentVersion | null {
   if (document) {
     const attributes = {...document} as Attributes
     delete attributes._rev
@@ -39,7 +39,18 @@ function createVersion(document: Doc | null): DocumentVersion | undefined {
     return {rev: document._rev, attributes}
   }
 
-  return undefined
+  return null
+}
+
+function patchVersion(
+  version: DocumentVersion | null,
+  rev: string,
+  patch: RawPatch
+): DocumentVersion | null {
+  const attributes = version ? version.attributes : null
+  console.log(attributes, patch)
+  const newAttributes = applyPatch(attributes, patch)
+  return newAttributes === null ? null : {rev, attributes: newAttributes}
 }
 
 /**
@@ -57,8 +68,8 @@ export class Timeline {
   draftId: string
   private _transactions = new TwoEndedArray<Transaction>()
   private _chunks = new TwoEndedArray<Chunk>()
-  private _draftVersion?: DocumentVersion
-  private _publishedVersion?: DocumentVersion
+  private _draftVersion: DocumentVersion | null
+  private _publishedVersion: DocumentVersion | null
 
   // These two properties are here to handle the case
   private _possiblePendingTransactions = new Map<
@@ -73,8 +84,8 @@ export class Timeline {
   constructor(opts: Options) {
     this.publishedId = opts.publishedId
     this.draftId = `drafts.${opts.publishedId}`
-    if (opts.draft) this._draftVersion = createVersion(opts.draft)
-    if (opts.published) this._publishedVersion = createVersion(opts.published)
+    this._draftVersion = createVersion(opts.draft)
+    this._publishedVersion = createVersion(opts.published)
   }
 
   get chunkCount() {
@@ -117,10 +128,18 @@ export class Timeline {
 
     if (entry.version === 'published') {
       transaction.publishedEffect = entry.effects as any
-      this._publishedVersion = applyPatch(this._publishedVersion, entry.effects.apply as RawPatch)
+      this._publishedVersion = patchVersion(
+        this._publishedVersion,
+        entry.transactionId,
+        entry.effects.apply as RawPatch
+      )
     } else {
       transaction.draftEffect = entry.effects as any
-      this._draftVersion = applyPatch(this._publishedVersion, entry.effects.apply as RawPatch)
+      this._draftVersion = patchVersion(
+        this._draftVersion,
+        entry.transactionId,
+        entry.effects.apply as RawPatch
+      )
     }
 
     if (pending) {
