@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any, complexity */
 
 import React from 'react'
 import client from 'part:@sanity/base/client'
+import {useObservable} from '@sanity/react-hooks'
 import {getPublishedId} from 'part:@sanity/base/util/draft-utils'
 import {usePaneRouter} from '../../contexts/PaneRouterContext'
 import {Editor} from './editor'
@@ -17,7 +18,6 @@ import InspectView from './editor/InspectView'
 import RevisionSummary from './RevisionSummary'
 import ChangeSummary from './ChangeSummary'
 import HistoryTimeline from './HistoryTimeline'
-import {useObservable} from '@sanity/react-hooks'
 
 declare const __DEV__: boolean
 
@@ -136,7 +136,7 @@ function DocumentPane(props: Props) {
     // TODO: The chunk is not available yet
   }
 
-  const isHistoryOpen = startTime != null
+  const isHistoryOpen = Boolean(startTime)
 
   const menuItems =
     getMenuItems({
@@ -150,7 +150,7 @@ function DocumentPane(props: Props) {
 
   // Callbacks
 
-  const toggleInspect = (toggle: boolean = !inspect) => {
+  const toggleInspect = (toggle = !inspect) => {
     const {inspect, ...params} = paneRouter.params
     if (toggle) {
       paneRouter.setParams({inspect: 'on', ...params})
@@ -301,7 +301,7 @@ function DocumentPane(props: Props) {
           />
         </div>
 
-        {isHistoryOpen && <ChangeSummary diff={timeline.currentDiff()} />}
+        {isHistoryOpen && <ChangeSummary diff={timeline.currentDiff()} schemaType={schemaType} />}
       </div>
     </DocumentActionShortcuts>
   )

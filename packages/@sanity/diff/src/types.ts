@@ -1,6 +1,8 @@
 export type DiffOptions = {}
 
-export type SimpleDiff<A> = StringDiff<A> | NumberDiff<A> | BooleanDiff<A>
+export type Annotation = {}
+
+export type SimpleDiff<A = Annotation> = StringDiff<A> | NumberDiff<A> | BooleanDiff<A>
 export type ValueType = 'array' | 'boolean' | 'null' | 'number' | 'object' | 'string' | 'undefined'
 
 export type PathSegment = string | number | {_key: string}
@@ -67,7 +69,7 @@ interface BaseDiff<A> {
   toValue: unknown
 }
 
-export type Diff<A> =
+export type Diff<A = Annotation> =
   | StringDiff<A>
   | NumberDiff<A>
   | BooleanDiff<A>
@@ -98,14 +100,14 @@ export interface TypeChangeDiff<A> extends BaseDiff<A> {
   annotation: A
 }
 
-export interface StringDiff<A> extends BaseDiff<A> {
+export interface StringDiff<A = Annotation> extends BaseDiff<A> {
   type: 'string'
   fromValue: string
   toValue: string
   segments: StringDiffSegment<A>[]
 }
 
-export type StringDiffSegment<A> = StringSegmentChanged<A> | StringSegmentUnchanged
+export type StringDiffSegment<A = Annotation> = StringSegmentChanged<A> | StringSegmentUnchanged
 
 export type StringSegmentChanged<A> = {
   type: 'added' | 'removed'

@@ -88,7 +88,7 @@ function PaneHeaderActions(props: {
   )
 }
 
-function EditorFooter({
+function DocumentFooter({
   documentId,
   documentType,
   initialValue,
@@ -262,7 +262,7 @@ function Editor(props: Props) {
   )
 
   const paneFooter = (
-    <EditorFooter
+    <DocumentFooter
       documentId={documentId}
       documentType={documentType}
       initialValue={initialValue}
