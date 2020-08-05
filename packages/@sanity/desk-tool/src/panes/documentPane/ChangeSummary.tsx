@@ -1,7 +1,7 @@
 import React from 'react'
-import {Annotation} from './history/types'
 import {Diff, NoDiff} from '@sanity/diff'
 import {FieldDiff} from '../../components/diffs/FieldDiff'
+import {Annotation} from './history/types'
 import {SchemaType} from './types'
 
 type Props = {
@@ -11,5 +11,6 @@ type Props = {
 
 export default function ChangeSummary({diff, schemaType}: Props) {
   console.log(diff)
-  return <FieldDiff {...diff} schemaType={schemaType} />
+  const blah = diff as any
+  return <FieldDiff {...blah} schemaType={schemaType} />
 }

@@ -1,9 +1,12 @@
 import {ComponentType} from 'react'
-import {Diff, Annotation} from '@sanity/diff'
+import {Diff} from '@sanity/diff'
+import {Annotation} from '../../panes/documentPane/history/types'
 
-export type DiffComponent<T extends Diff = Diff<Annotation>> = ComponentType<DiffProps<T>>
+export type DiffComponent<T extends Diff<Annotation> = Diff<Annotation>> = ComponentType<
+  DiffProps<T>
+>
 
-export type DiffProps<T extends Diff = Diff> = T & {
+export type DiffProps<T extends Diff<Annotation> = Diff<Annotation>> = T & {
   schemaType: SchemaType<T>
 }
 
@@ -13,7 +16,7 @@ export interface ObjectField {
   type: SchemaType
 }
 
-export interface SchemaType<T extends Diff = Diff> {
+export interface SchemaType<T extends Diff<Annotation> = Diff<Annotation>> {
   name: string
   title?: string
   jsonType: string
