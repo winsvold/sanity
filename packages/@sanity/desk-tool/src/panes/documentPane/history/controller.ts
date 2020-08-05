@@ -142,7 +142,7 @@ export function createObservableController(
 ): Observable<ControllerState> {
   return fromEventPattern(
     handler => {
-      let controller = new Controller({handler, ...options})
+      const controller = new Controller({handler, ...options})
 
       // TODO: How to handle unsubscription?
       remoteMutations({

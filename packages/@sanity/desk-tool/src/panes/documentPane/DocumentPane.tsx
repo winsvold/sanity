@@ -259,13 +259,13 @@ function DocumentPane(props: Props) {
   }
 
   const paneHeaderTitle = (
-    <DocumentHeaderTitle documentType={options.type} paneTitle={title} value={value} />
+    <DocumentHeaderTitle documentType={typeName} paneTitle={title} value={value} />
   )
 
   const paneFooter = (
     <DocumentStatusBar
       id={documentId}
-      type={options.type}
+      type={typeName}
       lastUpdated={value && value._updatedAt}
       onLastUpdatedButtonClick={() => null}
     />
@@ -279,7 +279,7 @@ function DocumentPane(props: Props) {
             {LanguageFilter && <LanguageFilter />}
             <Validation
               id={documentId}
-              type={options.type}
+              type={typeName}
               markers={markers}
               showValidationTooltip={showValidationTooltip}
               onCloseValidationResults={handleCloseValidationResults}
@@ -344,7 +344,7 @@ function DocumentPane(props: Props) {
               activeViewId={activeViewId}
               connectionState={connectionState}
               documentId={documentId}
-              documentType={options.type}
+              documentType={typeName}
               formRef={formRef}
               initialValue={initialValue}
               isHistoryOpen={isHistoryOpen}
@@ -358,11 +358,11 @@ function DocumentPane(props: Props) {
               <Snackbar kind="warning" isPersisted title="Connection lost. Reconnecting…" />
             )}
 
-            <DocumentOperationResults id={documentId} type={options.type} />
+            <DocumentOperationResults id={documentId} type={typeName} />
           </TabbedPane>
         </div>
 
-        {isHistoryOpen && <ChangeSummary diff={timeline.currentDiff()} />}
+        {isHistoryOpen && <ChangeSummary diff={timeline.currentDiff()} schemaType={schemaType} />}
       </div>
     </DocumentActionShortcuts>
   )
