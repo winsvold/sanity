@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import React from 'react'
+import TimeAgo from '../../../components/TimeAgo'
 import styles from './DocumentStatusBar.css'
 import {DocumentStatusBarActions} from './DocumentStatusBarActions'
 import {DocumentStatusBarBadges} from './DocumentStatusBarBadges'
 import {SyncState} from './SyncState'
-import TimeAgo from '../../../../components/TimeAgo'
 
 interface Props {
   id: string

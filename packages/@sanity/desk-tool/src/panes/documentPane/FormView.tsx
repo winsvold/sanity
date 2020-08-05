@@ -8,8 +8,7 @@ import schema from 'part:@sanity/base/schema'
 import afterEditorComponents from 'all:part:@sanity/desk-tool/after-editor-component'
 import filterFieldFn$ from 'part:@sanity/desk-tool/filter-fields-fn?'
 import EditForm from './EditForm'
-import HistoryForm from './HistoryForm'
-import {Doc} from '../types'
+import {Doc} from './types'
 
 import styles from './FormView.css'
 
@@ -20,7 +19,6 @@ interface Props {
   value: Doc | null
   initialValue: Doc
   isConnected: boolean
-  showHistoric: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChange: (patches: any[]) => void
   schemaType: {name: string; title: string}
@@ -87,15 +85,7 @@ export default class FormView extends React.PureComponent<Props> {
   }
 
   render() {
-    const {
-      id,
-      value,
-      initialValue,
-      showHistoric,
-      markers,
-      patchChannel,
-      schemaType,
-    } = this.props
+    const {id, value, initialValue, markers, patchChannel, schemaType} = this.props
     const {focusPath, filterField} = this.state
     const readOnly = this.isReadOnly()
     const documentId = value && value._id && value._id.replace(/^drafts\./, '')
@@ -115,24 +105,20 @@ export default class FormView extends React.PureComponent<Props> {
 
     return (
       <div className={styles.root}>
-        {showHistoric ? (
-          <HistoryForm document={value} schema={schema} schemaType={schemaType} />
-        ) : (
-          <EditForm
-            id={id}
-            value={value || initialValue}
-            filterField={filterField}
-            focusPath={focusPath}
-            markers={markers}
-            onBlur={this.handleBlur}
-            onChange={readOnly ? noop : this.props.onChange}
-            onFocus={this.handleFocus}
-            patchChannel={patchChannel}
-            readOnly={readOnly}
-            schema={schema}
-            type={schemaType}
-          />
-        )}
+        <EditForm
+          id={id}
+          value={value || initialValue}
+          filterField={filterField}
+          focusPath={focusPath}
+          markers={markers}
+          onBlur={this.handleBlur}
+          onChange={readOnly ? noop : this.props.onChange}
+          onFocus={this.handleFocus}
+          patchChannel={patchChannel}
+          readOnly={readOnly}
+          schema={schema}
+          type={schemaType}
+        />
 
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         {afterEditorComponents.map((AfterEditorComponent: any, idx: number) => (

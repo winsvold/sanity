@@ -1,23 +1,31 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any, complexity */
 
 import React from 'react'
+import {useObservable} from '@sanity/react-hooks'
 import client from 'part:@sanity/base/client'
+import schema from 'part:@sanity/base/schema'
 import {getPublishedId} from 'part:@sanity/base/util/draft-utils'
+import TabbedPane from 'part:@sanity/components/panes/tabbed'
+import Snackbar from 'part:@sanity/components/snackbar/default'
+import LanguageFilter from 'part:@sanity/desk-tool/language-select-component?'
 import {usePaneRouter} from '../../contexts/PaneRouterContext'
-import {Editor} from './editor'
 import {getMenuItems, getProductionPreviewItem} from './menuItems'
 import {DocumentActionShortcuts, isInspectHotkey, isPreviewHotkey} from './keyboardShortcuts'
 import {Doc, DocumentViewType, MenuAction} from './types'
 
-import styles from './DocumentPane.css'
+import DocumentStatusBar from './statusBar/DocumentStatusBar'
 import {createObservableController} from './history/controller'
 import {Timeline} from './history/timeline'
-import InspectView from './editor/InspectView'
+import InspectView from './inspect/InspectView'
 import RevisionSummary from './RevisionSummary'
 import ChangeSummary from './ChangeSummary'
 import HistoryTimeline from './HistoryTimeline'
-import {useObservable} from '@sanity/react-hooks'
+import FormView from './FormView'
+import {Validation} from './Validation'
+import {DocumentHeaderTitle} from './DocumentHeaderTitle'
+import {DocumentOperationResults} from './DocumentOperationResults'
+import styles from './DocumentPane.css'
 
 declare const __DEV__: boolean
 
@@ -72,7 +80,6 @@ function DocumentPane(props: Props) {
     options,
     paneKey,
     title = '',
-    urlParams,
     draft,
     published,
     schemaType,
@@ -113,8 +120,6 @@ function DocumentPane(props: Props) {
     })
   })
 
-  // React.useEffect(() => console.log('history', history), [history])
-
   // Refs
   const formRef = React.useRef<any | null>(null)
   const documentIdRef = React.useRef<string>(documentId)
@@ -136,7 +141,7 @@ function DocumentPane(props: Props) {
     // TODO: The chunk is not available yet
   }
 
-  const isHistoryOpen = startTime != null
+  const isHistoryOpen = Boolean(startTime)
 
   const menuItems =
     getMenuItems({
@@ -150,8 +155,8 @@ function DocumentPane(props: Props) {
 
   // Callbacks
 
-  const toggleInspect = (toggle: boolean = !inspect) => {
-    const {inspect, ...params} = paneRouter.params
+  const toggleInspect = (toggle = !inspect) => {
+    const {inspect: oldInspect, ...params} = paneRouter.params
     if (toggle) {
       paneRouter.setParams({inspect: 'on', ...params})
     } else {
@@ -160,7 +165,7 @@ function DocumentPane(props: Props) {
   }
 
   const toggleHistory = (newStartTime: string | null = startTime ? null : '-') => {
-    const {startTime, ...params} = paneRouter.params
+    const {startTime: oldStartTime, ...params} = paneRouter.params
     if (newStartTime) {
       paneRouter.setParams({startTime: newStartTime, ...params})
     } else {
@@ -184,7 +189,9 @@ function DocumentPane(props: Props) {
         rev: null
       })
 
-      if (item && item.url) window.open(item.url)
+      if (item && item.url) {
+        window.open(item.url)
+      }
     }
   }
 
@@ -251,6 +258,48 @@ function DocumentPane(props: Props) {
     displayed = timeline.endAttributes()
   }
 
+  const paneHeaderTitle = (
+    <DocumentHeaderTitle documentType={options.type} paneTitle={title} value={value} />
+  )
+
+  const paneFooter = (
+    <DocumentStatusBar
+      id={documentId}
+      type={options.type}
+      lastUpdated={value && value._updatedAt}
+      onLastUpdatedButtonClick={() => null}
+    />
+  )
+
+  const renderPaneHeaderActions = React.useCallback(
+    () =>
+      isHistoryOpen ? null : (
+        <>
+          <div className={styles.paneFunctions}>
+            {LanguageFilter && <LanguageFilter />}
+            <Validation
+              id={documentId}
+              type={options.type}
+              markers={markers}
+              showValidationTooltip={showValidationTooltip}
+              onCloseValidationResults={handleCloseValidationResults}
+              onToggleValidationResults={handleToggleValidationResults}
+              onFocus={handleSetFocus}
+            />
+          </div>
+        </>
+      ),
+    [
+      isHistoryOpen,
+      documentId,
+      markers,
+      handleCloseValidationResults,
+      handleSetFocus,
+      handleToggleValidationResults,
+      showValidationTooltip
+    ]
+  )
+
   return (
     <DocumentActionShortcuts
       id={options.id}
@@ -268,43 +317,117 @@ function DocumentPane(props: Props) {
         <div className={styles.editorContainer} key="editor">
           {inspect && <InspectView value={value} onClose={() => toggleInspect(false)} />}
 
-          <Editor
-            activeViewId={activeViewId}
-            connectionState={connectionState}
-            documentId={options.id}
-            documentType={options.type}
-            formRef={formRef}
-            hasSiblings={paneRouter.hasGroupSiblings}
-            initialValue={initialValue}
-            isClosable={isClosable}
-            isCollapsed={isCollapsed}
-            isHistoryOpen={isHistoryOpen}
-            isSelected={isSelected}
-            markers={markers}
-            menuItemGroups={menuItemGroups}
-            menuItems={menuItems}
-            onAction={handleMenuAction}
-            onChange={onChange}
-            onCloseValidationResults={handleCloseValidationResults}
+          <TabbedPane
+            key="pane"
+            idPrefix={paneKey}
+            title={paneHeaderTitle}
+            views={views}
+            activeView={activeViewId}
+            onSetActiveView={handleSetActiveView}
+            onSplitPane={handleSplitPane}
             onCloseView={handleClosePane}
+            menuItemGroups={menuItemGroups}
+            isSelected={isSelected}
+            isCollapsed={isCollapsed}
             onCollapse={onCollapse}
             onExpand={onExpand}
-            onSetActiveView={handleSetActiveView}
-            onSetFocus={handleSetFocus}
-            onSplitPane={handleSplitPane}
-            onToggleValidationResults={handleToggleValidationResults}
-            paneTitle={title}
-            paneKey={paneKey}
-            showValidationTooltip={showValidationTooltip}
-            value={displayed}
-            views={views}
-          />
+            onAction={handleMenuAction}
+            menuItems={menuItems}
+            footer={paneFooter}
+            renderActions={renderPaneHeaderActions}
+            isClosable={isClosable}
+            hasSiblings={paneRouter.hasGroupSiblings}
+          >
+            {/* {revision.isLoading && <HistorySpinner selectedHistoryEvent={selectedHistoryEvent} />} */}
+
+            <DocumentView
+              activeViewId={activeViewId}
+              connectionState={connectionState}
+              documentId={documentId}
+              documentType={options.type}
+              formRef={formRef}
+              initialValue={initialValue}
+              isHistoryOpen={isHistoryOpen}
+              markers={markers}
+              onChange={onChange}
+              value={value}
+              views={views}
+            />
+
+            {connectionState === 'reconnecting' && (
+              <Snackbar kind="warning" isPersisted title="Connection lost. Reconnecting…" />
+            )}
+
+            <DocumentOperationResults id={documentId} type={options.type} />
+          </TabbedPane>
         </div>
 
         {isHistoryOpen && <ChangeSummary diff={timeline.currentDiff()} />}
       </div>
     </DocumentActionShortcuts>
   )
+}
+
+function DocumentView({
+  activeViewId,
+  connectionState,
+  documentId,
+  documentType,
+  formRef,
+  initialValue,
+  isHistoryOpen,
+  markers,
+  onChange,
+  value,
+  views
+}: {
+  activeViewId: string
+  connectionState: string
+  documentId: string
+  documentType: string
+  formRef: React.RefObject<any>
+  initialValue: Doc
+  isHistoryOpen: boolean
+  markers: any
+  onChange: (patches: any[]) => void
+  value: Doc | null
+  views: {
+    type: string
+    id: string
+    title: string
+    options: {}
+    component: React.ComponentType<any>
+  }[]
+}) {
+  const schemaType = schema.get(documentType)
+  const activeView = views.find(view => view.id === activeViewId) || views[0] || {type: 'form'}
+
+  const viewProps = {
+    // Other stuff
+    documentId,
+    options: activeView.options,
+    schemaType
+  }
+
+  const formProps = {
+    ...viewProps,
+    value: value,
+    connectionState,
+    initialValue,
+    isHistoryOpen,
+    markers,
+    onChange,
+    showHistoric: false
+  }
+
+  switch (activeView.type) {
+    case 'form':
+      return <FormView {...formProps} id={documentId} ref={formRef} />
+    case 'component':
+      return <activeView.component {...viewProps} />
+    default:
+      return null
+  }
 }
 
 export default DocumentPane

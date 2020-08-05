@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import React from 'react'
-import styles from './DocumentStatusBar.css'
+import TimeAgo from '../../../components/TimeAgo'
 import {HistoryStatusBarActions} from './DocumentStatusBarActions'
-import TimeAgo from '../../../../components/TimeAgo'
+import styles from './DocumentStatusBar.css'
 
 interface Props {
   id: string
@@ -21,11 +21,7 @@ export function HistoryStatusBar(props: Props) {
       </div>
       <div className={styles.actions}>
         <div className={styles.actionsWrapper}>
-          <HistoryStatusBarActions
-            id={props.id}
-            type={props.type}
-            revision={"TODO"}
-          />
+          <HistoryStatusBarActions id={props.id} type={props.type} revision={'TODO'} />
         </div>
       </div>
     </div>

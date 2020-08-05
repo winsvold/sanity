@@ -23,3 +23,14 @@
   max-width: 540px;
   height: 100%;
 }
+
+.paneFunctions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  padding-right: 0;
+
+  @media (--screen-medium) {
+    font-size: 1em;
+  }
+}
