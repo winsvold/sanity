@@ -15,6 +15,7 @@ const OVERRIDABLE_FIELDS = [
   'description',
   '__experimental_search',
   'options',
+  'diffComponent',
   'inputComponent',
   'validation',
   'icon'
