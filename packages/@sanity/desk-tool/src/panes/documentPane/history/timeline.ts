@@ -1,8 +1,9 @@
 /* eslint-disable max-depth, complexity */
 import {Diff, NoDiff} from '@sanity/diff'
 import {applyPatch, incremental, RawPatch} from 'mendoza'
+import {Value} from 'mendoza/lib/incremental-patcher'
 import {Transaction, TransactionLogEvent, Chunk, Doc, RemoteMutationWithVersion} from './types'
-import {diffValue} from './mendozaDiffer'
+import {diffValue, Meta} from './mendozaDiffer'
 import {TwoEndedArray} from './twoEndedArray'
 import {mergeChunk, chunkFromTransaction} from './chunker'
 
@@ -380,19 +381,27 @@ export class Timeline {
 
     let draftValue = incremental.wrap<Chunk | null>(doc.draft, null)
     let publishedValue = incremental.wrap<Chunk | null>(doc.published, null)
-    const initialValue = incremental.getType(draftValue) === 'null' ? publishedValue : draftValue
+
+    const initialValue = getValue(draftValue, publishedValue)
     const initialAttributes = getAttrs(doc)
 
     let chunk = current.start
     let chunkIdx = current.startIdx
 
     // Loop over all of the chunks:
-    while (true) {
+    for (;;) {
       for (let idx = chunk.start; idx < chunk.end; idx++) {
         const transaction = this._transactions.get(idx)
 
+        const didHaveDraft = incremental.getType(draftValue) !== 'null'
+        const didHavePublished = incremental.getType(publishedValue) !== 'null'
+
         if (transaction.draftEffect) {
           draftValue = incremental.applyPatch(draftValue, transaction.draftEffect.apply, chunk)
+
+          if (!didHaveDraft) {
+            draftValue = incremental.rebaseValue(publishedValue, draftValue)
+          }
         }
 
         if (transaction.publishedEffect) {
@@ -401,6 +410,10 @@ export class Timeline {
             transaction.publishedEffect.apply,
             chunk
           )
+
+          if (!didHavePublished) {
+            publishedValue = incremental.rebaseValue(draftValue, publishedValue)
+          }
         }
       }
 
@@ -413,8 +426,6 @@ export class Timeline {
       chunk = this._chunks.get(chunkIdx)
     }
 
-    // TODO: Rebase to not lose track of history
-
     const finalValue = incremental.getType(draftValue) === 'null' ? publishedValue : draftValue
     const finalAttributes = getAttrs(current.endDocument!)
     current.diff = diffValue(initialValue, initialAttributes, finalValue, finalAttributes)
@@ -424,6 +435,10 @@ export class Timeline {
 
 function getAttrs(doc: CombinedDocument) {
   return doc.draft || doc.published
+}
+
+function getValue(draftValue: Value<Meta>, publishedValue: Value<Meta>) {
+  return incremental.getType(draftValue) === 'null' ? publishedValue : draftValue
 }
 
 // The combined document stores information about both the draft and the published version.
