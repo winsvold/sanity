@@ -5,11 +5,13 @@
   "main": "minimal.js",
   "types": "./minimal.d.ts",
   "scripts": {
-    "build": "run-s build:js",
+    "build": "run-s build:*",
     "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf .nyc_output lib",
     "prebuild": "run-s clean",
-    "test": "tap --node-arg=--require --node-arg=@babel/register --node-arg=--require --node-arg=symbol-observable test/*.test.js test/**/*.test.js"
+    "test": "tap --node-arg=--require --node-arg=@babel/register --node-arg=--require --node-arg=symbol-observable test/*.test.js test/**/*.test.js",
+    "watch": "run-p watch:*",
+    "watch:js": "yarn build:js --watch"
   },
   "keywords": [
     "sanity",

@@ -4,10 +4,12 @@
   "description": "Plugin loader for Sanity. Resolves parts based on a declared Sanity manifest and provides infrastructure for loading the required plugins.",
   "main": "src/PartResolverPlugin.js",
   "scripts": {
-    "build": "run-s build:js",
+    "build": "run-s build:*",
     "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
-    "prebuild": "run-s clean"
+    "prebuild": "run-s clean",
+    "watch": "run-p watch:*",
+    "watch:js": "yarn build:js --watch"
   },
   "engines": {
     "node": ">=10.0.0"

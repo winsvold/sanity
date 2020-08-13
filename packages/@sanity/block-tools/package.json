@@ -4,12 +4,14 @@
   "description": "Can format HTML, Slate JSON or Sanity block array into any other format.",
   "main": "lib/index.js",
   "scripts": {
-    "build": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
+    "build": "run-p build:*",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
     "coverage": "NODE_ENV=test jest --coverage",
     "prebuild": "run-s clean",
     "test": "NODE_ENV=test jest",
-    "watch": "babel src --out-dir lib --extensions '.js,.ts,.tsx' --watch"
+    "watch": "run-p watch:*",
+    "watch:js": "yarn build:js --watch"
   },
   "publishConfig": {
     "access": "public"

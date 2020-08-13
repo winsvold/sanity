@@ -4,12 +4,14 @@
   "description": "Resolves parts and plugins from a Sanity configuration",
   "main": "lib/resolver.js",
   "scripts": {
-    "build": "run-s build:js",
+    "build": "run-s build:*",
     "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib coverage",
     "coverage": "nyc --report=lcov --report=text _mocha -- test/**/*.test.js",
     "prebuild": "run-s clean",
-    "test": "#todo: mocha test/**/*.test.js"
+    "test": "#todo: mocha test/**/*.test.js",
+    "watch": "run-p watch:*",
+    "watch:js": "yarn build:js --watch"
   },
   "engines": {
     "node": ">=10.0.0"

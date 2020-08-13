@@ -13,7 +13,9 @@
     "build:yarn": "node -r @babel/register src/scripts/package-yarn.js",
     "clean": "rimraf lib",
     "prebuild": "run-s clean",
-    "prepublishOnly": "run-s build"
+    "prepublishOnly": "run-s build",
+    "watch": "run-p watch:*",
+    "watch:js": "yarn build:js --watch"
   },
   "engines": {
     "node": ">=10.0.0"

@@ -4,13 +4,15 @@
   "description": "Utility to keep a window of documents in sync",
   "main": "src/DocumentWindow.js",
   "scripts": {
-    "build": "run-s build:js",
+    "build": "run-s build:*",
     "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
     "prebuild": "run-s clean",
     "test": "#todo: jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "watch": "run-p watch:*",
+    "watch:js": "yarn build:js --watch"
   },
   "keywords": [
     "sanity",

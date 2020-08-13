@@ -16,7 +16,9 @@
     "clean": "rimraf lib coverage .nyc_output umd/*.js",
     "coverage": "DEBUG=sanity NODE_ENV=test nyc --reporter=html --reporter=lcov --reporter=text npm test",
     "prepublishOnly": "run-s build",
-    "test": "NODE_ENV=test tape -r @babel/register test/*.test.js"
+    "test": "NODE_ENV=test tape -r @babel/register test/*.test.js",
+    "watch": "run-p watch:*",
+    "watch:js": "yarn build:js --watch"
   },
   "browser": {
     "./src/http/nodeMiddleware.js": "./src/http/browserMiddleware.js",

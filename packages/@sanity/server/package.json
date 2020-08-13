@@ -4,12 +4,14 @@
   "description": "Webserver dedicated to serving Sanity, allowing a smooth development experience",
   "main": "lib/server.js",
   "scripts": {
-    "build": "run-s build:js",
+    "build": "run-s build:*",
     "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
     "prebuild": "run-s clean",
     "start": "node bin/sanity-server.js",
-    "start-dev": "node bin/sanity-server.js --dev"
+    "start-dev": "node bin/sanity-server.js --dev",
+    "watch": "run-p watch:*",
+    "watch:js": "yarn build:js --watch"
   },
   "bin": {
     "sanity-server": "./bin/sanity-server.js"

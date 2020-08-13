@@ -4,11 +4,14 @@
   "description": "Sanity plugin for running react-storybook in a Sanity studio",
   "main": "./lib/index.js",
   "scripts": {
-    "build": "run-s build:js build:assets",
+    "build": "run-s build:*",
     "build:assets": "cpx 'src/**/*.{css,json}' lib",
     "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
-    "prebuild": "run-s clean"
+    "prebuild": "run-s clean",
+    "watch": "run-p watch:*",
+    "watch:assets": "yarn build:assets --watch",
+    "watch:js": "yarn build:js --watch"
   },
   "repository": {
     "type": "git",

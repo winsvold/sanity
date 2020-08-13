@@ -9,12 +9,14 @@
   "author": "Sanity.io <hello@sanity.io>",
   "license": "MIT",
   "scripts": {
-    "build": "run-s build:js",
+    "build": "run-s build:*",
     "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
     "coverage": "jest --coverage",
     "prebuild": "run-s clean",
-    "test": "jest"
+    "test": "jest",
+    "watch": "run-p watch:*",
+    "watch:js": "yarn build:js --watch"
   },
   "keywords": [
     "sanity",

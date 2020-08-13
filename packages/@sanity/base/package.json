@@ -4,13 +4,16 @@
   "description": "Sanity plugin containing the base components and roles for a Sanity configuration",
   "main": "lib/index.js",
   "scripts": {
-    "build": "run-s build:js build:assets",
+    "build": "run-p build:*",
     "build:assets": "cpx 'src/**/*.{css,json}' lib",
     "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
     "coverage": "nyc --report=lcov --report=text _mocha -- test/**/*.test.js",
     "prebuild": "run-s clean",
-    "test": "jest"
+    "test": "jest",
+    "watch": "run-p watch:*",
+    "watch:assets": "yarn build:assets --watch",
+    "watch:js": "yarn build:js --watch"
   },
   "repository": {
     "type": "git",
