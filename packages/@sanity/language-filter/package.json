@@ -4,7 +4,11 @@
   "description": "A Sanity plugin that supports filtering localized fields by language",
   "main": "index.js",
   "scripts": {
-    "clean": "rimraf lib"
+    "build": "run-s build:js build:assets",
+    "build:assets": "cpx 'src/**/*.{css,json}' lib",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
+    "clean": "rimraf lib",
+    "prebuild": "run-s clean"
   },
   "keywords": [
     "sanity",
