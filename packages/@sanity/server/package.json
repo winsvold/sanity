@@ -4,7 +4,10 @@
   "description": "Webserver dedicated to serving Sanity, allowing a smooth development experience",
   "main": "lib/server.js",
   "scripts": {
+    "build": "run-s build:js",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
+    "prebuild": "run-s clean",
     "start": "node bin/sanity-server.js",
     "start-dev": "node bin/sanity-server.js --dev"
   },
@@ -34,8 +37,8 @@
   },
   "homepage": "https://www.sanity.io/",
   "dependencies": {
-    "@babel/core": "^7.7.4",
-    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/core": "^7.11.1",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/preset-env": "^7.7.4",
     "@babel/preset-react": "^7.7.4",
     "@babel/preset-typescript": "^7.7.4",

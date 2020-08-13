@@ -9,8 +9,11 @@
   "author": "Sanity.io <hello@sanity.io>",
   "license": "MIT",
   "scripts": {
+    "build": "run-s build:js",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
     "coverage": "jest --coverage",
+    "prebuild": "run-s clean",
     "test": "jest"
   },
   "keywords": [

@@ -12,7 +12,10 @@
   "author": "Sanity.io <hello@sanity.io>",
   "license": "MIT",
   "scripts": {
-    "clean": "rimraf lib"
+    "build": "run-s build:js",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
+    "clean": "rimraf lib",
+    "prebuild": "run-s clean"
   },
   "keywords": [
     "sanity",

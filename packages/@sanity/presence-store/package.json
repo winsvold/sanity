@@ -4,8 +4,11 @@
   "description": "Client side presence channel handler",
   "main": "lib/PresenceStore.js",
   "scripts": {
+    "build": "run-s build:js build:assets",
+    "build:assets": "cpx 'src/**/*.{css,json}' lib",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
-    "compile": "babel src --copy-files --out-dir lib",
+    "prebuild": "run-s clean",
     "test": "NODE_ENV=test tape -r @babel/register test/*.test.js"
   },
   "author": "Sanity.io <hello@sanity.io>",

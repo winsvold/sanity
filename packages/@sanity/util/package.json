@@ -4,7 +4,10 @@
   "description": "Utilities shared across projects of Sanity",
   "main": "lib/index.js",
   "scripts": {
+    "build": "run-s build:js",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
+    "prebuild": "run-s clean",
     "test": "tap -j1"
   },
   "engines": {
@@ -36,6 +39,9 @@
     "resolve-from": "^4.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "npm-run-all": "^4.1.5",
     "rimraf": "^2.7.1",
     "tap": "^14.6.1"
   }

@@ -1,4 +1,5 @@
 {
   "extends": "../../../.babelrc",
-  "presets": ["@babel/typescript"]
+  "presets": ["@babel/typescript"],
+  "plugins": ["@babel/plugin-proposal-class-properties"]
 }

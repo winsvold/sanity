@@ -4,8 +4,12 @@
   "description": "The image hotspot selector / cropper used in Sanity",
   "main": "index.js",
   "scripts": {
-    "clean": "rimraf lib",
     "bloat": "browserify -t babelify --full-paths ./src/index.js | discify --open",
+    "build": "run-s build:js build:assets",
+    "build:assets": "cpx 'src/**/*.{css,json}' lib",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
+    "clean": "rimraf lib",
+    "prebuild": "run-s clean",
     "start": "remon --require babel-core/register ./example/app.js",
     "test": "mocha --recursive --require @babel/register test"
   },
@@ -17,14 +21,19 @@
     "lodash": "^4.17.15"
   },
   "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@sanity/state-router": "1.149.18",
     "browserify": "^14.3.0",
+    "cpx": "^1.5.0",
     "disc": "^1.3.2",
     "envify": "^4.0.0",
     "error-capture-middleware": "0.0.2",
     "express": "^4.16.1",
     "history": "^4.6.3",
     "mocha": "^5.0.1",
+    "npm-run-all": "^4.1.5",
     "prop-types": "^15.6.0",
     "quickreload": "^2.1.2",
     "react": "16.9.0",

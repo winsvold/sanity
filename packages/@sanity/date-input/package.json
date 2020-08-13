@@ -5,9 +5,7 @@
   "main": "index.js",
   "author": "Sanity.io <hello@sanity.io>",
   "license": "MIT",
-  "scripts": {
-    "clean": "rimraf lib"
-  },
+  "scripts": {},
   "dependencies": {
     "@sanity/generate-help-url": "1.149.16",
     "@sanity/rich-date-input": "1.149.16"

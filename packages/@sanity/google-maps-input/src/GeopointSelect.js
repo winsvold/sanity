@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import styles from '../styles/GeopointSelect.css'
+import styles from './styles/GeopointSelect.css'
 
 const fallbackLatLng = {lat: 40.7058254, lng: -74.1180863}
 

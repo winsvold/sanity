@@ -4,9 +4,11 @@
   "description": "Utilities for previewing content in Sanity",
   "main": "index.js",
   "scripts": {
+    "build": "run-s build:js build:assets",
+    "build:assets": "cpx 'src/**/*.{css,json}' lib",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
-    "compile": "babel src --copy-files --out-dir lib",
-    "compile:watch": "npm run compile -- --watch",
+    "prebuild": "run-s clean",
     "test": "#todo: jest",
     "test:watch": "jest --watchAll"
   },

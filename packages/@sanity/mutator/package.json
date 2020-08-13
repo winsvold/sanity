@@ -4,7 +4,10 @@
   "description": "A set of models to make it easier to utilize the powerful real time collaborative features of Sanity",
   "main": "lib/index.js",
   "scripts": {
+    "build": "run-s build:js",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
+    "prebuild": "run-s clean",
     "test": "tap -t120 test/*.test.ts",
     "perf": "node ./perf/run.js"
   },

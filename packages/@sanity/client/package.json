@@ -8,13 +8,14 @@
   "types": "./sanityClient.d.ts",
   "scripts": {
     "analyze": "NODE_ENV=production BROWSERIFY_ENV=build DEBUG='' browserify --full-paths -t envify -g uglifyify lib/sanityClient.js --standalone=SanityClient | discify --open",
-    "browserify": "NODE_ENV=production BROWSERIFY_ENV=build DEBUG='' browserify -t envify -g uglifyify lib/sanityClient.js -o umd/sanityClient.js --standalone=SanityClient",
-    "build": "npm run browserify && npm run minify && npm run size",
-    "size": "node -r @babel/register src/scripts/print-bundle-size",
+    "build": "run-s build:js build:browserify build:minify build:size",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
+    "build:browserify": "NODE_ENV=production BROWSERIFY_ENV=build DEBUG='' browserify -t envify -g uglifyify lib/sanityClient.js -o umd/sanityClient.js --standalone=SanityClient",
+    "build:minify": "terser -c -m -- umd/sanityClient.js > umd/sanityClient.min.js",
+    "build:size": "node -r @babel/register src/scripts/print-bundle-size",
     "clean": "rimraf lib coverage .nyc_output umd/*.js",
     "coverage": "DEBUG=sanity NODE_ENV=test nyc --reporter=html --reporter=lcov --reporter=text npm test",
-    "minify": "terser -c -m -- umd/sanityClient.js > umd/sanityClient.min.js",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "run-s build",
     "test": "NODE_ENV=test tape -r @babel/register test/*.test.js"
   },
   "browser": {
@@ -31,6 +32,8 @@
     "object-assign": "^4.1.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
     "boxen": "^4.1.0",
     "browserify": "^14.3.0",
     "chalk": "^2.3.0",
@@ -39,6 +42,7 @@
     "gzip-size": "^3.0.0",
     "hard-rejection": "^2.1.0",
     "nock": "^9.0.5",
+    "npm-run-all": "^4.1.5",
     "nyc": "^11.0.3",
     "pretty-bytes": "^4.0.2",
     "rimraf": "^2.7.1",

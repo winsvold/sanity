@@ -4,8 +4,12 @@
   "description": "Sanity plugin containing the base components and roles for a Sanity configuration",
   "main": "lib/index.js",
   "scripts": {
+    "build": "run-s build:js build:assets",
+    "build:assets": "cpx 'src/**/*.{css,json}' lib",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
     "coverage": "nyc --report=lcov --report=text _mocha -- test/**/*.test.js",
+    "prebuild": "run-s clean",
     "test": "jest"
   },
   "repository": {
@@ -56,7 +60,10 @@
     "shallow-equals": "^1.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "cpx": "^1.5.0",
     "jest": "^24.9.0",
+    "npm-run-all": "^4.1.5",
     "prop-types": "^15.6.0",
     "react": "16.9.0",
     "react-dom": "^16.9.0",

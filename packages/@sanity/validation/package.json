@@ -4,9 +4,13 @@
   "description": "Validation and warning infrastructure for Sanity projects",
   "main": "lib/index.js",
   "scripts": {
+    "build": "run-s build:js build:assets",
+    "build:assets": "cpx 'src/**/*.{css,json}' lib",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
+    "clean": "rimraf lib",
+    "prebuild": "run-s clean",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "clean": "rimraf lib"
+    "test:watch": "jest --watch"
   },
   "author": "Sanity.io <hello@sanity.io>",
   "license": "MIT",

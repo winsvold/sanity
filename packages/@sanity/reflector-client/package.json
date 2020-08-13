@@ -4,8 +4,11 @@
   "description": "A client for the client to client message bus",
   "main": "lib/Reflector.js",
   "scripts": {
+    "build": "run-s build:js build:assets",
+    "build:assets": "cpx 'src/**/*.{css,json}' lib",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
-    "compile": "babel src --copy-files --out-dir lib"
+    "prebuild": "run-s clean"
   },
   "author": "Sanity.io <hello@sanity.io>",
   "license": "MIT",

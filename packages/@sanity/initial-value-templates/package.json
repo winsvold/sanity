@@ -10,9 +10,13 @@
   },
   "license": "MIT",
   "scripts": {
+    "build": "run-s build:js build:assets",
+    "build:assets": "cpx 'src/**/*.{css,json}' lib",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
+    "clean": "rimraf coverage lib",
+    "prebuild": "run-s clean",
     "test": "jest",
-    "posttest": "tsc --noEmit",
-    "clean": "rimraf lib coverage"
+    "type-check": "tsc --noEmit"
   },
   "keywords": [
     "sanity",

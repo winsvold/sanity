@@ -5,7 +5,7 @@ import Button from 'part:@sanity/components/buttons/default'
 import Dialog from 'part:@sanity/components/dialogs/default'
 import Fieldset from 'part:@sanity/components/fieldsets/default'
 import {PatchEvent, set, setIfMissing, unset} from 'part:@sanity/form-builder/patch-event'
-import styles from '../styles/GeopointInput.css'
+import styles from './styles/GeopointInput.css'
 import GeopointSelect from './GeopointSelect'
 import GoogleMapsLoadProxy from './GoogleMapsLoadProxy'
 

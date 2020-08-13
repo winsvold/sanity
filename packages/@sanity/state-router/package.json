@@ -6,10 +6,14 @@
   "scripts": {
     "start": "remon --require ts-node/register demo-server/app.ts",
     "test": "jest",
-    "compile": "tsc",
-    "compile:watch": "babel --watch --out-dir lib/ src/",
     "benchmark": "npm run compile && node --prof --logfile=benchmarks.log perf/benchmark.js",
-    "clean": "rimraf lib"
+    "build": "run-s build:js build:assets",
+    "build:assets": "cpx 'src/**/*.{css,json}' lib",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
+    "clean": "rimraf lib",
+    "prebuild": "run-s clean",
+    "type-check": "tsc --noEmit",
+    "watch": "babel src --watch --out-dir lib --extensions '.js,.ts,.tsx'"
   },
   "keywords": [
     "sanity",

@@ -9,7 +9,11 @@
     "access": "public"
   },
   "scripts": {
+    "build": "run-s build:js build:assets",
+    "build:assets": "cpx 'src/**/*.{css,json}' lib",
+    "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
     "clean": "rimraf lib",
+    "prebuild": "run-s clean",
     "start": "npm run example-testbed",
     "test": "#todo: jest"
   },
