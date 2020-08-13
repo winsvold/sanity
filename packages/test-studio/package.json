@@ -6,8 +6,10 @@
   "author": "Sanity.io <hello@sanity.io>",
   "license": "MIT",
   "scripts": {
-    "start": "sanity start",
-    "clean": "rimraf dist"
+    "build": "sanity build",
+    "clean": "rimraf dist",
+    "prebuild": "run-s clean",
+    "start": "sanity start"
   },
   "keywords": [
     "sanity",

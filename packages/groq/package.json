@@ -9,7 +9,7 @@
     "test": "test"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=10.0.0"
   },
   "scripts": {
     "test": "node test/groq.test.js"
@@ -19,16 +19,16 @@
     "url": "git+https://github.com/sanity-io/sanity.git"
   },
   "keywords": [
-    "groq",
-    "tagged",
-    "template",
-    "literal",
-    "string",
     "sanity",
     "cms",
     "headless",
     "realtime",
-    "content"
+    "content",
+    "groq",
+    "tagged",
+    "template",
+    "literal",
+    "string"
   ],
   "author": "Sanity.io <hello@sanity.io>",
   "license": "MIT",

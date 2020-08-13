@@ -6,7 +6,7 @@
   "scripts": {
     "build": "run-s build:js",
     "build:js": "babel src --out-dir lib --extensions '.js,.ts,.tsx'",
-    "clean": "rimraf lib",
+    "clean": "rimraf .nyc_output lib",
     "prebuild": "run-s clean",
     "test": "tap -t120 test/*.test.ts",
     "perf": "node ./perf/run.js"
