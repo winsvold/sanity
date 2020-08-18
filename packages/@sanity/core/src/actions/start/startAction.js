@@ -29,7 +29,8 @@ export default async (args, context) => {
     httpHost,
     httpPort,
     context,
-    project: sanityConfig.get('project')
+    project: sanityConfig.get('project'),
+    watchMode: process.env.SANITY_WATCH_MODE || 'default'
   }
 
   checkStudioDependencyVersions(workDir)

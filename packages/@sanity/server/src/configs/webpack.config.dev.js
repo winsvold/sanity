@@ -1,9 +1,34 @@
+import path from 'path'
+import glob from 'glob'
 import webpack from 'webpack'
 import applyStaticLoaderFix from '../util/applyStaticLoaderFix'
 import getBaseConfig from './webpack.config'
 
+const MONOREPO_PATH = path.resolve(__dirname, '../../../../..')
+
+function getSanityAliases(config) {
+  if (config.watchMode === 'monorepo') {
+    const sanityPackagePaths = glob.sync(
+      path.resolve(MONOREPO_PATH, 'packages/@sanity/*/package.json')
+    )
+
+    const sanityPackages = sanityPackagePaths.reduce((acc, sanityPackagePath) => {
+      const packagePath = path.dirname(sanityPackagePath)
+
+      acc[`@sanity/${path.basename(packagePath)}`] = path.join(packagePath, 'src')
+
+      return acc
+    }, {})
+
+    return sanityPackages
+  }
+
+  return {}
+}
+
 export default config => {
   const baseConfig = getBaseConfig(config)
+  const sanityAliases = getSanityAliases(config)
 
   return Object.assign({}, baseConfig, {
     devtool: 'cheap-module-source-map',
@@ -17,7 +42,8 @@ export default config => {
     resolve: {
       alias: Object.assign({}, baseConfig.resolve.alias, {
         'react-dom': require.resolve('@hot-loader/react-dom'),
-        'webpack-hot-middleware/client': require.resolve('../browser/hot-client')
+        'webpack-hot-middleware/client': require.resolve('../browser/hot-client'),
+        ...sanityAliases
       }),
       extensions: baseConfig.resolve.extensions
     },
