@@ -15,6 +15,7 @@ function getSanityAliases(config) {
     const sanityPackageAliases = sanityPackagePaths.reduce((acc, sanityPackagePath) => {
       const packagePath = path.dirname(sanityPackagePath)
 
+      acc[`@sanity/${path.basename(packagePath)}/lib`] = path.join(packagePath, 'src')
       acc[`@sanity/${path.basename(packagePath)}`] = path.join(packagePath, 'src')
 
       return acc
@@ -32,7 +33,33 @@ function getSanityAliases(config) {
       return acc
     }, {})
 
-    return {...sanityRootAliases, ...sanityPackageAliases}
+    // custom aliases
+    const sanityCustomAliasesBefore = {
+      '@sanity/observable/operators': path.resolve(
+        MONOREPO_PATH,
+        'packages/@sanity/observable/operators'
+      ),
+      '@sanity/util/paths.js': path.resolve(MONOREPO_PATH, 'packages/@sanity/util/paths.js')
+    }
+    const sanityCustomAliasesAfter = {
+      '@sanity/client': path.resolve(MONOREPO_PATH, 'packages/@sanity/client/src/sanityClient.js'),
+      '@sanity/eventsource': path.resolve(MONOREPO_PATH, 'packages/@sanity/eventsource/browser.js'),
+      '@sanity/generate-help-url': path.resolve(
+        MONOREPO_PATH,
+        'packages/@sanity/generate-help-url/index.js'
+      ),
+      '@sanity/uuid': path.resolve(MONOREPO_PATH, 'packages/@sanity/uuid/index.js'),
+      '@sanity/observable': path.resolve(MONOREPO_PATH, 'packages/@sanity/observable/minimal.js'),
+      '@sanity/preview': path.resolve(MONOREPO_PATH, 'packages/@sanity/preview/index.js'),
+      '@sanity/schema': path.resolve(MONOREPO_PATH, 'packages/@sanity/schema/src/legacy')
+    }
+
+    return {
+      ...sanityCustomAliasesBefore,
+      ...sanityRootAliases,
+      ...sanityPackageAliases,
+      ...sanityCustomAliasesAfter
+    }
   }
 
   return {}
@@ -41,6 +68,8 @@ function getSanityAliases(config) {
 export default config => {
   const baseConfig = getBaseConfig(config)
   const sanityAliases = getSanityAliases(config)
+
+  console.log(sanityAliases)
 
   return Object.assign({}, baseConfig, {
     devtool: 'cheap-module-source-map',
