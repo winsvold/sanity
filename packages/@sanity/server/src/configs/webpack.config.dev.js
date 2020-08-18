@@ -8,11 +8,11 @@ const MONOREPO_PATH = path.resolve(__dirname, '../../../../..')
 
 function getSanityAliases(config) {
   if (config.watchMode === 'monorepo') {
+    // find package aliases
     const sanityPackagePaths = glob.sync(
       path.resolve(MONOREPO_PATH, 'packages/@sanity/*/package.json')
     )
-
-    const sanityPackages = sanityPackagePaths.reduce((acc, sanityPackagePath) => {
+    const sanityPackageAliases = sanityPackagePaths.reduce((acc, sanityPackagePath) => {
       const packagePath = path.dirname(sanityPackagePath)
 
       acc[`@sanity/${path.basename(packagePath)}`] = path.join(packagePath, 'src')
@@ -20,7 +20,19 @@ function getSanityAliases(config) {
       return acc
     }, {})
 
-    return sanityPackages
+    // find root aliases
+    const sanityRootPaths = glob.sync(path.resolve(MONOREPO_PATH, 'packages/@sanity/*/*.js'))
+    const sanityRootAliases = sanityRootPaths.reduce((acc, sanityPackagePath) => {
+      const basename = path.basename(sanityPackagePath, '.js')
+      const packagePath = path.dirname(sanityPackagePath)
+      const name = path.basename(packagePath)
+
+      acc[`@sanity/${name}/${basename}`] = sanityPackagePath
+
+      return acc
+    }, {})
+
+    return {...sanityRootAliases, ...sanityPackageAliases}
   }
 
   return {}
