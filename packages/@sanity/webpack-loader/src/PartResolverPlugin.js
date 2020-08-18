@@ -1,5 +1,7 @@
+const fs = require('fs')
 const qs = require('querystring')
 const path = require('path')
+const resolve = require('resolve')
 const partResolver = require('@sanity/resolver')
 
 const emptyPart = require.resolve('./emptyPart')
@@ -155,8 +157,16 @@ PartResolverPlugin.prototype.apply = function(compiler) {
         return callback(new Error(`Part "${sanityPart}" not implemented by any plugins`))
       }
 
+      // console.log('\npart', sanityPart, '=>', part[0].path)
+
+      const resolvedPath = part[0]
+        ? resolve.sync(part[0].path.replace('/lib/', '/src/'), {
+            extensions: ['.js', '.ts', '.tsx']
+          })
+        : undefined
+
       const resolveOpts = getResolveOptions({
-        resolveTo: part[0].path,
+        resolveTo: resolvedPath ? fs.realpathSync(resolvedPath) : part[0].path,
         request: request
       })
 
