@@ -32,7 +32,7 @@
     },
     {
       "implements": "part:@sanity/default-layout/sidecar-datastore",
-      "path": "datastores/sidecar.js"
+      "path": "datastores/sidecar"
     },
 
     {
@@ -53,7 +53,7 @@
     },
     {
       "implements": "part:@sanity/base/component",
-      "path": "story.js"
+      "path": "story"
     }
   ]
 }

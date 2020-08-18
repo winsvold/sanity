@@ -2,12 +2,11 @@
   "parts": [
     {
       "implements": "part:@sanity/form-builder/input/rich-date",
-      "path": "./index.js"
+      "path": "./index"
     },
     {
       "implements": "part:@sanity/form-builder/input/legacy-date/schema",
       "path": "./schema"
     }
-
   ]
 }
