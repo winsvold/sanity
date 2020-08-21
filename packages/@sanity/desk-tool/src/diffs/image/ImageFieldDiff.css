@@ -1,2 +1,31 @@
+@import 'part:@sanity/base/theme/variables-style';
+
 .root {
+  /*  */
+}
+
+.imageDiff {
+  @nest &[data-diff-layout="double"] {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+}
+
+.nestedField {
+  margin-bottom: var(--medium-padding);
+}
+
+.nestedHeader {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: var(--small-padding);
+}
+
+.arrow {
+  display: flex;
+  padding: 0 var(--small-padding);
+  flex: 0;
+  align-items: center;
+  font-size: var(--font-size-large);
 }
