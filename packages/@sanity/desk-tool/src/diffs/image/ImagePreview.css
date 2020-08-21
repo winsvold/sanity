@@ -9,7 +9,6 @@
   overflow: hidden;
   max-height: 190px;
   max-width: 250px;
-  margin-bottom: var(--medium-padding);
 }
 
 .imageWrapper {
