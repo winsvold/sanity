@@ -19,6 +19,7 @@ import ImagePreview from './ImagePreview'
  */
 
 export const ImageFieldDiff: DiffComponent<ObjectDiff<Image>> = ({diff, schemaType}) => {
+  // TODO: get the right annotations based on _ref, hotspot, crop field
   const annotation = diff.isChanged ? diff.annotation : undefined
   const userColor = useAnnotationColor(annotation)
   const {fromValue, toValue} = diff
@@ -88,17 +89,19 @@ export const ImageFieldDiff: DiffComponent<ObjectDiff<Image>> = ({diff, schemaTy
         </DiffAnnotationTooltip>
       )}
 
-      <div>
-        {nestedFields.map(field => {
-          const MetaDiffComponent = resolveDiffComponent(field.schemaType) || FallbackDiff
-          return (
-            <div className={styles.nestedField} key={field.name}>
-              <div className={styles.nestedHeader}>{field.schemaType.title}</div>
-              <MetaDiffComponent diff={field.diff} schemaType={field.schemaType} />
-            </div>
-          )
-        })}
-      </div>
+      {nestedFields.length > 0 && (
+        <div className={styles.nestedFields}>
+          {nestedFields.map(field => {
+            const MetaDiffComponent = resolveDiffComponent(field.schemaType) || FallbackDiff
+            return (
+              <div className={styles.field} key={field.name}>
+                <div className={styles.title}>{field.schemaType.title}</div>
+                <MetaDiffComponent diff={field.diff} schemaType={field.schemaType} />
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

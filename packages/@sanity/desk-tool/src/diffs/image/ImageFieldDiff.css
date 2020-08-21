@@ -11,15 +11,19 @@
   }
 }
 
-.nestedField {
-  margin-bottom: var(--medium-padding);
-}
+.nestedFields {
+  margin-top: var(--medium-padding);
 
-.nestedHeader {
-  flex: 1;
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: var(--small-padding);
+  @nest & .field {
+    margin-bottom: var(--medium-padding);
+  }
+
+  @nest & .title {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: var(--small-padding);
+  }
 }
 
 .arrow {
