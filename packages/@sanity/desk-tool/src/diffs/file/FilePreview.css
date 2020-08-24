@@ -19,7 +19,7 @@
 
   @nest & .info {
     overflow: hidden;
-    line-height: 1.3;
+    line-height: 1.5;
     padding-left: var(--small-padding);
   }
 
@@ -36,7 +36,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: calc(var(--font-size-large) + 5px);
+    font-size: calc(var(--font-size-large) + 16px);
   }
 }
 

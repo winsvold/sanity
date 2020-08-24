@@ -1,13 +1,3 @@
-export interface Image {
-  asset?: Asset
-  hotspot: Hotspot
-  crop: Crop
-}
-
-type Asset = {
-  _ref: string
-}
-
 type Hotspot = {
   height: number
   width: number
@@ -23,8 +13,7 @@ type Crop = {
 }
 
 export interface ImagePreviewProps {
-  asset: Asset | undefined
-  color?: any
+  value: any // TODO
   action: 'changed' | 'added' | 'removed'
   hotspot?: Hotspot
   crop?: Crop

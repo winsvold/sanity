@@ -8,7 +8,7 @@
   border-radius: var(--border-radius-small);
   overflow: hidden;
   max-height: 190px;
-  max-width: 250px;
+  height: 100%;
 }
 
 .imageWrapper {
@@ -16,7 +16,6 @@
   flex: 1;
   overflow: hidden;
   padding-bottom: var(--small-padding);
-  
 
   @nest & .image {
     background-color: color(var(--gray-lightest) alpha(50%));
@@ -43,7 +42,7 @@
 
   @nest & .info {
     overflow: hidden;
-    line-height: 1.3;
+    line-height: 1.5;
     padding-left: var(--small-padding);
   }
 
