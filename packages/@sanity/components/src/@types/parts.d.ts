@@ -22,6 +22,63 @@ declare module 'part:@sanity/components/menu-button' {
   }>
 }
 
+declare module 'part:@sanity/components/overlay' {
+  export interface OverlayRegionRect {
+    top: number
+    left: number
+    right: number
+    bottom: number
+    width: number
+    height: number
+  }
+  export interface OverlayScrollRect {
+    top: number
+    left: number
+  }
+  export interface OverlayRegionIntersection {
+    isAbove: boolean
+    isBelow: boolean
+    isVisible: boolean
+  }
+  export type OverlayRegionParams = Record<string, any>
+  export interface OverlayRegionInterface {
+    id: string
+    rect: OverlayRegionRect
+    intersection: OverlayRegionIntersection
+    params: OverlayRegionParams
+  }
+  export interface OverlayRegionObserver {
+    element: HTMLElement
+    id: string
+  }
+  export const OverlayProvider: ComponentType<{
+    children: (
+      scrollRef: React.MutableRefObject<Element>,
+      wrapperRef: React.MutableRefObject<Element>
+    ) => React.ReactNode
+    // eslint-disable-next-line react/require-default-props
+    onChange?: (regions: OverlayRegionInterface[]) => void
+    // eslint-disable-next-line react/require-default-props
+    rootMargin?: string
+    // rootRef: React.RefObject<Element>
+    // scrollRef: React.RefObject<Element>
+  }>
+  // export const OverlayProvider: any
+  export const OverlayRegion: ComponentType<{
+    children: React.ReactNode
+    id: string
+    params: OverlayRegionParams
+  }>
+  export const useOverlay: () => {
+    observe: (id: string, element: Element) => void
+    rect: {width: number; height: number}
+    regions: OverlayRegionInterface[]
+    setParams: (id: string, params: OverlayRegionParams) => void
+    unobserve: (id: string, element: Element) => void
+  }
+  // export const OverlayRegion: any
+}
+
 declare module 'part:@sanity/components/popover' {
   // export const Popover: ComponentType<{}>
   export const Popover: any

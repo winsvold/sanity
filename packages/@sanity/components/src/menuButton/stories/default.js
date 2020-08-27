@@ -29,7 +29,7 @@ export function DefaultStory() {
 
   return (
     <CenteredContainer>
-      <Sanity part="part:@sanity/components/dialogs/default" propTables={[MenuButton]}>
+      <Sanity part="part:@sanity/components/menu-button" propTables={[MenuButton]}>
         <MenuButton
           menu={<div style={{padding: 20}}>This is the menu</div>}
           open={open}

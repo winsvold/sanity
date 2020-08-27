@@ -1,0 +1,26 @@
+.example {
+  height: 100%;
+  display: flex;
+}
+
+.scrollContainer {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  height: 100%;
+}
+
+.root {
+  height: 500%;
+  position: relative;
+}
+
+.overlay {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 0, 0, 0.1);
+}
