@@ -26,10 +26,13 @@ module.exports = {
     '@typescript-eslint/no-useless-constructor': 'error',
     // ---
     'no-use-before-define': 'off',
-    "@typescript-eslint/explicit-function-return-type": 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
 
     '@typescript-eslint/no-var-requires': 'off', // covered by @typescript-eslint/no-var-requires
     'react/jsx-filename-extension': ['error', {extensions: ['.tsx', '.js']}],
+
+    // because typescript
+    'react/require-default-props': 'off',
 
     'import/no-extraneous-dependencies': 'off',
     'import/no-unresolved': ['error', {ignore: ['.*:.*']}],
