@@ -3,6 +3,7 @@ import * as PathUtils from '@sanity/util/paths'
 import classNames from 'classnames'
 import {ClickOutside} from 'part:@sanity/components/click-outside'
 import {MenuItemGroupType} from 'part:@sanity/components/menus/default'
+import {usePane} from 'part:@sanity/components/panes/split-controller'
 import {Popover} from 'part:@sanity/components/popover'
 import Snackbar from 'part:@sanity/components/snackbar/default'
 import React, {useCallback, useRef, useState} from 'react'
@@ -43,6 +44,10 @@ interface DocumentPaneProps {
 
 // eslint-disable-next-line complexity
 export function DocumentPane(props: DocumentPaneProps) {
+  const pane = usePane()
+
+  console.log(pane)
+
   const {
     connectionState,
     documentId,

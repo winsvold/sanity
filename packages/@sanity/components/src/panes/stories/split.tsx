@@ -28,7 +28,9 @@ interface State {
 }
 
 export function SplitStory() {
-  const panes = range(number('Panes qty', 4, 'test')).map((pane, i) => {
+  const numPanes = number('# of panes', 4, 'test')
+
+  const panes = range(numPanes).map((pane, i) => {
     return {
       index: i,
       title: `Pane ${i}`,
@@ -71,28 +73,35 @@ class AutoCollapseTest extends React.PureComponent<Props, State> {
     const {panes} = this.props
 
     return (
-      <SplitController>
-        {panes.map((pane, i) => {
-          return (
-            <SplitPaneWrapper minSize={pane.minSize} defaultSize={pane.defaultSize} key={pane.key}>
-              <Pane
-                index={i}
-                title={pane.title}
-                onExpand={this.handlePaneExpand}
-                onCollapse={this.handlePaneCollapse}
-                onAction={action('action')}
-                isCollapsed={pane.isCollapsed}
+      <SplitController
+        panes={panes.map((pane, i) => {
+          return {
+            ...pane,
+            element: (
+              <SplitPaneWrapper
+                minSize={pane.minSize}
+                defaultSize={pane.defaultSize}
+                key={pane.key}
               >
-                <div className={styles.root}>
-                  <pre>collapsed={pane.isCollapsed ? 'true' : 'false'}</pre>
-                  <pre>defaultSize={pane.defaultSize}</pre>
-                  <pre>minSize={pane.minSize}</pre>
-                </div>
-              </Pane>
-            </SplitPaneWrapper>
-          )
+                <Pane
+                  index={i}
+                  title={pane.title}
+                  onExpand={this.handlePaneExpand}
+                  onCollapse={this.handlePaneCollapse}
+                  onAction={action('action')}
+                  isCollapsed={pane.isCollapsed}
+                >
+                  <div className={styles.root}>
+                    <pre>collapsed={pane.isCollapsed ? 'true' : 'false'}</pre>
+                    <pre>defaultSize={pane.defaultSize}</pre>
+                    <pre>minSize={pane.minSize}</pre>
+                  </div>
+                </Pane>
+              </SplitPaneWrapper>
+            )
+          }
         })}
-      </SplitController>
+      />
     )
   }
 }

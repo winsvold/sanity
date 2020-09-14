@@ -400,6 +400,11 @@ declare module 'part:@sanity/components/panes/default' {
   export {default} from '@sanity/components/src/panes/DefaultPane'
 }
 
+declare module 'part:@sanity/components/panes/split-controller' {
+  export * from '@sanity/components/src/panes/SplitController'
+  export {default} from '@sanity/components/src/panes/SplitController'
+}
+
 declare module 'part:@sanity/components/popover' {
   export * from '@sanity/components/src/popover'
 }

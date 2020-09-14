@@ -1,19 +1,15 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable react/jsx-filename-extension */
-
 import React from 'react'
 import PropTypes from 'prop-types'
 import {sumBy} from 'lodash'
 import {merge, of} from 'rxjs'
 import {mapTo, delay, distinctUntilChanged} from 'rxjs/operators'
 import SplitController from 'part:@sanity/components/panes/split-controller'
-import SplitPaneWrapper from 'part:@sanity/components/panes/split-pane-wrapper'
-import {ResizeObserver} from './resize-observer'
 import {DeskToolPane, LoadingPane} from '../panes'
 import windowWidth$ from '../utils/windowWidth'
 import isNarrowScreen from '../utils/isNarrowScreen'
 import {LOADING_PANE} from '../constants'
 import {PaneRouterContext, getPaneRouterContextFactory} from '../contexts/PaneRouterContext'
+import {ResizeObserver} from './resize-observer'
 
 import styles from './DeskToolPanes.css'
 
@@ -92,7 +88,7 @@ export default class DeskToolPanes extends React.Component {
 
   state = {
     collapsedPanes: [],
-    windowWidth: typeof window === 'undefined' ? 1000 : window.innerWidth,
+    // windowWidth: typeof window === 'undefined' ? 1000 : window.innerWidth,
     hasNarrowScreen: isNarrowScreen(),
     width: undefined
   }
@@ -122,7 +118,7 @@ export default class DeskToolPanes extends React.Component {
     if (autoCollapse) {
       this.resizeSubscriber = windowWidth$.pipe(distinctUntilChanged()).subscribe(windowWidth => {
         this.setState({
-          windowWidth,
+          // windowWidth,
           hasNarrowScreen: isNarrowScreen()
         })
       })
@@ -243,13 +239,20 @@ export default class DeskToolPanes extends React.Component {
             payload
           })
 
-          return (
-            <SplitPaneWrapper
-              key={wrapperKey}
-              isCollapsed={isCollapsed}
-              minSize={getPaneMinSize(pane)}
-              defaultSize={getPaneDefaultSize(pane)}
-            >
+          return {
+            // defaultSize: number
+            defaultSize: getPaneDefaultSize(pane),
+            // index: number
+            index: i,
+            // isCollapsed: boolean
+            isCollapsed,
+            // key: string
+            key: wrapperKey,
+            // minSize: number
+            minSize: getPaneMinSize(pane),
+            // maxSize?: number
+            // element: React.ReactElement
+            element: (
               <PaneRouterContext.Provider value={paneRouterContext}>
                 {pane === LOADING_PANE ? (
                   <LoadingPane
@@ -279,8 +282,8 @@ export default class DeskToolPanes extends React.Component {
                   />
                 )}
               </PaneRouterContext.Provider>
-            </SplitPaneWrapper>
-          )
+            )
+          }
         })
       )
     }, [])
@@ -288,6 +291,8 @@ export default class DeskToolPanes extends React.Component {
 
   render() {
     const {hasNarrowScreen} = this.state
+    const panes = this.renderPanes()
+
     return (
       <div ref={this._rootElement} className={styles.root}>
         <SplitController
@@ -295,9 +300,8 @@ export default class DeskToolPanes extends React.Component {
           autoCollapse={this.props.autoCollapse}
           collapsedWidth={COLLAPSED_WIDTH}
           onCheckCollapse={this.handleCheckCollapse}
-        >
-          {this.renderPanes()}
-        </SplitController>
+          panes={panes}
+        />
       </div>
     )
   }

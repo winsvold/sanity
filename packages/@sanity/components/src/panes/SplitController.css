@@ -4,6 +4,8 @@
   min-width: 0;
   width: 100%;
   overflow: auto;
+  outline: 1px solid red;
+  outline-offset: -10px;
 
   @media (--screen-medium) {
     display: flex;

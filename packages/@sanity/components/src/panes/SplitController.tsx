@@ -1,13 +1,45 @@
 import classNames from 'classnames'
-import React from 'react'
+import React, {createContext, useContext} from 'react'
 import SplitPane from 'react-split-pane'
-import {childrenToElementArray} from '../helpers'
+
 import styles from './SplitController.css'
 
+export interface PaneType {
+  defaultSize: number
+  element: React.ReactElement
+  index: number
+  isCollapsed: boolean
+  key: string
+  minSize: number
+  maxSize?: number
+}
+
 interface SplitControllerProps {
-  children: React.ReactNode
+  // children: React.ReactNode
   collapsedWidth?: number
   isMobile?: boolean
+  panes: PaneType[]
+}
+
+export const PaneContext = createContext<{index: number; isCollapsed: boolean}>({
+  index: -1,
+  isCollapsed: true
+})
+
+export function usePane() {
+  return useContext(PaneContext)
+}
+
+export function PaneProvider({
+  children,
+  index,
+  isCollapsed
+}: {
+  children: React.ReactNode
+  index: number
+  isCollapsed: boolean
+}) {
+  return <PaneContext.Provider value={{index, isCollapsed}}>{children}</PaneContext.Provider>
 }
 
 export default class PanesSplitController extends React.PureComponent<SplitControllerProps> {
@@ -27,24 +59,32 @@ export default class PanesSplitController extends React.PureComponent<SplitContr
     })
   }
 
-  renderSplitPane = (pane1: React.ReactElement, pane2?: React.ReactElement) => {
-    const isCollapsed = pane1.props.isCollapsed
+  // eslint-disable-next-line complexity
+  renderSplitPane = (
+    leftPane: PaneType,
+    rightPaneElement: React.ReactElement | null,
+    index: number
+  ) => {
     const {collapsedWidth} = this.props
     const {isResizing} = this.state
+    const isCollapsed = leftPane && leftPane.isCollapsed
     const size = isCollapsed ? collapsedWidth : undefined
+    const minSize = leftPane ? leftPane.minSize : Infinity
+    const defaultSize = leftPane ? leftPane.defaultSize : Infinity
+    const element = leftPane ? leftPane.element : undefined
 
     return (
       <div
         className={classNames(
           styles.root,
           isResizing ? styles.splitWrapperResizing : styles.splitWrapper,
-          pane2 ? '' : styles.singleWrapper,
+          rightPaneElement ? '' : styles.singleWrapper,
           isCollapsed && styles.collapsed
         )}
       >
         <SplitPane
-          minSize={isCollapsed ? collapsedWidth : pane1.props.minSize}
-          defaultSize={isCollapsed ? collapsedWidth : pane1.props.defaultSize}
+          minSize={isCollapsed ? collapsedWidth : minSize}
+          defaultSize={isCollapsed ? collapsedWidth : defaultSize}
           size={size}
           resizerClassName={styles.resizer}
           allowResize={!isCollapsed}
@@ -52,39 +92,53 @@ export default class PanesSplitController extends React.PureComponent<SplitContr
           onDragStarted={this.handleDragStarted}
           onDragFinished={this.handleDragFinished}
         >
-          {pane1}
-          {pane2 || <div style={{display: 'none'}} />}
+          <PaneProvider index={index} isCollapsed={isCollapsed}>
+            {element}
+          </PaneProvider>
+
+          {rightPaneElement ? (
+            <PaneProvider index={index + 1} isCollapsed={false}>
+              {rightPaneElement}
+            </PaneProvider>
+          ) : (
+            <div style={{display: 'none'}} />
+          )}
         </SplitPane>
       </div>
     )
   }
 
-  renderRecursivePanes = (panes: React.ReactElement[]) => {
+  renderRecursivePanes = (panes: PaneType[], index: number) => {
     // only 1 pane left
     if (panes.length === 1) {
-      return panes[0]
+      return (
+        <PaneProvider index={index} isCollapsed={false}>
+          {panes[0].element}
+        </PaneProvider>
+      )
     }
 
     // only 2 panes left
     if (panes.length === 2) {
-      return this.renderSplitPane(panes[0], this.renderSplitPane(panes[1]))
+      return this.renderSplitPane(panes[0], this.renderSplitPane(panes[1], null, index + 1), index)
     }
 
     // Recursive
     const remainingPanes = panes.slice(1)
-    return this.renderSplitPane(panes[0], this.renderRecursivePanes(remainingPanes))
+    return this.renderSplitPane(
+      panes[0],
+      this.renderRecursivePanes(remainingPanes, index + 1),
+      index
+    )
   }
 
   render() {
-    const {children, isMobile} = this.props
-    const panes = childrenToElementArray(children)
+    const {panes, isMobile} = this.props
 
     if (panes.length === 0) {
       return <div>No panes</div>
     }
 
-    return isMobile
-      ? children
-      : this.renderRecursivePanes(panes.filter(pane => pane.type !== 'div'))
+    return isMobile ? panes.map(pane => pane.element) : this.renderRecursivePanes(panes, 0)
   }
 }
