@@ -1,5 +1,5 @@
-import React from 'react'
-import {Subscription} from 'rxjs'
+import classNames from 'classnames'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import AppLoadingScreen from 'part:@sanity/base/app-loading-screen'
 import {RouteScope, withRouterHOC} from 'part:@sanity/base/router'
 import absolutes from 'all:part:@sanity/base/absolutes'
@@ -15,204 +15,158 @@ import {Router, Tool, User} from './types'
 
 import styles from './DefaultLayout.css'
 
-interface OuterProps {
+export interface DefaultLayoutProps {
   tools: Tool[]
 }
 
-interface Props {
+interface InnerProps {
   router: Router
   tools: Tool[]
 }
 
-interface State {
-  createMenuIsOpen: boolean
-  menuIsOpen: boolean
-  showLoadingScreen: boolean
-  searchIsOpen: boolean
-  loaded: boolean
-  user?: User
-}
+export default (withRouterHOC(DefaultLayout as any) as any) as React.ComponentType<
+  DefaultLayoutProps
+>
 
-class DefaultLayout extends React.PureComponent<Props, State> {
-  state: State = {
-    createMenuIsOpen: false,
-    menuIsOpen: false,
-    showLoadingScreen: true,
-    searchIsOpen: false,
-    loaded: false
-  }
+function DefaultLayout(props: InnerProps) {
+  const {tools, router} = props
+  const loadingScreenRef = useRef<HTMLDivElement | null>(null)
+  const [createMenuIsOpen, setCreateMenuIsOpen] = useState(false)
+  const [menuIsOpen, setMenuIsOpen] = useState(false)
+  const [showLoadingScreen, setShowLoadingScreen] = useState(false)
+  const [searchIsOpen, setSearchIsOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
+  const isOverlayVisible = menuIsOpen || searchIsOpen
+  const activeToolName = router.state.tool
 
-  userSubscription: Subscription | null = null
+  const handleAnimationEnd = useCallback(() => setShowLoadingScreen(false), [])
+  const handleToggleMenu = useCallback(() => setMenuIsOpen(val => !val), [])
+  const handleCreateButtonClick = useCallback(() => setCreateMenuIsOpen(val => !val), [])
+  const handleActionModalClose = useCallback(() => setCreateMenuIsOpen(false), [])
+  const handleSwitchTool = useCallback(() => setMenuIsOpen(false), [])
+  const handleSearchOpen = useCallback(() => setSearchIsOpen(true), [])
+  const handleSearchClose = useCallback(() => setSearchIsOpen(false), [])
+  const handleUserLogout = useCallback(() => userStore.actions.logout(), [])
 
-  _loadingScreenElement: HTMLDivElement | null = null
+  const handleClickCapture = useCallback(
+    event => {
+      // Do not handle click if the event is not within DefaultLayout (portals)
+      const rootTarget = event.target.closest(`.${styles.root}`)
+      if (!rootTarget) return
 
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillMount() {
-    this.userSubscription = userStore.currentUser.subscribe(event =>
-      this.setState({user: event.type === 'snapshot' ? event.user : null})
+      if (menuIsOpen) {
+        // Close SideMenu if the user clicks outside
+        const menuTarget = event.target.closest(`.${styles.sideMenuContainer}`)
+        if (!menuTarget) {
+          event.preventDefault()
+          event.stopPropagation()
+          handleToggleMenu()
+        }
+      }
+    },
+    [handleToggleMenu, menuIsOpen]
+  )
+
+  useEffect(() => {
+    const userSubscription = userStore.currentUser.subscribe(event =>
+      setUser(event.type === 'snapshot' ? event.user : null)
     )
-  }
 
-  componentDidMount() {
-    if (this._loadingScreenElement && this.state.showLoadingScreen) {
-      this._loadingScreenElement.addEventListener('animationend', this.handleAnimationEnd, false)
+    return () => userSubscription.unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    if (!showLoadingScreen) return undefined
+
+    const loadingScreenElement = loadingScreenRef.current
+
+    if (loadingScreenElement) {
+      loadingScreenElement.addEventListener('animationend', handleAnimationEnd, false)
     }
-  }
 
-  componentWillUnmount() {
-    this.userSubscription.unsubscribe()
-    if (this._loadingScreenElement) {
-      this._loadingScreenElement.removeEventListener('animationend', this.handleAnimationEnd, false)
-    }
-  }
-
-  handleClickCapture = event => {
-    // Do not handle click if the event is not within DefaultLayout (portals)
-    const rootTarget = event.target.closest(`.${styles.root}`)
-    if (!rootTarget) return
-
-    if (this.state.menuIsOpen) {
-      // Close SideMenu if the user clicks outside
-      const menuTarget = event.target.closest(`.${styles.sideMenuContainer}`)
-      if (!menuTarget) {
-        event.preventDefault()
-        event.stopPropagation()
-        this.handleToggleMenu()
+    return () => {
+      if (loadingScreenElement) {
+        loadingScreenElement.removeEventListener('animationend', handleAnimationEnd, false)
       }
     }
-  }
+  }, [handleAnimationEnd, showLoadingScreen])
 
-  handleAnimationEnd = () => {
-    this.setState({
-      showLoadingScreen: false
-    })
-  }
+  useEffect(() => {
+    if (!mounted) setMounted(true)
+  }, [mounted])
 
-  componentDidUpdate() {
-    if (!this.state.loaded) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({loaded: true})
-    }
-  }
+  return (
+    <SchemaErrorReporter>
+      {() => (
+        <div
+          className={classNames(styles.root, isOverlayVisible && styles.isOverlayVisible)}
+          onClickCapture={handleClickCapture}
+        >
+          {showLoadingScreen && (
+            <div
+              className={
+                mounted || document.visibilityState == 'hidden'
+                  ? styles.loadingScreenLoaded
+                  : styles.loadingScreen
+              }
+              ref={loadingScreenRef}
+            >
+              <AppLoadingScreen text="Restoring Sanity" />
+            </div>
+          )}
 
-  handleCreateButtonClick = () => {
-    this.setState(prevState => ({
-      createMenuIsOpen: !prevState.createMenuIsOpen
-    }))
-  }
-
-  handleActionModalClose = () => {
-    this.setState({
-      createMenuIsOpen: false
-    })
-  }
-
-  handleToggleMenu = () => {
-    this.setState(prevState => ({
-      menuIsOpen: !prevState.menuIsOpen
-    }))
-  }
-
-  handleSwitchTool = () => {
-    this.setState({
-      menuIsOpen: false
-    })
-  }
-
-  handleSearchOpen = () => {
-    this.setState({searchIsOpen: true})
-  }
-
-  handleSearchClose = () => {
-    this.setState({searchIsOpen: false})
-  }
-
-  setLoadingScreenElement = element => {
-    this._loadingScreenElement = element
-  }
-
-  renderContent = () => {
-    const {tools, router} = this.props
-    const {createMenuIsOpen, menuIsOpen, searchIsOpen} = this.state
-
-    const isOverlayVisible = menuIsOpen || searchIsOpen
-    let className = styles.root
-    if (isOverlayVisible) className += ` ${styles.isOverlayVisible}`
-
-    return (
-      <div className={className} onClickCapture={this.handleClickCapture}>
-        {this.state.showLoadingScreen && (
-          <div
-            className={
-              this.state.loaded || document.visibilityState == 'hidden'
-                ? styles.loadingScreenLoaded
-                : styles.loadingScreen
-            }
-            ref={this.setLoadingScreenElement}
-          >
-            <AppLoadingScreen text="Restoring Sanity" />
-          </div>
-        )}
-
-        <div className={styles.navBar}>
-          <NavbarContainer
-            tools={tools}
-            createMenuIsOpen={createMenuIsOpen}
-            onCreateButtonClick={this.handleCreateButtonClick}
-            onToggleMenu={this.handleToggleMenu}
-            onSwitchTool={this.handleSwitchTool}
-            router={router}
-            searchIsOpen={searchIsOpen}
-            /* eslint-disable-next-line react/jsx-handler-names */
-            onUserLogout={userStore.actions.logout}
-            onSearchOpen={this.handleSearchOpen}
-            onSearchClose={this.handleSearchClose}
-          />
-        </div>
-
-        <div className={styles.sideMenuContainer}>
-          <SideMenu
-            activeToolName={router.state.tool}
-            isOpen={menuIsOpen}
-            onClose={this.handleToggleMenu}
-            /* eslint-disable-next-line react/jsx-handler-names */
-            onSignOut={userStore.actions.logout}
-            onSwitchTool={this.handleSwitchTool}
-            router={router}
-            tools={this.props.tools}
-            user={this.state.user}
-          />
-        </div>
-
-        <div className={styles.mainArea}>
-          <div className={styles.toolContainer}>
-            <RouteScope scope={router.state.tool}>
-              <RenderTool tool={router.state.tool} />
-            </RouteScope>
+          <div className={styles.navBar}>
+            <NavbarContainer
+              tools={tools}
+              createMenuIsOpen={createMenuIsOpen}
+              onCreateButtonClick={handleCreateButtonClick}
+              onToggleMenu={handleToggleMenu}
+              onSwitchTool={handleSwitchTool}
+              router={router}
+              searchIsOpen={searchIsOpen}
+              onUserLogout={handleUserLogout}
+              onSearchOpen={handleSearchOpen}
+              onSearchClose={handleSearchClose}
+            />
           </div>
 
-          <div className={styles.sidecarContainer}>
-            <Sidecar />
+          <div className={styles.sideMenuContainer}>
+            {user && (
+              <SideMenu
+                activeToolName={activeToolName}
+                isOpen={menuIsOpen}
+                onClose={handleToggleMenu}
+                onSignOut={handleUserLogout}
+                onSwitchTool={handleSwitchTool}
+                router={router}
+                tools={props.tools}
+                user={user}
+              />
+            )}
           </div>
+
+          <div className={styles.mainArea}>
+            <div className={styles.toolContainer}>
+              <RouteScope scope={activeToolName}>
+                <RenderTool tool={activeToolName} />
+              </RouteScope>
+            </div>
+
+            <div className={styles.sidecarContainer}>
+              <Sidecar />
+            </div>
+          </div>
+
+          {createMenuIsOpen && (
+            <ActionModal onClose={handleActionModalClose} actions={getNewDocumentModalActions()} />
+          )}
+
+          {absolutes.map((Abs, i) => (
+            <Abs key={String(i)} />
+          ))}
         </div>
-
-        {createMenuIsOpen && (
-          <ActionModal
-            onClose={this.handleActionModalClose}
-            actions={getNewDocumentModalActions()}
-          />
-        )}
-
-        {absolutes.map((Abs, i) => (
-          <Abs key={String(i)} />
-        ))}
-      </div>
-    )
-  }
-
-  render() {
-    return <SchemaErrorReporter>{this.renderContent}</SchemaErrorReporter>
-  }
+      )}
+    </SchemaErrorReporter>
+  )
 }
-
-export default (withRouterHOC(DefaultLayout as any) as any) as React.ComponentType<OuterProps>
