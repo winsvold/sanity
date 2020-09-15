@@ -1,7 +1,8 @@
+import {useRouterState} from 'part:@sanity/base/router'
 import StateButton from 'part:@sanity/components/buttons/state'
 import {Tooltip} from 'part:@sanity/components/tooltip'
 import React from 'react'
-import {Router, Tool} from '../../types'
+import {Tool} from '../../types'
 
 import styles from './ToolMenu.css'
 
@@ -10,7 +11,6 @@ interface Props {
   direction: 'horizontal' | 'vertical'
   isVisible: boolean
   onSwitchTool: () => void
-  router: Router
   tools: Tool[]
   showLabel?: boolean
   tone?: 'navbar'
@@ -19,12 +19,12 @@ interface Props {
 const TOUCH_DEVICE = 'ontouchstart' in document.documentElement
 
 function ToolMenu(props: Props) {
+  const routerState = useRouterState()
   const {
     activeToolName,
     direction,
     isVisible,
     onSwitchTool,
-    router,
     tools,
     showLabel: showLabelProp,
     tone
@@ -55,7 +55,7 @@ function ToolMenu(props: Props) {
                   onClick={onSwitchTool}
                   padding={direction === 'horizontal' ? 'small' : 'medium'}
                   selected={activeToolName === tool.name}
-                  state={{...router.state, tool: tool.name, [tool.name]: undefined}}
+                  state={{...routerState, tool: tool.name, [tool.name]: undefined}}
                   title={title}
                   tabIndex={isVisible ? 0 : -1}
                   tone={tone}

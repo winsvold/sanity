@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import React, {useCallback, useEffect, useRef, useState} from 'react'
 import AppLoadingScreen from 'part:@sanity/base/app-loading-screen'
-import {RouteScope, withRouterHOC} from 'part:@sanity/base/router'
+import {RouteScope, useRouterState} from 'part:@sanity/base/router'
 import absolutes from 'all:part:@sanity/base/absolutes'
 import userStore from 'part:@sanity/base/user'
 import Sidecar from './addons/Sidecar'
@@ -11,7 +11,7 @@ import SideMenu from './navbar/sideMenu/SideMenu'
 import NavbarContainer from './navbar/NavbarContainer'
 import {SchemaErrorReporter} from './schemaErrors/SchemaErrorReporter'
 import getNewDocumentModalActions from './util/getNewDocumentModalActions'
-import {Router, Tool, User} from './types'
+import {Tool, User} from './types'
 
 import styles from './DefaultLayout.css'
 
@@ -19,17 +19,9 @@ export interface DefaultLayoutProps {
   tools: Tool[]
 }
 
-interface InnerProps {
-  router: Router
-  tools: Tool[]
-}
-
-export default (withRouterHOC(DefaultLayout as any) as any) as React.ComponentType<
-  DefaultLayoutProps
->
-
-function DefaultLayout(props: InnerProps) {
-  const {tools, router} = props
+export default function DefaultLayout(props: DefaultLayoutProps) {
+  const routerState = useRouterState()
+  const {tools} = props
   const loadingScreenRef = useRef<HTMLDivElement | null>(null)
   const [createMenuIsOpen, setCreateMenuIsOpen] = useState(false)
   const [menuIsOpen, setMenuIsOpen] = useState(false)
@@ -38,7 +30,7 @@ function DefaultLayout(props: InnerProps) {
   const [mounted, setMounted] = useState(false)
   const [user, setUser] = useState<User | null>(null)
   const isOverlayVisible = menuIsOpen || searchIsOpen
-  const activeToolName = router.state.tool
+  const activeToolName = routerState.tool
 
   const handleAnimationEnd = useCallback(() => setShowLoadingScreen(false), [])
   const handleToggleMenu = useCallback(() => setMenuIsOpen(val => !val), [])
@@ -123,7 +115,6 @@ function DefaultLayout(props: InnerProps) {
               onCreateButtonClick={handleCreateButtonClick}
               onToggleMenu={handleToggleMenu}
               onSwitchTool={handleSwitchTool}
-              router={router}
               searchIsOpen={searchIsOpen}
               onUserLogout={handleUserLogout}
               onSearchOpen={handleSearchOpen}
@@ -139,7 +130,6 @@ function DefaultLayout(props: InnerProps) {
                 onClose={handleToggleMenu}
                 onSignOut={handleUserLogout}
                 onSwitchTool={handleSwitchTool}
-                router={router}
                 tools={props.tools}
                 user={user}
               />

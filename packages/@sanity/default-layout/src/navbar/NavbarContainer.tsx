@@ -1,5 +1,9 @@
+/* eslint-disable complexity */
+/* eslint-disable max-depth */
+/* eslint-disable no-lonely-if */
+
 import React from 'react'
-import {Router, Tool} from '../types'
+import {Tool} from '../types'
 import Navbar from './Navbar'
 
 interface Props {
@@ -10,7 +14,6 @@ interface Props {
   onSwitchTool: () => void
   onToggleMenu: () => void
   onUserLogout: () => void
-  router: Router
   searchIsOpen: boolean
   tools: Tool[]
 }
@@ -30,9 +33,6 @@ interface State {
   showToolMenuMinWidth: number
 }
 
-/* eslint-disable complexity */
-/* eslint-disable max-depth */
-/* eslint-disable no-lonely-if */
 function getNextState(
   state: {
     showLabel: boolean
@@ -40,7 +40,7 @@ function getNextState(
     showToolMenu: boolean
     showToolMenuMinWidth: number
   },
-  mostRight: {},
+  mostRight: number,
   winWidth: number
 ) {
   const {showLabel, showLabelMinWidth, showToolMenu, showToolMenuMinWidth} = state
@@ -167,7 +167,7 @@ class NavbarContainer extends React.PureComponent<Props, State> {
       onSwitchTool,
       onToggleMenu,
       onUserLogout,
-      router,
+      // router,
       searchIsOpen,
       tools
     } = this.props
@@ -184,7 +184,6 @@ class NavbarContainer extends React.PureComponent<Props, State> {
         onSwitchTool={onSwitchTool}
         onToggleMenu={onToggleMenu}
         onUserLogout={onUserLogout}
-        router={router}
         searchIsOpen={searchIsOpen}
         showLabel={showLabel}
         showToolMenu={showToolMenu}

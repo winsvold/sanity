@@ -3,14 +3,14 @@ import React, {createElement} from 'react'
 import config from 'config:sanity'
 import ComposeIcon from 'part:@sanity/base/compose-icon'
 import HamburgerIcon from 'part:@sanity/base/hamburger-icon'
-import {StateLink} from 'part:@sanity/base/router'
+import {StateLink, useRouterState} from 'part:@sanity/base/router'
 import SearchIcon from 'part:@sanity/base/search-icon'
 import Button from 'part:@sanity/components/buttons/default'
 import {Tooltip} from 'part:@sanity/components/tooltip'
 import * as sidecar from 'part:@sanity/default-layout/sidecar?'
 import ToolMenu from 'part:@sanity/default-layout/tool-switcher'
 import {HAS_SPACES} from '../util/spaces'
-import {Router, Tool} from '../types'
+import {Tool} from '../types'
 import Branding from './branding/Branding'
 import LoginStatus from './loginStatus/LoginStatus'
 import SanityStatusContainer from './studioStatus/SanityStatusContainer'
@@ -30,7 +30,6 @@ interface Props {
   onSwitchTool: () => void
   onToggleMenu: () => void
   onUserLogout: () => void
-  router: Router
   searchIsOpen: boolean
   showLabel: boolean
   showToolMenu: boolean
@@ -41,6 +40,7 @@ const TOUCH_DEVICE = 'ontouchstart' in document.documentElement
 
 // eslint-disable-next-line complexity
 export default function Navbar(props: Props) {
+  const routerState = useRouterState()
   const {
     createMenuIsOpen,
     onCreateButtonClick,
@@ -51,14 +51,13 @@ export default function Navbar(props: Props) {
     onSearchClose,
     onSetLoginStatusElement,
     onSetSearchElement,
-    router,
     tools,
     searchIsOpen,
     showLabel,
     showToolMenu
   } = props
 
-  const rootState = HAS_SPACES && router.state.space ? {space: router.state.space} : {}
+  const rootState = HAS_SPACES && routerState.space ? {space: routerState.space} : {}
   const className = classNames(styles.root, showToolMenu && styles.withToolMenu)
   const searchClassName = classNames(styles.search, searchIsOpen && styles.searchIsOpen)
 
@@ -121,9 +120,8 @@ export default function Navbar(props: Props) {
             direction="horizontal"
             isVisible={showToolMenu}
             tools={tools}
-            activeToolName={router.state.tool}
+            activeToolName={routerState.tool}
             onSwitchTool={onSwitchTool}
-            router={router}
             showLabel={showLabel}
             tone="navbar"
           />

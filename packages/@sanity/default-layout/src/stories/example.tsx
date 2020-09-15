@@ -98,7 +98,6 @@ export function ExampleStory() {
               direction="horizontal"
               isVisible
               onSwitchTool={action('onSwitchTool')}
-              router={{} as any}
               tools={[
                 {
                   name: 'desk',

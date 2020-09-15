@@ -14,7 +14,6 @@ export function ToolMenuStory() {
           direction="horizontal"
           isVisible
           onSwitchTool={() => action('onSwitchTool')}
-          router={{} as any}
           tone="navbar"
           tools={[
             {

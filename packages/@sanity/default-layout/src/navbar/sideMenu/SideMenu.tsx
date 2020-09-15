@@ -6,7 +6,7 @@ import Button from 'part:@sanity/components/buttons/default'
 import ToolMenu from 'part:@sanity/default-layout/tool-switcher'
 import DatasetSelect from '../datasetSelect/DatasetSelect'
 import {HAS_SPACES} from '../../util/spaces'
-import {Router, Tool, User} from '../../types'
+import {Tool, User} from '../../types'
 
 import styles from './SideMenu.css'
 
@@ -16,13 +16,12 @@ interface Props {
   onClose: () => void
   onSignOut: () => void
   onSwitchTool: () => void
-  router: Router
   tools: Tool[]
   user: User
 }
 
 function SideMenu(props: Props) {
-  const {activeToolName, isOpen, onClose, onSignOut, onSwitchTool, router, tools, user} = props
+  const {activeToolName, isOpen, onClose, onSignOut, onSwitchTool, tools, user} = props
   let className = styles.root
   if (isOpen) className += ` ${styles.isOpen}`
   const tabIndex = isOpen ? 0 : -1
@@ -65,7 +64,6 @@ function SideMenu(props: Props) {
               direction="vertical"
               isVisible={isOpen}
               onSwitchTool={onSwitchTool}
-              router={router}
               tools={tools}
             />
           )}
