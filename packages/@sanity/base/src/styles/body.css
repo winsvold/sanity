@@ -1,6 +1,5 @@
 @import 'part:@sanity/base/theme/variables-style';
 @import 'part:@sanity/base/theme/variables/fonts-style';
-@import './layout/tippy.css';
 
 :global(html) {
   text-size-adjust: 100%;
