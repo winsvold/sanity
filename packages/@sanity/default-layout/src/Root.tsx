@@ -1,5 +1,4 @@
-import React from 'react'
-import {Subscription} from 'rxjs'
+import React, {useCallback, useEffect, useState} from 'react'
 import LoginWrapper from 'part:@sanity/base/login-wrapper?'
 import {RouterProvider} from 'part:@sanity/base/router'
 import AppLoadingScreen from 'part:@sanity/base/app-loading-screen'
@@ -9,69 +8,72 @@ import rootRouter, {maybeRedirectToBase} from './router'
 import DefaultLayout from './DefaultLayout'
 import NotFound from './main/NotFound'
 
-const handleNavigate = urlStateStore.navigate
-
-interface State {
-  intent?: {
-    name: string
-    params: {[key: string]: string}
-  }
-  urlState?: {}
-  isNotFound?: boolean
+interface Intent {
+  name: string
+  params: {[key: string]: string}
 }
 
-class DefaultLayoutRoot extends React.PureComponent<{}, State> {
-  state: State = {}
+interface State {
+  intent: Intent | null
+  urlState: Record<string, unknown>
+  isNotFound: boolean
+}
 
-  urlStateSubscription: Subscription | null = null
+function DefaultLayoutRoot() {
+  const tools = getOrderedTools()
+  const [{intent, isNotFound, urlState}, setState] = useState<State>({
+    intent: null,
+    isNotFound: false,
+    urlState: {}
+  })
 
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillMount() {
+  const handleNavigate = useCallback(
+    (newUrl: string, options: {replace: boolean}) => urlStateStore.navigate(newUrl, options),
+    []
+  )
+
+  useEffect(() => {
     maybeRedirectToBase()
 
-    this.urlStateSubscription = urlStateStore.state.subscribe({
-      next: event =>
-        this.setState({
+    const sub = urlStateStore.state.subscribe({
+      next: event => {
+        setState({
           urlState: event.state,
           isNotFound: event.isNotFound,
           intent: event.intent
         })
+      }
     })
-  }
 
-  componentWillUnmount() {
-    this.urlStateSubscription.unsubscribe()
-  }
+    return () => sub.unsubscribe()
+  }, [])
 
-  render() {
-    const {intent, urlState, isNotFound} = this.state
-    const tools = getOrderedTools()
+  const content = isNotFound ? (
+    <NotFound>
+      {intent && (
+        <div>
+          <p>
+            No tool can handle the intent: <strong>{intent.name}</strong> with parameters
+          </p>
+          <pre>{JSON.stringify(intent.params)}</pre>
+        </div>
+      )}
+    </NotFound>
+  ) : (
+    <DefaultLayout tools={tools} />
+  )
 
-    const content = isNotFound ? (
-      <NotFound>
-        {intent && (
-          <div>
-            No tool can handle the intent: <strong>{intent.name}</strong> with parameters{' '}
-            <pre>{JSON.stringify(intent.params)}</pre>
-          </div>
-        )}
-      </NotFound>
-    ) : (
-      <DefaultLayout tools={tools} />
-    )
+  const router = (
+    <RouterProvider router={rootRouter} state={urlState} onNavigate={handleNavigate}>
+      {content}
+    </RouterProvider>
+  )
 
-    const router = (
-      <RouterProvider router={rootRouter} state={urlState} onNavigate={handleNavigate}>
-        {content}
-      </RouterProvider>
-    )
-
-    return LoginWrapper ? (
-      <LoginWrapper LoadingScreen={<AppLoadingScreen text="Logging in" />}>{router}</LoginWrapper>
-    ) : (
-      router
-    )
-  }
+  return LoginWrapper ? (
+    <LoginWrapper LoadingScreen={<AppLoadingScreen text="Logging in" />}>{router}</LoginWrapper>
+  ) : (
+    router
+  )
 }
 
 export default DefaultLayoutRoot
