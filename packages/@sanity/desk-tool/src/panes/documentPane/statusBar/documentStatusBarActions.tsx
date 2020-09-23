@@ -10,22 +10,12 @@ import {HistoryRestoreAction} from '../../../actions/HistoryRestoreAction'
 import styles from './documentStatusBarActions.css'
 import {ActionMenu} from './actionMenu'
 import {ActionStateDialog} from './actionStateDialog'
+import {DocumentStatusBarActionsProps, HistoryStatusBarActionsProps} from './types'
 
 const TOUCH_SUPPORT = 'ontouchstart' in document.documentElement
 
-interface Props {
-  id: string
-  type: string
-  states: any[]
-  disabled: boolean
-  isMenuOpen: boolean
-  showMenu: boolean
-  onMenuOpen: () => void
-  onMenuClose: () => void
-}
-
 // eslint-disable-next-line complexity
-function DocumentStatusBarActionsInner(props: Props) {
+function DocumentStatusBarActionsInner(props: DocumentStatusBarActionsProps) {
   const {states, showMenu} = props
   const [firstActionState, ...menuActionStates] = states
 
@@ -106,12 +96,6 @@ export function DocumentStatusBarActions(props: {id: string; type: string}) {
       disabled={connectionState !== 'connected'}
     />
   ) : null
-}
-
-interface HistoryStatusBarActionsProps {
-  id: string
-  type: string
-  revision: string
 }
 
 const historyActions = [HistoryRestoreAction]
