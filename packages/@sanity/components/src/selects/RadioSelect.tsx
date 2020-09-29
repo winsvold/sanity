@@ -12,7 +12,7 @@ interface RadioSelectProps {
   readOnly?: boolean
   items: {title: string}[]
   inputId?: string
-  onBlur: () => void
+  onBlur?: () => void
 }
 
 const RadioSelect = React.forwardRef((props: RadioSelectProps, ref: React.Ref<HTMLDivElement>) => {
