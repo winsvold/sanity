@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import {PortalProvider, usePortal} from 'part:@sanity/components/portal'
 import {ScrollContainer} from 'part:@sanity/components/scroll'
 import React, {createElement, useCallback, useMemo, useRef} from 'react'
+import {Path} from '@sanity/types'
 import {useDeskToolFeatures} from '../../../features'
 import {useDocumentHistory} from '../documentHistory'
 import {Doc, DocumentView} from '../types'
@@ -10,7 +11,6 @@ import {DocumentHeaderTitle} from './header/title'
 import {DocumentPanelHeader} from './header/header'
 import {getMenuItems} from './menuItems'
 import {FormView} from './views'
-import {Path} from '@sanity/types'
 
 import styles from './documentPanel.css'
 import {
@@ -35,6 +35,7 @@ interface DocumentPanelProps {
   onChange: (patches: any[]) => void
   formInputFocusPath: Path
   onFormInputFocus: (focusPath: Path) => void
+  onFormInputBlur: () => void
   onCloseView: () => void
   onCollapse?: () => void
   onExpand?: () => void
@@ -54,14 +55,7 @@ interface DocumentPanelProps {
 }
 
 export function DocumentPanel(props: DocumentPanelProps) {
-  const {
-    toggleInspect,
-    isHistoryOpen,
-    views,
-    activeViewId,
-    onFormInputFocus,
-    formInputFocusPath
-  } = props
+  const {toggleInspect, isHistoryOpen, views, activeViewId} = props
 
   const parentPortal = usePortal()
   const features = useDeskToolFeatures()
@@ -163,6 +157,7 @@ export function DocumentPanel(props: DocumentPanelProps) {
                 initialValue={props.initialValue}
                 focusPath={props.formInputFocusPath}
                 onFocus={props.onFormInputFocus}
+                onBlur={props.onFormInputBlur}
                 markers={props.markers}
                 onChange={props.onChange}
                 readOnly={revTime !== null}

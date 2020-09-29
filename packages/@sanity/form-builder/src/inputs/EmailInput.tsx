@@ -21,7 +21,7 @@ export default class EmailInput extends React.Component<Props<string>> {
     this._input = input
   }
   render() {
-    const {value, readOnly, type, markers, level, onFocus, presence} = this.props
+    const {value, readOnly, type, markers, level, onFocus, presence, onBlur} = this.props
     const validation = markers.filter(marker => marker.type === 'validation')
     const errors = validation.filter(marker => marker.level === 'error')
     return (
@@ -42,6 +42,7 @@ export default class EmailInput extends React.Component<Props<string>> {
           placeholder={type.placeholder}
           onChange={this.handleChange}
           onFocus={onFocus}
+          onBlur={onBlur}
           ref={this.setInput}
         />
       </FormField>

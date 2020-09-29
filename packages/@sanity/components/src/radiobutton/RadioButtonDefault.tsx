@@ -11,6 +11,7 @@ type Props = {
   checked: boolean
   disabled?: boolean
   name?: string
+  onBlur: () => void
 }
 
 export default function RadioButton({
@@ -20,7 +21,8 @@ export default function RadioButton({
   label,
   name,
   onChange,
-  onFocus
+  onFocus,
+  onBlur
 }: Props) {
   const elementId = useId()
 
@@ -40,6 +42,7 @@ export default function RadioButton({
         checked={checked}
         onFocus={onFocus}
         onChange={handleChange}
+        onBlur={onBlur}
       />
       <div className={styles.radio} />
       <div>

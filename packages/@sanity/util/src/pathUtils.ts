@@ -14,6 +14,7 @@ const reKeySegment = /_key\s*==\s*['"](.*)['"]/
 const EMPTY_PATH: Path = []
 
 export const FOCUS_TERMINATOR = '$'
+export const BLUR_TERMINATOR = '$_blur'
 
 export function get(obj: unknown, path: Path | string, defaultVal?: unknown): unknown {
   const select = typeof path === 'string' ? fromString(path) : path

@@ -3,7 +3,7 @@ import {map} from 'rxjs/operators'
 import {isPlainObject, get} from 'lodash'
 import {FormFieldPresence} from '@sanity/base/presence'
 import {ArraySchemaType, isObjectSchemaType, Marker, Path, SchemaType} from '@sanity/types'
-import {FOCUS_TERMINATOR, startsWith} from '@sanity/util/paths'
+import {FOCUS_TERMINATOR, BLUR_TERMINATOR, startsWith} from '@sanity/util/paths'
 import formBuilderConfig from 'config:@sanity/form-builder'
 import ArrayFunctions from 'part:@sanity/form-builder/input/array/functions'
 import DefaultButton from 'part:@sanity/components/buttons/default'
@@ -87,6 +87,10 @@ export default class ArrayInput extends React.Component<Props, ArrayInputState> 
   }
   handleFocusItem = (item: ItemValue) => {
     this.props.onFocus([{_key: item._key}, FOCUS_TERMINATOR])
+  }
+
+  handleBlur = item => {
+    // handle array blur
   }
 
   removeItem(item: ItemValue) {
@@ -191,6 +195,9 @@ export default class ArrayInput extends React.Component<Props, ArrayInputState> 
             startsWith([index], pItem.path) || startsWith([{_key: item && item._key}], pItem.path)
           const childPresence = isGrid ? [] : presence.filter(isChildPresence)
           const itemProps = isSortable ? {index} : {}
+          const handleBlur = () => {
+            // handle item blur?
+          }
           return (
             <Item
               key={item._key}
@@ -203,7 +210,6 @@ export default class ArrayInput extends React.Component<Props, ArrayInputState> 
                 focusPath={focusPath}
                 level={level}
                 markers={childMarkers.length === 0 ? NO_MARKERS : childMarkers}
-                onBlur={onBlur}
                 onChange={this.handleItemChange}
                 onFocus={onFocus}
                 onRemove={this.handleRemoveItem}
@@ -211,6 +217,7 @@ export default class ArrayInput extends React.Component<Props, ArrayInputState> 
                 readOnly={readOnly || hasMissingKeys}
                 type={type}
                 value={item}
+                onBlur={handleBlur}
               />
             </Item>
           )
@@ -315,7 +322,7 @@ export default class ArrayInput extends React.Component<Props, ArrayInputState> 
   }
 
   render() {
-    const {type, level, markers, readOnly, onChange, value, presence} = this.props
+    const {type, level, markers, readOnly, onChange, value, presence, onBlur} = this.props
     const hasNonObjectValues = (value || []).some(item => !isPlainObject(item))
     if (hasNonObjectValues) {
       return (
@@ -327,6 +334,7 @@ export default class ArrayInput extends React.Component<Props, ArrayInputState> 
           onFocus={this.handleFocus}
           ref={this.setElement}
           markers={markers}
+          onBlur={onBlur}
         >
           <div className={styles.nonObjectsWarning}>
             Some items in this list are not objects. We need to remove them before the list can be
@@ -397,6 +405,7 @@ export default class ArrayInput extends React.Component<Props, ArrayInputState> 
         ref={this.setElement}
         presence={presence.filter(item => item.path[0] === '$')}
         changeIndicator={false}
+        onBlur={this.handleBlur}
         {...uploadProps}
       >
         <div>

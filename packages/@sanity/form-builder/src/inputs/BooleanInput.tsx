@@ -12,9 +12,8 @@ import {Props} from './types'
 
 const BooleanInput = React.forwardRef(
   (props: Props<boolean, BooleanSchemaType>, ref: React.MutableRefObject<HTMLDivElement>) => {
-    const {onChange} = props
     const inputRef = useRef<any>(null)
-    const {value, type, readOnly, onFocus, markers, presence} = props
+    const {value, type, readOnly, onFocus, markers, presence, onChange, onBlur} = props
     const layout = type.options?.layout || 'switch'
 
     const handleChange = useCallback(
@@ -37,6 +36,7 @@ const BooleanInput = React.forwardRef(
                 onFocus={onFocus}
                 checked={value}
                 description={type.description}
+                onBlur={onBlur}
               >
                 <ValidationStatus markers={markers} />
               </Checkbox>
@@ -51,6 +51,7 @@ const BooleanInput = React.forwardRef(
                 description={type.description}
                 onChange={handleChange}
                 onFocus={onFocus}
+                onBlur={onBlur}
               >
                 <ValidationStatus markers={markers} />
               </Switch>

@@ -47,6 +47,7 @@ type Props = {
   document: SanityDocument
   onChange: (ev: PatchEvent) => void
   onFocus: (path: Path) => void
+  onBlur: () => void
   getValuePath: () => Path
   markers: Marker[]
   presence: any
@@ -163,7 +164,17 @@ export default withValuePath(
       }
 
       render() {
-        const {value, compareValue, type, level, markers, readOnly, presence} = this.props
+        const {
+          value,
+          compareValue,
+          focusPath,
+          type,
+          level,
+          markers,
+          readOnly,
+          presence,
+          onBlur
+        } = this.props
         const {loading, inputText} = this.state
         const hasSourceField = type.options && type.options.source
         const formFieldProps = {
@@ -192,6 +203,7 @@ export default withValuePath(
                     onFocus={this.handleFocusCurrent}
                     value={typeof inputText === 'string' ? inputText : value.current}
                     readOnly={readOnly}
+                    onBlur={onBlur}
                   />
                 </div>
                 {hasSourceField && (

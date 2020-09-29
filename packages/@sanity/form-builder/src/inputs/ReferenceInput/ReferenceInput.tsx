@@ -59,6 +59,7 @@ export type Props = {
   onChange: (event: PatchEvent) => void
   level: number
   presence: any
+  onBlur: () => void
 
   // From withDocument
   document: SanityDocument
@@ -243,7 +244,17 @@ export default withValuePath(
         this._input = input
       }
       render() {
-        const {type, value, level, markers, readOnly, presence, compareValue} = this.props
+        const {
+          type,
+          value,
+          level,
+          markers,
+          readOnly,
+          presence,
+          focusPath,
+          compareValue,
+          onBlur
+        } = this.props
         const {previewSnapshot, isFetching, isMissing, hits} = this.state
         const valueFromHit = value && hits.find(hit => hit._id === value._ref)
         const weakIs = value && value._weak ? 'weak' : 'strong'
@@ -303,6 +314,7 @@ export default withValuePath(
                   items={hits}
                   ref={this.setInput}
                   readOnly={readOnly || isLoadingSnapshot}
+                  onBlur={onBlur}
                 />
               </div>
             </FormField>

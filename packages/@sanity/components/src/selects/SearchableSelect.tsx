@@ -22,6 +22,7 @@ interface SearchableSelectProps {
   items?: Item[]
   dropdownPosition?: string
   readOnly?: boolean
+  onBlur: () => void
 }
 
 interface State {
@@ -152,6 +153,7 @@ export default class SearchableSelect extends React.PureComponent<
         isOpen: false
       })
     }
+    this.props.onBlur()
   }
 
   render() {

@@ -22,7 +22,7 @@ export default class UrlInput extends React.Component<Props<string>> {
     this._input = input
   }
   render() {
-    const {value, markers, type, readOnly, level, onFocus, presence} = this.props
+    const {value, markers, type, readOnly, level, onFocus, presence, onBlur} = this.props
     const validation = markers.filter(marker => marker.type === 'validation')
     const errors = validation.filter(marker => marker.level === 'error')
     // Use text input for relative URIs
@@ -47,6 +47,7 @@ export default class UrlInput extends React.Component<Props<string>> {
           onChange={this.handleChange}
           onFocus={onFocus}
           ref={this.setInput}
+          onBlur={onBlur}
         />
       </FormField>
     )

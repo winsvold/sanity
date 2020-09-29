@@ -14,6 +14,7 @@ import {createDragHandle} from 'part:@sanity/components/lists/sortable'
 import ValidationStatus from 'part:@sanity/components/validation/status'
 import DragHandleIcon from 'part:@sanity/base/drag-handle-icon'
 import React from 'react'
+import {FOCUS_TERMINATOR, BLUR_TERMINATOR} from '@sanity/util/paths'
 import {FormBuilderInput} from '../../../FormBuilderInput'
 import PatchEvent from '../../../PatchEvent'
 import Preview from '../../../Preview'
@@ -22,7 +23,6 @@ import ConfirmButton from '../ConfirmButton'
 import {ItemValue} from '../typedefs'
 import InvalidItem from '../InvalidItem'
 import {hasFocusInPath, isEmpty, pathSegmentFrom} from './helpers'
-
 import styles from './ArrayInputListItem.css'
 
 const DragHandle = createDragHandle(() => (
@@ -41,7 +41,7 @@ interface ArrayInputListItemProps {
   onRemove: (arg0: ItemValue) => void
   onChange: (arg0: PatchEvent, arg1: ItemValue) => void
   onFocus: (arg0: Path) => void
-  onBlur: () => void
+  onBlur?: () => void
   filterField: () => any
   readOnly: boolean | null
   focusPath: Path
@@ -81,11 +81,16 @@ export class ArrayInputListItem extends React.PureComponent<ArrayInputListItemPr
     this.setFocus()
   }
 
+  handleBlur = () => {
+    // handle array item blur
+  }
   handleEditStop = () => {
     if (isEmpty(this.props.value)) {
       this.handleRemove()
     } else {
+      // const {focusPath} = this.props
       this.setFocus()
+      this.props.onBlur()
     }
   }
 
@@ -143,14 +148,12 @@ export class ArrayInputListItem extends React.PureComponent<ArrayInputListItemPr
   setFocusArea = (el: HTMLDivElement | null) => {
     this._focusArea = el
   }
-
   renderEditItemForm(item: ItemValue) {
     const {
       type,
       markers,
       focusPath,
       onFocus,
-      onBlur,
       readOnly,
       filterField,
       presence,
@@ -167,7 +170,6 @@ export class ArrayInputListItem extends React.PureComponent<ArrayInputListItemPr
         value={isEmpty(item) ? undefined : item}
         onChange={this.handleChange}
         onFocus={onFocus}
-        onBlur={onBlur}
         compareValue={compareValue}
         focusPath={focusPath}
         readOnly={readOnly || memberType.readOnly}
@@ -175,6 +177,7 @@ export class ArrayInputListItem extends React.PureComponent<ArrayInputListItemPr
         path={[{_key: item._key}]}
         filterField={filterField}
         presence={childPresence}
+        onBlur={this.handleBlur}
       />
     )
 

@@ -12,10 +12,11 @@ interface RadioSelectProps {
   readOnly?: boolean
   items: {title: string}[]
   inputId?: string
+  onBlur: () => void
 }
 
 const RadioSelect = React.forwardRef((props: RadioSelectProps, ref: React.Ref<HTMLDivElement>) => {
-  const {name, direction, onChange, onFocus, value, readOnly, items = [], inputId} = props
+  const {name, direction, onChange, onFocus, value, readOnly, items = [], inputId, onBlur} = props
 
   const handleRadioChange = item => {
     if (onChange) onChange(item)
@@ -41,6 +42,7 @@ const RadioSelect = React.forwardRef((props: RadioSelectProps, ref: React.Ref<HT
                 onChange={handleRadioChange}
                 checked={value === item}
                 onFocus={onFocus}
+                onBlur={onBlur}
               />
             </div>
           )

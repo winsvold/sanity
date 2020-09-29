@@ -23,7 +23,7 @@ export default class NumberInput extends React.Component<Props<number, NumberSch
     this._input = input
   }
   render() {
-    const {value = '', readOnly, markers, type, level, onFocus, presence} = this.props
+    const {value = '', readOnly, markers, type, level, onFocus, onBlur, presence} = this.props
     const validation = markers.filter(marker => marker.type === 'validation')
     const errors = validation.filter(marker => marker.level === 'error')
     // Show numpad on mobile if only positive numbers is preferred
@@ -47,6 +47,7 @@ export default class NumberInput extends React.Component<Props<number, NumberSch
           placeholder={type.placeholder}
           onChange={this.handleChange}
           onFocus={onFocus}
+          onBlur={onBlur}
           ref={this.setInput}
           pattern={onlyPositiveNumber ? '[d]*' : undefined}
         />

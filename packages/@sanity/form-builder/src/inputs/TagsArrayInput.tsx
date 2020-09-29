@@ -24,7 +24,7 @@ export default class TagsArrayInput extends React.PureComponent<Props<string[]>>
     this._input = el
   }
   render() {
-    const {type, value, readOnly, level, onFocus, presence} = this.props
+    const {type, value, readOnly, level, onFocus, presence, onBlur} = this.props
     return (
       <FormField
         level={level}
@@ -40,6 +40,7 @@ export default class TagsArrayInput extends React.PureComponent<Props<string[]>>
           onChange={this.handleChange}
           onFocus={onFocus}
           ref={this.setInput}
+          onBlur={onBlur}
         />
       </FormField>
     )

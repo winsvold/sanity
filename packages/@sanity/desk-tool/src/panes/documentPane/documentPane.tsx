@@ -6,6 +6,7 @@ import React, {useCallback, useRef, useState} from 'react'
 import {Path} from '@sanity/types'
 import {ChangeConnectorRoot} from '@sanity/base/lib/change-indicators/overlay/ChangeConnectorRoot'
 import {ReportChangesPanel} from '@sanity/base/lib/change-indicators/overlay/ReportChangesPanel'
+import {BLUR_TERMINATOR} from '@sanity/util/paths'
 import {usePaneRouter} from '../../contexts/PaneRouterContext'
 import {useDeskToolFeatures} from '../../features'
 import {ChangesPanel} from './changesPanel'
@@ -96,6 +97,18 @@ export function DocumentPane(props: DocumentPaneProps) {
     },
     [documentId]
   )
+
+  const handleBlur = useCallback(() => {
+    setFocusPath([BLUR_TERMINATOR])
+      setLocation([
+        {
+          type: 'document',
+          documentId,
+        path: [BLUR_TERMINATOR],
+          lastActiveAt: new Date().toISOString()
+        }
+      ])
+  }, [documentId])
 
   const toggleInspect = useCallback(
     (toggle = !isInspectOpen) => {
@@ -193,6 +206,7 @@ export function DocumentPane(props: DocumentPaneProps) {
             idPrefix={paneKey}
             formInputFocusPath={formInputFocusPath}
             onFormInputFocus={handleFocus}
+            onFormInputBlur={handleBlur}
             initialValue={initialValue}
             isClosable={isClosable}
             isCollapsed={isCollapsed}

@@ -39,7 +39,7 @@ export default class SelectInput extends React.Component<Props<string | number>>
   }
 
   render() {
-    const {value, readOnly, markers, type, level, onFocus, presence} = this.props
+    const {value, readOnly, markers, type, level, onFocus, presence, onBlur} = this.props
     const items = ((type.options?.list || []) as unknown[]).map(toSelectItem)
     const currentItem = items.find(item => item.value === value)
     const isRadio = type.options && type.options.layout === 'radio'
@@ -53,6 +53,7 @@ export default class SelectInput extends React.Component<Props<string | number>>
         description={type.description}
         presence={presence}
         onFocus={onFocus}
+        onBlur={onBlur}
       >
         {isRadio ? (
           <RadioSelect
@@ -65,6 +66,7 @@ export default class SelectInput extends React.Component<Props<string | number>>
             direction={type.options.direction || 'vertical'}
             ref={this.setInput}
             readOnly={readOnly}
+            onBlur={onBlur}
           />
         ) : (
           <Select
@@ -78,6 +80,7 @@ export default class SelectInput extends React.Component<Props<string | number>>
             ref={this.setInput}
             readOnly={readOnly}
             hasError={validation.length >= 1}
+            onBlur={onBlur}
           />
         )}
       </FormField>
