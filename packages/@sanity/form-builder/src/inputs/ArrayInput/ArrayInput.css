@@ -6,25 +6,43 @@
 }
 
 .list {
-  user-select: none;
-
+  /* overide default list */
   @nest .root & {
-    margin: -0.25em 0;
+    user-select: none;
+    /* display: grid; */
+    /* grid-template-columns: minmax(0, 1fr); */
+    /* grid-gap: var(--small-padding); */
+    padding: 0 1px;
+  }
+
+  @nest &.moving {
+    /* opacity: 0.5; */
+  }
+
+  @nest &.readOnly {
+    opacity: 0.5;
   }
 }
 
-.listReadOnly {
-  composes: list;
-  opacity: 0.5;
+.grid {
+  user-select: none;
+
+  @nest &.moving {
+    /* opacity: 0.5; */
+  }
+
+  @nest &.readOnly {
+    opacity: 0.5;
+  }
 }
 
 .functions {
   @nest .list + & {
     margin-top: var(--small-padding);
+  }
 
-    @media (--screen-medium) {
-      margin-top: var(--medium-padding);
-    }
+  &:empty {
+    display: none;
   }
 }
 
@@ -35,16 +53,23 @@
 }
 
 .listItem {
-  /* semantic class name */
+  padding-bottom: 0.5em;
+  /* margin-bottom: 0.5em; */
 }
 
-.movingItem {
+.listItemWrapper {
+  composes: shadow-1dp from 'part:@sanity/base/theme/shadows-style';
+  border-radius: var(--border-radius-small);
+  padding: var(--extra-small-padding);
+  transition: box-shadow 100ms;
+}
+
+.gridItemWrapper {
+}
+
+/* .movingListItem {
   composes: movingItem from 'part:@sanity/base/theme/layout/helpers';
-}
-
-.listItemMute {
-  /* composes: lineBetween from 'part:@sanity/components/lists/default-item-style'; */
-}
+} */
 
 .gridItem {
   display: block;

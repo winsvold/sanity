@@ -1,4 +1,5 @@
 import {MenuItemGroup} from '@sanity/components'
+import {Path} from '@sanity/types'
 import classNames from 'classnames'
 import {PortalProvider, usePortal} from 'part:@sanity/components/portal'
 import {ScrollContainer} from 'part:@sanity/components/scroll'
@@ -10,7 +11,6 @@ import {DocumentHeaderTitle} from './header/title'
 import {DocumentPanelHeader} from './header/header'
 import {getMenuItems} from './menuItems'
 import {FormView} from './views'
-import {Path} from '@sanity/types'
 
 import styles from './documentPanel.css'
 import {

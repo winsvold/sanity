@@ -19,6 +19,7 @@
 
 .color {
   composes: shadow-1dp from 'part:@sanity/base/theme/shadows-style';
+
   display: flex;
   flex-direction: column;
   text-align: center;

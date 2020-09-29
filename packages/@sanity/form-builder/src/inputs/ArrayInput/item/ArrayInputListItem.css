@@ -8,7 +8,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--extra-small-padding) 0;
 }
 
 .innerWithError {
@@ -46,7 +45,7 @@
 .dragHandle {
   display: block;
   flex-grow: 0;
-  margin-right: var(--extra-small-padding);
+  margin: 0 var(--extra-small-padding);
 
   @nest & > button {
     cursor: ns-resize;
@@ -84,9 +83,36 @@
   align-items: center;
   flex-grow: 0;
   color: var(--text-color-secondary);
-  margin-left: var(--extra-small-padding);
+  margin: 0 var(--extra-small-padding);
 }
 
 .validationIconError {
   composes: validationIconError from 'part:@sanity/base/theme/forms/validation-style';
+}
+
+.validationStatusContainer {
+  margin-left: 0.25em;
+
+  @nest &:empty {
+    display: none;
+  }
+}
+
+.presenceContainer {
+}
+
+.editButtonContainer {
+  margin-left: 0.25em;
+
+  @nest &:empty {
+    display: none;
+  }
+}
+
+.removeButtonContainer {
+  margin-left: 0.25em;
+
+  @nest &:empty {
+    display: none;
+  }
 }
