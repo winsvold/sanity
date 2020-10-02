@@ -71,4 +71,8 @@ declare module 'part:@sanity/components/scroll' {
   export * from '@sanity/components/src/scroll'
 }
 
+declare module 'part:@sanity/components/resize' {
+  export * from '@sanity/components/src/resize'
+}
+
 declare module 'all:part:*'
