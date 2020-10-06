@@ -1,5 +1,6 @@
 import {DialogAction} from '@sanity/components'
 import {useDocumentOperation} from '@sanity/react-hooks'
+import {usePathStatus, useHoverReporter} from '@sanity/base/lib/datastores/paths'
 import classNames from 'classnames'
 import PopoverDialog from 'part:@sanity/components/dialogs/popover'
 import React, {useCallback, useContext, useState} from 'react'
@@ -16,6 +17,8 @@ import {ValueError} from './ValueError'
 
 import styles from './FieldChange.css'
 
+const pathStatusOptions = {filter: ['isDangerous']}
+
 export function FieldChange({change}: {change: FieldChangeNode}) {
   const DiffComponent = change.diffComponent || FallbackDiff
   const {
@@ -27,7 +30,6 @@ export function FieldChange({change}: {change: FieldChangeNode}) {
   } = useContext(DocumentChangeContext)
   const docOperations = useDocumentOperation(documentId, schemaType.name) as OperationsAPI
   const [confirmRevertOpen, setConfirmRevertOpen] = React.useState(false)
-  const [revertHovered, setRevertHovered] = useState(false)
   const [revertButtonElement, setRevertButtonElement] = useState<HTMLDivElement | null>(null)
 
   const handleRevertChanges = useCallback(() => {
@@ -46,26 +48,23 @@ export function FieldChange({change}: {change: FieldChangeNode}) {
     if (action.action) action.action()
   }, [])
 
+  const {isDangerous} = usePathStatus(change.path, pathStatusOptions)
+  const {onEnter, onLeave, onEnterDanger, onLeaveDanger} = useHoverReporter(change.path)
+  const revertHovered = isDangerous
+
   const rootClass = classNames(
     change.error ? styles.error : styles.root,
     revertHovered && styles.revertHovered
   )
 
-  const handleRevertButtonMouseEnter = useCallback(() => {
-    setRevertHovered(true)
-  }, [])
-
-  const handleRevertButtonMouseLeave = useCallback(() => {
-    setRevertHovered(false)
-  }, [])
-
   return (
-    <div className={rootClass}>
+    <div className={rootClass} onMouseEnter={onEnter} onMouseLeave={onLeave}>
       {change.showHeader && (
         <div className={styles.header}>
           <ChangeBreadcrumb change={change} titlePath={change.titlePath} />
         </div>
       )}
+
       <FieldWrapper path={change.path} hasHover={revertHovered}>
         <DiffInspectWrapper change={change} className={styles.change}>
           {change.error ? (
@@ -83,8 +82,8 @@ export function FieldChange({change}: {change: FieldChangeNode}) {
               <div className={styles.revertChangesButtonContainer}>
                 <RevertChangesButton
                   onClick={handleRevertChangesConfirm}
-                  onMouseEnter={handleRevertButtonMouseEnter}
-                  onMouseLeave={handleRevertButtonMouseLeave}
+                  onMouseEnter={onEnterDanger}
+                  onMouseLeave={onLeaveDanger}
                   ref={setRevertButtonElement}
                   selected={confirmRevertOpen}
                 />

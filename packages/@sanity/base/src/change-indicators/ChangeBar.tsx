@@ -37,7 +37,10 @@ function EditIconSmall(props: Omit<React.SVGProps<SVGElement>, 'ref'>) {
 }
 
 export const ChangeBar = React.forwardRef(
-  (props: {hasFocus: boolean; isChanged: boolean; children: React.ReactNode}, ref: any) => {
+  (
+    props: {hasFocus: boolean; isChanged: boolean; isDangerous: boolean; children: React.ReactNode},
+    ref: any
+  ) => {
     const [hover, setHover] = useState(false)
     const {onOpenReviewChanges, isReviewChangesOpen} = React.useContext(ConnectorContext)
 
@@ -58,6 +61,7 @@ export const ChangeBar = React.forwardRef(
           hover && styles.hover,
           props.hasFocus && styles.focus,
           props.isChanged && styles.changed,
+          props.isDangerous && styles.danger,
           isReviewChangesOpen && styles.reviewChangesOpen
         )}
       >

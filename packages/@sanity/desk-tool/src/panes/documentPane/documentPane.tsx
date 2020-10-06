@@ -1,9 +1,11 @@
 import {MenuItemGroup} from '@sanity/components'
 import * as PathUtils from '@sanity/util/paths'
 import classNames from 'classnames'
+import {setLocation} from 'part:@sanity/base/datastore/presence'
 import Snackbar from 'part:@sanity/components/snackbar/default'
-import React, {useCallback, useRef, useState} from 'react'
-import {Path} from '@sanity/types'
+import React, {useCallback, useMemo, useRef, useState} from 'react'
+import {Path, Marker} from '@sanity/types'
+import {PathsContext, getPathsManager} from '@sanity/base/lib/datastores/paths'
 import {ChangeConnectorRoot} from '@sanity/base/lib/change-indicators/overlay/ChangeConnectorRoot'
 import {ReportChangesPanel} from '@sanity/base/lib/change-indicators/overlay/ReportChangesPanel'
 import {usePaneRouter} from '../../contexts/PaneRouterContext'
@@ -17,7 +19,6 @@ import {DocumentActionShortcuts, isInspectHotkey, isPreviewHotkey} from './keybo
 import {DocumentStatusBar} from './statusBar'
 import {TimelinePopover} from './timeline'
 import {Doc, DocumentViewType} from './types'
-import {setLocation} from 'part:@sanity/base/datastore/presence'
 
 import styles from './documentPane.css'
 
@@ -31,7 +32,7 @@ interface DocumentPaneProps {
   isClosable: boolean
   isCollapsed: boolean
   isSelected: boolean
-  markers: any[]
+  markers: Marker[]
   menuItemGroups: MenuItemGroup[]
   onChange: (patches: any[]) => void
   onExpand?: () => void
@@ -80,10 +81,17 @@ export function DocumentPane(props: DocumentPaneProps) {
   const [formInputFocusPath, setFocusPath] = React.useState<Path>(() =>
     paneRouter.params.path ? PathUtils.fromString(paneRouter.params.path) : []
   )
+
+  const pathsManager = useMemo(
+    () => getPathsManager({focusPath: formInputFocusPath, hoverPath: []}),
+    []
+  )
+
   const isInspectOpen = paneRouter.params.inspect === 'on'
 
   const handleFocus = useCallback(
     (nextFocusPath: Path) => {
+      pathsManager.report('focus', nextFocusPath)
       setFocusPath(nextFocusPath)
       setLocation([
         {
@@ -94,7 +102,7 @@ export function DocumentPane(props: DocumentPaneProps) {
         }
       ])
     },
-    [documentId]
+    [documentId, pathsManager]
   )
 
   const toggleInspect = useCallback(
@@ -174,67 +182,69 @@ export function DocumentPane(props: DocumentPaneProps) {
       ])}
       rootRef={rootRef}
     >
-      <ChangeConnectorRoot
-        onSetFocus={handleFocus}
-        onOpenReviewChanges={open}
-        isReviewChangesOpen={isChangesOpen}
-        className={styles.documentAndChangesContainer}
-      >
-        <div className={styles.documentContainer}>
-          {isInspectOpen && (
-            <InspectDialog idPrefix={paneKey} onClose={handleInspectClose} value={value as any} />
-          )}
+      <PathsContext.Provider value={{pathsManager}}>
+        <ChangeConnectorRoot
+          onSetFocus={handleFocus}
+          onOpenReviewChanges={open}
+          isReviewChangesOpen={isChangesOpen}
+          className={styles.documentAndChangesContainer}
+        >
+          <div className={styles.documentContainer}>
+            {isInspectOpen && (
+              <InspectDialog idPrefix={paneKey} onClose={handleInspectClose} value={value as any} />
+            )}
 
-          <DocumentPanel
-            activeViewId={activeViewId}
-            documentId={documentId}
-            documentType={documentType}
-            draft={draft}
-            idPrefix={paneKey}
-            formInputFocusPath={formInputFocusPath}
-            onFormInputFocus={handleFocus}
-            initialValue={initialValue}
-            isClosable={isClosable}
-            isCollapsed={isCollapsed}
-            isHistoryOpen={isChangesOpen}
-            isTimelineOpen={isTimelineOpen}
-            markers={markers}
-            menuItemGroups={menuItemGroups}
-            onChange={onChange}
-            onCloseView={handleClosePane}
-            onCollapse={onCollapse}
-            onExpand={onExpand}
-            onSetActiveView={handleSetActiveView}
-            onSplitPane={handleSplitPane}
-            onTimelineOpen={handleTimelineRev}
-            paneTitle={paneTitle}
-            published={published}
-            rootElement={rootRef.current}
-            schemaType={schemaType}
-            timelineMode={timelineMode}
-            toggleInspect={toggleInspect}
-            value={value}
-            compareValue={isChangesOpen ? historyController.sinceAttributes() : compareValue}
-            versionSelectRef={versionSelectRef}
-            views={views}
-          />
-        </div>
-
-        {features.reviewChanges && !isCollapsed && isChangesOpen && (
-          <ReportChangesPanel className={styles.changesContainer}>
-            <ChangesPanel
-              changesSinceSelectRef={changesSinceSelectRef}
+            <DocumentPanel
+              activeViewId={activeViewId}
               documentId={documentId}
+              documentType={documentType}
+              draft={draft}
+              idPrefix={paneKey}
+              formInputFocusPath={formInputFocusPath}
+              onFormInputFocus={handleFocus}
+              initialValue={initialValue}
+              isClosable={isClosable}
+              isCollapsed={isCollapsed}
+              isHistoryOpen={isChangesOpen}
               isTimelineOpen={isTimelineOpen}
-              loading={historyState === 'loading'}
-              onTimelineOpen={handleTimelineSince}
+              markers={markers}
+              menuItemGroups={menuItemGroups}
+              onChange={onChange}
+              onCloseView={handleClosePane}
+              onCollapse={onCollapse}
+              onExpand={onExpand}
+              onSetActiveView={handleSetActiveView}
+              onSplitPane={handleSplitPane}
+              onTimelineOpen={handleTimelineRev}
+              paneTitle={paneTitle}
+              published={published}
+              rootElement={rootRef.current}
               schemaType={schemaType}
-              since={historyController.sinceTime}
               timelineMode={timelineMode}
+              toggleInspect={toggleInspect}
+              value={value}
+              compareValue={isChangesOpen ? historyController.sinceAttributes() : compareValue}
+              versionSelectRef={versionSelectRef}
+              views={views}
             />
-          </ReportChangesPanel>
-        )}
-      </ChangeConnectorRoot>
+          </div>
+
+          {features.reviewChanges && !isCollapsed && isChangesOpen && (
+            <ReportChangesPanel className={styles.changesContainer}>
+              <ChangesPanel
+                changesSinceSelectRef={changesSinceSelectRef}
+                documentId={documentId}
+                isTimelineOpen={isTimelineOpen}
+                loading={historyState === 'loading'}
+                onTimelineOpen={handleTimelineSince}
+                schemaType={schemaType}
+                since={historyController.sinceTime}
+                timelineMode={timelineMode}
+              />
+            </ReportChangesPanel>
+          )}
+        </ChangeConnectorRoot>
+      </PathsContext.Provider>
 
       <div className={styles.footerContainer}>
         <DocumentStatusBar

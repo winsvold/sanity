@@ -111,6 +111,10 @@ export default withValuePath(
         }
       }
 
+      handleFocus = () => {
+        this.props.onFocus(['current'])
+      }
+
       setTextInput = input => {
         this._textInput = input
       }
@@ -185,6 +189,7 @@ export default withValuePath(
                     customValidity={errors.length > 0 ? errors[0].item.message : ''}
                     disabled={loading}
                     onChange={this.handleChange}
+                    onFocus={this.handleFocus}
                     value={typeof inputText === 'string' ? inputText : value.current}
                     readOnly={readOnly}
                   />

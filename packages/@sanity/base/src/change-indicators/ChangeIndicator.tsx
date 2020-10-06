@@ -2,6 +2,7 @@ import React from 'react'
 import deepCompare from 'react-fast-compare'
 import * as PathUtils from '@sanity/util/paths'
 import {Path} from '@sanity/types'
+import {usePathStatus, useHoverReporter} from '../datastores/paths'
 import {useReporter} from './tracker'
 import {ChangeIndicatorContext} from './ChangeIndicatorContext'
 import {ChangeBar} from './ChangeBar'
@@ -33,9 +34,8 @@ const ChangeBarWrapper = (
     children: React.ReactNode
   }
 ) => {
-  const [hasHover, setHover] = React.useState(false)
-  const onMouseEnter = React.useCallback(() => setHover(true), [])
-  const onMouseLeave = React.useCallback(() => setHover(false), [])
+  const {isDangerous, isHovered, isFocused} = usePathStatus(props.fullPath)
+  const {onEnter, onLeave} = useHoverReporter(props.fullPath)
   const ref = React.useRef()
 
   useReporter(
@@ -44,21 +44,16 @@ const ChangeBarWrapper = (
       element: ref.current!,
       path: props.fullPath,
       isChanged: props.isChanged,
-      hasFocus: props.hasFocus,
-      hasHover: hasHover
+      hasFocus: isFocused,
+      hasHover: isHovered
     }),
     // note: deepCompare should be ok here since we're not comparing deep values
     deepCompare
   )
 
   return (
-    <div
-      ref={ref}
-      className={props.className}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
-      <ChangeBar hasFocus={props.hasFocus} isChanged={props.isChanged}>
+    <div ref={ref} className={props.className} onMouseEnter={onEnter} onMouseLeave={onLeave}>
+      <ChangeBar hasFocus={props.hasFocus} isChanged={props.isChanged} isDangerous={isDangerous}>
         {props.children}
       </ChangeBar>
     </div>

@@ -1,3 +1,4 @@
+import {Path, Marker} from '@sanity/types'
 import {MenuItemGroup} from '@sanity/components'
 import classNames from 'classnames'
 import {PortalProvider, usePortal} from 'part:@sanity/components/portal'
@@ -10,7 +11,6 @@ import {DocumentHeaderTitle} from './header/title'
 import {DocumentPanelHeader} from './header/header'
 import {getMenuItems} from './menuItems'
 import {FormView} from './views'
-import {Path} from '@sanity/types'
 
 import styles from './documentPanel.css'
 import {
@@ -30,7 +30,7 @@ interface DocumentPanelProps {
   isCollapsed: boolean
   isHistoryOpen: boolean
   isTimelineOpen: boolean
-  markers: any
+  markers: Marker[]
   menuItemGroups: MenuItemGroup[]
   onChange: (patches: any[]) => void
   formInputFocusPath: Path
@@ -138,7 +138,7 @@ export function DocumentPanel(props: DocumentPanelProps) {
           onTimelineOpen={props.onTimelineOpen}
           rootElement={props.rootElement}
           schemaType={props.schemaType}
-          onSetFormInputFocus={props.onFormInputFocus}
+          onSetFormInputFocus={onFormInputFocus}
           timelineMode={props.timelineMode}
           title={
             <DocumentHeaderTitle
@@ -161,7 +161,7 @@ export function DocumentPanel(props: DocumentPanelProps) {
               <FormView
                 id={props.documentId}
                 initialValue={props.initialValue}
-                focusPath={props.formInputFocusPath}
+                focusPath={formInputFocusPath}
                 onFocus={props.onFormInputFocus}
                 markers={props.markers}
                 onChange={props.onChange}
