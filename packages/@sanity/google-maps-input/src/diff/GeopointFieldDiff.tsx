@@ -1,68 +1,107 @@
 import * as React from 'react'
-import {DiffComponent, ObjectDiff, DiffProps as GenericDiffProps} from '@sanity/field/diff'
+import {
+  DiffComponent,
+  ObjectDiff,
+  DiffProps as GenericDiffProps,
+  FromTo,
+  DiffCard,
+  getAnnotationAtPath,
+  DiffTooltip,
+  useAnnotationColor
+} from '@sanity/field/diff'
+import {UserColor} from '@sanity/base/user-color'
 import {GoogleMapsLoadProxy} from '../loader/GoogleMapsLoadProxy'
 import {GoogleMap} from '../map/Map'
+import {Marker} from '../map/Marker'
 import {Geopoint} from '../types'
-import {GeopointMove} from './GeopointMove'
 import styles from './GeopointFieldDiff.css'
 
 export type DiffProps = GenericDiffProps<ObjectDiff<Geopoint>>
 
-export const GeopointFieldDiff: DiffComponent<ObjectDiff<Geopoint>> = ({diff, schemaType}) => {
+export const GeopointFieldDiff: DiffComponent<ObjectDiff<Geopoint>> = ({diff}) => {
+  const {fromValue, toValue} = diff
+  const annotation =
+    getAnnotationAtPath(diff, ['lat']) ||
+    getAnnotationAtPath(diff, ['lng']) ||
+    getAnnotationAtPath(diff, [])
+
+  const userColor = useAnnotationColor(annotation)
+
+  let action = 'Unchanged'
+  if (fromValue && toValue) {
+    action = 'Moved'
+  } else if (fromValue) {
+    action = 'Removed'
+  } else if (toValue) {
+    action = 'Added'
+  }
+
+  const from = fromValue ? (
+    <DiffCard className={styles.annotation} annotation={annotation}>
+      <div className={styles.root}>
+        <GoogleMapsLoadProxy>
+          {api => (
+            <GeopointMarker
+              api={api}
+              point={fromValue}
+              userColor={userColor}
+              opacity={fromValue && toValue ? 0.75 : 1}
+            />
+          )}
+        </GoogleMapsLoadProxy>
+      </div>
+    </DiffCard>
+  ) : (
+    <NoGeopointPreview />
+  )
+
+  const to = toValue ? (
+    <DiffCard className={styles.annotation} annotation={annotation}>
+      <div className={styles.root}>
+        <GoogleMapsLoadProxy>
+          {api => <GeopointMarker api={api} point={toValue} userColor={userColor} />}
+        </GoogleMapsLoadProxy>
+      </div>
+    </DiffCard>
+  ) : (
+    <NoGeopointPreview />
+  )
+
   return (
-    <div className={styles.root}>
-      <GoogleMapsLoadProxy>
-        {api => <GeopointDiff api={api} diff={diff} schemaType={schemaType} />}
-      </GoogleMapsLoadProxy>
-    </div>
+    <DiffTooltip annotations={annotation ? [annotation] : []} description={action}>
+      <FromTo align="center" from={from} to={to} layout="grid" />
+    </DiffTooltip>
   )
 }
 
-function GeopointDiff({api, diff}: DiffProps & {api: typeof window.google.maps}) {
-  const {fromValue, toValue} = diff
-  const center = getCenter(diff, api)
-  const bounds = fromValue && toValue ? getBounds(fromValue, toValue, api) : undefined
-
+function GeopointMarker({
+  api,
+  point,
+  opacity = 1,
+  userColor
+}: {
+  api: typeof window.google.maps
+  point: Geopoint
+  opacity?: number
+  userColor?: UserColor
+}) {
   return (
     <GoogleMap
       api={api}
-      location={center}
+      location={point}
       mapTypeControl={false}
       controlSize={20}
-      bounds={bounds}
       scrollWheel={false}
     >
-      {map => <GeopointMove api={api} map={map} diff={diff} />}
+      {map => <Marker api={api} map={map} position={point} opacity={opacity} color={userColor} />}
     </GoogleMap>
   )
 }
 
-function getBounds(
-  fromValue: google.maps.LatLngLiteral,
-  toValue: google.maps.LatLngLiteral,
-  api: typeof window.google.maps
-): google.maps.LatLngBounds {
-  return new api.LatLngBounds().extend(fromValue).extend(toValue)
-}
-
-function getCenter(
-  diff: DiffProps['diff'],
-  api: typeof window.google.maps
-): google.maps.LatLngLiteral {
-  const {fromValue, toValue} = diff
-  if (fromValue && toValue) {
-    return getBounds(fromValue, toValue, api)
-      .getCenter()
-      .toJSON()
-  }
-
-  if (fromValue) {
-    return fromValue
-  }
-
-  if (toValue) {
-    return toValue
-  }
-
-  throw new Error('Neither a from or a to value present')
+function NoGeopointPreview() {
+  return (
+    <div className={styles.noGeoPoint}>
+      <div>(no geopoint)</div>
+    </div>
+  )
 }
