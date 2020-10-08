@@ -39,7 +39,7 @@ function generateTypeQueries(types, filters, sortings) {
       fieldName: `all${upperFirst(type.name)}`,
       filter:
         type.name === 'Document'
-          ? '_type match "*"'
+          ? 'defined(_type)'
           : '_type == "'.concat(type.originalName || type.name, '"'),
       type: {
         kind: 'List',
