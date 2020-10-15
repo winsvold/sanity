@@ -80,15 +80,15 @@
 
 .narrowButton {
   @media (--screen-medium) {
-    display: none;
+    display: none !important;
   }
 }
 
 .wideButton {
-  display: none;
+  display: none !important;
 
   @media (--screen-medium) {
-    display: block;
+    display: block !important;
   }
 }
 

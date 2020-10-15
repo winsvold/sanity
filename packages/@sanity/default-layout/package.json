@@ -41,12 +41,14 @@
     "rxjs": "^6.5.3"
   },
   "devDependencies": {
+    "@types/styled-components": "^5.1.4",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "mocha": "^5.0.1",
     "nyc": "^11.0.3",
     "prop-types": "^15.6.0",
-    "rimraf": "^2.7.1"
+    "rimraf": "^2.7.1",
+    "styled-components": "^5.2.0"
   },
   "peerDependencies": {
     "@sanity/base": "^2.0.0",

@@ -17,7 +17,7 @@ interface State {
   isVisible: boolean
 }
 
-class Sidecar extends React.PureComponent<{}, State> {
+export class Sidecar extends React.PureComponent<Record<string, unknown>, State> {
   state = {
     isOpen: true,
     isVisible: true
@@ -74,5 +74,3 @@ class Sidecar extends React.PureComponent<{}, State> {
     )
   }
 }
-
-export default Sidecar

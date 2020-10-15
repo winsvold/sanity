@@ -1,23 +1,16 @@
 import React from 'react'
-import {withRouterHOC, StateLink} from 'part:@sanity/base/router'
+import {StateLink, useRouterState} from 'part:@sanity/base/router'
 import {HAS_SPACES} from '../util/spaces'
-import {Router} from '../types'
 
 import styles from './NotFound.css'
 
-interface OuterProps {
-  children: React.ReactNode
-}
-
 interface NotFoundProps {
   children: React.ReactNode
-  router: Router
 }
 
-function NotFound(props: NotFoundProps) {
-  const router = props.router
-  const rootState =
-    HAS_SPACES && router.state && router.state.space ? {space: router.state.space} : {}
+export function NotFound(props: NotFoundProps) {
+  const routerState = useRouterState()
+  const rootState = {space: HAS_SPACES ? routerState?.space : undefined}
 
   return (
     <div className={styles.root}>
@@ -33,5 +26,3 @@ function NotFound(props: NotFoundProps) {
     </div>
   )
 }
-
-export default (withRouterHOC(NotFound) as any) as React.ComponentType<OuterProps>

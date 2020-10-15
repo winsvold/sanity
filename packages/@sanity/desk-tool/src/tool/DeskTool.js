@@ -6,19 +6,19 @@ import {interval, of} from 'rxjs'
 import {map, switchMap, distinctUntilChanged, debounce} from 'rxjs/operators'
 import shallowEquals from 'shallow-equals'
 import {withRouterHOC} from 'part:@sanity/base/router'
+import {getTemplateById} from '@sanity/base/initial-value-templates'
 import {
   resolvePanes,
   loadStructure,
   maybeSerialize,
   setStructureResolveError
 } from '../utils/resolvePanes'
-import DeskToolPanes from './DeskToolPanes'
 import StructureError from '../components/StructureError'
 import {calculatePanesEquality} from '../utils/calculatePanesEquality'
 import isNarrowScreen from '../utils/isNarrowScreen'
 import windowWidth$ from '../utils/windowWidth'
 import {LOADING_PANE} from '../constants'
-import {getTemplateById} from '@sanity/base/initial-value-templates'
+import DeskToolPanes from './DeskToolPanes'
 
 const EMPTY_PANE_KEYS = []
 
@@ -67,13 +67,13 @@ export default withRouterHOC(
 
     setResolvedPanes = panes => {
       const router = this.props.router
-      const paneSegments = router.state.panes || []
+      const paneSegments = router.state?.panes || []
 
       this.setState({panes, isResolving: false})
 
       if (panes.length < paneSegments.length) {
         router.navigate(
-          {...router.state, panes: paneSegments.slice(0, panes.length)},
+          {...(router.state || {}), panes: paneSegments.slice(0, panes.length)},
           {replace: true}
         )
       }
@@ -99,7 +99,7 @@ export default withRouterHOC(
           distinctUntilChanged(),
           map(maybeSerialize),
           switchMap(structure =>
-            resolvePanes(structure, props.router.state.panes || [], this.state.panes, fromIndex)
+            resolvePanes(structure, props.router.state?.panes || [], this.state.panes, fromIndex)
           ),
           switchMap(panes =>
             hasLoading(panes) ? of(panes).pipe(debounce(() => interval(50))) : of(panes)
@@ -111,8 +111,8 @@ export default withRouterHOC(
     panesAreEqual = (prev, next) => calculatePanesEquality(prev, next).ids
 
     shouldDerivePanes = (nextProps, prevProps) => {
-      const nextRouterState = nextProps.router.state
-      const prevRouterState = prevProps.router.state
+      const nextRouterState = nextProps.router.state || {}
+      const prevRouterState = prevProps.router.state || {}
 
       return (
         !this.panesAreEqual(prevRouterState.panes, nextRouterState.panes) ||
@@ -130,8 +130,8 @@ export default withRouterHOC(
         this.props.onPaneChange(this.state.panes || [])
       }
 
-      const prevPanes = prevProps.router.state.panes || []
-      const nextPanes = this.props.router.state.panes || []
+      const prevPanes = prevProps.router.state?.panes || []
+      const nextPanes = this.props.router.state?.panes || []
       const panesEqual = calculatePanesEquality(prevPanes, nextPanes)
 
       if (!panesEqual.ids && this.shouldDerivePanes(this.props, prevProps)) {
@@ -148,8 +148,8 @@ export default withRouterHOC(
       const {router: newRouter, ...newProps} = nextProps
       const {panes: oldPanes, ...oldState} = this.state
       const {panes: newPanes, ...newState} = nextState
-      const prevPanes = oldRouter.state.panes || []
-      const nextPanes = newRouter.state.panes || []
+      const prevPanes = oldRouter.state?.panes || []
+      const nextPanes = newRouter.state?.panes || []
       const panesEqual = calculatePanesEquality(prevPanes, nextPanes)
 
       const shouldUpdate =
@@ -164,13 +164,14 @@ export default withRouterHOC(
 
     maybeHandleOldUrl() {
       const {navigate} = this.props.router
+      const routerState = this.props.router.state || {}
       const {
         action,
         legacyEditDocumentId,
         type: schemaType,
         editDocumentId,
         params = {}
-      } = this.props.router.state
+      } = routerState
 
       const {template: templateName, ...payloadParams} = params
       const template = getTemplateById(templateName)
@@ -198,7 +199,7 @@ export default withRouterHOC(
       }
 
       const {navigate} = this.props.router
-      const panes = this.props.router.state.panes || []
+      const panes = this.props.router.state?.panes || []
       const hasSiblings = panes.some(group => group.length > 1)
       if (!hasSiblings) {
         return
@@ -261,12 +262,12 @@ export default withRouterHOC(
       }
 
       const keys =
-        (router.state.panes || []).reduce(
+        (router.state?.panes || []).reduce(
           (ids, group) => ids.concat(group.map(sibling => sibling.id)),
           []
         ) || EMPTY_PANE_KEYS
 
-      const groupIndexes = (router.state.panes || []).reduce(
+      const groupIndexes = (router.state?.panes || []).reduce(
         (ids, group) => ids.concat(group.map((sibling, groupIndex) => groupIndex)),
         []
       )

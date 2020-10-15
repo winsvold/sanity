@@ -12,8 +12,8 @@ import {
 } from '@sanity/field/diff'
 import CloseIcon from 'part:@sanity/base/close-icon'
 import {UserAvatar} from '@sanity/base/components'
+import {Card, AvatarStack} from '@sanity/ui'
 import Button from 'part:@sanity/components/buttons/default'
-import {AvatarStack} from 'part:@sanity/components/avatar'
 import {ScrollContainer} from 'part:@sanity/components/scroll'
 import {TooltipProvider} from 'part:@sanity/components/tooltip'
 import React, {useCallback, useRef} from 'react'
@@ -76,7 +76,7 @@ export function ChangesPanel({
   const menuOpen = isTimelineOpen && timelineMode === 'since'
 
   return (
-    <div className={styles.root}>
+    <Card className={styles.root}>
       <header className={styles.header}>
         <div className={styles.mainNav}>
           <h2 className={styles.title}>Changes</h2>
@@ -143,7 +143,7 @@ export function ChangesPanel({
           />
         </ScrollContainer>
       </TooltipProvider>
-    </div>
+    </Card>
   )
 }
 

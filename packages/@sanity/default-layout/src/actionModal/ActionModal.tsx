@@ -1,36 +1,34 @@
+import {DocumentIcon} from '@sanity/icons'
+import {Dialog} from '@sanity/ui'
 import React from 'react'
-import DefaultDialog from 'part:@sanity/components/dialogs/default'
-import CreateDocumentList from 'part:@sanity/components/lists/create-document'
-import FileIcon from 'part:@sanity/base/file-icon'
+import CreateDocumentList from './CreateDocument'
 
-interface Props {
-  actions: {icon?: React.ComponentType<{}>; key: string}[]
+interface ActionModalProps {
+  actions: {icon?: React.ComponentType; key: string}[]
   onClose: () => void
 }
 
-function ActionModal(props: Props) {
+export function ActionModal(props: ActionModalProps) {
   const {actions, onClose} = props
 
   return (
-    <DefaultDialog
-      onClickOutside={onClose}
+    <Dialog
+      id="create-new-document-dialog"
       onClose={onClose}
-      size="large"
-      title="Create new document"
+      header="Create new document"
+      width={3}
     >
       {actions.length > 0 ? (
         <CreateDocumentList
           items={actions.map(action => ({
             ...action,
-            icon: action.icon || FileIcon,
+            icon: action.icon || DocumentIcon,
             onClick: onClose
           }))}
         />
       ) : (
         <h3>No initial value templates are configured.</h3>
       )}
-    </DefaultDialog>
+    </Dialog>
   )
 }
-
-export default ActionModal

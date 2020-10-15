@@ -5,6 +5,7 @@
   },
   "parts": [
     {
+      "_comment": "DEPRECATED",
       "name": "part:@sanity/default-layout/action-modal-style",
       "description": "Styles for the action picker modal"
     },
@@ -14,6 +15,7 @@
       "path": "Root"
     },
     {
+      "_comment": "DEPRECATED",
       "implements": "part:@sanity/default-layout/tool-switcher",
       "name": "part:@sanity/default-layout/default-tool-switcher",
       "path": "navbar/toolMenu/ToolMenu"
@@ -39,16 +41,13 @@
       "path": "navbar/branding/Branding"
     },
     {
+      "_comment": "DEPRECATED",
       "name": "part:@sanity/default-layout/branding-style",
       "description": "Branding styling"
     },
     {
       "implements": "part:@sanity/default-layout/branding-style",
       "path": "navbar/branding/Branding.css"
-    },
-    {
-      "implements": "part:@sanity/base/component",
-      "path": "story"
     }
   ]
 }

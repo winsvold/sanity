@@ -1,11 +1,7 @@
 import {UserAvatar} from '@sanity/base/components'
-import ChevronDownIcon from 'part:@sanity/base/chevron-down-icon'
-import IconSignOut from 'part:@sanity/base/sign-out-icon'
-import {ClickOutside} from 'part:@sanity/components/click-outside'
-import Menu from 'part:@sanity/components/menus/default'
-import {Popover} from 'part:@sanity/components/popover'
-import Escapable from 'part:@sanity/components/utilities/escapable'
-import React from 'react'
+import {ChevronDownIcon} from '@sanity/icons'
+import {Menu, MenuItem, Popover, useClickOutside, useGlobalKeyDown} from '@sanity/ui'
+import React, {useCallback, useState} from 'react'
 
 import styles from './LoginStatus.css'
 
@@ -19,74 +15,61 @@ interface LoginStatusProps {
   onLogout: () => void
 }
 
-interface LoginStatusState {
-  isOpen: boolean
-}
+export function LoginStatus(props: LoginStatusProps) {
+  const {onLogout} = props
+  const [buttonElement, setButtonElement] = useState<HTMLButtonElement | null>(null)
+  const [menuElement, setMenuElement] = useState<HTMLButtonElement | null>(null)
+  const [open, setOpen] = useState(false)
 
-export default class LoginStatus extends React.PureComponent<LoginStatusProps, LoginStatusState> {
-  state = {isOpen: false}
+  const handleButtonClick = useCallback(() => setOpen(val => !val), [])
 
-  handleUserMenuItemClick = (item: MenuItem) => {
-    if (item.action === 'signOut') {
-      this.props.onLogout()
-    }
+  const popoverContent = (
+    <Menu ref={setMenuElement}>
+      <MenuItem icon="leave" onClick={onLogout}>
+        Sign out
+      </MenuItem>
+    </Menu>
+  )
 
-    this.setState({isOpen: false})
-  }
+  useClickOutside(
+    useCallback(() => {
+      setOpen(false)
+    }, []),
+    [buttonElement, menuElement]
+  )
 
-  handleButtonClick = () => {
-    this.setState(state => ({isOpen: !state.isOpen}))
-  }
+  useGlobalKeyDown(
+    useCallback(
+      (event: KeyboardEvent) => {
+        if (!open) return
+        if (event.key === 'Escape') {
+          event.stopPropagation()
+          setOpen(false)
+        }
+      },
+      [open]
+    )
+  )
 
-  handleClose = () => {
-    this.setState({isOpen: false})
-  }
+  return (
+    <button
+      className={styles.root}
+      onClick={handleButtonClick}
+      ref={setButtonElement}
+      title="Toggle user menu"
+      type="button"
+    >
+      <div className={styles.inner} tabIndex={-1}>
+        <Popover content={popoverContent} open={open} placement="bottom-end">
+          <div className={styles.avatarContainer}>
+            <UserAvatar size={1} tone="navbar" userId="me" />
+          </div>
+        </Popover>
 
-  render() {
-    const menuItems: MenuItem[] = [
-      {
-        title: `Sign out`,
-        icon: IconSignOut,
-        action: 'signOut'
-      }
-    ]
-
-    const popoverContent = (
-      <div className={styles.menuWrapper}>
-        <Menu onAction={this.handleUserMenuItemClick} items={menuItems} />
+        <div className={styles.iconContainer}>
+          <ChevronDownIcon data-sanity-icon />
+        </div>
       </div>
-    )
-
-    return (
-      <ClickOutside onClickOutside={this.handleClose}>
-        {ref => (
-          <button
-            className={styles.root}
-            onClick={this.handleButtonClick}
-            ref={ref as React.Ref<HTMLButtonElement>}
-            title="Toggle user menu"
-            type="button"
-          >
-            <div className={styles.inner} tabIndex={-1}>
-              <Popover
-                content={popoverContent as any}
-                open={this.state.isOpen}
-                placement="bottom-end"
-              >
-                <div className={styles.avatarContainer}>
-                  <UserAvatar size="medium" tone="navbar" userId="me" />
-                </div>
-              </Popover>
-
-              <div className={styles.iconContainer}>
-                <ChevronDownIcon />
-              </div>
-            </div>
-
-            {this.state.isOpen && <Escapable onEscape={this.handleClose} />}
-          </button>
-        )}
-      </ClickOutside>
-    )
-  }
+    </button>
+  )
 }

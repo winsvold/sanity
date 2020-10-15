@@ -1,22 +1,18 @@
+import {Button, Tooltip} from '@sanity/ui'
 import classNames from 'classnames'
-import React, {createElement} from 'react'
 import config from 'config:sanity'
-import ComposeIcon from 'part:@sanity/base/compose-icon'
-import HamburgerIcon from 'part:@sanity/base/hamburger-icon'
-import {StateLink} from 'part:@sanity/base/router'
-import SearchIcon from 'part:@sanity/base/search-icon'
-import Button from 'part:@sanity/components/buttons/default'
-import {Tooltip} from 'part:@sanity/components/tooltip'
+import {StateLink, useRouterState} from 'part:@sanity/base/router'
 import * as sidecar from 'part:@sanity/default-layout/sidecar?'
-import ToolMenu from 'part:@sanity/default-layout/tool-switcher'
-import {DatasetSelect} from '../components'
+import React, {createElement} from 'react'
+import {DatasetSelect} from '../datasetSelect'
+import {Tool} from '../types'
 import {HAS_SPACES} from '../util/spaces'
-import {Router, Tool} from '../types'
-import Branding from './branding/Branding'
-import LoginStatus from './loginStatus/LoginStatus'
-import SanityStatusContainer from './studioStatus/SanityStatusContainer'
+import {Branding} from './branding'
+import {LoginStatus} from './loginStatus'
 import {PresenceMenu} from './presenceMenu'
-import SearchContainer from './search/SearchContainer'
+import {SearchContainer} from './search'
+import {SanityStatusContainer} from './studioStatus'
+import {ToolMenu} from './toolMenu'
 
 import styles from './Navbar.css'
 
@@ -30,7 +26,6 @@ interface Props {
   onSwitchTool: () => void
   onToggleMenu: () => void
   onUserLogout: () => void
-  router: Router
   searchIsOpen: boolean
   showLabel: boolean
   showToolMenu: boolean
@@ -51,14 +46,13 @@ export default function Navbar(props: Props) {
     onSearchClose,
     onSetLoginStatusElement,
     onSetSearchElement,
-    router,
     tools,
     searchIsOpen,
     showLabel,
     showToolMenu
   } = props
-
-  const rootState = HAS_SPACES && router.state.space ? {space: router.state.space} : {}
+  const routerState = useRouterState()
+  const rootState = HAS_SPACES && routerState.space ? {space: routerState.space} : {}
   const className = classNames(styles.root, showToolMenu && styles.withToolMenu)
   const searchClassName = classNames(styles.search, searchIsOpen && styles.searchIsOpen)
 
@@ -67,12 +61,12 @@ export default function Navbar(props: Props) {
       <div className={styles.hamburger}>
         <Button
           aria-label="Open menu"
-          icon={HamburgerIcon}
-          kind="simple"
+          icon="menu"
+          mode="bleed"
           onClick={onToggleMenu}
-          padding="small"
+          padding={2}
           title="Open menu"
-          tone="navbar"
+          // tone="navbar"
         />
       </div>
       <div className={styles.branding}>
@@ -91,17 +85,18 @@ export default function Navbar(props: Props) {
           content={
             (<span className={styles.createButtonTooltipContent}>Create new document</span>) as any
           }
-          tone="navbar"
+          portal
+          // tone="navbar"
         >
           <div>
             <Button
               aria-label="Create"
-              icon={ComposeIcon}
-              kind="simple"
+              icon="compose"
+              mode="bleed"
               onClick={onCreateButtonClick}
-              padding="small"
+              padding={2}
               selected={createMenuIsOpen}
-              tone="navbar"
+              // tone="navbar"
             />
           </div>
         </Tooltip>
@@ -121,11 +116,10 @@ export default function Navbar(props: Props) {
             direction="horizontal"
             isVisible={showToolMenu}
             tools={tools}
-            activeToolName={router.state.tool}
+            activeToolName={routerState.tool}
             onSwitchTool={onSwitchTool}
-            router={router}
             showLabel={showLabel}
-            tone="navbar"
+            // tone="navbar"
           />
         )}
       </div>
@@ -146,11 +140,11 @@ export default function Navbar(props: Props) {
       </div>
       <div className={styles.searchButton}>
         <Button
-          icon={SearchIcon}
-          kind="simple"
+          icon="search"
+          mode="bleed"
           onClick={onSearchOpen}
-          padding="small"
-          tone="navbar"
+          padding={2}
+          // tone="navbar"
         />
       </div>
     </div>

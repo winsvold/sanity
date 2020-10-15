@@ -1,5 +1,5 @@
+import {Dialog} from '@sanity/ui'
 import React from 'react'
-import Dialog from 'part:@sanity/components/dialogs/default'
 
 import styles from './UpdateNotifierDialog.css'
 
@@ -40,7 +40,7 @@ class CurrentVersionsDialog extends React.PureComponent<Props> {
   render() {
     const {onClose} = this.props
     return (
-      <Dialog onClose={onClose} onClickOutside={onClose} size="medium">
+      <Dialog id="current-versions" onClose={onClose} width={2}>
         <div className={styles.content}>
           <h2 className={styles.dialogHeading}>This Studio is up to date</h2>
           <p>It was built using the latest versions of all packages.</p>

@@ -2,12 +2,12 @@ import React, {createElement} from 'react'
 import styles from 'part:@sanity/default-layout/branding-style'
 import BrandLogo from 'part:@sanity/base/brand-logo?'
 
-interface Props {
-  logo?: React.ComponentType<{}>
+interface BrandingProps {
+  logo?: React.ComponentType
   projectName: string
 }
 
-function Branding(props: Props) {
+export function Branding(props: BrandingProps) {
   const projectName = props.projectName || 'Sanity'
   const logo = props.logo || BrandLogo
 
@@ -23,5 +23,3 @@ function Branding(props: Props) {
     </div>
   )
 }
-
-export default Branding

@@ -1,6 +1,6 @@
 import tools from 'all:part:@sanity/base/tool'
 import React from 'react'
-import ErrorScreen from './ErrorScreen'
+import {ErrorScreen} from './error'
 
 declare const __DEV__: boolean
 
@@ -9,7 +9,7 @@ interface Props {
 }
 
 // eslint-disable-next-line react/require-optimization
-export default class RenderTool extends React.Component<Props> {
+export class RenderTool extends React.Component<Props> {
   static defaultProps = {
     tool: null
   }

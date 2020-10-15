@@ -1,12 +1,11 @@
-import React from 'react'
-import Button from 'part:@sanity/components/buttons/default'
-import PackageIcon from 'part:@sanity/base/package-icon'
 import {useId} from '@reach/auto-id'
+import {Button} from '@sanity/ui'
+import React from 'react'
 import CurrentVersionsDialog from './CurrentVersionsDialog'
 import UpdateNotifierDialog from './UpdateNotifierDialog'
 import {Package, Severity} from './types'
 
-interface Props {
+interface SanityStatusProps {
   isSupported: boolean
   isUpToDate: boolean
   level: Severity
@@ -22,7 +21,7 @@ function formatUpdateLabel(len: number) {
   return `${len} updates`
 }
 
-export default function SanityStatus(props: Props) {
+export function SanityStatus(props: SanityStatusProps) {
   const {
     isSupported,
     isUpToDate,
@@ -51,14 +50,14 @@ export default function SanityStatus(props: Props) {
       {!isUpToDate && (
         <Button
           aria-label={`${formatUpdateLabel(outdated.length)}, ${severity} severity level.`}
-          icon={PackageIcon}
-          iconStatus="primary"
+          icon="package"
+          // iconStatus="primary"
           id={elementId}
-          kind="simple"
+          mode="bleed"
           onClick={onShowDialog}
-          padding="small"
+          padding={2}
           selected={showDialog}
-          tone="navbar"
+          // tone="navbar"
         />
       )}
     </>

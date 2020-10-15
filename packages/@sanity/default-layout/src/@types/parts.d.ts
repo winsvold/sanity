@@ -1,9 +1,9 @@
 /* eslint-disable import/export */
 
 // import {Observable} from 'rxjs'
-type Observable<T> = any
+type Observable<T = any> = any
 
-type Schema = {icon?: React.ComponentType<{}>; name: string; title: string}
+type Schema = {icon?: React.ComponentType; name: string; title: string}
 
 declare module 'sanity:versions' {
   const versions: {[key: string]: string}
@@ -34,8 +34,8 @@ declare module 'part:@sanity/default-layout/branding-style' {
 
 declare module 'part:@sanity/default-layout/sidecar?' {
   export const isSidecarEnabled: () => boolean | undefined
-  export const SidecarLayout: React.ComponentType<{}> | undefined
-  export const SidecarToggleButton: React.ComponentType<{}> | undefined
+  export const SidecarLayout: React.ComponentType | undefined
+  export const SidecarToggleButton: React.ComponentType | undefined
 }
 
 /*
@@ -54,7 +54,7 @@ declare module 'all:part:@sanity/base/absolutes' {
 
 declare module 'part:@sanity/base/location' {
   const locationStore: {
-    actions: {navigate: (newUrl: string, options: {}) => void}
+    actions: {navigate: (newUrl: string, options: any) => void}
     state: Observable<any>
   }
 
@@ -76,12 +76,12 @@ declare module 'part:@sanity/base/router' {
 
 declare module 'all:part:@sanity/base/tool' {
   const tools: {
-    canHandleIntent?: (intent: {}, params: {}, state: {}) => {}
-    component?: React.ComponentType<{}>
-    getIntentState?: (intent: {}, params: {}, state: {}, payload: {}) => {}
+    canHandleIntent?: (intent: any, params: any, state: any) => any
+    component?: React.ComponentType
+    getIntentState?: (intent: any, params: any, state: any, payload: any) => any
     name: string
     title: string
-    router?: {}
+    router?: any
   }[]
   export default tools
 }
@@ -97,7 +97,7 @@ declare module 'part:@sanity/base/settings' {
       key: string
     ) => {
       forKey: (
-        key: string
+        k: string
       ) => {
         listen: () => Observable<boolean>
         set: (val: boolean) => void
@@ -107,74 +107,14 @@ declare module 'part:@sanity/base/settings' {
   export default x
 }
 
-declare module 'part:@sanity/base/file-icon' {
-  const DocumentIcon: React.ComponentType<{}>
-  export default DocumentIcon
-}
-
-declare module 'part:@sanity/base/cog-icon' {
-  const CogIcon: React.ComponentType<{}>
-  export default CogIcon
-}
-
-declare module 'part:@sanity/base/help-circle-icon' {
-  const HelpIcon: React.ComponentType<{}>
-  export default HelpIcon
-}
-
-declare module 'part:@sanity/base/link-icon' {
-  const LinkIcon: React.ComponentType<{}>
-  export default LinkIcon
-}
-
 declare module 'part:@sanity/base/users-icon' {
-  const UserIcon: React.ComponentType<{}>
+  const UserIcon: React.ComponentType
   export default UserIcon
 }
 
 declare module 'part:@sanity/base/brand-logo?' {
-  const BrandLogo: React.ComponentType<{}> | undefined
+  const BrandLogo: React.ComponentType | undefined
   export default BrandLogo
-}
-
-declare module 'part:@sanity/base/plus-icon' {
-  const PlusIcon: React.ComponentType<{}>
-  export default PlusIcon
-}
-
-declare module 'part:@sanity/base/compose-icon' {
-  const ComposeIcon: React.ComponentType<{}>
-  export default ComposeIcon
-}
-
-declare module 'part:@sanity/base/hamburger-icon' {
-  const MenuIcon: React.ComponentType<{}>
-  export default MenuIcon
-}
-
-declare module 'part:@sanity/base/close-icon' {
-  const CloseIcon: React.ComponentType<{}>
-  export default CloseIcon
-}
-
-declare module 'part:@sanity/base/sign-out-icon' {
-  const LeaveIcon: React.ComponentType<{}>
-  export default LeaveIcon
-}
-
-declare module 'part:@sanity/base/view-column-icon' {
-  const ViewColumnIcon: React.ComponentType<{}>
-  export default ViewColumnIcon
-}
-
-declare module 'part:@sanity/base/search-icon' {
-  const Icon: React.ComponentType<{}>
-  export default Icon
-}
-
-declare module 'part:@sanity/base/chevron-down-icon' {
-  const Icon: React.ComponentType<{}>
-  export default Icon
 }
 
 declare module 'part:@sanity/base/schema' {
@@ -189,7 +129,7 @@ declare module 'part:@sanity/base/schema' {
 }
 
 declare module 'part:@sanity/base/schema?' {
-  const schema: {_validation: {}[]; get: (name: string) => Schema} | undefined
+  const schema: {_validation: any[]; get: (name: string) => Schema} | undefined
   export default schema
 }
 
@@ -198,7 +138,7 @@ declare module 'part:@sanity/base/preview?' {
     layout: 'default'
     status: React.ReactNode
     type: Schema
-    value: {}
+    value: any
   }>
   export default preview
 }
@@ -208,13 +148,8 @@ declare module 'part:@sanity/base/util/draft-utils' {
 }
 
 declare module 'part:@sanity/base/search' {
-  const search: (queryStr: string) => Observable<{}>
+  const search: (queryStr: string) => Observable
   export default search
-}
-
-declare module 'part:@sanity/base/package-icon' {
-  const PackageIcon: React.ComponentType<{}>
-  export default PackageIcon
 }
 
 declare module 'part:@sanity/base/version-checker' {
@@ -235,17 +170,12 @@ declare module 'part:@sanity/base/version-checker' {
   export default VersionChecker
 }
 
-declare module 'part:@sanity/base/plugin-icon' {
-  const PluginIcon: React.ComponentType<{}>
-  export default PluginIcon
-}
-
 declare module 'part:@sanity/base/util/document-action-utils' {
   export const isActionEnabled: (schema: Schema, actionName: string) => boolean
 }
 
 declare module 'part:@sanity/base/new-document-structure?' {
-  const newDocumentStructure: {} | undefined
+  const newDocumentStructure: any | undefined
   export default newDocumentStructure
 }
 
@@ -254,121 +184,7 @@ declare module 'part:@sanity/base/client' {
   export default client
 }
 
-declare module 'part:@sanity/base/error-icon' {
-  const ErrorIcon: React.ComponentType<{}>
-  export default ErrorIcon
-}
-
-declare module 'part:@sanity/base/spinner-icon' {
-  const SpinnerIcon: React.ComponentType<{}>
-  export default SpinnerIcon
-}
-
-declare module 'part:@sanity/base/warning-icon' {
-  const WarningIcon: React.ComponentType<{}>
-  export default WarningIcon
-}
-
 declare module 'part:@sanity/base/authentication-fetcher' {
   const fetcher: any
   export default fetcher
-}
-
-/*
- * @sanity/components
- */
-
-declare module 'part:@sanity/components/avatar' {
-  export * from '@sanity/components/src/avatar'
-}
-
-declare module 'part:@sanity/components/click-outside' {
-  export * from '@sanity/components/src/clickOutside'
-}
-
-declare module 'part:@sanity/components/container-query' {
-  export * from '@sanity/components/src/containerQuery'
-}
-
-declare module 'part:@sanity/components/buttons/button-grid-style'
-declare module 'part:@sanity/components/buttons/button-grid' {
-  export {default} from '@sanity/components/src/buttons/ButtonGrid'
-}
-declare module 'part:@sanity/components/buttons/default-style'
-declare module 'part:@sanity/components/buttons/default' {
-  export {default} from '@sanity/components/src/buttons/DefaultButton'
-}
-declare module 'part:@sanity/components/buttons/state' {
-  export {default} from '@sanity/components/src/buttons/StateButton'
-}
-
-declare module 'part:@sanity/components/dialogs/fullscreen-style'
-declare module 'part:@sanity/components/dialogs/fullscreen' {
-  export {default} from '@sanity/components/src/dialogs/FullscreenDialog'
-}
-
-declare module 'part:@sanity/components/dialogs/popover-style'
-
-declare module 'part:@sanity/components/lists/create-document' {
-  export {default} from '@sanity/components/src/lists/CreateDocument'
-}
-
-declare module 'part:@sanity/components/layer' {
-  export * from '@sanity/components/src/layer'
-}
-
-declare module 'part:@sanity/components/tooltip' {
-  export * from '@sanity/components/src/tooltip'
-}
-
-declare module 'part:@sanity/components/menus/default-style'
-declare module 'part:@sanity/components/menus/default' {
-  export {default} from '@sanity/components/src/menus/DefaultMenu'
-}
-
-declare module 'part:@sanity/components/loading/spinner-style'
-declare module 'part:@sanity/components/loading/spinner' {
-  export {default} from '@sanity/components/src/loading/Spinner'
-}
-
-declare module 'part:@sanity/components/typography/hotkeys' {
-  export {default} from '@sanity/components/src/typography/Hotkeys'
-}
-
-declare module 'part:@sanity/components/dialogs/default-style'
-declare module 'part:@sanity/components/dialogs/default' {
-  export {default} from '@sanity/components/src/dialogs/DefaultDialog'
-}
-
-declare module 'part:@sanity/components/dialogs/content-style'
-declare module 'part:@sanity/components/dialogs/content' {
-  export {default} from '@sanity/components/src/dialogs/DialogContent'
-}
-
-declare module 'part:@sanity/components/dialogs/fullscreen-message' {
-  export {default} from '@sanity/components/src/dialogs/FullscreenMessageDialog'
-}
-
-declare module 'part:@sanity/components/popover' {
-  export * from '@sanity/components/src/popover'
-}
-
-declare module 'part:@sanity/components/portal' {
-  export * from '@sanity/components/src/portal'
-}
-
-declare module 'part:@sanity/components/previews/create-document' {
-  export {default} from '@sanity/components/src/previews/CreateDocumentPreview'
-}
-
-declare module 'part:@sanity/components/scroll' {
-  export * from '@sanity/components/src/scroll'
-}
-
-declare module 'part:@sanity/components/tooltip' {
-  export * from '@sanity/components/src/tooltip'
-}
-
-declare module 'part:@sanity/components/utilities/escapable' {
-  export {default} from '@sanity/components/src/utilities/Escapable'
 }

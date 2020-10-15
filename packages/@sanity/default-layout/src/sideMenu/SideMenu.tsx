@@ -1,11 +1,10 @@
 import {UserAvatar} from '@sanity/base/components'
+import {Button} from '@sanity/ui'
+import classNames from 'classnames'
 import React from 'react'
-import CloseIcon from 'part:@sanity/base/close-icon'
-import SignOutIcon from 'part:@sanity/base/sign-out-icon'
-import Button from 'part:@sanity/components/buttons/default'
-import ToolMenu from 'part:@sanity/default-layout/tool-switcher'
-import {DatasetSelect} from '../components'
-import {Router, Tool, User} from '../types'
+import {ToolMenu} from '../navbar/toolMenu/ToolMenu'
+import {DatasetSelect} from '../datasetSelect'
+import {Tool, User} from '../types'
 import {HAS_SPACES} from '../util/spaces'
 
 import styles from './SideMenu.css'
@@ -16,19 +15,16 @@ interface Props {
   onClose: () => void
   onSignOut: () => void
   onSwitchTool: () => void
-  router: Router
   tools: Tool[]
   user: User
 }
 
 function SideMenu(props: Props) {
-  const {activeToolName, isOpen, onClose, onSignOut, onSwitchTool, router, tools, user} = props
-  let className = styles.root
-  if (isOpen) className += ` ${styles.isOpen}`
+  const {activeToolName, isOpen, onClose, onSignOut, onSwitchTool, tools, user} = props
   const tabIndex = isOpen ? 0 : -1
 
   return (
-    <div className={className}>
+    <div className={classNames(styles.root, isOpen && styles.isOpen)}>
       <div>
         <div className={styles.header}>
           <div className={styles.headerMain}>
@@ -36,15 +32,16 @@ function SideMenu(props: Props) {
               <div className={styles.userAvatarContainer}>
                 <UserAvatar size="medium" userId="me" />
               </div>
-              <div className={styles.userProfileText}>{user.name || user.email}</div>
+              <div className={styles.userProfileText}>{user?.name || user?.email}</div>
             </div>
 
             <div className={styles.closeButtonContainer}>
               <Button
-                icon={CloseIcon}
-                kind="simple"
+                icon="close"
+                // icon={CloseIcon}
+                mode="bleed"
                 onClick={onClose}
-                padding="small"
+                padding={2}
                 tabIndex={tabIndex}
                 title="Close menu"
               />
@@ -64,14 +61,19 @@ function SideMenu(props: Props) {
             direction="vertical"
             isVisible={isOpen}
             onSwitchTool={onSwitchTool}
-            router={router}
             tools={tools}
           />
         </div>
 
         <div className={styles.menuBottom}>
           <div className={styles.signOutButton}>
-            <Button icon={SignOutIcon} kind="simple" onClick={onSignOut} tabIndex={tabIndex}>
+            <Button
+              icon="leave"
+              // icon={LeaveIcon}
+              mode="bleed"
+              onClick={onSignOut}
+              tabIndex={tabIndex}
+            >
               Sign out
             </Button>
           </div>

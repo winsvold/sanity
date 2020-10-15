@@ -28,6 +28,11 @@ export default class RouterProvider extends React.Component<Props> {
 
   constructor(props: Props) {
     super(props)
+
+    if (!props.state) {
+      throw new Error('missing initial router state')
+    }
+
     this._state = props.state
     this.__internalRouter = {
       resolvePathFromState: this.resolvePathFromState,
@@ -49,7 +54,15 @@ export default class RouterProvider extends React.Component<Props> {
     this.navigateUrl(this.resolvePathFromState(nextState), options)
   }
 
-  getState = () => this._state
+  getState = () => {
+    const ret = this._state
+
+    if (!ret) {
+      throw new Error('state is empty')
+    }
+
+    return ret
+  }
 
   resolvePathFromState = (state: Record<string, any>): string => {
     return this.props.router.encode(state)
@@ -76,6 +89,10 @@ export default class RouterProvider extends React.Component<Props> {
 
   UNSAFE_componentWillReceiveProps(nextProps: Props) {
     if (this.props.state !== nextProps.state) {
+      if (!nextProps.state) {
+        throw new Error('next state is empty')
+      }
+
       this._state = nextProps.state
       setTimeout(this.__internalRouter.channel.publish, 0, nextProps.state)
     }

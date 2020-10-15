@@ -1,7 +1,7 @@
-import StateButton from 'part:@sanity/components/buttons/state'
-import {Tooltip} from 'part:@sanity/components/tooltip'
-import React from 'react'
-import {Router, Tool} from '../../types'
+import {Button, ButtonProps, Tooltip} from '@sanity/ui'
+import {StateLink, useRouterState} from 'part:@sanity/base/router'
+import React, {forwardRef} from 'react'
+import {Tool} from '../../types'
 
 import styles from './ToolMenu.css'
 
@@ -10,25 +10,38 @@ interface Props {
   direction: 'horizontal' | 'vertical'
   isVisible: boolean
   onSwitchTool: () => void
-  router: Router
   tools: Tool[]
   showLabel?: boolean
   tone?: 'navbar'
 }
 
+const StateButton = forwardRef(
+  (props: ButtonProps & {state: any} & React.HTMLProps<HTMLButtonElement>, ref) => {
+    const {children, state, ...buttonProps} = props
+
+    return (
+      <Button {...buttonProps} {...({state} as any)} as={StateLink as any} ref={ref}>
+        {children}
+      </Button>
+    )
+  }
+)
+
+StateButton.displayName = 'StateButton'
+
 const TOUCH_DEVICE = 'ontouchstart' in document.documentElement
 
-function ToolMenu(props: Props) {
+export function ToolMenu(props: Props) {
   const {
-    activeToolName,
+    // activeToolName,
     direction,
     isVisible,
     onSwitchTool,
-    router,
     tools,
-    showLabel: showLabelProp,
-    tone
+    showLabel: showLabelProp
+    // tone
   } = props
+  const routerState = useRouterState()
   const isVertical = direction === 'horizontal'
   const showLabel = (TOUCH_DEVICE && !isVertical) || showLabelProp
 
@@ -41,24 +54,24 @@ function ToolMenu(props: Props) {
         return (
           <li key={tool.name}>
             <Tooltip
-              content={tooltipContent as any}
+              content={tooltipContent}
               disabled={showLabel}
               placement="bottom"
               title={showLabel ? '' : title}
-              tone={tone}
+              // tone={tone}
             >
               <div>
                 <StateButton
-                  icon={tool.icon}
+                  icon={tool.icon as any}
                   key={tool.name}
-                  kind="simple"
+                  mode="bleed"
                   onClick={onSwitchTool}
-                  padding={direction === 'horizontal' ? 'small' : 'medium'}
-                  selected={activeToolName === tool.name}
-                  state={{...router.state, tool: tool.name, [tool.name]: undefined}}
+                  padding={direction === 'horizontal' ? 3 : 4}
+                  // selected={activeToolName === tool.name}
+                  state={{...routerState, tool: tool.name, [tool.name]: undefined}}
                   title={title}
                   tabIndex={isVisible ? 0 : -1}
-                  tone={tone}
+                  // tone={tone}
                 >
                   {tool.title}
                 </StateButton>
@@ -70,5 +83,3 @@ function ToolMenu(props: Props) {
     </ul>
   )
 }
-
-export default ToolMenu

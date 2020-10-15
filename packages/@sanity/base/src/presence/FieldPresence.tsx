@@ -1,10 +1,6 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable react/require-default-props */
-
+import {AvatarCounter, AvatarPosition} from '@sanity/ui'
 import React, {useContext} from 'react'
 import {sortBy, uniqBy} from 'lodash'
-import {AvatarCounter, AvatarPosition} from 'part:@sanity/components/avatar'
 import {useId} from '@reach/auto-id'
 import {UserAvatar} from '../components/UserAvatar'
 import {

@@ -18,7 +18,7 @@ export function AvatarStack(props: AvatarStackProps & React.HTMLProps<HTMLDivEle
     children: childrenProp,
     className,
     maxLength: maxLengthProp = 4,
-    size = 'small',
+    size,
     tone,
     ...restProps
   } = props

@@ -1,17 +1,21 @@
+import {Dialog} from '@sanity/ui'
 import PropTypes from 'prop-types'
 import React from 'react'
-import FullscreenMessageDialog from 'part:@sanity/components/dialogs/fullscreen-message'
 
 export default function InitialValueTemplateError({errors}) {
   return (
-    <FullscreenMessageDialog color="danger" title="Initial value template error">
+    <Dialog
+      id="initial-value-template-error-dialog"
+      header="Initial value template error"
+      width={4}
+    >
       <p>Failed to load initial value templates:</p>
       {errors.map((error: Error) => (
         <p key={error.message}>
           <code>{error.message}</code>
         </p>
       ))}
-    </FullscreenMessageDialog>
+    </Dialog>
   )
 }
 

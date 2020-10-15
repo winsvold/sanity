@@ -1,7 +1,5 @@
-/* eslint-disable react/require-default-props */
-
 import React, {useState} from 'react'
-import {Avatar, AvatarPosition, AvatarSize, AvatarStatus} from 'part:@sanity/components/avatar'
+import {Avatar, AvatarPosition, AvatarSize, AvatarStatus} from '@sanity/ui'
 import {User} from '../datastores/user/types'
 import {useUser, useUserColor} from '../hooks'
 
@@ -52,17 +50,14 @@ function StaticUserAvatar({user, animateArrowFrom, position, size, status, tone}
     <Avatar
       animateArrowFrom={animateArrowFrom}
       arrowPosition={position}
-      color={{
-        dark: userColor.tints[400].hex,
-        light: userColor.tints[500].hex
-      }}
+      color={userColor.tints[500].hex}
       initials={user?.displayName && nameToInitials(user.displayName)}
       src={imageUrl}
       onImageLoadError={setImageLoadError}
       size={size}
       status={status}
       title={user?.displayName}
-      tone={tone}
+      // tone={tone}
     />
   )
 }

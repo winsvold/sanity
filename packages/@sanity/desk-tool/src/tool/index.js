@@ -39,7 +39,7 @@ function setActivePanes(panes) {
 }
 
 function DeskToolPaneStateSyncer(props) {
-  const {intent, params, payload} = useRouterState()
+  const {intent, params, payload} = useRouterState() || {}
   useEffect(() => {
     // Set active panes to blank on mount and unmount
     setActivePanes([])

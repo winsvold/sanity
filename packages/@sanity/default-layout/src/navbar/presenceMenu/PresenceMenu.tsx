@@ -1,13 +1,8 @@
-import client from 'part:@sanity/base/client'
 import {UserAvatar} from '@sanity/base/components'
 import {useGlobalPresence} from '@sanity/base/hooks'
-import CogIcon from 'part:@sanity/base/cog-icon'
-import UsersIcon from 'part:@sanity/base/users-icon'
-import {AvatarStack} from 'part:@sanity/components/avatar'
-import Button from 'part:@sanity/components/buttons/default'
-import {ClickOutside} from 'part:@sanity/components/click-outside'
-import {Popover} from 'part:@sanity/components/popover'
-import Escapable from 'part:@sanity/components/utilities/escapable'
+import {CogIcon} from '@sanity/icons'
+import {AvatarStack, Button, Popover, useClickOutside, useGlobalKeyDown} from '@sanity/ui'
+import client from 'part:@sanity/base/client'
 import React, {useCallback, useState} from 'react'
 import {PresenceListRow} from './PresenceListRow'
 
@@ -57,47 +52,63 @@ export function PresenceMenu() {
     </div>
   )
 
+  const [rootElement, setRootElement] = useState<HTMLDivElement | null>(null)
+
+  useClickOutside(
+    useCallback(() => {
+      setOpen(false)
+    }, []),
+    [rootElement]
+  )
+
+  useGlobalKeyDown(
+    useCallback(
+      (event: KeyboardEvent) => {
+        if (!open) return
+        if (event.key === 'Escape') {
+          event.stopPropagation()
+          setOpen(false)
+        }
+      },
+      [open]
+    )
+  )
+
   return (
-    <ClickOutside onClickOutside={handleClose}>
-      {ref => (
-        <div className={styles.root} ref={ref as React.Ref<HTMLDivElement>}>
-          <Popover content={popoverContent as any} open={open}>
-            <div>
-              <Button
-                className={styles.narrowButton}
-                icon={UsersIcon}
-                iconStatus={presence.length > 0 ? 'success' : undefined}
-                kind="simple"
-                onClick={handleToggle}
-                padding="small"
-                selected={open}
-                tone="navbar"
-              />
+    <div className={styles.root} ref={setRootElement}>
+      <Popover content={popoverContent} open={open}>
+        <div>
+          <Button
+            className={styles.narrowButton}
+            icon="users"
+            // iconStatus={presence.length > 0 ? 'success' : undefined}
+            mode="bleed"
+            onClick={handleToggle}
+            padding={2}
+            selected={open}
+            // tone="navbar"
+          />
 
-              <Button
-                className={styles.wideButton}
-                kind="simple"
-                onClick={handleToggle}
-                padding="small"
-                selected={open}
-                tone="navbar"
-              >
-                <AvatarStack
-                  className={styles.avatarStack}
-                  maxLength={MAX_AVATARS_GLOBAL}
-                  tone="navbar"
-                >
-                  {presence.map(item => (
-                    <UserAvatar key={item.user.id} user={item.user} />
-                  ))}
-                </AvatarStack>
-              </Button>
-            </div>
-          </Popover>
-
-          {open && <Escapable onEscape={handleClose} />}
+          <Button
+            className={styles.wideButton}
+            mode="bleed"
+            onClick={handleToggle}
+            padding={2}
+            selected={open}
+            // tone="navbar"
+          >
+            <AvatarStack
+              className={styles.avatarStack}
+              maxLength={MAX_AVATARS_GLOBAL}
+              // tone="navbar"
+            >
+              {presence.map(item => (
+                <UserAvatar key={item.user.id} user={item.user} />
+              ))}
+            </AvatarStack>
+          </Button>
         </div>
-      )}
-    </ClickOutside>
+      </Popover>
+    </div>
   )
 }

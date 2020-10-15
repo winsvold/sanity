@@ -180,7 +180,7 @@ export function getPaneRouterContextFactory(
     if (existing) {
       const payloadEqual = isEqual(existing.payload, panePayload)
       const paramsEqual = isEqual(existing.params, paneParams)
-      const panesEqual = isEqual(existing.routerPanesState, instance.props.router.state.panes)
+      const panesEqual = isEqual(existing.routerPanesState, instance.props.router.state?.panes)
       if (paramsEqual && payloadEqual && panesEqual) {
         return existing
       }
@@ -188,17 +188,17 @@ export function getPaneRouterContextFactory(
 
     const getCurrentGroup = () => {
       const {router} = instance.props
-      const panes = router.state.panes || []
+      const panes = router.state?.panes || []
       return (panes[groupIndex] || []).slice()
     }
 
     const modifyCurrentGroup = modifier => {
       const {router} = instance.props
-      const newPanes = (router.state.panes || []).slice()
+      const newPanes = (router.state?.panes || []).slice()
       const group = getCurrentGroup()
       newPanes.splice(groupIndex, 1, modifier(group, group[siblingIndex]))
 
-      const newRouterState = {...router.state, panes: newPanes}
+      const newRouterState = {...(router.state || {}), panes: newPanes}
       router.navigate(newRouterState)
       return newRouterState
     }
@@ -282,7 +282,7 @@ export function getPaneRouterContextFactory(
       groupLength: getCurrentGroup().length,
 
       // Current router state for the "panes" property
-      routerPanesState: instance.props.router.state.panes || [],
+      routerPanesState: instance.props.router.state?.panes || [],
 
       // Curried StateLink that passes the correct state automatically
       ChildLink,

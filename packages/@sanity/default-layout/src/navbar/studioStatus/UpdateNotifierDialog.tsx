@@ -1,5 +1,5 @@
+import {Dialog} from '@sanity/ui'
 import React from 'react'
-import Dialog from 'part:@sanity/components/dialogs/default'
 import {Package} from './types'
 
 import styles from './UpdateNotifierDialog.css'
@@ -92,9 +92,9 @@ class UpdateNotifierDialog extends React.PureComponent<Props> {
 
     return (
       <Dialog
+        id="update-notifier"
         onClose={onClose}
-        onClickOutside={onClose}
-        title={severity === 'low' ? 'Upgrades available' : 'Studio is outdated'}
+        header={severity === 'low' ? 'Upgrades available' : 'Studio is outdated'}
       >
         {__DEV__ && (
           <>

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable react/jsx-filename-extension, react/prop-types */
-
 import React from 'react'
 import {omit, sumBy} from 'lodash'
 import {merge, of} from 'rxjs'
@@ -175,7 +172,7 @@ export default class DeskToolPanes extends React.Component {
 
   renderPanes() {
     const {panes, groupIndexes, keys, router} = this.props
-    const {panes: routerPanes} = router.state
+    const {panes: routerPanes} = router.state || {}
     const {hasNarrowScreen} = this.state
     const path = []
 

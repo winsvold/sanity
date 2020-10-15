@@ -1,8 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import ErrorIcon from 'part:@sanity/base/error-icon'
-import WarningIcon from 'part:@sanity/base/warning-icon'
 import generateHelpUrl from '@sanity/generate-help-url'
+import {ErrorOutlineIcon, WarningOutlineIcon} from '@sanity/icons'
+import PropTypes from 'prop-types'
+import React from 'react'
 
 import styles from './SchemaErrors.css'
 
@@ -62,8 +61,8 @@ function SchemaErrors(props) {
                   <li key={`g_${i}_p_${j}`} className={styles[`problem_${problem.severity}`]}>
                     <div className={styles.problemSeverity}>
                       <span className={styles.problemSeverityIcon}>
-                        {problem.severity === 'error' && <ErrorIcon />}
-                        {problem.severity === 'warning' && <WarningIcon />}
+                        {problem.severity === 'error' && <ErrorOutlineIcon />}
+                        {problem.severity === 'warning' && <WarningOutlineIcon />}
                       </span>
                       <span className={styles.problemSeverityText}>{problem.severity}</span>
                     </div>

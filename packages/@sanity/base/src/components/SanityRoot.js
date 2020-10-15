@@ -1,3 +1,4 @@
+import {studioTheme, ThemeProvider} from '@sanity/ui'
 import React, {useRef, useState} from 'react'
 import config from 'config:sanity'
 import RootComponent from 'part:@sanity/base/root'
@@ -21,21 +22,23 @@ function SanityRoot() {
   }
 
   return (
-    <UserColorManagerProvider manager={userColorManager}>
-      <PortalProvider element={portalElement}>
-        <LayerProvider>
-          <SnackbarProvider>
-            <div className={styles.root} ref={rootRef}>
-              <DevServerStatus />
-              <ErrorHandler />
-              <RootComponent />
-              <VersionChecker />
-            </div>
-            <div data-portal="" ref={setPortalElement} />
-          </SnackbarProvider>
-        </LayerProvider>
-      </PortalProvider>
-    </UserColorManagerProvider>
+    <ThemeProvider theme={studioTheme}>
+      <UserColorManagerProvider manager={userColorManager}>
+        <PortalProvider element={portalElement}>
+          <LayerProvider>
+            <SnackbarProvider>
+              <div className={styles.root} ref={rootRef}>
+                <DevServerStatus />
+                <ErrorHandler />
+                <RootComponent />
+                <VersionChecker />
+              </div>
+              <div data-portal="" ref={setPortalElement} />
+            </SnackbarProvider>
+          </LayerProvider>
+        </PortalProvider>
+      </UserColorManagerProvider>
+    </ThemeProvider>
   )
 }
 

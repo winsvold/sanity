@@ -3,6 +3,7 @@
   "rules": {
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-use-before-define": "off",
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    "react/no-unused-prop-types": "off"
   }
 }

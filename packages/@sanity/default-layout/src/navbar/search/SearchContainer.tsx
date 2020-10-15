@@ -50,7 +50,7 @@ interface State {
   isDebug: boolean
 }
 
-class SearchContainer extends React.PureComponent<Props, State> {
+export class SearchContainer extends React.PureComponent<Props, State> {
   static propTypes = {
     onOpen: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -60,7 +60,7 @@ class SearchContainer extends React.PureComponent<Props, State> {
   resultsRef: React.RefObject<SearchResults> = React.createRef()
 
   searchTerm$: Subject<string> = new Subject()
-  componentWillUnmount$: Subject<{}> = new Subject()
+  componentWillUnmount$: Subject<Record<string, any>> = new Subject()
 
   state = {
     activeIndex: -1,
@@ -289,5 +289,3 @@ class SearchContainer extends React.PureComponent<Props, State> {
     )
   }
 }
-
-export default SearchContainer

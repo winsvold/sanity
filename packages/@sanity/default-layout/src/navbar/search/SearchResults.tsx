@@ -1,4 +1,4 @@
-import Spinner from 'part:@sanity/components/loading/spinner'
+import {Spinner} from '@sanity/components'
 import React from 'react'
 import {ResultItem} from './types'
 

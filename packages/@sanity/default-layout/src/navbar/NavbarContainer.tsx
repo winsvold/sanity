@@ -1,5 +1,5 @@
 import React from 'react'
-import {Router, Tool} from '../types'
+import {Tool} from '../types'
 import Navbar from './Navbar'
 
 interface Props {
@@ -10,7 +10,6 @@ interface Props {
   onSwitchTool: () => void
   onToggleMenu: () => void
   onUserLogout: () => void
-  router: Router
   searchIsOpen: boolean
   tools: Tool[]
 }
@@ -153,7 +152,6 @@ class NavbarContainer extends React.PureComponent<Props, State> {
       onSwitchTool,
       onToggleMenu,
       onUserLogout,
-      router,
       searchIsOpen,
       tools
     } = this.props
@@ -170,7 +168,6 @@ class NavbarContainer extends React.PureComponent<Props, State> {
         onSwitchTool={onSwitchTool}
         onToggleMenu={onToggleMenu}
         onUserLogout={onUserLogout}
-        router={router}
         searchIsOpen={searchIsOpen}
         showLabel={showLabel}
         showToolMenu={showToolMenu}

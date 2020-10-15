@@ -1,77 +1,69 @@
-import React from 'react'
-import {Subscription} from 'rxjs'
 import LoginWrapper from 'part:@sanity/base/login-wrapper?'
 import {RouterProvider} from 'part:@sanity/base/router'
 import AppLoadingScreen from 'part:@sanity/base/app-loading-screen'
+import React, {useEffect, useState} from 'react'
 import * as urlStateStore from './datastores/urlState'
-import getOrderedTools from './util/getOrderedTools'
-import rootRouter, {maybeRedirectToBase} from './router'
 import DefaultLayout from './DefaultLayout'
-import NotFound from './main/NotFound'
-
-const handleNavigate = urlStateStore.navigate
+import {NotFound} from './notFound'
+import rootRouter, {maybeRedirectToBase} from './router'
+import getOrderedTools from './util/getOrderedTools'
 
 interface State {
   intent?: {
     name: string
     params: {[key: string]: string}
   }
-  urlState?: {}
+  urlState?: Record<string, any>
   isNotFound?: boolean
 }
 
-class DefaultLayoutRoot extends React.PureComponent<{}, State> {
-  state: State = {}
+function DefaultLayoutRoot() {
+  const tools = getOrderedTools()
+  const [state, setState] = useState<State>({urlState: {}})
+  const {intent, urlState, isNotFound} = state
 
-  urlStateSubscription: Subscription | null = null
-
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillMount() {
+  useEffect(() => {
     maybeRedirectToBase()
 
-    this.urlStateSubscription = urlStateStore.state.subscribe({
+    const sub = urlStateStore.state.subscribe({
       next: event =>
-        this.setState({
+        setState({
           urlState: event.state,
           isNotFound: event.isNotFound,
           intent: event.intent
         })
     })
-  }
 
-  componentWillUnmount() {
-    this.urlStateSubscription.unsubscribe()
-  }
+    return () => sub.unsubscribe()
+  }, [])
 
-  render() {
-    const {intent, urlState, isNotFound} = this.state
-    const tools = getOrderedTools()
+  const content = (
+    <RouterProvider
+      router={rootRouter}
+      state={urlState}
+      // eslint-disable-next-line react/jsx-handler-names
+      onNavigate={urlStateStore.navigate}
+    >
+      {isNotFound && (
+        <NotFound>
+          {intent && (
+            <div>
+              No tool can handle the intent: <strong>{intent.name}</strong> with parameters{' '}
+              <pre>{JSON.stringify(intent.params)}</pre>
+            </div>
+          )}
+        </NotFound>
+      )}
 
-    const content = isNotFound ? (
-      <NotFound>
-        {intent && (
-          <div>
-            No tool can handle the intent: <strong>{intent.name}</strong> with parameters{' '}
-            <pre>{JSON.stringify(intent.params)}</pre>
-          </div>
-        )}
-      </NotFound>
-    ) : (
-      <DefaultLayout tools={tools} />
-    )
+      {!isNotFound && <DefaultLayout tools={tools} />}
+    </RouterProvider>
+  )
 
-    const router = (
-      <RouterProvider router={rootRouter} state={urlState} onNavigate={handleNavigate}>
-        {content}
-      </RouterProvider>
-    )
-
-    return LoginWrapper ? (
-      <LoginWrapper LoadingScreen={<AppLoadingScreen text="Logging in" />}>{router}</LoginWrapper>
-    ) : (
-      router
-    )
-  }
+  return LoginWrapper ? (
+    <LoginWrapper LoadingScreen={<AppLoadingScreen text="Logging in" />}>{content}</LoginWrapper>
+  ) : (
+    content
+  )
 }
 
 export default DefaultLayoutRoot

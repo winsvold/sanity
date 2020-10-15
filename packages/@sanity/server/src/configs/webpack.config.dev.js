@@ -20,7 +20,9 @@ export default config => {
         {},
         baseConfig.resolve.alias,
         {
+          react: require.resolve('react'),
           'react-dom': require.resolve('@hot-loader/react-dom'),
+          'styled-components': require.resolve('styled-components'),
           'webpack-hot-middleware/client': require.resolve('../browser/hot-client')
         },
         config.isSanityMonorepo ? getMonorepoAliases() : {}
