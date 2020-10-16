@@ -9,7 +9,7 @@
   },
   "scripts": {
     "clean": "rimraf lib",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit -p tsconfig.dist.json"
   },
   "devDependencies": {
     "ts-node": "^8.6.2",
