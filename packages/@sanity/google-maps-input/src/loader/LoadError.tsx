@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styles from './LoadError.css'
 
-type Props = {error: Error; isAuthError: false} | {isAuthError: true}
+type Props = {error?: Error; isAuthError: boolean}
 
 export function LoadError(props: Props) {
   return (
@@ -17,7 +17,7 @@ export function LoadError(props: Props) {
           <>
             <h3>Error details:</h3>
             <pre>
-              <code>{props.error.message}</code>
+              <code>{props.error?.message}</code>
             </pre>
           </>
         )}

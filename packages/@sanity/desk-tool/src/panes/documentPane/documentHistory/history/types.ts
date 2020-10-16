@@ -2,10 +2,13 @@ export {Doc} from '../../types'
 
 export {ChunkType, Chunk} from '@sanity/field/diff'
 
-import {RemoteSnapshotVersionEvent} from '@sanity/base/lib/datastores/document/document-pair/checkoutPair'
+// import {RemoteSnapshotVersionEvent} from '@sanity/base/lib/datastores/document/document-pair/checkoutPair'
+type RemoteSnapshotVersionEvent = any
 export {RemoteSnapshotVersionEvent}
 
-export {DocumentRemoteMutationEvent} from '@sanity/base/lib/datastores/document/buffered-doc/types'
+type DocumentRemoteMutationEvent = any
+export {DocumentRemoteMutationEvent}
+// export {DocumentRemoteMutationEvent} from '@sanity/base/lib/datastores/document/buffered-doc/types'
 
 export type DocumentRemoteMutationVersionEvent = Exclude<
   RemoteSnapshotVersionEvent,

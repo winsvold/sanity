@@ -132,12 +132,10 @@ export class Controller {
       const sinceChunk = this.sinceTime
       if (sinceChunk && sinceChunk.index < rev.index) {
         return [this._since, revTimeId]
-      } else {
-        return ['@lastPublished', revTimeId]
       }
-    } else {
-      return [null, revTimeId]
+      return ['@lastPublished', revTimeId]
     }
+    return [null, revTimeId]
   }
 
   findRangeForNewSince(since: Chunk): [string, string | null] {
@@ -148,9 +146,8 @@ export class Controller {
 
     if (revChunk && since.index < revChunk.index) {
       return [this.timeline.createTimeId(since), this._rev]
-    } else {
-      return [this.timeline.createTimeId(since), null]
     }
+    return [this.timeline.createTimeId(since), null]
   }
 
   setRevTime(rev: string | null) {
@@ -208,7 +205,7 @@ export class Controller {
       if (diff.type === 'null') return null
       if (diff.type !== 'object') throw new Error(`ObjectDiff expected, got ${diff.type}`)
     }
-    return diff
+    return diff as any
   }
 
   handleRemoteMutation(ev: RemoteSnapshotVersionEvent) {

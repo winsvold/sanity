@@ -1,1 +1,1 @@
-export * from './lib/pathUtils'
+export * from './src/pathUtils'

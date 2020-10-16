@@ -58,9 +58,9 @@ export function DocumentPanel(props: DocumentPanelProps) {
     toggleInspect,
     isHistoryOpen,
     views,
-    activeViewId,
-    onFormInputFocus,
-    formInputFocusPath
+    activeViewId
+    // onFormInputFocus,
+    // formInputFocusPath
   } = props
 
   const parentPortal = usePortal()
@@ -174,7 +174,7 @@ export function DocumentPanel(props: DocumentPanelProps) {
             )}
 
             {activeView.type === 'component' &&
-              createElement(activeView.component, {
+              createElement((activeView as any).component, {
                 document: {
                   draft: props.draft,
                   displayed: displayed || props.value || props.initialValue,
@@ -182,7 +182,7 @@ export function DocumentPanel(props: DocumentPanelProps) {
                   published: props.published
                 },
                 documentId: props.documentId,
-                options: activeView.options,
+                options: (activeView as any).options,
                 schemaType: props.schemaType
               })}
           </ScrollContainer>
