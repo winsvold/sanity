@@ -2,8 +2,9 @@
   "extends": "../../../tsconfig",
   "include": ["src"],
   "compilerOptions": {
-    "strict": false,
     "outDir": "./lib",
+    "strict": false,
+    "strictNullChecks": false,
     "jsx": "react",
     "plugins": [
       {
@@ -14,13 +15,11 @@
       }
     ],
 
+    // Paths
+    "baseUrl": "./src",
     "paths": {
-      "part:@sanity/default-layout/tool-switcher": [
-        "./@sanity/default-layout/src/navbar/toolMenu/ToolMenu"
-      ],
-      "part:@sanity/default-layout/sidecar-datastore": [
-        "./@sanity/default-layout/src/datastores/sidecar"
-      ]
+      "part:@sanity/base/datastore/history": ["./datastores/history"],
+      "part:@sanity/base/user": ["./datastores/user"]
     }
   }
 }

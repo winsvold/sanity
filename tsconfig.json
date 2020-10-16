@@ -1,22 +1,24 @@
 {
+  "extends": "./tsconfig.dist",
   "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": false,
-    "noImplicitReturns": true,
-    "skipLibCheck": true,
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "removeComments": false,
-    "preserveConstEnums": true,
-    "target": "es2016",
-    "declaration": true,
-
-    /* Note this must be false or else the gulp task will not emit any d.ts files for some bizarre reason */
-    "emitDeclarationOnly": false,
-
-    "declarationMap": true,
-    "lib": ["dom", "es2016", "es2020.string"],
-    "moduleResolution": "node",
-    "sourceMap": true
+    "baseUrl": "./packages",
+    "paths": {
+      "@sanity/base": ["./@sanity/base/src"],
+      "@sanity/bifur-client": ["./@sanity/bifur-client/src"],
+      "@sanity/block-tools": ["./@sanity/block-tools/src"],
+      "@sanity/components": ["./@sanity/components/src"],
+      "@sanity/field": ["./@sanity/field/src"],
+      "@sanity/google-maps-input": ["./@sanity/google-maps-input/src"],
+      "@sanity/initial-value-templates": ["./@sanity/initial-value-templates/src"],
+      "@sanity/mutator": ["./@sanity/mutator/src"],
+      "@sanity/preview": ["./@sanity/preview/src"],
+      "@sanity/react-hooks": ["./@sanity/react-hooks/src"],
+      "@sanity/schema": ["./@sanity/schema/src"],
+      "@sanity/state-router": ["./@sanity/state-router/src"],
+      "@sanity/structure": ["./@sanity/structure/src"],
+      "@sanity/util": ["./@sanity/util/src"],
+      "@sanity/types": ["./@sanity/types/src"],
+      "@sanity/validation": ["./@sanity/validation/src"]
+    }
   }
 }

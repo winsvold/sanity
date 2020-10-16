@@ -1,7 +1,6 @@
 {
   "extends": "../../../tsconfig",
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["test/**/*.ts"],
+  "include": ["src"],
   "compilerOptions": {
     "outDir": "./lib",
     "strict": false,
@@ -16,10 +15,10 @@
       }
     ],
 
-    "baseUrl": "./src",
+    // Paths
     "paths": {
-      "part:@sanity/base/datastore/history": ["./datastores/history"],
-      "part:@sanity/base/user": ["./datastores/user"]
+      "part:@sanity/base/datastore/history": ["./@sanity/base/src/datastores/history"],
+      "part:@sanity/base/user": ["./@sanity/base/src/datastores/user"]
     }
   }
 }
