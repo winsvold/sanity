@@ -3,34 +3,38 @@
   "compilerOptions": {
     "baseUrl": "./packages",
     "paths": {
-      "@sanity/base/lib/datastores/document/document-pair/remoteSnapshots": [
-        "./@sanity/base/lib/datastores/document/document-pair/remoteSnapshots"
-      ],
+      // Documented paths
       "@sanity/base/initial-value-template-builder": [
         "./@sanity/base/initial-value-template-builder"
       ],
-      "@sanity/base/initial-value-templates": ["./@sanity/base/initial-value-templates"],
-      "@sanity/base/lib/change-indicators": ["./@sanity/base/lib/change-indicators"],
-      "@sanity/base/lib/change-indicators/ChangeFieldWrapper": [
-        "./@sanity/base/lib/change-indicators/ChangeFieldWrapper"
+      "@sanity/desk-tool/structure-builder": ["./@sanity/desk-tool/structure-builder"],
+
+      // Internal paths
+      "@sanity/base/lib/datastores/document/document-pair/remoteSnapshots": [
+        "./@sanity/base/src/datastores/document/document-pair/remoteSnapshots"
       ],
-      "@sanity/base/lib/util/resizeObserver": ["./@sanity/base/lib/util/resizeObserver"],
+      "@sanity/base/initial-value-templates": ["./@sanity/base/initial-value-templates"],
+      "@sanity/base/lib/change-indicators": ["./@sanity/base/src/change-indicators"],
+      "@sanity/base/lib/change-indicators/ChangeFieldWrapper": [
+        "./@sanity/base/src/change-indicators/ChangeFieldWrapper"
+      ],
+      "@sanity/base/lib/util/resizeObserver": ["./@sanity/base/src/util/resizeObserver"],
       "@sanity/base/structure-builder": ["./@sanity/base/structure-builder"],
       "@sanity/base": ["./@sanity/base/src"],
       "@sanity/block-tools": ["./@sanity/block-tools/src"],
       "@sanity/components/lib/fieldsets/FieldStatus": [
-        "./@sanity/components/lib/fieldsets/FieldStatus"
+        "./@sanity/components/src/fieldsets/FieldStatus"
       ],
       "@sanity/components": ["./@sanity/components/src"],
       "@sanity/field/lib/diff/resolve/diffResolver": [
-        "./@sanity/field/lib/diff/resolve/diffResolver"
+        "./@sanity/field/src/diff/resolve/diffResolver"
       ],
       "@sanity/field": ["./@sanity/field/src"],
       "@sanity/initial-value-templates": ["./@sanity/initial-value-templates/src"],
       "@sanity/mutator": ["./@sanity/mutator/src"],
       "@sanity/preview/components": ["./@sanity/preview/components"],
       "@sanity/preview": ["./@sanity/preview"],
-      "@sanity/schema/lib": ["./@sanity/schema/lib"],
+      "@sanity/schema/lib": ["./@sanity/schema/src"],
       "@sanity/schema": ["./@sanity/schema/src/legacy"],
       "@sanity/state-router": ["./@sanity/state-router/src"],
       "@sanity/structure": ["./@sanity/structure/src"],
