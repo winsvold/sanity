@@ -8,6 +8,10 @@ declare module 'config:sanity' {
     api: {
       projectId: string
       dataset: string
+      apiHost?: string
+    }
+    project: {
+      name: string
     }
   }
 

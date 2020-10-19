@@ -10,6 +10,7 @@ import json from 'refractor/lang/json'
 import bash from 'refractor/lang/bash'
 import styled from 'styled-components'
 import studioTheme from '../theme'
+import {SanityProvider} from '../providers/SanityProvider'
 import {userColorManager, UserColorManagerProvider} from '../user-color'
 import ErrorHandler from './ErrorHandler'
 import DevServerStatus from './DevServerStatus'
@@ -25,7 +26,8 @@ const Root = styled(Card)`
 `
 
 function SanityRoot() {
-  const {projectId, dataset} = config.api || {}
+  const {projectId, dataset, apiHost} = config.api || {}
+  const {name: displayName} = config.project
   const [portalElement, setPortalElement] = useState(() => document.createElement('div'))
   const themeMode = 'light'
 
@@ -34,26 +36,33 @@ function SanityRoot() {
   }
 
   return (
-    <ThemeProvider theme={studioTheme}>
-      <CardProvider scheme={themeMode}>
-        <UserColorManagerProvider manager={userColorManager}>
-          <PortalProvider element={portalElement}>
-            <LayerProvider>
-              <SnackbarProvider>
-                <GlobalStyle scheme={themeMode} />
-                <Root tone="transparent">
-                  <DevServerStatus />
-                  <ErrorHandler />
-                  <RootComponent />
-                  <VersionChecker />
-                </Root>
-                <div data-portal="" ref={setPortalElement} />
-              </SnackbarProvider>
-            </LayerProvider>
-          </PortalProvider>
-        </UserColorManagerProvider>
-      </CardProvider>
-    </ThemeProvider>
+    <SanityProvider
+      projectId={projectId}
+      dataset={dataset}
+      apiHost={apiHost}
+      displayName={displayName}
+    >
+      <ThemeProvider theme={studioTheme}>
+        <CardProvider scheme={themeMode}>
+          <UserColorManagerProvider manager={userColorManager}>
+            <PortalProvider element={portalElement}>
+              <LayerProvider>
+                <SnackbarProvider>
+                  <GlobalStyle scheme={themeMode} />
+                  <Root tone="transparent">
+                    <DevServerStatus />
+                    <ErrorHandler />
+                    <RootComponent />
+                    <VersionChecker />
+                  </Root>
+                  <div data-portal="" ref={setPortalElement} />
+                </SnackbarProvider>
+              </LayerProvider>
+            </PortalProvider>
+          </UserColorManagerProvider>
+        </CardProvider>
+      </ThemeProvider>
+    </SanityProvider>
   )
 }
 
