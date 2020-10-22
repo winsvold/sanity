@@ -2,11 +2,13 @@ import React from 'react'
 import RefreshIcon from 'part:@sanity/base/sync-icon'
 import EyeIcon from 'part:@sanity/base/eye-icon'
 import EditIcon from 'part:@sanity/base/edit-icon'
+import FileIcon from 'part:@sanity/base/file-icon'
 import ImagesIcon from 'part:@sanity/base/images-icon'
 import UsersIcon from 'part:@sanity/base/users-icon'
+import S from '@sanity/desk-tool/structure-builder'
 import JsonDocumentDump from './components/JsonDocumentDump'
 import {DeveloperPreview} from './previews/developer'
-import S from '@sanity/desk-tool/structure-builder'
+import {IncomingReferences} from './previews/incoming-refs'
 
 // For testing. Bump the timeout to introduce som lag
 const delay = (val, ms = 10) => new Promise(resolve => setTimeout(resolve, ms, val))
@@ -20,7 +22,11 @@ export const getDefaultDocumentNode = ({schemaType}) => {
           .component(DeveloperPreview)
           .options({some: 'option'})
           .icon(EyeIcon)
-          .title('Preview')
+          .title('Preview'),
+      S.view
+        .component(IncomingReferences)
+        .icon(FileIcon)
+        .title('Incoming references')
     ].filter(Boolean)
   )
 }
