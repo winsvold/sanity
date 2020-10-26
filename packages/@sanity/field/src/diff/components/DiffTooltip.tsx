@@ -65,7 +65,7 @@ function DiffTooltipWithAnnotation(props: DiffTooltipWithAnnotationsProps) {
 
 function AnnotationItem({annotation}: {annotation: AnnotationDetails}) {
   const {author, timestamp} = annotation
-  const {error, value: user} = useUser(author)
+  const {error, data: user} = useUser(author)
   const color = useAnnotationColor(annotation)
   const timeAgo = useTimeAgo(timestamp, {minimal: true})
 

@@ -4,19 +4,19 @@ import {Observable, Subscription} from 'rxjs'
 export type LoadableState<T> = LoadingState<T> | LoadedState<T> | ErrorState<T>
 
 export interface LoadingState<T> {
-  value: undefined
+  data: undefined
   error: undefined
   isLoading: true
 }
 
 export interface LoadedState<T> {
-  value: T
+  data: T
   error: undefined
   isLoading: false
 }
 
 export interface ErrorState<T> {
-  value: undefined
+  data: undefined
   error: Error
   isLoading: false
 }
@@ -29,14 +29,14 @@ export function useLoadable<T>(observable$: Observable<T>, initialValue?: T): Lo
     let isSync = true
     let syncVal: LoadableState<T> =
       typeof initialValue === 'undefined'
-        ? {isLoading: true, value: undefined, error: undefined}
-        : {isLoading: false, value: initialValue, error: undefined}
+        ? {isLoading: true, data: undefined, error: undefined}
+        : {isLoading: false, data: initialValue, error: undefined}
 
     subscription.current = observable$.subscribe(
       nextVal => {
         const nextState: LoadedState<T> = {
           isLoading: false,
-          value: nextVal,
+          data: nextVal,
           error: undefined
         }
 
@@ -47,7 +47,7 @@ export function useLoadable<T>(observable$: Observable<T>, initialValue?: T): Lo
         }
       },
       error => {
-        setState({isLoading: false, error, value: undefined})
+        setState({isLoading: false, error, data: undefined})
       }
     )
 

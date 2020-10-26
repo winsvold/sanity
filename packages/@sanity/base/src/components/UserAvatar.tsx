@@ -67,14 +67,14 @@ const StaticUserAvatar = forwardRef(
 StaticUserAvatar.displayName = 'StaticUserAvatar'
 
 const UserAvatarLoader = forwardRef(({userId, ...loadedProps}: UnloadedUserProps, ref) => {
-  const {isLoading, error, value} = useUser(userId)
+  const {isLoading, error, data} = useUser(userId)
 
-  if (isLoading || error || !value) {
+  if (isLoading || error || !data) {
     // @todo How do we handle this?
     return null
   }
 
-  return <UserAvatar {...loadedProps} ref={ref} user={value} />
+  return <UserAvatar {...loadedProps} ref={ref} user={data} />
 })
 UserAvatarLoader.displayName = 'UserAvatarLoader'
 
