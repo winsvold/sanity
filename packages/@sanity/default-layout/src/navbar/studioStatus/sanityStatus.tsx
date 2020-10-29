@@ -2,11 +2,11 @@ import {useId} from '@reach/auto-id'
 import {Button} from '@sanity/ui'
 import React, {useCallback, useState} from 'react'
 import versions from 'sanity:versions'
-import CurrentVersionsDialog from './currentVersionsDialog'
+import {CurrentVersionsDialog} from './currentVersionsDialog'
 import {getHighestLevel} from './helpers'
 import {State} from './hooks'
 import {Severity} from './types'
-import UpdateNotifierDialog from './updateNotifierDialog'
+import {UpdateNotifierDialog} from './updateNotifierDialog'
 
 interface SanityStatusProps {
   latestVersions: State
@@ -16,8 +16,6 @@ function formatUpdateLabel(len: number) {
   if (len === 1) return ' 1 update'
   return `${len} updates`
 }
-
-console.log(versions)
 
 export function SanityStatus(props: SanityStatusProps) {
   const {latestVersions} = props

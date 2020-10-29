@@ -15,7 +15,7 @@ const spaceRoute = route('/:space', (params => {
   return foundSpace ? toolRoute : route('/')
 }) as any)
 
-const rootRouter = route(`${basePath}/`, [
+export const rootRouter = route(`${basePath}/`, [
   route.intents('/intent'),
   HAS_SPACES ? spaceRoute : toolRoute
 ])
@@ -27,5 +27,3 @@ export function maybeRedirectToBase() {
     history.replaceState(null, null, redirectTo)
   }
 }
-
-export default rootRouter

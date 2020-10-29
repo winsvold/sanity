@@ -1,7 +1,7 @@
 import {DocumentIcon} from '@sanity/icons'
 import {Dialog} from '@sanity/ui'
 import React from 'react'
-import CreateDocumentList from './createDocument'
+import {CreateDocumentList} from './createDocument'
 
 interface ActionModalProps {
   actions: {icon?: React.ComponentType; key: string}[]

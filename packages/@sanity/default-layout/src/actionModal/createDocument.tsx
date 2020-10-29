@@ -1,7 +1,7 @@
 import {Box, rem} from '@sanity/ui'
 import React from 'react'
 import styled from 'styled-components'
-import CreateDocumentPreview from './createDocumentPreview'
+import {CreateDocumentPreview} from './createDocumentPreview'
 
 const Root = styled(Box)`
   list-style: none;
@@ -22,7 +22,7 @@ interface CreateDocumentListProps {
   items: CreateDocumentPreviewItem[]
 }
 
-function CreateDocumentList(props: CreateDocumentListProps) {
+export function CreateDocumentList(props: CreateDocumentListProps) {
   const {items = []} = props
 
   return (
@@ -35,5 +35,3 @@ function CreateDocumentList(props: CreateDocumentListProps) {
     </Root>
   )
 }
-
-export default CreateDocumentList

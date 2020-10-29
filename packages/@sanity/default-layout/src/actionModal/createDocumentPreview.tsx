@@ -73,7 +73,7 @@ interface CreateDocumentPreviewProps {
   onClick?: () => void
 }
 
-class CreateDocumentPreview extends React.PureComponent<CreateDocumentPreviewProps> {
+export class CreateDocumentPreview extends React.PureComponent<CreateDocumentPreviewProps> {
   render() {
     const {
       title = 'Untitled',
@@ -133,5 +133,3 @@ class CreateDocumentPreview extends React.PureComponent<CreateDocumentPreviewPro
     )
   }
 }
-
-export default CreateDocumentPreview

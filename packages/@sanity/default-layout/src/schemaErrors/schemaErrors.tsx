@@ -46,7 +46,7 @@ function renderPath(path) {
     .filter(Boolean)
 }
 
-function SchemaErrors(props) {
+export function SchemaErrors(props) {
   const {problemGroups} = props
   return (
     <div className={styles.root}>
@@ -108,5 +108,3 @@ SchemaErrors.propTypes = {
     }).isRequired
   ).isRequired
 }
-
-export default SchemaErrors

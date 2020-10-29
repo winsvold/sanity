@@ -8,7 +8,7 @@ interface Props {
   versions: {[key: string]: string}
 }
 
-class CurrentVersionsDialog extends React.PureComponent<Props> {
+export class CurrentVersionsDialog extends React.PureComponent<Props> {
   static defaultProps = {
     versions: []
   }
@@ -53,5 +53,3 @@ class CurrentVersionsDialog extends React.PureComponent<Props> {
     )
   }
 }
-
-export default CurrentVersionsDialog

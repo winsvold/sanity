@@ -4,10 +4,10 @@ import {RouterProvider} from 'part:@sanity/base/router'
 import AppLoadingScreen from 'part:@sanity/base/app-loading-screen'
 import React, {useEffect, useState} from 'react'
 import {navigate, urlState$} from './datastores/urlState'
-import DefaultLayout from './defaultLayout'
+import {DefaultLayout} from './defaultLayout'
 import {NotFound} from './notFound'
-import rootRouter, {maybeRedirectToBase} from './router'
-import getOrderedTools from './util/getOrderedTools'
+import {maybeRedirectToBase, rootRouter} from './router'
+import {getOrderedTools} from './util/getOrderedTools'
 
 interface State {
   intent?: {
@@ -18,7 +18,7 @@ interface State {
   isNotFound?: boolean
 }
 
-function DefaultLayoutRoot() {
+export default function DefaultLayoutRoot() {
   const tools = getOrderedTools()
   const [state, setState] = useState<State>({urlState: {}})
   const {intent, urlState, isNotFound} = state
@@ -72,5 +72,3 @@ function DefaultLayoutRoot() {
     <LoginWrapper LoadingScreen={<AppLoadingScreen text="Logging in" />}>{content}</LoginWrapper>
   )
 }
-
-export default DefaultLayoutRoot

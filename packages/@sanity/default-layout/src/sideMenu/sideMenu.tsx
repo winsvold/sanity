@@ -19,7 +19,7 @@ interface Props {
   user: User
 }
 
-function SideMenu(props: Props) {
+export function SideMenu(props: Props) {
   const {activeToolName, isOpen, onClose, onSignOut, onSwitchTool, tools, user} = props
   const tabIndex = isOpen ? 0 : -1
 
@@ -81,5 +81,3 @@ function SideMenu(props: Props) {
     </div>
   )
 }
-
-export default SideMenu

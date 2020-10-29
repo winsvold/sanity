@@ -2,7 +2,7 @@ import {Dialog} from '@sanity/ui'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-export default function InitialValueTemplateError({errors}) {
+export function InitialValueTemplateError({errors}) {
   return (
     <Dialog
       id="initial-value-template-error-dialog"

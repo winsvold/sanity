@@ -159,7 +159,7 @@ function ContactDeveloper(props: {outdated: Package[]; severity: string}) {
   )
 }
 
-function UpdateNotifierDialog(props: Props) {
+export function UpdateNotifierDialog(props: Props) {
   const {outdated, severity, onClose} = props
 
   return (
@@ -186,5 +186,3 @@ function UpdateNotifierDialog(props: Props) {
     </Dialog>
   )
 }
-
-export default UpdateNotifierDialog

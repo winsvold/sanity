@@ -84,7 +84,7 @@ const SidecarContainer = styled.div(({theme}: {theme: Theme}) => {
   `
 })
 
-function DefaultLayout(props: Props) {
+export function DefaultLayout(props: Props) {
   const {tools} = props
   const routerState = useRouterState()
   const [createMenuIsOpen, setCreateMenuIsOpen] = useState(false)
@@ -237,5 +237,3 @@ function DefaultLayout(props: Props) {
     </SchemaErrorReporter>
   )
 }
-
-export default DefaultLayout
