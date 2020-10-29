@@ -9,8 +9,6 @@
 .root {
   display: flex;
   flex-direction: column;
-  background-color: var(--component-bg);
-  color: var(--component-text-color);
 
   @media (--max-screen-medium) {
     min-height: 100%;
@@ -64,7 +62,6 @@
 }
 
 .header {
-  background: var(--component-bg);
   position: relative;
   z-index: var(--zindex-pane);
 
@@ -261,8 +258,6 @@
 
 .stickyFooter {
   box-sizing: border-box;
-  background-color: var(--component-bg);
-  color: var(--text-color-secondary);
   z-index: var(--zindex-pane);
 
   @supports (padding-bottom: env(safe-area-inset-bottom)) {

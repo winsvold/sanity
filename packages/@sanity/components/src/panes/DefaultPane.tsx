@@ -1,4 +1,5 @@
 import S, {InitialValueTemplateItem} from '@sanity/base/structure-builder'
+import {Card} from '@sanity/ui'
 import classNames from 'classnames'
 import {negate} from 'lodash'
 import {MenuButton} from 'part:@sanity/components/menu-button'
@@ -377,7 +378,7 @@ class DefaultPane extends React.PureComponent<DefaultPaneProps, State> {
     const headerViewMenuNode = this.props.renderHeaderViewMenu && this.props.renderHeaderViewMenu()
 
     return (
-      <div
+      <Card
         className={classNames(
           styles.root,
           isCollapsed && styles.isCollapsed,
@@ -388,7 +389,7 @@ class DefaultPane extends React.PureComponent<DefaultPaneProps, State> {
         onClick={this.handleRootClick}
         ref={this.setRootElement}
       >
-        <div className={styles.header}>
+        <Card className={styles.header}>
           <div className={styles.headerContent}>
             <div className={styles.titleContainer}>
               <h2 className={styles.title} onClick={this.handleTitleClick}>
@@ -400,7 +401,7 @@ class DefaultPane extends React.PureComponent<DefaultPaneProps, State> {
 
           {/* To render tabs and similar */}
           {headerViewMenuNode && <div className={styles.headerViewMenu}>{headerViewMenuNode}</div>}
-        </div>
+        </Card>
 
         {hasTabs ? (
           <TabPanel
@@ -415,11 +416,11 @@ class DefaultPane extends React.PureComponent<DefaultPaneProps, State> {
         )}
 
         {footer && (
-          <div className={hasTabs && hasSiblings ? styles.hoverFooter : styles.stickyFooter}>
+          <Card className={hasTabs && hasSiblings ? styles.hoverFooter : styles.stickyFooter}>
             {footer}
-          </div>
+          </Card>
         )}
-      </div>
+      </Card>
     )
   }
 }
