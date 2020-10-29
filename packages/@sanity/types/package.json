@@ -19,10 +19,8 @@
     "content",
     "typescript"
   ],
-  "dependencies": {
-    "@types/react": "^16.9.49"
-  },
   "devDependencies": {
+    "react": "^16.14.0",
     "rimraf": "^2.7.1"
   },
   "repository": {

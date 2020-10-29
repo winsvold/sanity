@@ -32,7 +32,6 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.23",
-    "@types/react": "^16.9.49",
     "browserify": "^14.3.0",
     "error-capture-middleware": "0.0.2",
     "express": "^4.16.1",
@@ -41,7 +40,7 @@
     "object-inspect": "^1.6.0",
     "prop-types": "^15.6.0",
     "quickreload": "^2.1.2",
-    "react": "16.9.0",
+    "react": "^16.14.0",
     "react-dom": "^16.9.0",
     "rebundler": "^0.3.0",
     "remon": "^1.0.2",

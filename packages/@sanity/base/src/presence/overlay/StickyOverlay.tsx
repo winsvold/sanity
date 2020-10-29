@@ -102,7 +102,7 @@ function group(
 }
 
 const Spacer = ({height, ...rest}: {height: number; style?: React.CSSProperties}) => (
-  <div style={{height: Math.max(0, height), ...rest?.style}} />
+  <div style={{height: Math.max(0, height), ...(rest?.style as any)}} />
 )
 
 const DEFAULT_MARGINS: Margins = [0, 0, 0, 0]
