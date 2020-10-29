@@ -1,40 +1,88 @@
-import {Box, Card, Flex} from '@sanity/ui'
+import {Box, Flex, Theme} from '@sanity/ui'
 import absolutes from 'all:part:@sanity/base/absolutes'
 import AppLoadingScreen from 'part:@sanity/base/app-loading-screen'
 import {RouteScope, useRouterState} from 'part:@sanity/base/router'
 import userStore from 'part:@sanity/base/user'
 import React, {useCallback, useEffect, useRef, useState} from 'react'
-import styled from 'styled-components'
+import styled, {css, keyframes} from 'styled-components'
 import {ActionModal} from './actionModal'
 import {Sidecar} from './sidecar/Sidecar'
-import {NavbarContainer} from './navbar'
+import {Navbar} from './navbar'
 import {SchemaErrorReporter} from './schemaErrors/SchemaErrorReporter'
 import {SideMenu} from './sideMenu'
 import {RenderTool} from './tool'
 import {Tool, User} from './types'
 import {getNewDocumentModalActions} from './util/getNewDocumentModalActions'
 
-import styles from './DefaultLayout.css'
-
 interface Props {
   tools: Tool[]
 }
 
-const Navbar = styled(Card)`
+const Root = styled(Flex)`
+  height: 100%;
+
+  @media (min-width: ${({theme}) => theme.media[0]}) {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+`
+
+const ToolContainer = styled(Box)`
+  position: relative;
+  height: 100%;
+  margin-top: 0;
+  margin-left: env(safe-area-inset-left);
+  margin-right: env(safe-area-inset-right);
+
+  @media (min-width: ${({theme}) => theme.media[0]}) {
+    overflow: auto;
+  }
+`
+
+const NavbarContainer = styled.div`
+  z-index: 9999;
   position: relative;
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
+`
 
-  &::after {
-    content: '';
-    display: block;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-bottom: 1px solid var(--card-hairline-soft-color);
+const loadingScreen = keyframes`
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
   }
 `
+
+const LoadingScreenContainer = styled.div`
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  opacity: 1;
+  transition: opacity 0.5s linear;
+  z-index: 5000;
+  animation-name: ${loadingScreen};
+  animation-duration: 1s;
+  animation-delay: 1s;
+`
+
+const SidecarContainer = styled.div(({theme}: {theme: Theme}) => {
+  const {media} = theme
+
+  return css`
+    &:empty {
+      display: none;
+    }
+
+    @media (max-width: ${media[0] - 1}px) {
+      display: none;
+    }
+  `
+})
 
 function DefaultLayout(props: Props) {
   const {tools} = props
@@ -130,24 +178,15 @@ function DefaultLayout(props: Props) {
   return (
     <SchemaErrorReporter>
       {() => (
-        <Flex
-          className={styles.root}
-          data-sanity-layout=""
-          direction="column"
-          onClickCapture={handleClickCapture}
-        >
+        <Root data-sanity-layout="" direction="column" onClickCapture={handleClickCapture}>
           {showLoadingScreen && (
-            <div
-              className={styles.loadingScreen}
-              hidden={loadingScreenHidden}
-              ref={loadingScreenElementRef}
-            >
+            <LoadingScreenContainer hidden={loadingScreenHidden} ref={loadingScreenElementRef}>
               <AppLoadingScreen text="Restoring Sanity" />
-            </div>
+            </LoadingScreenContainer>
           )}
 
-          <Navbar tone="contrast">
-            <NavbarContainer
+          <NavbarContainer>
+            <Navbar
               tools={tools}
               createMenuIsOpen={createMenuIsOpen}
               onCreateButtonClick={handleCreateButtonClick}
@@ -159,7 +198,7 @@ function DefaultLayout(props: Props) {
               onSearchOpen={handleSearchOpen}
               onSearchClose={handleSearchClose}
             />
-          </Navbar>
+          </NavbarContainer>
 
           <div data-sanity-side-menu-container="">
             <SideMenu
@@ -175,15 +214,15 @@ function DefaultLayout(props: Props) {
           </div>
 
           <Flex flex={1}>
-            <Box className={styles.toolContainer} flex={1}>
+            <ToolContainer flex={1}>
               <RouteScope scope={routerState?.tool}>
                 <RenderTool tool={routerState?.tool} />
               </RouteScope>
-            </Box>
+            </ToolContainer>
 
-            <div className={styles.sidecarContainer}>
+            <SidecarContainer>
               <Sidecar />
-            </div>
+            </SidecarContainer>
           </Flex>
 
           {createMenuIsOpen && (
@@ -193,7 +232,7 @@ function DefaultLayout(props: Props) {
           {absolutes.map((Abs, i) => (
             <Abs key={String(i)} />
           ))}
-        </Flex>
+        </Root>
       )}
     </SchemaErrorReporter>
   )

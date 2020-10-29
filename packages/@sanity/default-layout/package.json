@@ -4,8 +4,13 @@
   "description": "The default layout components for Sanity",
   "main": "lib/default-layout.js",
   "scripts": {
+    "build": "npm run build:cjs && npm run build:dts && npm run build:assets",
+    "build:assets": "cpx 'src/**/*.{css,json,svg}' lib",
+    "build:cjs": "babel src --extensions '.ts,.tsx,.js' --out-dir lib",
+    "build:dts": "tsc -p tsconfig.dist.json --emitDeclarationOnly",
+    "clean": "rimraf lib",
     "coverage": "nyc --report=lcov --report=text _mocha -- test/**/*.test.js",
-    "clean": "rimraf lib .nyc_output coverage",
+    "prebuild": "npm run clean",
     "posttest": "npm run type-check",
     "type-check": "tsc --noEmit -p tsconfig.dist.json"
   },
@@ -32,6 +37,7 @@
     "@sanity/base": "2.0.4",
     "@sanity/components": "2.0.4",
     "@sanity/generate-help-url": "2.0.1",
+    "@sanity/ui": "^1.0.0-alpha.16",
     "@sanity/util": "2.0.1",
     "classnames": "^2.2.5",
     "is-hotkey": "^0.1.4",
@@ -41,9 +47,11 @@
     "rxjs": "^6.5.3"
   },
   "devDependencies": {
+    "@babel/cli": "^7.11.6",
     "@types/styled-components": "^5.1.4",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
+    "cpx": "^1.5.0",
     "mocha": "^5.0.1",
     "nyc": "^11.0.3",
     "prop-types": "^15.6.0",

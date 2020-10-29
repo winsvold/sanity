@@ -1,9 +1,10 @@
+import {Card, Code, Label, Stack, Text} from '@sanity/ui'
 import LoginWrapper from 'part:@sanity/base/login-wrapper?'
 import {RouterProvider} from 'part:@sanity/base/router'
 import AppLoadingScreen from 'part:@sanity/base/app-loading-screen'
 import React, {useEffect, useState} from 'react'
-import * as urlStateStore from './datastores/urlState'
-import DefaultLayout from './DefaultLayout'
+import {navigate, urlState$} from './datastores/urlState'
+import DefaultLayout from './defaultLayout'
 import {NotFound} from './notFound'
 import rootRouter, {maybeRedirectToBase} from './router'
 import getOrderedTools from './util/getOrderedTools'
@@ -25,7 +26,7 @@ function DefaultLayoutRoot() {
   useEffect(() => {
     maybeRedirectToBase()
 
-    const sub = urlStateStore.state.subscribe({
+    const sub = urlState$.subscribe({
       next: event =>
         setState({
           urlState: event.state,
@@ -38,19 +39,23 @@ function DefaultLayoutRoot() {
   }, [])
 
   const content = (
-    <RouterProvider
-      router={rootRouter}
-      state={urlState}
-      // eslint-disable-next-line react/jsx-handler-names
-      onNavigate={urlStateStore.navigate}
-    >
+    <RouterProvider router={rootRouter} state={urlState || {}} onNavigate={navigate}>
       {isNotFound && (
         <NotFound>
           {intent && (
-            <div>
-              No tool can handle the intent: <strong>{intent.name}</strong> with parameters{' '}
-              <pre>{JSON.stringify(intent.params)}</pre>
-            </div>
+            <Stack space={5}>
+              <Text>
+                No tool can handle the intent: <strong>{intent.name}</strong>
+              </Text>
+
+              <Stack space={3}>
+                <Label as="h2">Parameters</Label>
+
+                <Card padding={3} radius={2} tone="transparent">
+                  <Code language="json">{JSON.stringify(intent.params, null, 2)}</Code>
+                </Card>
+              </Stack>
+            </Stack>
           )}
         </NotFound>
       )}
@@ -59,10 +64,12 @@ function DefaultLayoutRoot() {
     </RouterProvider>
   )
 
-  return LoginWrapper ? (
+  if (!LoginWrapper) {
+    return content
+  }
+
+  return (
     <LoginWrapper LoadingScreen={<AppLoadingScreen text="Logging in" />}>{content}</LoginWrapper>
-  ) : (
-    content
   )
 }
 

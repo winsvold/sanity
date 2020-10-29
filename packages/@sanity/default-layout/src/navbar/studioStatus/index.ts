@@ -1,2 +1,2 @@
 export * from './SanityStatus'
-export * from './SanityStatusContainer'
+export * from './hooks'

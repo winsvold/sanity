@@ -1,12 +1,70 @@
 import {UserAvatar} from '@sanity/base/components'
 import {useGlobalPresence} from '@sanity/base/hooks'
 import {CogIcon} from '@sanity/icons'
-import {AvatarStack, Button, Popover, useClickOutside, useGlobalKeyDown} from '@sanity/ui'
+import {
+  AvatarStack,
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Popover,
+  Stack,
+  Text,
+  useClickOutside,
+  useGlobalKeyDown
+} from '@sanity/ui'
 import client from 'part:@sanity/base/client'
 import React, {useCallback, useState} from 'react'
+import styled from 'styled-components'
 import {PresenceListRow} from './PresenceListRow'
 
-import styles from './PresenceMenu.css'
+const Root = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+const PopoverContent = styled.div`
+  max-width: 280px;
+`
+
+const Header = styled(Box)``
+
+const AvatarList = styled(Box)`
+  max-height: calc(100vh - 130px);
+  overflow: auto;
+`
+
+const ManageMembers = styled(Box)`
+  border-top: 1px solid var(--card-hairline-soft-color);
+  position: sticky;
+  bottom: 0;
+`
+
+const ManageLink = styled.a`
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  outline: none;
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--card-focus-bg-color);
+      color: var(--card-focus-fg-color);
+    }
+  }
+`
+
+const NarrowButton = styled(Button)`
+  [data-eq-min~='1'] & {
+    display: none;
+  }
+`
+
+const WideButton = styled(Button)`
+  [data-eq-max~='1'] & {
+    display: none;
+  }
+`
 
 const MAX_AVATARS_GLOBAL = 4
 
@@ -19,37 +77,46 @@ export function PresenceMenu() {
   const handleClose = useCallback(() => setOpen(false), [])
 
   const popoverContent = (
-    <div className={styles.popoverContent}>
+    <PopoverContent>
       {presence.length === 0 && (
-        <div className={styles.header}>
-          <h2 className={styles.title}>No one else is here</h2>
-          <p className={styles.subtitle}>
-            Invite people to the project to see their online status.
-          </p>
-        </div>
+        <Header padding={4}>
+          <Stack space={3}>
+            <Heading as="p" size={1}>
+              <strong>No one else is here</strong>
+            </Heading>
+            <Text size={1}>Invite people to the project to see their online status.</Text>
+          </Stack>
+        </Header>
       )}
 
       {presence.length > 0 && (
-        <div className={styles.avatarList}>
+        <AvatarList paddingY={3}>
           {presence.map(item => (
             <PresenceListRow key={item.user.id} presence={item} onClose={handleClose} />
           ))}
-        </div>
+        </AvatarList>
       )}
 
-      <div className={styles.manageMembers}>
-        <a
+      <ManageMembers paddingY={2}>
+        <ManageLink
           href={`https://manage.sanity.io/projects/${projectId}/team`}
-          className={styles.manageLink}
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleClose}
         >
-          <span>Manage members</span>
-          <CogIcon />
-        </a>
-      </div>
-    </div>
+          <Box paddingX={4} paddingY={3}>
+            <Flex align="center">
+              <Box flex={1} paddingRight={3}>
+                <Text>Manage members</Text>
+              </Box>
+              <Text>
+                <CogIcon />
+              </Text>
+            </Flex>
+          </Box>
+        </ManageLink>
+      </ManageMembers>
+    </PopoverContent>
   )
 
   const [rootElement, setRootElement] = useState<HTMLDivElement | null>(null)
@@ -75,40 +142,27 @@ export function PresenceMenu() {
   )
 
   return (
-    <div className={styles.root} ref={setRootElement}>
+    <Root ref={setRootElement}>
       <Popover content={popoverContent} open={open}>
         <div>
-          <Button
-            className={styles.narrowButton}
+          <NarrowButton
             icon="users"
             // iconStatus={presence.length > 0 ? 'success' : undefined}
             mode="bleed"
             onClick={handleToggle}
-            padding={2}
+            padding={3}
             selected={open}
-            // tone="navbar"
           />
 
-          <Button
-            className={styles.wideButton}
-            mode="bleed"
-            onClick={handleToggle}
-            padding={2}
-            selected={open}
-            // tone="navbar"
-          >
-            <AvatarStack
-              className={styles.avatarStack}
-              maxLength={MAX_AVATARS_GLOBAL}
-              // tone="navbar"
-            >
+          <WideButton mode="bleed" onClick={handleToggle} padding={3} selected={open}>
+            <AvatarStack maxLength={MAX_AVATARS_GLOBAL}>
               {presence.map(item => (
                 <UserAvatar key={item.user.id} user={item.user} />
               ))}
             </AvatarStack>
-          </Button>
+          </WideButton>
         </div>
       </Popover>
-    </div>
+    </Root>
   )
 }

@@ -120,10 +120,10 @@ function maybeRedirectDefaultState(event: StateEvent): StateEvent | null {
 }
 
 export function navigate(newUrl: string, options: {replace: boolean}) {
-  locationStore.actions.navigate(newUrl, options)
+  return locationStore.actions.navigate(newUrl, options)
 }
 
-export const state: Observable<StateEvent> = locationStore.state.pipe(
+export const urlState$: Observable<StateEvent> = locationStore.state.pipe(
   map(decodeUrlState),
   scan(maybeHandleIntent, null),
   filter(Boolean),
@@ -135,7 +135,7 @@ export const state: Observable<StateEvent> = locationStore.state.pipe(
 
 if (HAS_SPACES) {
   // Uglybugly mutation ahead.
-  state
+  urlState$
     .pipe(
       map(event => event.state),
       filter(Boolean),

@@ -5,13 +5,27 @@ import {toString as pathToString} from '@sanity/util/paths'
 import {orderBy} from 'lodash'
 import {IntentLink} from 'part:@sanity/base/router'
 import React from 'react'
-
-import styles from './PresenceListRow.css'
+import {Box, Flex, Text} from '@sanity/ui'
+import styled from 'styled-components'
 
 interface PresenceListRowProps {
   presence: GlobalPresence
   onClose: () => void
 }
+
+const RootLink = styled(IntentLink)`
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  outline: none;
+
+  @media (hover: hover) {
+    &:hover {
+      background: #06f;
+      color: #fff;
+    }
+  }
+`
 
 export function PresenceListRow(props: PresenceListRowProps) {
   const {presence, onClose} = props
@@ -21,37 +35,40 @@ export function PresenceListRow(props: PresenceListRowProps) {
   const hasLink = Boolean(lastActiveLocation?.documentId)
 
   const item = (
-    <div className={styles.root}>
-      <div className={styles.avatar}>
-        <UserAvatar user={presence.user} size="medium" />
-      </div>
+    <Box paddingX={4} paddingY={2}>
+      <Flex align="center">
+        <UserAvatar user={presence.user} size={1} />
 
-      <div className={styles.inner}>
-        <div className={styles.userName}>{presence.user.displayName}</div>
-      </div>
+        <Box flex={1} paddingLeft={3}>
+          <Text>{presence.user.displayName}</Text>
+        </Box>
 
-      {hasLink && (
-        <div className={styles.linkIcon}>
-          <LinkIcon />
-        </div>
-      )}
-    </div>
+        {hasLink && (
+          <Box paddingLeft={3}>
+            <Text>
+              <LinkIcon />
+            </Text>
+          </Box>
+        )}
+      </Flex>
+    </Box>
   )
 
-  return lastActiveLocation ? (
-    <IntentLink
-      title={presence?.user?.displayName && `Go to ${presence.user.displayName}`}
-      className={styles.intentLink}
+  if (!lastActiveLocation) {
+    return item
+  }
+
+  return (
+    <RootLink
       intent="edit"
       params={{
         id: lastActiveLocation.documentId,
         path: encodeURIComponent(pathToString(lastActiveLocation.path))
       }}
       onClick={onClose}
+      title={presence?.user?.displayName && `Go to ${presence.user.displayName}`}
     >
       {item}
-    </IntentLink>
-  ) : (
-    item
+    </RootLink>
   )
 }

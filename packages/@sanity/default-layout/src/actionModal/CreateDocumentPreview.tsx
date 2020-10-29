@@ -1,7 +1,62 @@
+import {Box, Stack, Text} from '@sanity/ui'
 import {IntentLink} from 'part:@sanity/base/router'
 import React from 'react'
+import styled from 'styled-components'
 
-import styles from './CreateDocumentPreview.css'
+const Root = styled(IntentLink)`
+  display: block;
+  text-decoration: none;
+  position: relative;
+  background-color: var(--card-bg-color);
+  border-radius: ${({theme}) => `${theme.radius[2]}px`};
+  border: 1px solid var(--card-hairline-soft-color);
+  height: 100%;
+  box-sizing: border-box;
+  outline: none;
+
+  @media (hover: hover) {
+    color: var(--card-fg-muted-color);
+
+    &:hover {
+      color: var(--card-fg-color);
+    }
+  }
+
+  &:focus {
+    border-color: transparent;
+    box-shadow: 0 0 0 2px var(--card-focus-ring-color);
+  }
+`
+
+const Container = styled(Box)`
+  display: flex;
+  align-items: center;
+`
+
+const TextContainer = styled(Stack)`
+  flex: 1;
+  min-width: 0;
+  margin-left: 12px;
+`
+
+const MediaContainer = styled.div`
+  float: right;
+  display: flex;
+  align-items: flex-start;
+  width: calc(33 / 16 * 1em);
+  height: calc(33 / 16 * 1em);
+
+  & > svg {
+    display: block;
+    font-size: calc(25 / 16 * 1em);
+    margin: calc(4 / 25 * 1em);
+
+    &[data-sanity-icon='true'] {
+      font-size: calc(37 / 16 * 1em);
+      margin: calc(2 / 37 * -1em);
+    }
+  }
+`
 
 interface CreateDocumentPreviewProps {
   title?: React.ReactNode | React.FunctionComponent<unknown>
@@ -32,44 +87,49 @@ class CreateDocumentPreview extends React.PureComponent<CreateDocumentPreviewPro
 
     if (isPlaceholder || !params) {
       return (
-        <div className={styles.placeholder}>
-          <div className={styles.heading}>
-            <h2 className={styles.title}>Loading…</h2>
-            <h3 className={styles.subtitle}>Loading…</h3>
-          </div>
-          {media !== false && <div className={styles.media} />}
-        </div>
+        <Container padding={3}>
+          {media !== false && <MediaContainer />}
+          <TextContainer space={2}>
+            <Text as="h2">Loading…</Text>
+            <Text as="h3" size={1}>
+              Loading…
+            </Text>
+          </TextContainer>
+        </Container>
       )
     }
 
     return (
-      <IntentLink
+      <Root
         intent="create"
         params={[params, templateParams]}
-        className={styles.root}
         title={subtitle ? `Create new ${title} (${subtitle})` : `Create new ${title}`}
         onClick={this.props.onClick}
       >
-        {media !== false && (
-          <div className={styles.media}>
-            {typeof media === 'function' && media({layout: 'default'})}
-            {typeof media === 'string' && <div className={styles.mediaString}>{media}</div>}
-            {React.isValidElement(media) && media}
-          </div>
-        )}
-        <div className={styles.heading}>
-          <h2 className={styles.title}>
-            {typeof title !== 'function' && title}
-            {typeof title === 'function' && title({layout: 'default'})}
-          </h2>
-          {subtitle && (
-            <h3 className={styles.subtitle}>
-              {(typeof subtitle === 'function' && subtitle({layout: 'default'})) || subtitle}
-            </h3>
+        <Container padding={3}>
+          {media !== false && (
+            <MediaContainer>
+              {typeof media === 'function' && media({layout: 'default'})}
+              {React.isValidElement(media) && media}
+            </MediaContainer>
           )}
-        </div>
-        {description && <p className={styles.description}>{description}</p>}
-      </IntentLink>
+
+          <TextContainer space={2}>
+            <Text as="h2">
+              {typeof title !== 'function' && title}
+              {typeof title === 'function' && title({layout: 'default'})}
+            </Text>
+
+            {subtitle && (
+              <Text as="h3" size={1}>
+                {(typeof subtitle === 'function' && subtitle({layout: 'default'})) || subtitle}
+              </Text>
+            )}
+          </TextContainer>
+
+          {description && <Text size={0}>{description}</Text>}
+        </Container>
+      </Root>
     )
   }
 }

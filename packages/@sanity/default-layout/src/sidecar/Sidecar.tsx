@@ -1,76 +1,42 @@
-import classNames from 'classnames'
-import React from 'react'
+import React, {createElement, useEffect, useState} from 'react'
 import {Subscription} from 'rxjs'
 import * as sidecar from 'part:@sanity/default-layout/sidecar?'
 import {isSidecarOpenSetting} from 'part:@sanity/default-layout/sidecar-datastore'
-import styles from './Sidecar.css'
+import styled, {css} from 'styled-components'
+import {Theme} from '@sanity/ui'
 
-let isSidecarEnabled: () => boolean | null = null
-let SidecarLayout: React.ComponentType | null = null
-if (sidecar) {
-  isSidecarEnabled = sidecar.isSidecarEnabled
-  SidecarLayout = sidecar.SidecarLayout
-}
+const SIDECAR_ENABLED =
+  sidecar?.SidecarLayout && sidecar?.isSidecarEnabled ? sidecar.isSidecarEnabled() : false
 
-interface State {
-  isOpen: boolean
-  isVisible: boolean
-}
+const Root = styled.div(({theme}: {theme: Theme}) => {
+  const {media} = theme
 
-export class Sidecar extends React.PureComponent<Record<string, unknown>, State> {
-  state = {
-    isOpen: true,
-    isVisible: true
-  }
+  return css`
+    @media (min-width: ${media[0]}px) {
+      height: 100%;
+      width: 420px;
+    }
+  `
+})
 
-  subscription: Subscription | null = null
+export function Sidecar() {
+  const [open, setOpen] = useState(true)
 
-  componentDidMount() {
-    if (isSidecarEnabled && isSidecarEnabled()) {
-      this.subscription = isSidecarOpenSetting.listen().subscribe((isOpen: boolean) => {
-        this.setState({isOpen: isOpen !== false})
+  useEffect(() => {
+    let sub: Subscription | null = null
+
+    if (SIDECAR_ENABLED) {
+      sub = isSidecarOpenSetting.listen().subscribe((val: boolean) => {
+        setOpen(val !== false)
       })
     }
-    if (!this.state.isOpen) {
-      this.handleRemoveSidecar()
-    }
+
+    return () => sub?.unsubscribe()
+  }, [])
+
+  if (!SIDECAR_ENABLED || !open) {
+    return null
   }
 
-  handleRemoveSidecar = () => {
-    this.setState({
-      isVisible: false
-    })
-  }
-
-  handleDismissSidecar = () => {
-    const transitionDuration = 500 // from the isOpen class
-    setTimeout(() => {
-      this.handleRemoveSidecar()
-    }, transitionDuration)
-  }
-
-  componentWillUnmount() {
-    if (this.subscription) {
-      this.subscription.unsubscribe()
-    }
-  }
-
-  componentDidUpdate() {
-    // eslint-disable-next-line react/no-did-update-set-state
-    return this.state.isOpen ? this.setState({isVisible: true}) : this.handleDismissSidecar()
-  }
-
-  render() {
-    const {isOpen, isVisible} = this.state
-
-    if (!isVisible || !(isSidecarEnabled && isSidecarEnabled())) {
-      return null
-    }
-
-    return (
-      <div className={classNames(styles.root, isOpen && styles.isOpen)}>
-        {isVisible && <SidecarLayout />}
-      </div>
-    )
-  }
+  return <Root>{createElement(sidecar.SidecarLayout)}</Root>
 }

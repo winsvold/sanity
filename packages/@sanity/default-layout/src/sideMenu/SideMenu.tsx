@@ -1,8 +1,8 @@
 import {UserAvatar} from '@sanity/base/components'
-import {Button} from '@sanity/ui'
+import {Button, Card} from '@sanity/ui'
 import classNames from 'classnames'
 import React from 'react'
-import {ToolMenu} from '../navbar/toolMenu/ToolMenu'
+import {ToolMenu} from '../components'
 import {DatasetSelect} from '../datasetSelect'
 import {Tool, User} from '../types'
 import {HAS_SPACES} from '../util/spaces'
@@ -25,12 +25,12 @@ function SideMenu(props: Props) {
 
   return (
     <div className={classNames(styles.root, isOpen && styles.isOpen)}>
-      <div>
+      <Card shadow={1}>
         <div className={styles.header}>
           <div className={styles.headerMain}>
             <div className={styles.userProfile}>
               <div className={styles.userAvatarContainer}>
-                <UserAvatar size="medium" userId="me" />
+                <UserAvatar size={1} userId="me" />
               </div>
               <div className={styles.userProfileText}>{user?.name || user?.email}</div>
             </div>
@@ -50,7 +50,7 @@ function SideMenu(props: Props) {
 
           {HAS_SPACES && (
             <div className={styles.datasetSelectContainer}>
-              <DatasetSelect isVisible={isOpen} />
+              <DatasetSelect />
             </div>
           )}
         </div>
@@ -59,7 +59,6 @@ function SideMenu(props: Props) {
           <ToolMenu
             activeToolName={activeToolName}
             direction="vertical"
-            isVisible={isOpen}
             onSwitchTool={onSwitchTool}
             tools={tools}
           />
@@ -78,7 +77,7 @@ function SideMenu(props: Props) {
             </Button>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   )
 }

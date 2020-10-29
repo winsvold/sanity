@@ -16,7 +16,7 @@
 
     "paths": {
       "part:@sanity/default-layout/tool-switcher": [
-        "./@sanity/default-layout/src/navbar/toolMenu/ToolMenu"
+        "./@sanity/default-layout/src/components/toolMenu"
       ],
       "part:@sanity/default-layout/sidecar-datastore": [
         "./@sanity/default-layout/src/datastores/sidecar"

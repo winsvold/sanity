@@ -1,10 +1,10 @@
-import {Menu, MenuButton, MenuItem} from '@sanity/ui'
+import {Button, Menu, MenuButton, MenuItem} from '@sanity/ui'
 import {ChevronDownIcon} from '@sanity/icons'
 import {useRouter} from 'part:@sanity/base/router'
 import React, {useCallback, useEffect, useState} from 'react'
 import {map} from 'rxjs/operators'
-import {state as urlState} from '../datastores/urlState'
-import {CONFIGURED_SPACES} from '../util/spaces'
+import {urlState$} from './datastores/urlState'
+import {CONFIGURED_SPACES} from './util/spaces'
 
 interface Space {
   default: boolean
@@ -12,22 +12,19 @@ interface Space {
   title: string
 }
 
-interface DatasetSelectProps {
-  isVisible: boolean
-  tone?: 'navbar'
-}
-
-const currentSpace$ = urlState.pipe(
+const currentSpace$ = urlState$.pipe(
   map(event => event.state && event.state.space),
   map(spaceName => CONFIGURED_SPACES.find(sp => sp.name === spaceName))
 )
 
-export default DatasetSelect
+function DatasetSelectMenuItem({openSpace, space}: {openSpace: (s: Space) => void; space: Space}) {
+  const handleClick = useCallback(() => openSpace(space), [openSpace, space])
 
-function DatasetSelect(props: DatasetSelectProps) {
+  return <MenuItem onClick={handleClick} text={space.title} />
+}
+
+export function DatasetSelect() {
   const router = useRouter()
-  const {isVisible, tone} = props
-  const tabIndex = isVisible ? 0 : -1
   const [currentSpace, setCurrentSpace] = useState<Space | null>()
 
   useEffect(() => {
@@ -49,22 +46,24 @@ function DatasetSelect(props: DatasetSelectProps) {
 
   return (
     <MenuButton
-      aria-hidden={!isVisible}
+      button={
+        <Button
+          mode="ghost"
+          text={
+            <>
+              {currentSpace.title} <ChevronDownIcon />
+            </>
+          }
+        />
+      }
       id="dataset-menu"
       menu={
         <Menu>
           {CONFIGURED_SPACES.map(space => (
-            <MenuItem key={space.name} onClick={() => openSpace(space)}>
-              {space.title}
-            </MenuItem>
+            <DatasetSelectMenuItem key={space.name} openSpace={openSpace} space={space} />
           ))}
         </Menu>
       }
-      mode="ghost"
-      // tabIndex={tabIndex}
-      // tone={tone}
-    >
-      {currentSpace.title} <ChevronDownIcon />
-    </MenuButton>
+    />
   )
 }

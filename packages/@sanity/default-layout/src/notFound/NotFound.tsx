@@ -1,28 +1,38 @@
+import {Box, Card, Container, Heading, Icon, Stack, Text} from '@sanity/ui'
 import React from 'react'
-import {StateLink, useRouterState} from 'part:@sanity/base/router'
+import {useRouterState} from 'part:@sanity/base/router'
+import styled from 'styled-components'
+import {StateButton} from '../components'
 import {HAS_SPACES} from '../util/spaces'
 
-import styles from './NotFound.css'
+const Root = styled(Card)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`
 
-interface NotFoundProps {
-  children: React.ReactNode
-}
-
-export function NotFound(props: NotFoundProps) {
+export function NotFound(props: React.HTMLProps<HTMLDivElement>) {
+  const {children, ...restProps} = props
   const routerState = useRouterState()
   const rootState = {space: HAS_SPACES ? routerState?.space : undefined}
 
   return (
-    <div className={styles.root}>
-      <header className={styles.header}>
-        <h2>Page not found</h2>
-      </header>
+    <Root {...restProps}>
+      <Container width={1}>
+        <Box paddingX={5} paddingY={4}>
+          <Stack space={4}>
+            <Heading as="h1">Page not found</Heading>
+            {children}
+          </Stack>
+        </Box>
 
-      <div className={styles.content}>{props.children}</div>
-
-      <div className={styles.footer}>
-        <StateLink state={rootState}>Go to index</StateLink>
-      </div>
-    </div>
+        <Box paddingX={5} paddingY={4}>
+          <StateButton state={rootState} tone="brand">
+            Go to index&nbsp; <Icon symbol="arrow-right" />
+          </StateButton>
+        </Box>
+      </Container>
+    </Root>
   )
 }

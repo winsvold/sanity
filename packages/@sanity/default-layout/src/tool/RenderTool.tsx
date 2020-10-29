@@ -1,5 +1,6 @@
+import {ErrorBoundary} from '@sanity/base'
 import tools from 'all:part:@sanity/base/tool'
-import React from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import {ErrorScreen} from './error'
 
 declare const __DEV__: boolean
@@ -8,74 +9,62 @@ interface Props {
   tool: string
 }
 
-// eslint-disable-next-line react/require-optimization
-export class RenderTool extends React.Component<Props> {
-  static defaultProps = {
-    tool: null
-  }
+const DEBUG = false // __DEV__
 
-  state = {error: null, showErrorDetails: __DEV__}
+export function RenderTool(props: Props) {
+  const {tool: toolName} = props
+  const toolNameRef = useRef(toolName)
+  const [error, setError] = useState(null)
+  const [errorDetailsOpen, setErrorDetailsOpen] = useState(__DEV__)
+  const activeTool = tools.find(tool => tool.name === toolName)
 
-  componentDidUpdate(prevProps, prevState) {
-    const prevToolName = prevProps.tool
-    const currToolName = this.props.tool
+  const handleShowDetails = useCallback(() => setErrorDetailsOpen(true), [])
 
-    if (prevToolName !== currToolName && prevState.error) {
-      // https://reactjs.org/docs/react-component.html#componentdidupdate
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({error: null, showErrorDetails: __DEV__})
+  const handleRetry = useCallback(() => setError(null), [])
+
+  // switched tool
+  useEffect(() => {
+    if (toolName !== toolNameRef.current) {
+      setError(null)
+      setErrorDetailsOpen(__DEV__)
+      toolNameRef.current = toolName
     }
+  }, [toolName])
+
+  if (error) {
+    return (
+      <ErrorScreen
+        activeTool={activeTool}
+        error={error.error}
+        info={error.info}
+        onRetry={handleRetry}
+        onShowDetails={handleShowDetails}
+        showErrorDetails={errorDetailsOpen}
+      />
+    )
   }
 
-  componentDidCatch(error, info) {
-    this.setState({error: {error, info}})
+  if (__DEV__ && !tools.length) {
+    return (
+      <div>
+        No tools implement the part <code>part:@sanity/base/tool</code>
+      </div>
+    )
   }
 
-  handleShowDetails = () => {
-    this.setState({showErrorDetails: true})
+  if (!activeTool) {
+    return <div>Tool not found: {props.tool}</div>
   }
 
-  handleRetry = () => {
-    this.setState({error: null})
+  if (DEBUG) {
+    return null
   }
 
-  getActiveTool() {
-    const activeToolName = this.props.tool
-    const activeTool = tools.find(tool => tool.name === activeToolName)
-    return activeTool
-  }
+  const ActiveTool = activeTool.component
 
-  render() {
-    if (this.state.error) {
-      const {error, info} = this.state.error
-      const {showErrorDetails} = this.state
-
-      return (
-        <ErrorScreen
-          activeTool={this.getActiveTool()}
-          error={error}
-          info={info}
-          onRetry={this.handleRetry}
-          onShowDetails={this.handleShowDetails}
-          showErrorDetails={showErrorDetails}
-        />
-      )
-    }
-
-    if (!tools.length) {
-      return (
-        <div>
-          No tools fulfills the part <code>`part:@sanity/base/tool`</code>
-        </div>
-      )
-    }
-
-    const activeTool = this.getActiveTool()
-    if (!activeTool) {
-      return <div>Tool not found: {this.props.tool}</div>
-    }
-
-    const ActiveTool = activeTool.component
-    return <ActiveTool {...this.props} />
-  }
+  return (
+    <ErrorBoundary onCatch={setError}>
+      <ActiveTool {...(props as any)} />
+    </ErrorBoundary>
+  )
 }
