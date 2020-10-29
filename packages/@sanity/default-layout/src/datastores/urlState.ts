@@ -3,7 +3,7 @@ import {Observable} from 'rxjs'
 import {map, filter, scan, publishReplay, refCount, tap} from 'rxjs/operators'
 import {getOrderedTools} from '../util/getOrderedTools'
 import {reconfigureClient} from '../util/reconfigureClient'
-import {HAS_SPACES, CONFIGURED_SPACES} from '../util/spaces'
+import {HAS_SPACES, CONFIGURED_SPACES} from '../lib/__experimental_spaces'
 import {rootRouter} from '../router'
 
 interface StateEvent {

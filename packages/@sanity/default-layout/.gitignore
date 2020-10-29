@@ -5,7 +5,7 @@
 .idea
 
 # Compiled files
-lib
+/lib
 
 # Coverage directory used by tools like istanbul
 coverage

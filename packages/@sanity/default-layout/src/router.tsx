@@ -1,7 +1,7 @@
 import tools from 'all:part:@sanity/base/tool'
 import {project} from 'config:sanity'
 import {route} from 'part:@sanity/base/router'
-import {CONFIGURED_SPACES, HAS_SPACES} from './util/spaces'
+import {CONFIGURED_SPACES, HAS_SPACES} from './lib/__experimental_spaces'
 
 const basePath = ((project && project.basePath) || '').replace(/\/+$/, '')
 

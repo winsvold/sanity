@@ -3,9 +3,9 @@ import {Button, Card} from '@sanity/ui'
 import classNames from 'classnames'
 import React from 'react'
 import {ToolMenu} from '../components'
-import {DatasetSelect} from '../datasetSelect'
+import {DatasetSelect, HAS_SPACES} from '../lib/__experimental_spaces'
+
 import {Tool, User} from '../types'
-import {HAS_SPACES} from '../util/spaces'
 
 import styles from './sideMenu.css'
 

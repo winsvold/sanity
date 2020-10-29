@@ -1,9 +1,9 @@
-import {Box, Card, Container, Heading, Icon, Stack, Text} from '@sanity/ui'
+import {Box, Card, Container, Heading, Icon, Stack} from '@sanity/ui'
 import React from 'react'
 import {useRouterState} from 'part:@sanity/base/router'
 import styled from 'styled-components'
 import {StateButton} from '../components'
-import {HAS_SPACES} from '../util/spaces'
+import {HAS_SPACES} from '../lib/__experimental_spaces'
 
 const Root = styled(Card)`
   display: flex;
