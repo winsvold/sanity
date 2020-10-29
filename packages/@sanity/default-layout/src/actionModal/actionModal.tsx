@@ -1,5 +1,5 @@
 import {DocumentIcon} from '@sanity/icons'
-import {Dialog} from '@sanity/ui'
+import {Dialog, Text} from '@sanity/ui'
 import React from 'react'
 import {CreateDocumentList} from './createDocument'
 
@@ -27,7 +27,7 @@ export function ActionModal(props: ActionModalProps) {
           }))}
         />
       ) : (
-        <h3>No initial value templates are configured.</h3>
+        <Text>No initial value templates are configured.</Text>
       )}
     </Dialog>
   )
