@@ -51,15 +51,7 @@ const Root = styled.ol`
 `
 
 export function ToolMenu(props: Props) {
-  const {
-    // activeToolName,
-    direction,
-    // isVisible,
-    onSwitchTool,
-    tools
-    // showLabel: showLabelProp
-    // tone
-  } = props
+  const {activeToolName, direction, onSwitchTool, tools} = props
   const routerState = useRouterState()
   const isVertical = direction === 'horizontal'
   const showLabel = TOUCH_DEVICE && !isVertical // || showLabelProp
@@ -80,7 +72,6 @@ export function ToolMenu(props: Props) {
               disabled={showLabel}
               placement="bottom"
               title={showLabel ? '' : title}
-              // tone={tone}
             >
               <StateButton
                 icon={tool.icon as any}
@@ -88,11 +79,10 @@ export function ToolMenu(props: Props) {
                 mode="bleed"
                 onClick={onSwitchTool}
                 padding={direction === 'horizontal' ? 3 : 4}
-                // selected={activeToolName === tool.name}
+                selected={activeToolName === tool.name}
                 state={{...routerState, tool: tool.name, [tool.name]: undefined}}
                 title={showLabel ? undefined : title}
                 // tabIndex={isVisible ? 0 : -1}
-                // tone={tone}
               >
                 {showLabel && tool.title}
               </StateButton>
