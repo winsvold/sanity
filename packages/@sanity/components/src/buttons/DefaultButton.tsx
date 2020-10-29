@@ -3,13 +3,7 @@ import React, {forwardRef} from 'react'
 import {ButtonProps as LegacyButtonProps} from './types'
 
 const DefaultButton = forwardRef((props: LegacyButtonProps, ref) => {
-  const {children, ...restProps} = props
-
-  return (
-    <Button {...(mapLegacyPropsToProps(restProps) as any)} ref={ref}>
-      {children}
-    </Button>
-  )
+  return <Button {...(mapLegacyPropsToProps(props) as any)} ref={ref} />
 })
 
 DefaultButton.displayName = 'DefaultButton'
@@ -47,6 +41,8 @@ function mapLegacyPropsToProps(props: LegacyButtonProps): ButtonProps {
     as,
     // bleed?: boolean
     bleed,
+    // children
+    children,
     // color?: ButtonColor
     color,
     // icon?: React.ComponentType<Record<string, unknown>>
@@ -80,6 +76,8 @@ function mapLegacyPropsToProps(props: LegacyButtonProps): ButtonProps {
     padding: padding ? PADDING_TO_PADDING[padding] : 3,
     // size?: number | number[];
     size: size ? SIZE_TO_SIZE[size] : undefined,
+    // text?: React.ReactNode
+    text: children,
     // tone?: ButtonTone;
     tone: color ? COLOR_TO_TONE[color] : undefined,
     // type?: 'button' | 'reset' | 'submit';
