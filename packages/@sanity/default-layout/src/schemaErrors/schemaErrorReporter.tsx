@@ -72,5 +72,5 @@ export function SchemaErrorReporter(props: Props) {
     return <InitialValueTemplateError errors={templateErrors} />
   }
 
-  return props.children()
+  return <>{props.children()}</>
 }
