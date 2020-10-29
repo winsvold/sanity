@@ -6,10 +6,14 @@
   "scripts": {
     "start": "remon --require ts-node/register demo-server/app.ts",
     "test": "jest",
-    "compile": "tsc",
-    "compile:watch": "babel --watch --out-dir lib/ src/",
+    "build": "npm run build:cjs && npm run build:dts",
+    "build:cjs": "babel src --extensions '.ts,.tsx,.js' --out-dir lib",
+    "build:dts": "tsc -p tsconfig.dist.json --emitDeclarationOnly",
+    "compile": "tsc -p tsconfig.dist.json",
+    "compile:watch": "babel src --watch --out-dir lib",
     "benchmark": "npm run compile && node --prof --logfile=benchmarks.log perf/benchmark.js",
     "clean": "rimraf lib",
+    "prebuild": "npm run clean",
     "type-check": "tsc --noEmit -p tsconfig.dist.json"
   },
   "keywords": [

@@ -1,9 +1,9 @@
+import {flatten} from 'lodash'
 import {Node, MatchResult} from './types'
 import findMatchingNodes from './findMatchingNodes'
-import {flatten} from 'lodash'
 import {debug} from './utils/debug'
 
-export default function resolvePathFromState(node: Node, state: Object): string {
+export default function resolvePathFromState(node: Node, state: Record<string, any>): string {
   debug('Resolving path from state %o', state)
 
   const match: MatchResult = findMatchingNodes(node, state)
