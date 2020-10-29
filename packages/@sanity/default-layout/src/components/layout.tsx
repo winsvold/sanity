@@ -6,16 +6,12 @@ import React, {useCallback, useEffect, useRef, useState} from 'react'
 import styled, {css, keyframes} from 'styled-components'
 import {Sidecar} from '../lib/__experimental_sidecar'
 import {getNewDocumentModalActions} from '../lib/new-document'
-import {Tool} from '../lib/tool'
+import {getOrderedTools} from '../lib/tool'
 import {CreateDocumentDialog} from './createDocumentDialog'
 import {Navbar} from './navbar'
 import {SchemaErrorReporter} from './schemaErrors'
 import {SideMenu} from './sideMenu'
 import {RenderTool} from './tool'
-
-interface Props {
-  tools: Tool[]
-}
 
 const Root = styled(Flex)`
   height: 100%;
@@ -83,8 +79,8 @@ const SidecarContainer = styled.div(({theme}: {theme: Theme}) => {
   `
 })
 
-export function Layout(props: Props) {
-  const {tools} = props
+export function Layout() {
+  const tools = getOrderedTools()
   const routerState = useRouterState()
   const [createMenuIsOpen, setCreateMenuIsOpen] = useState(false)
   const [menuIsOpen, setMenuIsOpen] = useState(false)

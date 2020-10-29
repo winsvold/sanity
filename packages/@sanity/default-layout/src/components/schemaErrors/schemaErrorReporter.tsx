@@ -1,8 +1,9 @@
 import React, {useEffect} from 'react'
 import schema from 'part:@sanity/base/schema'
 import {getTemplateErrors} from '@sanity/base/initial-value-templates'
-import {InitialValueTemplateError} from '../initialValueTemplateError/initialValueTemplateError'
+import {InitialValueTemplateError} from './initialValueTemplateError'
 import {SchemaErrors} from './schemaErrors'
+import {ProblemGroupPath} from './types'
 
 interface Props {
   children: () => React.ReactNode
@@ -10,18 +11,21 @@ interface Props {
 
 declare const __DEV__: boolean
 
-function renderPath(path) {
+function renderPath(path: ProblemGroupPath) {
   return path
     .map(segment => {
       if (segment.kind === 'type') {
         return `${segment.name || '<unnamed>'}(${segment.type})`
       }
+
       if (segment.kind === 'property') {
         return segment.name
       }
+
       if (segment.kind === 'type') {
         return `${segment.type}(${segment.name || '<unnamed>'})`
       }
+
       return null
     })
     .filter(Boolean)

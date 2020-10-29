@@ -5,11 +5,9 @@ import AppLoadingScreen from 'part:@sanity/base/app-loading-screen'
 import React from 'react'
 import {Layout} from './components/layout'
 import {NotFound} from './components/notFound'
-import {getOrderedTools} from './lib/tool'
 import {navigate, rootRouter, useUrlState} from './lib/url'
 
 export default function DefaultLayoutRoot() {
-  const tools = getOrderedTools()
   const {intent, state, isNotFound} = useUrlState()
 
   // URL state is not loaded yet
@@ -37,7 +35,7 @@ export default function DefaultLayoutRoot() {
         </NotFound>
       )}
 
-      {!isNotFound && <Layout tools={tools} />}
+      {!isNotFound && <Layout />}
     </RouterProvider>
   )
 

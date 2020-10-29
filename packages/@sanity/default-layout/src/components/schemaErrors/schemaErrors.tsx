@@ -1,14 +1,9 @@
 import generateHelpUrl from '@sanity/generate-help-url'
-import {ErrorOutlineIcon, WarningOutlineIcon} from '@sanity/icons'
+import {Box, Card, Code, Container, Heading, Inline, Label, Stack, Text} from '@sanity/ui'
 import React from 'react'
+import {ProblemGroupPath} from './types'
 
 import styles from './schemaErrors.css'
-
-type ProblemGroupPath = {
-  kind: string
-  type: string
-  name: string
-}[]
 
 interface SchemaErrorsProps {
   problemGroups: {
@@ -25,38 +20,37 @@ function renderPath(path: ProblemGroupPath) {
   return path
     .map((segment, i) => {
       const key = `s_${i}`
+
       if (segment.kind === 'type') {
         return (
-          <span className={styles.segment} key={key}>
-            <span key="name" className={styles.pathSegmentTypeName}>
-              {segment.name}
-            </span>
-            &ensp;
-            <span key="type" className={styles.pathSegmentTypeType}>
-              {segment.type}
-            </span>
-          </span>
+          <Card as="span" key={key} padding={2} tone="transparent" style={{display: 'block'}}>
+            <Code as="span">
+              <strong>{segment.name}</strong>: {segment.type}
+            </Code>
+          </Card>
         )
       }
+
       if (segment.kind === 'property') {
         return (
-          <span className={styles.segment} key={key}>
-            <span className={styles.pathSegmentProperty}>{segment.name}</span>
-          </span>
+          <Card as="span" key={key} padding={2} tone="transparent" style={{display: 'block'}}>
+            <Code as="span">
+              <strong>{segment.name}</strong>
+            </Code>
+          </Card>
         )
       }
+
       if (segment.kind === 'type') {
         return (
-          <span className={styles.segment} key={key}>
-            <span key="name" className={styles.pathSegmentTypeName}>
-              {segment.name}
-            </span>
-            <span key="type" className={styles.pathSegmentTypeType}>
-              {segment.type}
-            </span>
-          </span>
+          <Card as="span" key={key} padding={2} tone="transparent" style={{display: 'block'}}>
+            <Code as="span">
+              <strong>{segment.name}</strong>: {segment.type}
+            </Code>
+          </Card>
         )
       }
+
       return null
     })
     .filter(Boolean)
@@ -66,43 +60,59 @@ export function SchemaErrors(props: SchemaErrorsProps) {
   const {problemGroups} = props
 
   return (
-    <div className={styles.root}>
-      <h2 className={styles.title}>Uh oh… found errors in schema</h2>
-      <ul className={styles.list}>
-        {problemGroups.map((group, i) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <li key={`g_${i}`} className={styles.listItem}>
-            <h2 className={styles.path}>{renderPath(group.path)}</h2>
-            <ul className={styles.problems}>
-              {group.problems.map((problem, j) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <li key={`g_${i}_p_${j}`} className={styles[`problem_${problem.severity}`]}>
-                  <div className={styles.problemSeverity}>
-                    <span className={styles.problemSeverityIcon}>
-                      {problem.severity === 'error' && <ErrorOutlineIcon />}
-                      {problem.severity === 'warning' && <WarningOutlineIcon />}
-                    </span>
-                    <span className={styles.problemSeverityText}>{problem.severity}</span>
-                  </div>
-                  <div className={styles.problemContent}>
-                    <div className={styles.problemMessage}>{problem.message}</div>
-                    {problem.helpId && (
-                      <a
-                        className={styles.problemLink}
-                        href={generateHelpUrl(problem.helpId)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        View documentation
-                      </a>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Container>
+      <Box padding={4} paddingTop={[5, 5, 6, 7]}>
+        <Heading as="h1">The schema has errors</Heading>
+      </Box>
+
+      <Box padding={4}>
+        <Stack as="ul" space={4} style={{listStyle: 'none'}}>
+          {problemGroups.map((group, i) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Card as="li" key={`g_${i}`} radius={2} shadow={1}>
+              <Box
+                as="h2"
+                padding={3}
+                style={{borderBottom: '1px solid var(--card-hairline-soft-color)'}}
+              >
+                <Inline as="span" space={1}>
+                  {renderPath(group.path)}
+                </Inline>
+              </Box>
+
+              <Box padding={4}>
+                <Stack space={3} style={{listStyle: 'none'}}>
+                  {group.problems.map((problem, j) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <Stack
+                      as="li"
+                      key={`g_${i}_p_${j}`}
+                      className={styles[`problem_${problem.severity}`]}
+                      space={3}
+                    >
+                      <Label>{problem.severity}</Label>
+
+                      <Text>{problem.message}</Text>
+
+                      {problem.helpId && (
+                        <Text>
+                          <a
+                            href={generateHelpUrl(problem.helpId)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            View documentation
+                          </a>
+                        </Text>
+                      )}
+                    </Stack>
+                  ))}
+                </Stack>
+              </Box>
+            </Card>
+          ))}
+        </Stack>
+      </Box>
+    </Container>
   )
 }
