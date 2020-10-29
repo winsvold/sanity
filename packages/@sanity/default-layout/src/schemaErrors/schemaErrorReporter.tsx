@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import schema from 'part:@sanity/base/schema'
 import {getTemplateErrors} from '@sanity/base/initial-value-templates'
 import {InitialValueTemplateError} from './initialValueTemplateError'
@@ -54,24 +54,23 @@ function reportWarnings() {
   /* eslint-enable no-console */
 }
 
-export class SchemaErrorReporter extends React.Component<Props> {
-  componentDidMount = reportWarnings
-  render() {
-    const problemGroups = schema._validation
+export function SchemaErrorReporter(props: Props) {
+  const problemGroups = schema._validation
 
-    const groupsWithErrors = problemGroups.filter(group =>
-      group.problems.some(problem => problem.severity === 'error')
-    )
+  const groupsWithErrors = problemGroups.filter(group =>
+    group.problems.some(problem => problem.severity === 'error')
+  )
 
-    if (groupsWithErrors.length > 0) {
-      return <SchemaErrors problemGroups={groupsWithErrors} />
-    }
+  useEffect(reportWarnings, [])
 
-    const templateErrors = getTemplateErrors(undefined as any)
-    if (templateErrors.length > 0) {
-      return <InitialValueTemplateError errors={templateErrors} />
-    }
-
-    return this.props.children()
+  if (groupsWithErrors.length > 0) {
+    return <SchemaErrors problemGroups={groupsWithErrors} />
   }
+
+  const templateErrors = getTemplateErrors(undefined as any)
+  if (templateErrors.length > 0) {
+    return <InitialValueTemplateError errors={templateErrors} />
+  }
+
+  return props.children()
 }

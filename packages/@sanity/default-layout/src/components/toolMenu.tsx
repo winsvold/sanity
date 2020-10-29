@@ -1,6 +1,6 @@
 import {Box, Text, Tooltip} from '@sanity/ui'
 import {useRouterState} from 'part:@sanity/base/router'
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import {Tool} from '../types'
 import {StateButton} from '.'

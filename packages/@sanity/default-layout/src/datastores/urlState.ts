@@ -86,8 +86,8 @@ function resolveIntentState(currentState, intentState) {
 }
 
 function maybeHandleIntent(
-  prevEvent: {type: string; state: {[key: string]: {}}; isNotFound: boolean},
-  currentEvent: {type: string; state: {[key: string]: {}}; isNotFound: boolean}
+  prevEvent: {type: string; state: {[key: string]: Record<string, any>}; isNotFound: boolean},
+  currentEvent: {type: string; state: {[key: string]: Record<string, any>}; isNotFound: boolean}
 ) {
   if (currentEvent && currentEvent.state && currentEvent.state.intent) {
     const redirectState = resolveIntentState(prevEvent ? prevEvent.state : {}, currentEvent.state)

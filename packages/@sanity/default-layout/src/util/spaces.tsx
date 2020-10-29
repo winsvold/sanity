@@ -9,7 +9,12 @@ function prepareSpace(space) {
   })
 }
 
-function getConfiguredSpaces(): {api: {}; default: boolean; name: string; title: string}[] {
+function getConfiguredSpaces(): {
+  api: Record<string, any>
+  default: boolean
+  name: string
+  title: string
+}[] {
   if (!config[FEATURE_KEY]) {
     return null
   }

@@ -73,63 +73,61 @@ interface CreateDocumentPreviewProps {
   onClick?: () => void
 }
 
-export class CreateDocumentPreview extends React.PureComponent<CreateDocumentPreviewProps> {
-  render() {
-    const {
-      title = 'Untitled',
-      subtitle,
-      media = this.props.icon,
-      isPlaceholder,
-      description,
-      params,
-      templateParams
-    } = this.props
+export function CreateDocumentPreview(props: CreateDocumentPreviewProps) {
+  const {
+    title = 'Untitled',
+    subtitle,
+    media = props.icon,
+    isPlaceholder,
+    description,
+    params,
+    templateParams
+  } = props
 
-    if (isPlaceholder || !params) {
-      return (
-        <Container padding={3}>
-          {media !== false && <MediaContainer />}
-          <TextContainer space={2}>
-            <Text as="h2">Loading…</Text>
-            <Text as="h3" size={1}>
-              Loading…
-            </Text>
-          </TextContainer>
-        </Container>
-      )
-    }
-
+  if (isPlaceholder || !params) {
     return (
-      <Root
-        intent="create"
-        params={[params, templateParams]}
-        title={subtitle ? `Create new ${title} (${subtitle})` : `Create new ${title}`}
-        onClick={this.props.onClick}
-      >
-        <Container padding={3}>
-          {media !== false && (
-            <MediaContainer>
-              {typeof media === 'function' && media({layout: 'default'})}
-              {React.isValidElement(media) && media}
-            </MediaContainer>
-          )}
-
-          <TextContainer space={2}>
-            <Text as="h2">
-              {typeof title !== 'function' && title}
-              {typeof title === 'function' && title({layout: 'default'})}
-            </Text>
-
-            {subtitle && (
-              <Text as="h3" size={1}>
-                {(typeof subtitle === 'function' && subtitle({layout: 'default'})) || subtitle}
-              </Text>
-            )}
-          </TextContainer>
-
-          {description && <Text size={0}>{description}</Text>}
-        </Container>
-      </Root>
+      <Container padding={3}>
+        {media !== false && <MediaContainer />}
+        <TextContainer space={2}>
+          <Text as="h2">Loading…</Text>
+          <Text as="h3" size={1}>
+            Loading…
+          </Text>
+        </TextContainer>
+      </Container>
     )
   }
+
+  return (
+    <Root
+      intent="create"
+      params={[params, templateParams]}
+      title={subtitle ? `Create new ${title} (${subtitle})` : `Create new ${title}`}
+      onClick={props.onClick}
+    >
+      <Container padding={3}>
+        {media !== false && (
+          <MediaContainer>
+            {typeof media === 'function' && media({layout: 'default'})}
+            {React.isValidElement(media) && media}
+          </MediaContainer>
+        )}
+
+        <TextContainer space={2}>
+          <Text as="h2">
+            {typeof title !== 'function' && title}
+            {typeof title === 'function' && title({layout: 'default'})}
+          </Text>
+
+          {subtitle && (
+            <Text as="h3" size={1}>
+              {(typeof subtitle === 'function' && subtitle({layout: 'default'})) || subtitle}
+            </Text>
+          )}
+        </TextContainer>
+
+        {description && <Text size={0}>{description}</Text>}
+      </Container>
+    </Root>
+  )
 }
