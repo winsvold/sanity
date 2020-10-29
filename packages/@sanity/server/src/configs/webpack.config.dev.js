@@ -22,6 +22,7 @@ export default config => {
         {
           react: require.resolve('react'),
           'react-dom': require.resolve('@hot-loader/react-dom'),
+          'react-refractor': require.resolve('react-refractor'),
           'styled-components': require.resolve('styled-components'),
           'webpack-hot-middleware/client': require.resolve('../browser/hot-client')
         },

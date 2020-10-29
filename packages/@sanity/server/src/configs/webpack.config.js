@@ -67,10 +67,7 @@ export default (config = {}) => {
 
   return {
     entry: {
-      app: [
-        resolve('normalize.css'),
-        path.join(__dirname, '..', 'browser', isProd ? 'entry.js' : 'entry-dev.js')
-      ].filter(Boolean),
+      app: path.join(__dirname, '..', 'browser', isProd ? 'entry.js' : 'entry-dev.js'),
       vendor: ['react', 'react-dom']
     },
     output: {
