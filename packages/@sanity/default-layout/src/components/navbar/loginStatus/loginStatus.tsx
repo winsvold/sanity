@@ -1,7 +1,7 @@
 import {UserAvatar} from '@sanity/base/components'
 import {Menu, MenuButton, MenuItem} from '@sanity/ui'
 import React from 'react'
-import {useCurrentUser} from '../../lib/user/hooks'
+import {useCurrentUser} from '../../../lib/user/hooks'
 
 export function LoginStatus() {
   const {logout} = useCurrentUser()

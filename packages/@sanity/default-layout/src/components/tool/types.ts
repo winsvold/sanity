@@ -1,8 +1,3 @@
-export interface Router {
-  state: {space?: string; tool: string}
-  navigate: () => void
-}
-
 export interface Tool {
   canHandleIntent?: (intent: any, params: any, state: any) => any
   component?: React.ComponentType<any>

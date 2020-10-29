@@ -2,8 +2,8 @@ import {Box, ResizeObserver, Text, Tooltip} from '@sanity/ui'
 import {useRouterState} from 'part:@sanity/base/router'
 import React, {useEffect, useRef, useState} from 'react'
 import styled from 'styled-components'
-import {StateButton} from '../components'
-import {Tool} from '../types'
+import {StateButton} from '../stateButton'
+import {Tool} from '../tool'
 
 const Root = styled.div`
   /* outline: 1px solid red; */
