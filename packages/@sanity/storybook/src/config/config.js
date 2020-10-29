@@ -3,7 +3,6 @@
 
 const {configure, sanity} = require('part:@sanity/storybook')
 
-require('normalize.css')
 require('part:@sanity/base/theme/body-style')
 require('./styles.css')
 
