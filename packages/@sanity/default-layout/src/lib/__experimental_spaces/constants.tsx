@@ -4,9 +4,7 @@ import {capitalize} from 'lodash'
 const FEATURE_KEY = '__experimental_spaces'
 
 function prepareSpace(space) {
-  return Object.assign({}, space, {
-    title: space.title || capitalize(space.name)
-  })
+  return {...space, title: space.title || capitalize(space.name)}
 }
 
 function getConfiguredSpaces(): {
@@ -18,6 +16,7 @@ function getConfiguredSpaces(): {
   if (!config[FEATURE_KEY]) {
     return null
   }
+
   return config[FEATURE_KEY] && config[FEATURE_KEY].map(prepareSpace)
 }
 

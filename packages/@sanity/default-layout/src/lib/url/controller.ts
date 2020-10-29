@@ -1,10 +1,9 @@
 import locationStore from 'part:@sanity/base/location'
 import {Observable} from 'rxjs'
 import {map, filter, scan, publishReplay, refCount, tap} from 'rxjs/operators'
-import {getOrderedTools} from '../util/getOrderedTools'
-import {reconfigureClient} from '../util/reconfigureClient'
-import {HAS_SPACES, CONFIGURED_SPACES} from '../lib/__experimental_spaces'
-import {rootRouter} from '../router'
+import {HAS_SPACES, CONFIGURED_SPACES} from '../__experimental_spaces'
+import {getOrderedTools, reconfigureClient} from '../util'
+import {rootRouter} from './router'
 
 interface StateEvent {
   intent: {

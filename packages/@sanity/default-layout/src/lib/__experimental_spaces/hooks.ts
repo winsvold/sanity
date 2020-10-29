@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 import {map} from 'rxjs/operators'
-import {urlState$} from '../../datastores/urlState'
+import {urlState$} from '../url'
 import {CONFIGURED_SPACES} from './constants'
 import {Space} from './types'
 

@@ -2,17 +2,16 @@ import {Box, Flex, Theme} from '@sanity/ui'
 import absolutes from 'all:part:@sanity/base/absolutes'
 import AppLoadingScreen from 'part:@sanity/base/app-loading-screen'
 import {RouteScope, useRouterState} from 'part:@sanity/base/router'
-import userStore from 'part:@sanity/base/user'
 import React, {useCallback, useEffect, useRef, useState} from 'react'
 import styled, {css, keyframes} from 'styled-components'
 import {ActionModal} from './actionModal'
-import {Sidecar} from './sidecar'
+import {Sidecar} from './lib/__experimental_sidecar'
+import {getNewDocumentModalActions} from './lib/util'
 import {Navbar} from './navbar'
 import {SchemaErrorReporter} from './schemaErrors'
 import {SideMenu} from './sideMenu'
 import {RenderTool} from './tool'
-import {Tool, User} from './types'
-import {getNewDocumentModalActions} from './util/getNewDocumentModalActions'
+import {Tool} from './types'
 
 interface Props {
   tools: Tool[]
@@ -92,7 +91,7 @@ export function DefaultLayout(props: Props) {
   const [showLoadingScreen, setShowLoadingScreen] = useState(true)
   const [searchIsOpen, setSearchIsOpen] = useState(false)
   const [loaded, setLoaded] = useState(false)
-  const [user, setUser] = useState<User | null>(null)
+
   const loadingScreenElementRef = useRef<HTMLDivElement | null>(null)
 
   const handleAnimationEnd = useCallback(() => {
@@ -142,17 +141,6 @@ export function DefaultLayout(props: Props) {
     [handleToggleMenu, menuIsOpen]
   )
 
-  // Subscribe to current user
-  useEffect(() => {
-    const sub = userStore.currentUser.subscribe(event =>
-      setUser(event.type === 'snapshot' ? event.user : null)
-    )
-
-    return () => {
-      sub.unsubscribe()
-    }
-  }, [])
-
   // Subscribe to `animationend`
   useEffect(() => {
     const loadingScreenElement = loadingScreenElementRef.current
@@ -193,8 +181,6 @@ export function DefaultLayout(props: Props) {
               onToggleMenu={handleToggleMenu}
               onSwitchTool={handleSwitchTool}
               searchIsOpen={searchIsOpen}
-              // eslint-disable-next-line react/jsx-handler-names
-              onUserLogout={userStore.actions.logout}
               onSearchOpen={handleSearchOpen}
               onSearchClose={handleSearchClose}
             />
@@ -205,11 +191,8 @@ export function DefaultLayout(props: Props) {
               activeToolName={routerState?.tool}
               isOpen={menuIsOpen}
               onClose={handleToggleMenu}
-              // eslint-disable-next-line react/jsx-handler-names
-              onSignOut={userStore.actions.logout}
               onSwitchTool={handleSwitchTool}
               tools={tools}
-              user={user}
             />
           </div>
 

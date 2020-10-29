@@ -2,44 +2,21 @@ import {Card, Code, Label, Stack, Text} from '@sanity/ui'
 import LoginWrapper from 'part:@sanity/base/login-wrapper?'
 import {RouterProvider} from 'part:@sanity/base/router'
 import AppLoadingScreen from 'part:@sanity/base/app-loading-screen'
-import React, {useEffect, useState} from 'react'
-import {navigate, urlState$} from './datastores/urlState'
+import React from 'react'
 import {DefaultLayout} from './defaultLayout'
+import {navigate, rootRouter, useUrlState} from './lib/url'
+import {getOrderedTools} from './lib/util'
 import {NotFound} from './notFound'
-import {maybeRedirectToBase, rootRouter} from './router'
-import {getOrderedTools} from './util/getOrderedTools'
-
-interface State {
-  intent?: {
-    name: string
-    params: {[key: string]: string}
-  }
-  urlState?: Record<string, any>
-  isNotFound?: boolean
-}
 
 export default function DefaultLayoutRoot() {
   const tools = getOrderedTools()
-  const [state, setState] = useState<State>({urlState: {}})
-  const {intent, urlState, isNotFound} = state
+  const {intent, state, isNotFound} = useUrlState()
 
-  useEffect(() => {
-    maybeRedirectToBase()
-
-    const sub = urlState$.subscribe({
-      next: event =>
-        setState({
-          urlState: event.state,
-          isNotFound: event.isNotFound,
-          intent: event.intent
-        })
-    })
-
-    return () => sub.unsubscribe()
-  }, [])
+  // URL state is not loaded yet
+  if (!state) return null
 
   const content = (
-    <RouterProvider router={rootRouter} state={urlState || {}} onNavigate={navigate}>
+    <RouterProvider router={rootRouter} state={state} onNavigate={navigate}>
       {isNotFound && (
         <NotFound>
           {intent && (

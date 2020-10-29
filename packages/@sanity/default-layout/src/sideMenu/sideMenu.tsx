@@ -3,9 +3,10 @@ import {Button, Card} from '@sanity/ui'
 import classNames from 'classnames'
 import React from 'react'
 import {ToolMenu} from '../components'
-import {DatasetSelect, HAS_SPACES} from '../lib/__experimental_spaces'
-
-import {Tool, User} from '../types'
+import {useCurrentUser} from '../lib/user/hooks'
+import {DatasetSelect} from '../lib/__experimental_spaces/components'
+import {HAS_SPACES} from '../lib/__experimental_spaces/constants'
+import {Tool} from '../types'
 
 import styles from './sideMenu.css'
 
@@ -13,15 +14,14 @@ interface Props {
   activeToolName: string | null
   isOpen: boolean
   onClose: () => void
-  onSignOut: () => void
   onSwitchTool: () => void
   tools: Tool[]
-  user: User
 }
 
 export function SideMenu(props: Props) {
-  const {activeToolName, isOpen, onClose, onSignOut, onSwitchTool, tools, user} = props
+  const {activeToolName, isOpen, onClose, onSwitchTool, tools} = props
   const tabIndex = isOpen ? 0 : -1
+  const {data: user, logout} = useCurrentUser()
 
   return (
     <div className={classNames(styles.root, isOpen && styles.isOpen)}>
@@ -70,7 +70,7 @@ export function SideMenu(props: Props) {
               icon="leave"
               // icon={LeaveIcon}
               mode="bleed"
-              onClick={onSignOut}
+              onClick={logout}
               tabIndex={tabIndex}
             >
               Sign out

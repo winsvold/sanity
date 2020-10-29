@@ -34,7 +34,6 @@ interface Props {
   onSearchOpen: () => void
   onSwitchTool: () => void
   onToggleMenu: () => void
-  onUserLogout: () => void
   searchIsOpen: boolean
   tools: Tool[]
 }
@@ -47,7 +46,6 @@ export function Navbar(props: Props) {
     onCreateButtonClick,
     onToggleMenu,
     onSwitchTool,
-    onUserLogout,
     onSearchOpen,
     tools,
     searchIsOpen
@@ -186,7 +184,7 @@ export function Navbar(props: Props) {
           </Box>
 
           <LoginStatusBox padding={1}>
-            <LoginStatus onLogout={onUserLogout} />
+            <LoginStatus />
           </LoginStatusBox>
 
           <SearchButtonContainer open={searchIsOpen}>

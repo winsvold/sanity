@@ -1,9 +1,9 @@
 import React, {createElement, useEffect, useState} from 'react'
 import {Subscription} from 'rxjs'
 import * as sidecar from 'part:@sanity/default-layout/sidecar?'
-import {isSidecarOpenSetting} from 'part:@sanity/default-layout/sidecar-datastore'
 import styled, {css} from 'styled-components'
 import {Theme} from '@sanity/ui'
+import {isSidecarOpenSetting} from '../controller'
 
 const SIDECAR_ENABLED =
   sidecar?.SidecarLayout && sidecar?.isSidecarEnabled ? sidecar.isSidecarEnabled() : false
