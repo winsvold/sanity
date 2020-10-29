@@ -4,8 +4,13 @@
   "description": "Sanity plugin containing the base components and roles for a Sanity configuration",
   "main": "lib/index.js",
   "scripts": {
+    "build": "npm run build:cjs && npm run build:dts && npm run build:assets",
+    "build:assets": "cpx 'src/**/*.{css,json,svg}' lib",
+    "build:cjs": "babel src --extensions '.ts,.tsx,.js' --out-dir lib",
+    "build:dts": "tsc -p tsconfig.dist.json --emitDeclarationOnly",
     "clean": "rimraf lib",
     "coverage": "nyc --report=lcov --report=text _mocha -- test/**/*.test.js",
+    "prebuild": "npm run clean",
     "test": "jest",
     "type-check": "tsc --noEmit -p tsconfig.dist.json"
   },
@@ -30,7 +35,7 @@
   "dependencies": {
     "@sanity/bifur-client": "^0.0.7",
     "@sanity/client": "2.0.1",
-    "@sanity/color": "^1.0.0",
+    "@sanity/color": "^2.0.5",
     "@sanity/components": "2.0.4",
     "@sanity/generate-help-url": "2.0.1",
     "@sanity/image-url": "^0.140.19",
@@ -44,6 +49,7 @@
     "@sanity/transaction-collator": "2.0.1",
     "@sanity/types": "2.0.1",
     "@sanity/util": "2.0.1",
+    "@sanity/ui": "^1.0.0-alpha.16",
     "@sanity/uuid": "2.0.1",
     "@sanity/validation": "2.0.1",
     "dataloader": "^2.0.0",
@@ -60,12 +66,15 @@
     "react-icon-base": "^2.1.2",
     "react-intl": "^2.2.2",
     "react-props-stream": "^1.0.0",
+    "react-refractor": "^2.1.2",
     "rxjs": "^6.5.3",
     "semver-compare": "^1.0.0",
     "shallow-equals": "^1.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.11.6",
     "@types/resize-observer-browser": "^0.1.4",
+    "cpx": "^1.5.0",
     "jest": "^26.4.2",
     "prop-types": "^15.6.0",
     "react": "16.9.0",
