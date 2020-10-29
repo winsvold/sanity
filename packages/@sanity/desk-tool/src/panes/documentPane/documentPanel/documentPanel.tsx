@@ -1,4 +1,5 @@
 import {MenuItemGroup} from '@sanity/components'
+import {Card} from '@sanity/ui'
 import classNames from 'classnames'
 import {PortalProvider, usePortal} from 'part:@sanity/components/portal'
 import {ScrollContainer} from 'part:@sanity/components/scroll'
@@ -119,7 +120,7 @@ export function DocumentPanel(props: DocumentPanelProps) {
 
   return (
     <div className={classNames(styles.root, props.isCollapsed && styles.isCollapsed)}>
-      <div className={styles.headerContainer}>
+      <Card className={styles.headerContainer}>
         <DocumentPanelHeader
           activeViewId={props.activeViewId}
           idPrefix={props.idPrefix}
@@ -152,7 +153,7 @@ export function DocumentPanel(props: DocumentPanelProps) {
           rev={revTime}
           isHistoryOpen={isHistoryOpen}
         />
-      </div>
+      </Card>
 
       <PortalProvider element={portalElement}>
         <div className={styles.documentViewerContainer}>

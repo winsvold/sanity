@@ -10,7 +10,6 @@
 .headerContainer {
   z-index: var(--zindex-pane);
   position: relative;
-  background: var(--component-bg);
 
   @nest .root:not(.isCollapsed) &::after {
     content: '';
