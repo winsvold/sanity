@@ -6,7 +6,7 @@ const AppLoadingScreenStyles = `
 .sanity-app-loading-screen {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   text-align: center;
-  background-color: #F1F3F6;
+  background-color: #fff;
   color: #1C2430;
   display: flex;
   width: 100vw;
@@ -36,11 +36,11 @@ const AppLoadingScreenStyles = `
   from {
     transform: scale3d(0.75, 0.75, 0.75);
   }
-  
+
   50% {
     transform: scale3d(1, 1, 1);
   }
-  
+
   to {
     transform: scale3d(0.75, 0.75, 0.75);
   }
@@ -53,25 +53,25 @@ const AppLoaderStyles = `
     stroke: #F03E2F;
     opacity: 0;
   }
-  
+
   .fillShape--bottom {
     stroke-dasharray: 90;
     stroke-dashoffset: 85;
     animation: bottom var(--time) ease-in infinite;
   }
-  
+
   .fillShape--middle {
     stroke-dasharray: 115;
     stroke-dashoffset: 110;
     animation: middle var(--time) linear infinite;
   }
-  
+
   .fillShape--top {
     stroke-dasharray: 77;
     stroke-dashoffset: 72;
     animation: top var(--time) ease-out infinite;
   }
-  
+
   @keyframes bottom {
     0%,
     85% {

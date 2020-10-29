@@ -1,14 +1,14 @@
-import React, {useState} from 'react'
+import React, {forwardRef, useState} from 'react'
 import {Avatar, AvatarPosition, AvatarSize, AvatarStatus} from '@sanity/ui'
 import {User} from '../datastores/user/types'
 import {useUser, useUserColor} from '../hooks'
 
 interface BaseProps {
+  as?: React.ElementType | keyof JSX.IntrinsicElements
   position?: AvatarPosition
   animateArrowFrom?: AvatarPosition
   size?: AvatarSize
   status?: AvatarStatus
-  tone?: 'navbar'
 }
 
 export type Props = BaseProps & UserProps
@@ -33,36 +33,40 @@ function nameToInitials(fullName: string) {
   return `${namesArray[0].charAt(0)}${namesArray[namesArray.length - 1].charAt(0)}`
 }
 
-export function UserAvatar(props: Props) {
+export const UserAvatar = forwardRef((props: Props, ref) => {
   if (isLoaded(props)) {
-    return <StaticUserAvatar {...props} />
+    return <StaticUserAvatar {...props} ref={ref} />
   }
 
-  return <UserAvatarLoader {...props} />
-}
+  return <UserAvatarLoader {...props} ref={ref} />
+})
+UserAvatar.displayName = 'UserAvatar'
 
-function StaticUserAvatar({user, animateArrowFrom, position, size, status, tone}: LoadedUserProps) {
-  const [imageLoadError, setImageLoadError] = useState<null | Error>(null)
-  const userColor = useUserColor(user.id)
-  const imageUrl = imageLoadError ? undefined : user?.imageUrl
+const StaticUserAvatar = forwardRef(
+  ({as, user, animateArrowFrom, position, ...restProps}: LoadedUserProps, ref) => {
+    const [imageLoadError, setImageLoadError] = useState<null | Error>(null)
+    const userColor = useUserColor(user.id)
+    const imageUrl = imageLoadError ? undefined : user?.imageUrl
 
-  return (
-    <Avatar
-      animateArrowFrom={animateArrowFrom}
-      arrowPosition={position}
-      color={userColor.tints[500].hex}
-      initials={user?.displayName && nameToInitials(user.displayName)}
-      src={imageUrl}
-      onImageLoadError={setImageLoadError}
-      size={size}
-      status={status}
-      title={user?.displayName}
-      // tone={tone}
-    />
-  )
-}
+    return (
+      <Avatar
+        {...restProps}
+        as={as as any}
+        animateArrowFrom={animateArrowFrom}
+        arrowPosition={position}
+        color={userColor.name}
+        initials={user?.displayName && nameToInitials(user.displayName)}
+        onImageLoadError={setImageLoadError}
+        ref={ref}
+        src={imageUrl}
+        title={user?.displayName}
+      />
+    )
+  }
+)
+StaticUserAvatar.displayName = 'StaticUserAvatar'
 
-function UserAvatarLoader({userId, ...loadedProps}: UnloadedUserProps) {
+const UserAvatarLoader = forwardRef(({userId, ...loadedProps}: UnloadedUserProps, ref) => {
   const {isLoading, error, value} = useUser(userId)
 
   if (isLoading || error || !value) {
@@ -70,8 +74,9 @@ function UserAvatarLoader({userId, ...loadedProps}: UnloadedUserProps) {
     return null
   }
 
-  return <UserAvatar {...loadedProps} user={value} />
-}
+  return <UserAvatar {...loadedProps} ref={ref} user={value} />
+})
+UserAvatarLoader.displayName = 'UserAvatarLoader'
 
 function isLoaded(props: Props): props is LoadedUserProps {
   const loadedProps = props as LoadedUserProps
