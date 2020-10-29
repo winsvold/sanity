@@ -29,7 +29,7 @@ export const NoImagePreview = () => (
 export function ImagePreview(props: ImagePreviewProps): React.ReactElement {
   const {id, action, diff, hotspot, crop, is} = props
   const [imageError, setImageError] = React.useState<SyntheticEvent<HTMLImageElement, Event>>()
-  const {value: asset} = useDocumentValues<MinimalAsset>(id, ASSET_FIELDS)
+  const {data: asset} = useDocumentValues<MinimalAsset>(id, ASSET_FIELDS)
   const dimensions = getImageDimensions(id)
 
   // undefined = still loading, null = its gone
