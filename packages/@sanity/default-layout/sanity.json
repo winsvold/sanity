@@ -31,22 +31,23 @@
     },
 
     {
-      "_comment": "DEPRECATED",
+      "deprecated": "not used",
       "name": "part:@sanity/default-layout/action-modal-style",
       "description": "Styles for the action picker modal"
     },
     {
+      "deprecated": "not used",
       "implements": "part:@sanity/default-layout/tool-switcher",
       "name": "part:@sanity/default-layout/default-tool-switcher",
       "path": "components/toolMenu"
     },
     {
-      "deprecated": "replaced by @sanity/ui",
+      "deprecated": "not used",
       "implements": "part:@sanity/default-layout/branding-style",
       "path": "navbar/branding/Branding.css"
     },
     {
-      "deprecated": "replaced by @sanity/ui",
+      "deprecated": "not used",
       "name": "part:@sanity/default-layout/branding-style",
       "description": "Branding styling"
     }
