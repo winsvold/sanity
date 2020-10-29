@@ -1,7 +1,7 @@
 import {Dialog} from '@sanity/ui'
 import React from 'react'
 
-import styles from './UpdateNotifierDialog.css'
+import styles from './updateNotifierDialog.css'
 
 interface Props {
   onClose: () => void

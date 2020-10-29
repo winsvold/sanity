@@ -1,7 +1,7 @@
 import {Box, rem} from '@sanity/ui'
 import React from 'react'
 import styled from 'styled-components'
-import CreateDocumentPreview from './CreateDocumentPreview'
+import CreateDocumentPreview from './createDocumentPreview'
 
 const Root = styled(Box)`
   list-style: none;

@@ -1,8 +1,8 @@
 import React from 'react'
 import schema from 'part:@sanity/base/schema'
 import {getTemplateErrors} from '@sanity/base/initial-value-templates'
-import InitialValueTemplateError from './InitialValueTemplateError'
-import SchemaErrors from './SchemaErrors'
+import InitialValueTemplateError from './initialValueTemplateError'
+import SchemaErrors from './schemaErrors'
 
 interface Props {
   children: () => React.ReactNode

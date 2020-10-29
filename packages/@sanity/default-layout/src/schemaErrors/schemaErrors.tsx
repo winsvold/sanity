@@ -3,7 +3,7 @@ import {ErrorOutlineIcon, WarningOutlineIcon} from '@sanity/icons'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-import styles from './SchemaErrors.css'
+import styles from './schemaErrors.css'
 
 function renderPath(path) {
   return path

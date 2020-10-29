@@ -1,1 +1,1 @@
-export * from './Sidecar'
+export * from './sidecar'

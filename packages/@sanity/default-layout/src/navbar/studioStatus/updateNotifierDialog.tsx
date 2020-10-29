@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import {Package} from './types'
 
-import styles from './UpdateNotifierDialog.css'
+import styles from './updateNotifierDialog.css'
 
 declare const __DEV__: boolean
 

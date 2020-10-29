@@ -2,11 +2,11 @@ import {useId} from '@reach/auto-id'
 import {Button} from '@sanity/ui'
 import React, {useCallback, useState} from 'react'
 import versions from 'sanity:versions'
-import CurrentVersionsDialog from './CurrentVersionsDialog'
+import CurrentVersionsDialog from './currentVersionsDialog'
 import {getHighestLevel} from './helpers'
 import {State} from './hooks'
 import {Severity} from './types'
-import UpdateNotifierDialog from './UpdateNotifierDialog'
+import UpdateNotifierDialog from './updateNotifierDialog'
 
 interface SanityStatusProps {
   latestVersions: State

@@ -1,1 +1,1 @@
-export * from './ActionModal'
+export * from './actionModal'

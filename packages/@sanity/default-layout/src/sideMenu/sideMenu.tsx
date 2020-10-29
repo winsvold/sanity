@@ -7,7 +7,7 @@ import {DatasetSelect} from '../datasetSelect'
 import {Tool, User} from '../types'
 import {HAS_SPACES} from '../util/spaces'
 
-import styles from './SideMenu.css'
+import styles from './sideMenu.css'
 
 interface Props {
   activeToolName: string | null

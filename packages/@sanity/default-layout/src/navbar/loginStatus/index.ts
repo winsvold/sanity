@@ -1,1 +1,1 @@
-export * from './LoginStatus'
+export * from './loginStatus'

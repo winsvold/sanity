@@ -1,1 +1,1 @@
-export * from './DocumentSearch'
+export * from './documentSearch'

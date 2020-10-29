@@ -16,7 +16,7 @@ import {
 import client from 'part:@sanity/base/client'
 import React, {useCallback, useState} from 'react'
 import styled from 'styled-components'
-import {PresenceListRow} from './PresenceListRow'
+import {PresenceListRow} from './presenceListRow'
 
 const Root = styled.div`
   display: flex;

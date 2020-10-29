@@ -1,1 +1,1 @@
-export * from './PresenceMenu'
+export * from './presenceMenu'
