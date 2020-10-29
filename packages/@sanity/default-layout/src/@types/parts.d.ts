@@ -116,8 +116,12 @@ declare module 'part:@sanity/base/brand-logo?' {
 declare module 'part:@sanity/base/schema' {
   const schema: {
     _validation: {
-      path: Array<string | number | {_key: string}>
-      problems: {message: string; severity: string}[]
+      path: {
+        kind: string
+        type: string
+        name: string
+      }[]
+      problems: {helpId?: string; message: string; severity: string}[]
     }[]
     get: (name: string) => Schema
   }

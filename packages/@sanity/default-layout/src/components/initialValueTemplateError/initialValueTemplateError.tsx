@@ -1,8 +1,11 @@
 import {Dialog} from '@sanity/ui'
-import PropTypes from 'prop-types'
 import React from 'react'
 
-export function InitialValueTemplateError({errors}) {
+interface InitialValueTemplateErrorProps {
+  errors: {message: string}[]
+}
+
+export function InitialValueTemplateError({errors}: InitialValueTemplateErrorProps) {
   return (
     <Dialog
       id="initial-value-template-error-dialog"
@@ -17,12 +20,4 @@ export function InitialValueTemplateError({errors}) {
       ))}
     </Dialog>
   )
-}
-
-InitialValueTemplateError.propTypes = {
-  errors: PropTypes.arrayOf(
-    PropTypes.shape({
-      message: PropTypes.string.isRequired
-    })
-  ).isRequired
 }

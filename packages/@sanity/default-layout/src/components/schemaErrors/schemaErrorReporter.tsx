@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react'
 import schema from 'part:@sanity/base/schema'
 import {getTemplateErrors} from '@sanity/base/initial-value-templates'
-import {InitialValueTemplateError} from './initialValueTemplateError'
+import {InitialValueTemplateError} from '../initialValueTemplateError/initialValueTemplateError'
 import {SchemaErrors} from './schemaErrors'
 
 interface Props {

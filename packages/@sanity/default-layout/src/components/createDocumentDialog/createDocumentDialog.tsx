@@ -1,14 +1,14 @@
 import {DocumentIcon} from '@sanity/icons'
 import {Dialog, Text} from '@sanity/ui'
 import React from 'react'
-import {CreateDocumentList} from './createDocument'
+import {CreateDocumentList} from './createDocumentList'
 
-interface ActionModalProps {
+interface CreateDocumentDialogProps {
   actions: {icon?: React.ComponentType; key: string}[]
   onClose: () => void
 }
 
-export function ActionModal(props: ActionModalProps) {
+export function CreateDocumentDialog(props: CreateDocumentDialogProps) {
   const {actions, onClose} = props
 
   return (

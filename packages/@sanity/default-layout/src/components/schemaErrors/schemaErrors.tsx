@@ -1,11 +1,27 @@
 import generateHelpUrl from '@sanity/generate-help-url'
 import {ErrorOutlineIcon, WarningOutlineIcon} from '@sanity/icons'
-import PropTypes from 'prop-types'
 import React from 'react'
 
 import styles from './schemaErrors.css'
 
-function renderPath(path) {
+type ProblemGroupPath = {
+  kind: string
+  type: string
+  name: string
+}[]
+
+interface SchemaErrorsProps {
+  problemGroups: {
+    path: ProblemGroupPath
+    problems: {
+      helpId?: string
+      message: string
+      severity: string
+    }[]
+  }[]
+}
+
+function renderPath(path: ProblemGroupPath) {
   return path
     .map((segment, i) => {
       const key = `s_${i}`
@@ -46,65 +62,47 @@ function renderPath(path) {
     .filter(Boolean)
 }
 
-export function SchemaErrors(props) {
+export function SchemaErrors(props: SchemaErrorsProps) {
   const {problemGroups} = props
+
   return (
     <div className={styles.root}>
       <h2 className={styles.title}>Uh oh… found errors in schema</h2>
       <ul className={styles.list}>
-        {problemGroups.map((group, i) => {
-          return (
-            <li key={`g_${i}`} className={styles.listItem}>
-              <h2 className={styles.path}>{renderPath(group.path)}</h2>
-              <ul className={styles.problems}>
-                {group.problems.map((problem, j) => (
-                  <li key={`g_${i}_p_${j}`} className={styles[`problem_${problem.severity}`]}>
-                    <div className={styles.problemSeverity}>
-                      <span className={styles.problemSeverityIcon}>
-                        {problem.severity === 'error' && <ErrorOutlineIcon />}
-                        {problem.severity === 'warning' && <WarningOutlineIcon />}
-                      </span>
-                      <span className={styles.problemSeverityText}>{problem.severity}</span>
-                    </div>
-                    <div className={styles.problemContent}>
-                      <div className={styles.problemMessage}>{problem.message}</div>
-                      {problem.helpId && (
-                        <a
-                          className={styles.problemLink}
-                          href={generateHelpUrl(problem.helpId)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          View documentation
-                        </a>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          )
-        })}
+        {problemGroups.map((group, i) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <li key={`g_${i}`} className={styles.listItem}>
+            <h2 className={styles.path}>{renderPath(group.path)}</h2>
+            <ul className={styles.problems}>
+              {group.problems.map((problem, j) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <li key={`g_${i}_p_${j}`} className={styles[`problem_${problem.severity}`]}>
+                  <div className={styles.problemSeverity}>
+                    <span className={styles.problemSeverityIcon}>
+                      {problem.severity === 'error' && <ErrorOutlineIcon />}
+                      {problem.severity === 'warning' && <WarningOutlineIcon />}
+                    </span>
+                    <span className={styles.problemSeverityText}>{problem.severity}</span>
+                  </div>
+                  <div className={styles.problemContent}>
+                    <div className={styles.problemMessage}>{problem.message}</div>
+                    {problem.helpId && (
+                      <a
+                        className={styles.problemLink}
+                        href={generateHelpUrl(problem.helpId)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View documentation
+                      </a>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
       </ul>
     </div>
   )
-}
-
-SchemaErrors.propTypes = {
-  problemGroups: PropTypes.arrayOf(
-    PropTypes.shape({
-      path: PropTypes.arrayOf(
-        PropTypes.shape({
-          kind: PropTypes.string,
-          type: PropTypes.string,
-          name: PropTypes.string
-        })
-      ),
-      problems: PropTypes.arrayOf(
-        PropTypes.shape({
-          severity: PropTypes.string
-        })
-      )
-    }).isRequired
-  ).isRequired
 }

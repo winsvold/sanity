@@ -3,10 +3,10 @@ import LoginWrapper from 'part:@sanity/base/login-wrapper?'
 import {RouterProvider} from 'part:@sanity/base/router'
 import AppLoadingScreen from 'part:@sanity/base/app-loading-screen'
 import React from 'react'
-import {DefaultLayout} from './components/layout'
+import {Layout} from './components/layout'
 import {NotFound} from './components/notFound'
+import {getOrderedTools} from './lib/tool'
 import {navigate, rootRouter, useUrlState} from './lib/url'
-import {getOrderedTools} from './lib/util'
 
 export default function DefaultLayoutRoot() {
   const tools = getOrderedTools()
@@ -37,7 +37,7 @@ export default function DefaultLayoutRoot() {
         </NotFound>
       )}
 
-      {!isNotFound && <DefaultLayout tools={tools} />}
+      {!isNotFound && <Layout tools={tools} />}
     </RouterProvider>
   )
 

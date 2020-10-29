@@ -132,5 +132,5 @@ function validateNewDocumentStructure(structureItems) {
 }
 
 function quote(str: string) {
-  return str && str.length > 0 ? `"${str}"` : str
+  return str && str.length > 0 ? `“${str}”` : str
 }

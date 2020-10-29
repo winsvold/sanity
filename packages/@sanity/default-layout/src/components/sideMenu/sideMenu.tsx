@@ -6,7 +6,7 @@ import {ToolMenu} from '../toolMenu'
 import {useCurrentUser} from '../../lib/user/hooks'
 import {DatasetSelect} from '../../lib/__experimental_spaces/components'
 import {HAS_SPACES} from '../../lib/__experimental_spaces/constants'
-import {Tool} from '../tool'
+import {Tool} from '../../lib/tool'
 
 import styles from './sideMenu.css'
 

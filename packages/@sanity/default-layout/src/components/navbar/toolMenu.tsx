@@ -3,14 +3,11 @@ import {useRouterState} from 'part:@sanity/base/router'
 import React, {useEffect, useRef, useState} from 'react'
 import styled from 'styled-components'
 import {StateButton} from '../stateButton'
-import {Tool} from '../tool'
+import {Tool} from '../../lib/tool'
 
-const Root = styled.div`
-  /* outline: 1px solid red; */
-`
+const Root = styled.div``
 
 const ButtonContainer = styled.ol`
-  /* background: #fe0; */
   list-style: none;
   margin: 0;
   padding: 0;

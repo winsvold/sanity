@@ -4,13 +4,14 @@ import AppLoadingScreen from 'part:@sanity/base/app-loading-screen'
 import {RouteScope, useRouterState} from 'part:@sanity/base/router'
 import React, {useCallback, useEffect, useRef, useState} from 'react'
 import styled, {css, keyframes} from 'styled-components'
-import {ActionModal} from '../actionModal'
-import {Sidecar} from '../../lib/__experimental_sidecar'
-import {getNewDocumentModalActions} from '../../lib/util'
-import {Navbar} from '../navbar'
-import {SchemaErrorReporter} from '../schemaErrors'
-import {SideMenu} from '../sideMenu'
-import {RenderTool, Tool} from '../tool'
+import {Sidecar} from '../lib/__experimental_sidecar'
+import {getNewDocumentModalActions} from '../lib/new-document'
+import {Tool} from '../lib/tool'
+import {CreateDocumentDialog} from './createDocumentDialog'
+import {Navbar} from './navbar'
+import {SchemaErrorReporter} from './schemaErrors'
+import {SideMenu} from './sideMenu'
+import {RenderTool} from './tool'
 
 interface Props {
   tools: Tool[]
@@ -82,7 +83,7 @@ const SidecarContainer = styled.div(({theme}: {theme: Theme}) => {
   `
 })
 
-export function DefaultLayout(props: Props) {
+export function Layout(props: Props) {
   const {tools} = props
   const routerState = useRouterState()
   const [createMenuIsOpen, setCreateMenuIsOpen] = useState(false)
@@ -123,7 +124,7 @@ export function DefaultLayout(props: Props) {
 
   const handleClickCapture = useCallback(
     event => {
-      // Do not handle click if the event is not within DefaultLayout (portals)
+      // Do not handle click if the event is not within Layout (portals)
       const rootTarget = event.target.closest('[data-sanity-layout]')
       if (!rootTarget) return
 
@@ -208,7 +209,10 @@ export function DefaultLayout(props: Props) {
           </Flex>
 
           {createMenuIsOpen && (
-            <ActionModal onClose={handleActionModalClose} actions={getNewDocumentModalActions()} />
+            <CreateDocumentDialog
+              onClose={handleActionModalClose}
+              actions={getNewDocumentModalActions()}
+            />
           )}
 
           {absolutes.map((Abs, i) => (

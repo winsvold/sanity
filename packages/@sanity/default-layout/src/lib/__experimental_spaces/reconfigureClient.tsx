@@ -1,5 +1,5 @@
 import client from 'part:@sanity/base/client'
-import {CONFIGURED_SPACES} from '../__experimental_spaces'
+import {CONFIGURED_SPACES} from './constants'
 
 export function reconfigureClient(routerState) {
   const space = CONFIGURED_SPACES.find(sp => sp.name === routerState.space)
