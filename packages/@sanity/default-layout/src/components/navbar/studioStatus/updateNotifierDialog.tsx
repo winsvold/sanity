@@ -3,8 +3,6 @@ import React from 'react'
 import styled from 'styled-components'
 import {Package} from './types'
 
-import styles from './updateNotifierDialog.css'
-
 declare const __DEV__: boolean
 
 interface Props {
@@ -41,6 +39,10 @@ const PackageTable = styled.table`
   & tr:hover td {
     background: color(var(--gray-lightest) alpha(50%));
   }
+`
+
+const Details = styled.details`
+  border-top: 1px solid var(--card-hairline-soft-color);
 `
 
 const upperFirst = (str: string) => `${str.slice(0, 1).toUpperCase()}${str.slice(1)}`
@@ -151,10 +153,13 @@ function ContactDeveloper(props: {outdated: Package[]; severity: string}) {
         )}
       </Box>
 
-      <details className={styles.details}>
-        <summary className={styles.summary}>Developer info</summary>
+      <Details>
+        <Box as="summary" padding={4}>
+          Developer info
+        </Box>
+
         <UpdateNotifierTable outdated={outdated} />
-      </details>
+      </Details>
     </>
   )
 }

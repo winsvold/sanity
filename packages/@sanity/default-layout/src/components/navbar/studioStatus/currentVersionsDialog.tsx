@@ -1,8 +1,6 @@
 import {Dialog} from '@sanity/ui'
 import React from 'react'
 
-import styles from './updateNotifierDialog.css'
-
 interface Props {
   onClose: () => void
   versions: {[key: string]: string}
@@ -13,12 +11,12 @@ export function CurrentVersionsDialog(props: Props) {
 
   return (
     <Dialog id="current-versions" onClose={onClose} width={2}>
-      <div className={styles.content}>
-        <h2 className={styles.dialogHeading}>This Studio is up to date</h2>
+      <div>
+        <h2>This Studio is up to date</h2>
         <p>It was built using the latest versions of all packages.</p>
-        <details className={styles.details}>
-          <summary className={styles.summary}>List all installed packages</summary>
-          <table className={styles.versionsTable}>
+        <details>
+          <summary>List all installed packages</summary>
+          <table>
             <thead>
               <tr>
                 <th>Module</th>
