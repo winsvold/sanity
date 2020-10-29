@@ -36,6 +36,7 @@
       "@sanity/preview": ["./@sanity/preview"],
       "@sanity/schema/lib": ["./@sanity/schema/src"],
       "@sanity/schema": ["./@sanity/schema/src/legacy"],
+      "@sanity/state-router/components": ["./@sanity/state-router/src/components"],
       "@sanity/state-router": ["./@sanity/state-router/src"],
       "@sanity/structure": ["./@sanity/structure/src"],
       "@sanity/util/paths": ["./@sanity/util/src/pathUtils"],
