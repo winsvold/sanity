@@ -4,7 +4,7 @@
   "isSanityMonorepo": true,
   "scripts": {
     "bootstrap": "lerna bootstrap && npm run package-yarn",
-    "dev": "npm start",
+    "dev": "npm run design-studio",
     "rebuild": "gulp build",
     "build": "gulp clean && gulp build && npm run package",
     "clean": "gulp clean && lerna clean",
