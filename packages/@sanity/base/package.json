@@ -54,6 +54,7 @@
     "@sanity/validation": "2.0.1",
     "dataloader": "^2.0.0",
     "date-fns": "^2.16.1",
+    "get-it": "^5.0.3",
     "history": "^4.6.3",
     "lodash": "^4.17.15",
     "nano-pubsub": "^2.0.0",
