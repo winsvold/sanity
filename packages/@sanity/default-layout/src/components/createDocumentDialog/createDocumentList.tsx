@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import {CreateDocumentPreview} from './createDocumentPreview'
 
-const Root = styled(Box).attrs({as: 'ul'})`
+const Root = styled(Box).attrs({forwardedAs: 'ul'})`
   list-style: none;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
