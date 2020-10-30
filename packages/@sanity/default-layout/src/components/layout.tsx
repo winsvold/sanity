@@ -83,40 +83,19 @@ export function Layout() {
   const tools = getOrderedTools()
   const routerState = useRouterState()
   const [createMenuIsOpen, setCreateMenuIsOpen] = useState(false)
-  const [menuIsOpen, setMenuIsOpen] = useState(false)
+  const [sidemenuIsOpen, setSidemenuIsOpen] = useState(true)
   const [showLoadingScreen, setShowLoadingScreen] = useState(true)
   const [searchIsOpen, setSearchIsOpen] = useState(false)
   const [loaded, setLoaded] = useState(false)
-
   const loadingScreenElementRef = useRef<HTMLDivElement | null>(null)
 
-  const handleAnimationEnd = useCallback(() => {
-    setShowLoadingScreen(false)
-  }, [])
-
-  const handleCreateButtonClick = useCallback(() => {
-    setCreateMenuIsOpen(val => !val)
-  }, [])
-
-  const handleActionModalClose = useCallback(() => {
-    setCreateMenuIsOpen(false)
-  }, [])
-
-  const handleToggleMenu = useCallback(() => {
-    setMenuIsOpen(val => !val)
-  }, [])
-
-  const handleSwitchTool = useCallback(() => {
-    setMenuIsOpen(false)
-  }, [])
-
-  const handleSearchOpen = useCallback(() => {
-    setSearchIsOpen(true)
-  }, [])
-
-  const handleSearchClose = useCallback(() => {
-    setSearchIsOpen(false)
-  }, [])
+  const handleAnimationEnd = useCallback(() => setShowLoadingScreen(false), [])
+  const handleCreateButtonClick = useCallback(() => setCreateMenuIsOpen(val => !val), [])
+  const handleActionModalClose = useCallback(() => setCreateMenuIsOpen(false), [])
+  const handleSidemenuToggle = useCallback(() => setSidemenuIsOpen(val => !val), [])
+  const handleSwitchTool = useCallback(() => setSidemenuIsOpen(false), [])
+  const handleSearchOpen = useCallback(() => setSearchIsOpen(true), [])
+  const handleSearchClose = useCallback(() => setSearchIsOpen(false), [])
 
   const handleClickCapture = useCallback(
     event => {
@@ -124,17 +103,17 @@ export function Layout() {
       const rootTarget = event.target.closest('[data-sanity-layout]')
       if (!rootTarget) return
 
-      if (menuIsOpen) {
+      if (sidemenuIsOpen) {
         // Close SideMenu if the user clicks outside
         const menuTarget = event.target.closest('[data-sanity-side-menu-container]')
         if (!menuTarget) {
           event.preventDefault()
           event.stopPropagation()
-          handleToggleMenu()
+          handleSidemenuToggle()
         }
       }
     },
-    [handleToggleMenu, menuIsOpen]
+    [handleSidemenuToggle, sidemenuIsOpen]
   )
 
   // Subscribe to `animationend`
@@ -174,7 +153,7 @@ export function Layout() {
               tools={tools}
               createMenuIsOpen={createMenuIsOpen}
               onCreateButtonClick={handleCreateButtonClick}
-              onToggleMenu={handleToggleMenu}
+              onToggleMenu={handleSidemenuToggle}
               onSwitchTool={handleSwitchTool}
               searchIsOpen={searchIsOpen}
               onSearchOpen={handleSearchOpen}
@@ -185,9 +164,9 @@ export function Layout() {
           <div data-sanity-side-menu-container="">
             <SideMenu
               activeToolName={routerState?.tool}
-              isOpen={menuIsOpen}
-              onClose={handleToggleMenu}
+              onClose={handleSidemenuToggle}
               onSwitchTool={handleSwitchTool}
+              open={sidemenuIsOpen}
               tools={tools}
             />
           </div>
