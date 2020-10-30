@@ -29,7 +29,7 @@
     "@sanity/google-maps-input": "2.0.4",
     "@sanity/production-preview": "2.0.1",
     "@sanity/vision": "2.0.1",
-    "react": "16.9.0",
+    "react": "^16.14.0",
     "react-dom": "^16.9.0",
     "react-icons": "^3.11.0"
   },
