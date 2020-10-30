@@ -11,6 +11,7 @@
 
       // Internal paths
       "@sanity/base/components": ["./@sanity/base/src/components"],
+      "@sanity/base/hooks": ["./@sanity/base/src/hooks"],
       "@sanity/base/lib/datastores/document/document-pair/remoteSnapshots": [
         "./@sanity/base/src/datastores/document/document-pair/remoteSnapshots"
       ],
