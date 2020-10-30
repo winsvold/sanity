@@ -5,11 +5,11 @@
 
 require('hard-rejection/register')
 
+const path = require('path')
+const fs = require('fs')
 const test = require('tape')
 const nock = require('nock')
 const assign = require('xtend')
-const path = require('path')
-const fs = require('fs')
 const validators = require('../src/validators')
 const observableOf = require('rxjs').of
 const {filter} = require('rxjs/operators')
@@ -368,7 +368,10 @@ test('can query for multiple documents', t => {
     .get('/v1/data/doc/foo/abc123,abc321')
     .reply(200, {
       ms: 123,
-      documents: [{_id: 'abc123', mood: 'lax'}, {_id: 'abc321', mood: 'tense'}]
+      documents: [
+        {_id: 'abc123', mood: 'lax'},
+        {_id: 'abc321', mood: 'tense'}
+      ]
     })
 
   getClient()
@@ -386,7 +389,10 @@ test('preserves the position of requested documents', t => {
     .get('/v1/data/doc/foo/abc123,abc321,abc456')
     .reply(200, {
       ms: 123,
-      documents: [{_id: 'abc456', mood: 'neutral'}, {_id: 'abc321', mood: 'tense'}]
+      documents: [
+        {_id: 'abc456', mood: 'neutral'},
+        {_id: 'abc321', mood: 'tense'}
+      ]
     })
 
   getClient()
@@ -1517,7 +1523,11 @@ test('uploads images with progress events', t => {
   getClient()
     .observable.assets.upload('image', fs.createReadStream(fixturePath))
     .pipe(filter(event => event.type === 'progress'))
-    .subscribe(event => t.equal(event.type, 'progress'), ifError(t), () => t.end())
+    .subscribe(
+      event => t.equal(event.type, 'progress'),
+      ifError(t),
+      () => t.end()
+    )
 })
 
 test('uploads images with custom label', t => {
@@ -1982,4 +1992,106 @@ test.skip('handles socket timeouts gracefully', t => {
       t.equal(err.code, 'ESOCKETTIMEDOUT', 'should have timeout error code')
       t.end()
     })
+})
+
+/************************
+ * RATE LIMITER CLIENT  *
+ ***********************/
+const rateLimitedClient = getClient({
+  rateLimit: {
+    maxRps: 2,
+    interval: 3000,
+    onRateLimited: null
+  }
+})
+
+test('************ throw error if request is more than 2 in 3 seconds', t => {
+  const response = {
+    role: null,
+    id: 'Z29vZA2MTc2MDY5MDI1MDA3MzA5MTAwOjozMjM',
+    name: 'Mannen i Gata',
+    email: 'some@email.com'
+  }
+
+  nock(projectHost())
+    .get('/v1/users/me')
+    .reply(200, response)
+
+  rateLimitedClient.users.getById('me')
+
+  nock(projectHost())
+    .get('/v1/users/me')
+    .reply(200, response)
+
+  rateLimitedClient.users.getById('me')
+
+  nock(projectHost())
+    .get('/v1/users/me')
+    .reply(200, response)
+  try {
+    rateLimitedClient.users
+      .getById('me')
+      .then(body => {
+        t.fail('Should not call success handler on timeouts')
+        t.end()
+      })
+      .catch(err => {
+        t.ok(err instanceof Error, 'should error')
+        t.equal(
+          err.message,
+          'You have reached your client side rate limit threshold to learn more, visit https://docs.sanity.io/help/js-client-rate-limit'
+        )
+        t.end()
+      })
+  } catch (err) {
+    t.ok(err instanceof Error, 'should errors')
+    t.equal(
+      err.message,
+      'You have reached your client side rate limit threshold to learn more, visit https://docs.sanity.io/help/js-client-rate-limit'
+    )
+    t.end()
+  }
+})
+
+const limitedClient = getClient({
+  rateLimit: {
+    maxRps: 4,
+    interval: 3000,
+    onRateLimited: null
+  }
+})
+test('************ request within limit window will pass', t => {
+  const response = {
+    role: null,
+    id: 'Z29vZA2MTc2MDY5MDI1MDA3MzA5MTAwOjozMjM',
+    name: 'Mannen i Gata',
+    email: 'some@email.com'
+  }
+
+  nock(projectHost())
+    .get('/v1/users/me')
+    .reply(200, response)
+
+  limitedClient.users.getById('me')
+
+  nock(projectHost())
+    .get('/v1/users/me')
+    .reply(200, response)
+
+  limitedClient.users.getById('me')
+
+  nock(projectHost())
+    .get('/v1/users/me')
+    .reply(200, response)
+
+  limitedClient.users.getById('me')
+
+  nock(projectHost())
+    .get('/v1/users/me')
+    .reply(200, response)
+
+  limitedClient.users.getById('me').then(body => {
+    t.deepEqual(body, response)
+    t.end()
+  }, ifError(t))
 })

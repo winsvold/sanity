@@ -1,5 +1,6 @@
 const generateHelpUrl = require('@sanity/generate-help-url')
 const assign = require('object-assign')
+const deepAssign = require('deep-assign')
 const validate = require('./validators')
 const once = require('./util/once')
 
@@ -11,7 +12,6 @@ const defaultConfig = {
   isPromiseAPI: true,
   rateLimit: {
     maxRps: 40,
-    ttl: 2,
     interval: 1000,
     onRateLimited: null,
     retry: {
@@ -52,6 +52,9 @@ const printCdnTokenWarning = createWarningPrinter([
 exports.defaultConfig = defaultConfig
 
 exports.initConfig = (config, prevConfig) => {
+  const rateLimitConfig = deepAssign(defaultConfig.rateLimit || {}, config.rateLimit)
+  const updatedConfig = config
+  updatedConfig.rateLimit = rateLimitConfig
   const newConfig = assign({}, defaultConfig, prevConfig, config)
   const gradientMode = newConfig.gradientMode
   const projectBased = !gradientMode && newConfig.useProjectHostname

@@ -3,12 +3,8 @@ const helpUrl = require('@sanity/generate-help-url')
 const {QueueLimitError} = require('./errors')
 
 function RateLimiterWithQueue(options) {
-  this.store = []
-  this.onRateLimited = options.onRateLimited
   this.queue = []
   this.onRateLimited = null
-  this.ttls = null
-  this.backoffStatusCodes = 429
   this.requestCount = 0
   this.maxQueueSize = 3
   this.timeoutId = null
@@ -52,10 +48,9 @@ assign(RateLimiterWithQueue.prototype, {
     return new Promise(
       function(resolve, reject) {
         if (this.queue.length >= this.maxQueueSize) {
+          const errMessage = helpUrl('js-client-rate-limit')
           const e = new QueueLimitError(
-            `You have reached your client side rate limit threshold to learn more, visit ${helpUrl(
-              'js-client-rate-limit'
-            )}`
+            `You have reached your client side rate limit threshold to learn more, visit ${errMessage}`
           )
           reject(e)
         }

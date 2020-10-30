@@ -494,17 +494,35 @@ interface BaseClientConfig {
   requester?: GetItRequester
 }
 
-type ProjectlessClientConfig = BaseClientConfig & {
-  useProjectHostname: false
-  projectId?: string
-  dataset?: string
+interface RetryClientConfig {
+  maxRetryAttempts?: number
+  scalingDuration?: number
+  initialDuration?: number
+  includedStatusCodes?: Array<number>
 }
 
-type ProjectClientConfig = BaseClientConfig & {
-  useProjectHostname?: true
-  projectId: string
-  dataset?: string
+interface WithRateLimitClientConfig {
+  rateLimit: {
+    maxRps?: number
+    interval?: number
+    onRateLimited?: (isBlocked: boolean) => void
+    retry?: RetryClientConfig
+  }
 }
+
+type ProjectlessClientConfig = BaseClientConfig &
+  WithRateLimitClientConfig & {
+    useProjectHostname: false
+    projectId?: string
+    dataset?: string
+  }
+
+type ProjectClientConfig = BaseClientConfig &
+  WithRateLimitClientConfig & {
+    useProjectHostname?: true
+    projectId: string
+    dataset?: string
+  }
 
 export type ClientConfig = ProjectClientConfig | ProjectlessClientConfig
 

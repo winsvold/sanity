@@ -13,7 +13,6 @@ function RateLimiter(options) {
   this.onRateLimited = null
   this.ttls = null
   this.requestCount = 0
-  this.maxQueueSize = Infinity
 
   if (typeof options.maxRps !== 'number' || options.maxRps < 0) {
     throw new Error('Missing or invalid maxRps')
@@ -27,10 +26,6 @@ function RateLimiter(options) {
     this.onRateLimited = options.onRateLimited
   }
 
-  if (options.maxQueueSize && typeof options.maxQueueSize === 'number') {
-    this.maxQueueSize = options.maxQueueSize
-  }
-
   this.maxRps = options.maxRps
   this.interval = timeConverter.millisecondsToMicroseconds(options.interval)
 }
@@ -41,12 +36,14 @@ assign(RateLimiter.prototype, {
       function(resolve, reject) {
         const info = this.limitWithInfo()
         if (info.blocked) {
-          this.onRateLimited(this.limitWithInfo().blocked)
-          const e = new RateLimitError(`
-              You have reached your client side rate limit threshold to learn more, visit ${helpUrl(
-                'js-client-rate-limit'
-              )}
-            `)
+          if (this.onRateLimited && typeof this.onRateLimited === 'function') {
+            this.onRateLimited(this.limitWithInfo().blocked)
+          }
+
+          const errMessage = helpUrl('js-client-rate-limit')
+          const e = new RateLimitError(
+            `You have reached your client side rate limit threshold to learn more, visit ${errMessage}`
+          )
           reject(e)
         }
         resolve(request)
@@ -57,12 +54,13 @@ assign(RateLimiter.prototype, {
   handleRequest(request) {
     const info = this.limitWithInfo()
     if (info.blocked) {
-      this.onRateLimited(this.limitWithInfo().blocked)
-      throw new RateLimitError(`
-              You have reached your client side rate limit threshold to learn more, visit ${helpUrl(
-                'js-client-rate-limit'
-              )}
-            `)
+      if (this.onRateLimited && typeof this.onRateLimited === 'function') {
+        this.onRateLimited(this.limitWithInfo().blocked)
+      }
+      const errMessage = helpUrl('js-client-rate-limit')
+      throw new RateLimitError(
+        `You have reached your client side rate limit threshold to learn more, visit ${errMessage}`
+      )
     }
     return request && request
   },
