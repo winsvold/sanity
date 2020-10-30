@@ -33,7 +33,7 @@ const Container = styled(Box)`
   align-items: center;
 `
 
-const TextContainer = styled(Stack)`
+const TextStack = styled(Stack)`
   flex: 1;
   min-width: 0;
   margin-left: 12px;
@@ -88,12 +88,12 @@ export function CreateDocumentPreview(props: CreateDocumentPreviewProps) {
     return (
       <Container padding={3}>
         {media !== false && <MediaContainer />}
-        <TextContainer space={2}>
+        <TextStack space={2}>
           <Text as="h2">Loading…</Text>
           <Text as="h3" size={1}>
             Loading…
           </Text>
-        </TextContainer>
+        </TextStack>
       </Container>
     )
   }
@@ -113,7 +113,7 @@ export function CreateDocumentPreview(props: CreateDocumentPreviewProps) {
           </MediaContainer>
         )}
 
-        <TextContainer space={2}>
+        <TextStack space={2}>
           <Text as="h2">
             {typeof title !== 'function' && title}
             {typeof title === 'function' && title({layout: 'default'})}
@@ -124,7 +124,7 @@ export function CreateDocumentPreview(props: CreateDocumentPreviewProps) {
               {(typeof subtitle === 'function' && subtitle({layout: 'default'})) || subtitle}
             </Text>
           )}
-        </TextContainer>
+        </TextStack>
 
         {description && <Text size={0}>{description}</Text>}
       </Container>
