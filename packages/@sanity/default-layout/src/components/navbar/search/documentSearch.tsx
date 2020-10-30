@@ -1,30 +1,10 @@
-import {Autocomplete, AutocompleteOption, Box, Text} from '@sanity/ui'
+import {Autocomplete, AutocompleteOption, Box, Card, Text} from '@sanity/ui'
 import Preview from 'part:@sanity/base/preview?'
 import {IntentLink} from 'part:@sanity/base/router'
 import schema from 'part:@sanity/base/schema?'
 import {getPublishedId} from 'part:@sanity/base/util/draft-utils'
 import React, {useCallback, useState} from 'react'
-import styled from 'styled-components'
 import {useSearch} from './hooks'
-
-const SearchOption = styled.div`
-  & > a {
-    display: block;
-    color: inherit;
-    text-decoration: none;
-    outline: none;
-  }
-
-  & > a::-moz-focus-inner {
-    border: 0;
-    padding: 0;
-  }
-
-  & > a:hover {
-    background-color: var(--card-focus-bg-color);
-    color: var(--card-focus-fg-color);
-  }
-`
 
 const EMPTY_RESULTS = []
 
@@ -52,23 +32,22 @@ export function DocumentSearch() {
 
       const type = schema.get(result.hit._type)
 
+      const intent = {
+        intent: 'edit',
+        params: {id: getPublishedId(result.hit._id), type: type.name}
+      }
+
       return (
-        <SearchOption>
-          <IntentLink
-            intent="edit"
-            onClick={() => handleInputChange('')}
-            params={{id: getPublishedId(result.hit._id), type: type.name}}
-          >
-            <Box paddingX={3} paddingY={2}>
-              <Preview
-                value={result.hit}
-                layout="default"
-                type={type}
-                status={<Text size={0}>{type.title}</Text>}
-              />
-            </Box>
-          </IntentLink>
-        </SearchOption>
+        <Card as={IntentLink as any} onClick={() => handleInputChange('')} {...(intent as any)}>
+          <Box paddingX={3} paddingY={2}>
+            <Preview
+              value={result.hit}
+              layout="default"
+              type={type}
+              status={<Text size={0}>{type.title}</Text>}
+            />
+          </Box>
+        </Card>
       )
     },
     [handleInputChange, results]
@@ -77,6 +56,7 @@ export function DocumentSearch() {
   return (
     <>
       <Autocomplete
+        border={false}
         id="navbar-search"
         name="searchTerm"
         onChange={handleInputChange}
