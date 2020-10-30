@@ -88,45 +88,27 @@ export function Layout() {
   const [searchIsOpen, setSearchIsOpen] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const loadingScreenElementRef = useRef<HTMLDivElement | null>(null)
+  const loadingScreenHidden = loaded || document.visibilityState === 'hidden'
 
   const handleAnimationEnd = useCallback(() => setShowLoadingScreen(false), [])
   const handleCreateButtonClick = useCallback(() => setCreateMenuIsOpen(val => !val), [])
   const handleActionModalClose = useCallback(() => setCreateMenuIsOpen(false), [])
-  const handleSidemenuToggle = useCallback(() => setSidemenuIsOpen(val => !val), [])
-  const handleSwitchTool = useCallback(() => setSidemenuIsOpen(false), [])
+  const handleSidemenuOpen = useCallback(() => setSidemenuIsOpen(true), [])
+  const handleSidemenuClose = useCallback(() => setSidemenuIsOpen(false), [])
   const handleSearchOpen = useCallback(() => setSearchIsOpen(true), [])
   const handleSearchClose = useCallback(() => setSearchIsOpen(false), [])
-
-  const handleClickCapture = useCallback(
-    event => {
-      // Do not handle click if the event is not within Layout (portals)
-      const rootTarget = event.target.closest('[data-sanity-layout]')
-      if (!rootTarget) return
-
-      if (sidemenuIsOpen) {
-        // Close SideMenu if the user clicks outside
-        const menuTarget = event.target.closest('[data-sanity-side-menu-container]')
-        if (!menuTarget) {
-          event.preventDefault()
-          event.stopPropagation()
-          handleSidemenuToggle()
-        }
-      }
-    },
-    [handleSidemenuToggle, sidemenuIsOpen]
-  )
 
   // Subscribe to `animationend`
   useEffect(() => {
     const loadingScreenElement = loadingScreenElementRef.current
 
     if (loadingScreenElement && showLoadingScreen) {
-      loadingScreenElement.addEventListener('animationend', handleAnimationEnd, false)
+      loadingScreenElement.addEventListener('animationend', handleAnimationEnd)
     }
 
     return () => {
       if (loadingScreenElement) {
-        loadingScreenElement.removeEventListener('animationend', handleAnimationEnd, false)
+        loadingScreenElement.removeEventListener('animationend', handleAnimationEnd)
       }
     }
   }, [handleAnimationEnd, showLoadingScreen])
@@ -136,12 +118,10 @@ export function Layout() {
     if (!loaded) setLoaded(true)
   }, [loaded])
 
-  const loadingScreenHidden = loaded || document.visibilityState === 'hidden'
-
   return (
     <SchemaErrorReporter>
       {() => (
-        <Root data-sanity-layout="" direction="column" onClickCapture={handleClickCapture}>
+        <Root direction="column">
           {showLoadingScreen && (
             <LoadingScreenContainer hidden={loadingScreenHidden} ref={loadingScreenElementRef}>
               <AppLoadingScreen text="Restoring Sanity" />
@@ -153,23 +133,20 @@ export function Layout() {
               tools={tools}
               createMenuIsOpen={createMenuIsOpen}
               onCreateButtonClick={handleCreateButtonClick}
-              onToggleMenu={handleSidemenuToggle}
-              onSwitchTool={handleSwitchTool}
+              onSidemenuOpen={handleSidemenuOpen}
+              onSidemenuClose={handleSidemenuClose}
               searchIsOpen={searchIsOpen}
               onSearchOpen={handleSearchOpen}
               onSearchClose={handleSearchClose}
             />
           </NavbarContainer>
 
-          <div data-sanity-side-menu-container="">
-            <SideMenu
-              activeToolName={routerState?.tool}
-              onClose={handleSidemenuToggle}
-              onSwitchTool={handleSwitchTool}
-              open={sidemenuIsOpen}
-              tools={tools}
-            />
-          </div>
+          <SideMenu
+            activeToolName={routerState?.tool}
+            onClose={handleSidemenuClose}
+            open={sidemenuIsOpen}
+            tools={tools}
+          />
 
           <Flex flex={1}>
             <ToolContainer flex={1}>

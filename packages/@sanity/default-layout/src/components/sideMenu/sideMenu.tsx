@@ -1,7 +1,7 @@
 import {UserAvatar} from '@sanity/base/components'
-import {Box, Button, Card, Flex, Stack, Text} from '@sanity/ui'
+import {Box, Button, Card, Flex, Stack, Text, useClickOutside} from '@sanity/ui'
 import config from 'config:sanity'
-import React from 'react'
+import React, {useState} from 'react'
 import styled, {css} from 'styled-components'
 import {useCurrentUser} from '../../lib/user/hooks'
 import {DatasetSelect} from '../../lib/__experimental_spaces/components'
@@ -13,7 +13,6 @@ interface Props {
   activeToolName: string | null
   open: boolean
   onClose: () => void
-  onSwitchTool: () => void
   tools: Tool[]
 }
 
@@ -79,14 +78,17 @@ const FooterBox = styled(Box)`
 
 export function SideMenu(props: Props) {
   const projectName = config && config.project.name
-  const {activeToolName, onClose, onSwitchTool, open, tools} = props
+  const {activeToolName, onClose, open, tools} = props
   const tabIndex = open ? 0 : -1
   const currentUser = useCurrentUser()
+  const [cardElement, setCardElement] = useState<HTMLDivElement | null>(null)
+
+  useClickOutside(onClose, [cardElement])
 
   return (
     <Root open={open}>
       <Overlay open={open} />
-      <SidemenuCard marginRight={5} open={open} shadow={1}>
+      <SidemenuCard marginRight={5} open={open} ref={setCardElement} shadow={1}>
         <Flex direction="column">
           <HeaderBox>
             <Flex>
@@ -118,7 +120,7 @@ export function SideMenu(props: Props) {
             <ToolMenu
               activeToolName={activeToolName}
               isVisible={open}
-              onSwitchTool={onSwitchTool}
+              onSwitchTool={onClose}
               tools={tools}
             />
           </ContentBox>

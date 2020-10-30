@@ -36,6 +36,7 @@ export function ToolMenu(props: Props) {
           <li key={tool.name}>
             <StateButton
               icon={tool.icon as any}
+              justify="flex-start"
               key={tool.name}
               mode="bleed"
               onClick={onSwitchTool}

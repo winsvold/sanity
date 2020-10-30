@@ -32,8 +32,8 @@ interface Props {
   onCreateButtonClick: () => void
   onSearchClose: () => void
   onSearchOpen: () => void
-  onSwitchTool: () => void
-  onToggleMenu: () => void
+  onSidemenuOpen: () => void
+  onSidemenuClose: () => void
   searchIsOpen: boolean
   tools: Tool[]
 }
@@ -44,9 +44,9 @@ export function Navbar(props: Props) {
   const {
     createMenuIsOpen,
     onCreateButtonClick,
-    onToggleMenu,
-    onSwitchTool,
     onSearchOpen,
+    onSidemenuOpen,
+    onSidemenuClose,
     tools,
     searchIsOpen
   } = props
@@ -68,7 +68,7 @@ export function Navbar(props: Props) {
                   aria-label="Open menu"
                   icon="menu"
                   mode="bleed"
-                  onClick={onToggleMenu}
+                  onClick={onSidemenuOpen}
                   padding={3}
                   title="Open menu"
                 />
@@ -154,7 +154,7 @@ export function Navbar(props: Props) {
                 activeToolName={routerState.tool}
                 onHide={handleToolMenuHide}
                 onShow={handleToolMenuShow}
-                onSwitchTool={onSwitchTool}
+                onSwitchTool={onSidemenuClose}
                 tools={tools}
               />
             )}
