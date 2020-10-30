@@ -1,5 +1,4 @@
 import {Button, Menu, MenuButton, MenuItem} from '@sanity/ui'
-import {ChevronDownIcon} from '@sanity/icons'
 import {useRouter} from 'part:@sanity/base/router'
 import React, {useCallback} from 'react'
 import {CONFIGURED_SPACES} from '../constants'
@@ -28,16 +27,7 @@ export function DatasetSelect() {
 
   return (
     <MenuButton
-      button={
-        <Button
-          mode="ghost"
-          text={
-            <>
-              {currentSpace.title} <ChevronDownIcon />
-            </>
-          }
-        />
-      }
+      button={<Button iconRight="chevron-down" mode="ghost" space={3} text={currentSpace.title} />}
       id="dataset-menu"
       menu={
         <Menu>
