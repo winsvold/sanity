@@ -2005,7 +2005,7 @@ const rateLimitedClient = getClient({
   }
 })
 
-test('************ throw error if request is more than 2 in 3 seconds', t => {
+test('throw error if request is more than 2 in 3 seconds', t => {
   const response = {
     role: null,
     id: 'Z29vZA2MTc2MDY5MDI1MDA3MzA5MTAwOjozMjM',
@@ -2060,7 +2060,7 @@ const limitedClient = getClient({
     onRateLimited: null
   }
 })
-test('************ request within limit window will pass', t => {
+test('request within limit window will pass', t => {
   const response = {
     role: null,
     id: 'Z29vZA2MTc2MDY5MDI1MDA3MzA5MTAwOjozMjM',
