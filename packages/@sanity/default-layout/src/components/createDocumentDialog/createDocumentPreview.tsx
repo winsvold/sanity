@@ -3,7 +3,7 @@ import {IntentLink} from 'part:@sanity/base/router'
 import React from 'react'
 import styled from 'styled-components'
 
-const Root = styled(IntentLink)`
+const Root = styled(IntentLink as any)`
   display: block;
   text-decoration: none;
   position: relative;

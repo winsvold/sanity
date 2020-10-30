@@ -13,7 +13,7 @@ interface PresenceListRowProps {
   onClose: () => void
 }
 
-const RootLink = styled(IntentLink)`
+const RootLink = styled(IntentLink as any)`
   display: block;
   color: inherit;
   text-decoration: none;

@@ -18,7 +18,7 @@ export function NotFound(props: React.HTMLProps<HTMLDivElement>) {
   const rootState = {space: HAS_SPACES ? routerState?.space : undefined}
 
   return (
-    <Root {...restProps}>
+    <Root {...(restProps as any)}>
       <Container width={1}>
         <Box paddingX={5} paddingY={4}>
           <Stack space={4}>

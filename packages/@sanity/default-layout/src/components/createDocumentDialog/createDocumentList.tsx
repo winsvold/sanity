@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import {CreateDocumentPreview} from './createDocumentPreview'
 
-const Root = styled(Box)`
+const Root = styled(Box).attrs({as: 'ul'})`
   list-style: none;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
@@ -26,7 +26,7 @@ export function CreateDocumentList(props: CreateDocumentListProps) {
   const {items = []} = props
 
   return (
-    <Root forwardedAs="ul" padding={4}>
+    <Root padding={4}>
       {items.map(item => (
         <li key={item.key}>
           <CreateDocumentPreview {...item} />
