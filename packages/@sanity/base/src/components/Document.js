@@ -47,7 +47,6 @@ function Document(props) {
         <meta charSet={props.charset} />
         <title>{props.title}</title>
         <meta name="viewport" content={props.viewport} />
-        <style>{`html {background-color: #e4e8ed;}`}</style>
         {stylesheets}
         {subresources}
         {favicons}
