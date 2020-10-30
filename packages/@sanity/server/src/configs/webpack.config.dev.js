@@ -5,6 +5,7 @@ import {getMonorepoAliases} from './monorepoAliases'
 
 export default config => {
   const baseConfig = getBaseConfig(config)
+  const monorepoAliases = config.isSanityMonorepo ? getMonorepoAliases() : {}
 
   return Object.assign({}, baseConfig, {
     devtool: 'cheap-module-source-map',
@@ -26,7 +27,7 @@ export default config => {
           'styled-components': require.resolve('styled-components'),
           'webpack-hot-middleware/client': require.resolve('../browser/hot-client')
         },
-        config.isSanityMonorepo ? getMonorepoAliases() : {}
+        monorepoAliases
       ),
       extensions: baseConfig.resolve.extensions
     },

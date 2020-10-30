@@ -12,7 +12,7 @@ export function getMonorepoAliases() {
     const result = tsconfig.loadSync(MONOREPO_PATH)
     const {compilerOptions} = result.config
 
-    if (!compilerOptions.baseUrl || compilerOptions.paths) {
+    if (!compilerOptions.baseUrl || !compilerOptions.paths) {
       return {}
     }
 
