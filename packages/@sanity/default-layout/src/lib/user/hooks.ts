@@ -1,20 +1,13 @@
+import {useUser} from '@sanity/base/hooks'
 import userStore from 'part:@sanity/base/user'
-import {useEffect, useState} from 'react'
-import {User} from './types'
+import {useCallback} from 'react'
 
 export function useCurrentUser() {
-  const [user, setUser] = useState<User | null>(null)
+  const state = useUser('me')
 
-  // Subscribe to current user
-  useEffect(() => {
-    const sub = userStore.currentUser.subscribe(event =>
-      setUser(event.type === 'snapshot' ? event.user : null)
-    )
-
-    return () => {
-      sub.unsubscribe()
-    }
+  const logout = useCallback(() => {
+    userStore.actions.logout()
   }, [])
 
-  return {data: user, logout: userStore.actions.logout}
+  return {...state, logout}
 }

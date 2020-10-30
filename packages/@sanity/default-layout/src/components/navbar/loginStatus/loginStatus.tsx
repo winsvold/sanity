@@ -15,7 +15,7 @@ export function LoginStatus() {
           <MenuItem iconRight="leave" onClick={logout} text="Sign out" />
         </Menu>
       }
-      // portal
+      portal
     />
   )
 }

@@ -1,10 +1,7 @@
-import React from 'react'
+import config from 'config:sanity'
 import BrandLogo from 'part:@sanity/base/brand-logo?'
+import React from 'react'
 import styled from 'styled-components'
-
-interface BrandingProps {
-  projectName: string
-}
 
 const Root = styled.div`
   display: flex;
@@ -23,8 +20,8 @@ const LogoContainer = styled.div`
   }
 `
 
-export function Branding(props: BrandingProps) {
-  const {projectName} = props
+export function Branding() {
+  const projectName = config && config.project.name
 
   return (
     <Root>

@@ -1,5 +1,5 @@
 import {Box, Button, CardProvider, ElementQuery, Text, Tooltip} from '@sanity/ui'
-import config from 'config:sanity'
+
 import {useRouterState} from 'part:@sanity/base/router'
 import * as sidecar from 'part:@sanity/default-layout/sidecar?'
 import React, {createElement, useCallback, useState} from 'react'
@@ -101,12 +101,7 @@ export function Navbar(props: Props) {
 
           <BrandingContainer>
             <Box padding={1}>
-              <StateButton
-                mode="bleed"
-                padding={3}
-                state={rootState}
-                text={<Branding projectName={config && config.project.name} />}
-              />
+              <StateButton mode="bleed" padding={3} state={rootState} text={<Branding />} />
             </Box>
           </BrandingContainer>
 

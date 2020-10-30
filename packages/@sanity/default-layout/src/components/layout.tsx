@@ -83,7 +83,7 @@ export function Layout() {
   const tools = getOrderedTools()
   const routerState = useRouterState()
   const [createMenuIsOpen, setCreateMenuIsOpen] = useState(false)
-  const [sidemenuIsOpen, setSidemenuIsOpen] = useState(true)
+  const [sidemenuIsOpen, setSidemenuIsOpen] = useState(false)
   const [showLoadingScreen, setShowLoadingScreen] = useState(true)
   const [searchIsOpen, setSearchIsOpen] = useState(false)
   const [loaded, setLoaded] = useState(false)
