@@ -58,94 +58,7 @@
       "name": "part:@sanity/base/search/weighted",
       "description": "Weighted search implementation"
     },
-    {
-      "name": "part:@sanity/base/theme/variables-style",
-      "description": "Base theme variables for Sanity. Dont override this unless you provide all the new variables"
-    },
-    {
-      "name": "part:@sanity/base/theme/variables/globals-style",
-      "description": "Global generic variables"
-    },
-    {
-      "name": "part:@sanity/base/theme/variables/override-style",
-      "description": "A placeholder to override variables"
-    },
-    {
-      "name": "part:@sanity/base/theme/variables/fonts-style",
-      "description": "Put @font-face here"
-    },
-    {
-      "name": "part:@sanity/base/theme/responsive-style",
-      "description": "Responsive breakpoints"
-    },
-    {
-      "name": "part:@sanity/base/theme/animation-style",
-      "description": "Provides basic animation"
-    },
-    {
-      "name": "part:@sanity/base/theme/shadows-style",
-      "description": "Provides a bunch of shadows to pick from. Based on Material Design Lite"
-    },
-    {
-      "name": "part:@sanity/base/theme/variables/brand-colors-style",
-      "description": "Brand colors. Other colors are based on this"
-    },
-    {
-      "name": "part:@sanity/base/theme/variables/code-style",
-      "description": "Syntax highlighting variables for color and styling"
-    },
-    {
-      "name": "part:@sanity/base/theme/variables/forms-style",
-      "description": "Form variables"
-    },
-    {
-      "name": "part:@sanity/base/theme/variables/gray-colors-style",
-      "description": "Shades of var(--gray-base)"
-    },
-    {
-      "name": "part:@sanity/base/theme/variables/layers-style",
-      "description": "Z-Index variables"
-    },
-    {
-      "name": "part:@sanity/base/theme/variables/list-style",
-      "description": "List variables"
-    },
-    {
-      "name": "part:@sanity/base/theme/variables/progress-style",
-      "description": "Progress bar variables"
-    },
-    {
-      "name": "part:@sanity/base/theme/variables/selectable-item-style",
-      "description": "Selectable item variables"
-    },
-    {
-      "name": "part:@sanity/base/theme/variables/state-colors-style",
-      "description": "State color variables. Shades of warning, info and danger"
-    },
-    {
-      "name": "part:@sanity/base/theme/variables/typography-style",
-      "description": "Typography variables"
-    },
-    {
-      "name": "part:@sanity/base/theme/typography/headings-style",
-      "description": "Basic headings"
-    },
-    {
-      "name": "part:@sanity/base/theme/layout/positioning-style",
-      "description": "Basic positioning helpers"
-    },
-    {
-      "name": "part:@sanity/base/theme/layout/scrolling-style",
-      "description": "Overrides scrollbar styling and scrolling helpers"
-    },
-    {
-      "name": "part:@sanity/base/theme/layout/helpers",
-      "description": "Helpers for normal styling, like resets"
-    },
-    {
-      "name": "part:@sanity/base/theme/body-style",
-      "description": "Resets, fontsize, font-family etc"
-    },
+
     {
       "name": "part:@sanity/base/locale-messages",
       "description": "Messages across all known locales"
@@ -215,50 +128,6 @@
       "description": "A utility component that takes a document id and calls its child render prop with a list of documents referring to it"
     },
     {
-      "name": "part:@sanity/base/theme/layout/resets-style",
-      "description": "Provides resets for resetting browser styling"
-    },
-    {
-      "name": "part:@sanity/base/theme/layout/box-style",
-      "description": "Provides boxes"
-    },
-    {
-      "name": "part:@sanity/base/theme/layout/backgrounds-style",
-      "description": "Provides backgrounds"
-    },
-    {
-      "name": "part:@sanity/base/theme/layout/selectable-style",
-      "description": "Provides pseudo styles for selectable items"
-    },
-    {
-      "name": "part:@sanity/base/theme/forms/validation-style",
-      "description": "Styles for validation"
-    },
-    {
-      "name": "part:@sanity/base/theme/forms/text-input-style",
-      "description": "Styling for <input>"
-    },
-    {
-      "name": "part:@sanity/base/theme/forms/textarea-style",
-      "description": "Styling for <textarea>"
-    },
-    {
-      "name": "part:@sanity/base/theme/forms/clear-button-style",
-      "description": "Styling for for clear button connected to a form control"
-    },
-    {
-      "name": "part:@sanity/base/theme/typography/text-blocks-style",
-      "description": "Styling for text blocks and paragrapgs. Like lead text, default, small, blockquote etc."
-    },
-    {
-      "name": "part:@sanity/base/theme/typography/forms",
-      "description": "Typography for the forms. Levels, headings, label, legends. etc"
-    },
-    {
-      "name": "part:@sanity/base/theme/typography/code-style",
-      "description": "Styling for code"
-    },
-    {
       "name": "part:@sanity/base/app-loading-screen",
       "description": "Loading screen when sanity is initializing. Only static html and css. No javascript."
     },
@@ -301,74 +170,6 @@
     {
       "implements": "part:@sanity/base/util/search-utils",
       "path": "util/searchUtils"
-    },
-    {
-      "implements": "part:@sanity/base/theme/variables-style",
-      "path": "styles/variables.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/variables/globals-style",
-      "path": "styles/variables/globals.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/variables/override-style",
-      "path": "styles/variables/override.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/variables/fonts-style",
-      "path": "styles/fonts.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/variables/brand-colors-style",
-      "path": "styles/variables/brand-colors.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/animation-style",
-      "path": "styles/animation.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/responsive-style",
-      "path": "styles/responsive.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/shadows-style",
-      "path": "styles/shadows.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/variables/code-style",
-      "path": "styles/variables/code.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/variables/forms-style",
-      "path": "styles/variables/forms.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/variables/gray-colors-style",
-      "path": "styles/variables/gray-colors.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/variables/layers-style",
-      "path": "styles/variables/layers.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/variables/list-style",
-      "path": "styles/variables/list.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/variables/progress-style",
-      "path": "styles/variables/progress.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/variables/selectable-item-style",
-      "path": "styles/variables/selectable-item.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/variables/state-colors-style",
-      "path": "styles/variables/state-colors.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/variables/typography-style",
-      "path": "styles/variables/typography.css"
     },
     {
       "name": "part:@sanity/base/location",
@@ -440,66 +241,6 @@
       "path": "components/IntlWrapper"
     },
     {
-      "implements": "part:@sanity/base/theme/layout/box-style",
-      "path": "styles/layout/box.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/layout/selectable-style",
-      "path": "styles/layout/selectable.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/forms/validation-style",
-      "path": "styles/forms/validation.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/layout/positioning-style",
-      "path": "styles/layout/positioning.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/layout/scrolling-style",
-      "path": "styles/layout/scrolling.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/layout/helpers",
-      "path": "styles/layout/helpers.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/forms/text-input-style",
-      "path": "styles/forms/text-input.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/forms/textarea-style",
-      "path": "styles/forms/textarea.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/forms/clear-button-style",
-      "path": "styles/forms/clear-button.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/typography/headings-style",
-      "path": "styles/typography/headings.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/typography/text-blocks-style",
-      "path": "styles/typography/text-blocks.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/typography/code-style",
-      "path": "styles/typography/code.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/typography/forms-style",
-      "path": "styles/typography/forms.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/body-style",
-      "path": "styles/body.css"
-    },
-    {
-      "implements": "part:@sanity/base/theme/layout/backgrounds-style",
-      "path": "styles/layout/backgrounds.css"
-    },
-    {
       "name": "part:@sanity/base/brand-logo",
       "description": "Logo for the branding"
     },
@@ -510,10 +251,6 @@
     {
       "name": "part:@sanity/base/component",
       "description": "React Storybook (https://github.com/kadirahq/react-storybook) stories"
-    },
-    {
-      "implements": "part:@sanity/base/component",
-      "path": "styles/variables/story"
     },
     {
       "implements": "part:@sanity/base/component",
