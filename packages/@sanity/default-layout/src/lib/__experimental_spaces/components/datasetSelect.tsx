@@ -8,7 +8,7 @@ import {Space} from '../types'
 function DatasetSelectMenuItem({openSpace, space}: {openSpace: (s: Space) => void; space: Space}) {
   const handleClick = useCallback(() => openSpace(space), [openSpace, space])
 
-  return <MenuItem onClick={handleClick} text={space.title} />
+  return <MenuItem icon="database" onClick={handleClick} text={space.title} />
 }
 
 export function DatasetSelect() {
@@ -27,7 +27,9 @@ export function DatasetSelect() {
 
   return (
     <MenuButton
-      button={<Button iconRight="chevron-down" mode="ghost" space={3} text={currentSpace.title} />}
+      button={
+        <Button icon="database" iconRight="chevron-down" mode="ghost" text={currentSpace.title} />
+      }
       id="dataset-menu"
       menu={
         <Menu>
@@ -36,6 +38,7 @@ export function DatasetSelect() {
           ))}
         </Menu>
       }
+      popoverScheme="light"
     />
   )
 }

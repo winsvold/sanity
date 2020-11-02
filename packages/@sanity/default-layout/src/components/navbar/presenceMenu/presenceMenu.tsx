@@ -143,7 +143,7 @@ export function PresenceMenu() {
 
   return (
     <Root ref={setRootElement}>
-      <Popover content={popoverContent} open={open}>
+      <Popover content={popoverContent} open={open} scheme="light">
         <div>
           <NarrowButton
             icon="users"

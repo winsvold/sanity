@@ -1,4 +1,4 @@
-import {Box, Card, Code, Dialog, Stack, Text} from '@sanity/ui'
+import {Box, Card, CardProvider, Code, Dialog, Stack, Text} from '@sanity/ui'
 import React from 'react'
 import styled from 'styled-components'
 import {Package} from './types'
@@ -168,26 +168,28 @@ export function UpdateNotifierDialog(props: Props) {
   const {outdated, severity, onClose} = props
 
   return (
-    <Dialog
-      id="update-notifier"
-      onClose={onClose}
-      header={severity === 'low' ? 'Upgrades available' : 'Studio is outdated'}
-      width={1}
-    >
-      {__DEV__ && (
-        <>
-          <Box padding={4}>
-            <Text as="p">
-              This Studio is no longer up to date{' '}
-              {severity === 'high' ? 'and should be upgraded.' : 'and can be upgraded.'}
-            </Text>
-          </Box>
+    <CardProvider scheme="light">
+      <Dialog
+        id="update-notifier"
+        onClose={onClose}
+        header={severity === 'low' ? 'Upgrades available' : 'Studio is outdated'}
+        width={1}
+      >
+        {__DEV__ && (
+          <>
+            <Box padding={4}>
+              <Text as="p">
+                This Studio is no longer up to date{' '}
+                {severity === 'high' ? 'and should be upgraded.' : 'and can be upgraded.'}
+              </Text>
+            </Box>
 
-          <UpdateNotifierTable outdated={outdated} />
-        </>
-      )}
+            <UpdateNotifierTable outdated={outdated} />
+          </>
+        )}
 
-      {!__DEV__ && <ContactDeveloper outdated={outdated} severity={severity} />}
-    </Dialog>
+        {!__DEV__ && <ContactDeveloper outdated={outdated} severity={severity} />}
+      </Dialog>
+    </CardProvider>
   )
 }
