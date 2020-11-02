@@ -1,4 +1,4 @@
-import {Project} from '@sanity/types/lib'
+import {Project} from '@sanity/types'
 import {LoadableState, useLoadable} from '../util/useLoadable'
 import {getProjects} from './controller'
 
