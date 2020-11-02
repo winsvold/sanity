@@ -1,4 +1,4 @@
-import config from 'config:sanity'
+import {useProjectInfo} from '@sanity/base'
 import BrandLogo from 'part:@sanity/base/brand-logo?'
 import React from 'react'
 import styled from 'styled-components'
@@ -21,17 +21,17 @@ const LogoContainer = styled.div`
 `
 
 export function Branding() {
-  const projectName = config && config.project.name
+  const {displayName} = useProjectInfo()
 
   return (
     <Root>
       {BrandLogo && (
-        <LogoContainer aria-label={projectName}>
+        <LogoContainer aria-label={displayName}>
           <BrandLogo />
         </LogoContainer>
       )}
 
-      {!BrandLogo && <strong>{projectName || 'Sanity'}</strong>}
+      {!BrandLogo && <strong>{displayName || 'Sanity'}</strong>}
     </Root>
   )
 }
