@@ -1172,6 +1172,523 @@
     {
       "implements": "part:@sanity/base/component",
       "path": "layer/story"
+    },
+
+    {
+      "name": "part:@sanity/base/close-icon",
+      "description": "Used in dialogs and popups"
+    },
+    {
+      "implements": "part:@sanity/base/close-icon",
+      "path": "icons/CloseIcon"
+    },
+    {
+      "name": "part:@sanity/base/angle-down-icon",
+      "description": "Used selects and dropdowns"
+    },
+    {
+      "implements": "part:@sanity/base/angle-down-icon",
+      "path": "icons/AngleDownIcon"
+    },
+    {
+      "name": "part:@sanity/base/angle-up-icon",
+      "description": "Used selects and dropdowns"
+    },
+    {
+      "implements": "part:@sanity/base/angle-up-icon",
+      "path": "icons/AngleUpIcon"
+    },
+    {
+      "name": "part:@sanity/base/help-circle-icon",
+      "description": "Used in help buttons"
+    },
+    {
+      "implements": "part:@sanity/base/help-circle-icon",
+      "path": "icons/HelpCircle"
+    },
+    {
+      "name": "part:@sanity/base/spinner-icon",
+      "description": "Used selects and dropdowns"
+    },
+    {
+      "implements": "part:@sanity/base/spinner-icon",
+      "path": "icons/SpinnerIcon"
+    },
+    {
+      "name": "part:@sanity/base/sanity-logo-icon",
+      "description": "The S in Sanity as a logo"
+    },
+    {
+      "name": "part:@sanity/base/lightbulb-icon",
+      "description": "Lightbulb icon"
+    },
+    {
+      "name": "part:@sanity/base/link-icon",
+      "description": "Link icon"
+    },
+    {
+      "name": "part:@sanity/base/binary-icon",
+      "description": "Binary icon"
+    },
+    {
+      "name": "part:@sanity/base/upload-icon",
+      "description": "Upload icon"
+    },
+    {
+      "name": "part:@sanity/base/undo-icon",
+      "description": "Undo icon"
+    },
+    {
+      "name": "part:@sanity/base/visibility-off-icon",
+      "description": "Visibility off icon"
+    },
+    {
+      "implements": "part:@sanity/base/visibility-off-icon",
+      "path": "icons/VisibilityOff"
+    },
+    {
+      "name": "part:@sanity/base/visibility-icon",
+      "description": "Visibility icon"
+    },
+    {
+      "implements": "part:@sanity/base/visibility-icon",
+      "path": "icons/Visibility"
+    },
+    {
+      "name": "part:@sanity/base/format-bold-icon",
+      "description": "Format bold icon"
+    },
+    {
+      "name": "part:@sanity/base/format-italic-icon",
+      "description": "Format italic icon"
+    },
+    {
+      "name": "part:@sanity/base/format-list-bulleted-icon",
+      "description": "Format bullet list icon"
+    },
+    {
+      "name": "part:@sanity/base/format-list-numbered-icon",
+      "description": "Format numbered list icon"
+    },
+    {
+      "name": "part:@sanity/base/format-quote-icon",
+      "description": "Format quote icon"
+    },
+    {
+      "name": "part:@sanity/base/format-strikethrough-icon",
+      "description": "Format strikethrough icon"
+    },
+    {
+      "name": "part:@sanity/base/format-underlined-icon",
+      "description": "Format underlined text icon"
+    },
+    {
+      "name": "part:@sanity/base/format-code-icon",
+      "description": "Format code text icon"
+    },
+    {
+      "name": "part:@sanity/base/fullscreen-icon",
+      "description": "Fullscreen icon"
+    },
+    {
+      "name": "part:@sanity/base/fullscreen-exit-icon",
+      "description": "Exit fullscreen icon"
+    },
+    {
+      "name": "part:@sanity/base/package-icon",
+      "description": "Package icon"
+    },
+    {
+      "name": "part:@sanity/base/plus-icon",
+      "description": "Plus icon"
+    },
+    {
+      "name": "part:@sanity/base/split-horizontal-icon",
+      "description": "Split horizontal icon"
+    },
+    {
+      "name": "part:@sanity/base/plus-circle-icon",
+      "description": "Plus circle icon"
+    },
+    {
+      "name": "part:@sanity/base/plus-circle-outline-icon",
+      "description": "Plus circle outlined icon"
+    },
+    {
+      "name": "part:@sanity/base/public-icon",
+      "description": "Public icon"
+    },
+    {
+      "name": "part:@sanity/base/publish-icon",
+      "description": "Publish icon"
+    },
+    {
+      "name": "part:@sanity/base/truncate-icon",
+      "description": "Truncate icon"
+    },
+    {
+      "name": "part:@sanity/base/unpublish-icon",
+      "description": "Unpublish icon"
+    },
+    {
+      "name": "part:@sanity/base/search-icon",
+      "description": "Search icon"
+    },
+    {
+      "name": "part:@sanity/base/circle-check-icon",
+      "description": "Check in a filled circle"
+    },
+    {
+      "name": "part:@sanity/base/circle-thin-icon",
+      "description": "Thin circle icon"
+    },
+    {
+      "name": "part:@sanity/base/robot-icon",
+      "description": "Robot icon"
+    },
+    {
+      "implements": "part:@sanity/base/robot-icon",
+      "path": "icons/Robot"
+    },
+    {
+      "name": "part:@sanity/base/trash-icon",
+      "description": "Trash icon"
+    },
+    {
+      "implements": "part:@sanity/base/trash-icon",
+      "path": "icons/Trash"
+    },
+    {
+      "name": "part:@sanity/base/trash-outline-icon",
+      "description": "Outlined Trash icon"
+    },
+    {
+      "implements": "part:@sanity/base/trash-outline-icon",
+      "path": "icons/TrashOutline"
+    },
+    {
+      "implements": "part:@sanity/base/sanity-logo-icon",
+      "path": "icons/SanityLogo"
+    },
+    {
+      "implements": "part:@sanity/base/hamburger-icon",
+      "path": "icons/Hamburger"
+    },
+    {
+      "implements": "part:@sanity/base/undo-icon",
+      "path": "icons/Undo"
+    },
+    {
+      "implements": "part:@sanity/base/sort-alpha-desc-icon",
+      "path": "icons/SortAlphaDesc"
+    },
+    {
+      "implements": "part:@sanity/base/sort-icon",
+      "path": "icons/Sort"
+    },
+    {
+      "implements": "part:@sanity/base/bars-icon",
+      "path": "icons/Bars"
+    },
+    {
+      "implements": "part:@sanity/base/th-list-icon",
+      "path": "icons/ThList"
+    },
+    {
+      "implements": "part:@sanity/base/th-large-icon",
+      "path": "icons/ThLarge"
+    },
+    {
+      "implements": "part:@sanity/base/cog-icon",
+      "path": "icons/Cog"
+    },
+    {
+      "implements": "part:@sanity/base/sign-out-icon",
+      "path": "icons/SignOut"
+    },
+    {
+      "implements": "part:@sanity/base/lightbulb-icon",
+      "path": "icons/Lightbulb"
+    },
+    {
+      "implements": "part:@sanity/base/link-icon",
+      "path": "icons/Link"
+    },
+    {
+      "implements": "part:@sanity/base/binary-icon",
+      "path": "icons/Binary"
+    },
+    {
+      "implements": "part:@sanity/base/upload-icon",
+      "path": "icons/Upload"
+    },
+    {
+      "implements": "part:@sanity/base/format-bold-icon",
+      "path": "icons/FormatBold"
+    },
+    {
+      "implements": "part:@sanity/base/format-italic-icon",
+      "path": "icons/FormatItalic"
+    },
+    {
+      "implements": "part:@sanity/base/format-list-bulleted-icon",
+      "path": "icons/FormatListBulleted"
+    },
+    {
+      "implements": "part:@sanity/base/format-list-numbered-icon",
+      "path": "icons/FormatListNumbered"
+    },
+    {
+      "implements": "part:@sanity/base/format-quote-icon",
+      "path": "icons/FormatQuote"
+    },
+    {
+      "implements": "part:@sanity/base/format-strikethrough-icon",
+      "path": "icons/FormatStrikethrough"
+    },
+    {
+      "implements": "part:@sanity/base/format-underlined-icon",
+      "path": "icons/FormatUnderlined"
+    },
+    {
+      "implements": "part:@sanity/base/format-code-icon",
+      "path": "icons/FormatCode"
+    },
+    {
+      "implements": "part:@sanity/base/fullscreen-icon",
+      "path": "icons/Fullscreen"
+    },
+    {
+      "implements": "part:@sanity/base/fullscreen-exit-icon",
+      "path": "icons/FullscreenExit"
+    },
+    {
+      "implements": "part:@sanity/base/package-icon",
+      "path": "icons/Package"
+    },
+    {
+      "implements": "part:@sanity/base/plus-icon",
+      "path": "icons/Plus"
+    },
+    {
+      "implements": "part:@sanity/base/split-horizontal-icon",
+      "path": "icons/SplitHorizontal"
+    },
+    {
+      "implements": "part:@sanity/base/plus-circle-icon",
+      "path": "icons/PlusCircle"
+    },
+    {
+      "implements": "part:@sanity/base/plus-circle-outline-icon",
+      "path": "icons/PlusCircleOutline"
+    },
+    {
+      "implements": "part:@sanity/base/public-icon",
+      "path": "icons/Public"
+    },
+    {
+      "implements": "part:@sanity/base/publish-icon",
+      "path": "icons/Publish"
+    },
+    {
+      "implements": "part:@sanity/base/truncate-icon",
+      "path": "icons/Truncate"
+    },
+    {
+      "implements": "part:@sanity/base/unpublish-icon",
+      "path": "icons/Unpublish"
+    },
+    {
+      "implements": "part:@sanity/base/circle-check-icon",
+      "path": "icons/CheckCircle"
+    },
+    {
+      "implements": "part:@sanity/base/check-icon",
+      "path": "icons/Check"
+    },
+    {
+      "implements": "part:@sanity/base/circle-thin-icon",
+      "path": "icons/CircleThin"
+    },
+    {
+      "implements": "part:@sanity/base/search-icon",
+      "path": "icons/Search"
+    },
+    {
+      "implements": "part:@sanity/base/edit-icon",
+      "path": "icons/Edit"
+    },
+    {
+      "implements": "part:@sanity/base/more-vert-icon",
+      "path": "icons/MoreVert"
+    },
+    {
+      "implements": "part:@sanity/base/ellipsis-icon",
+      "path": "icons/Ellipsis"
+    },
+    {
+      "implements": "part:@sanity/base/view-column-icon",
+      "path": "icons/ViewColumn"
+    },
+    {
+      "implements": "part:@sanity/base/content-copy-icon",
+      "path": "icons/ContentCopy"
+    },
+    {
+      "implements": "part:@sanity/base/question-icon",
+      "path": "icons/Question"
+    },
+    {
+      "implements": "part:@sanity/base/plugin-icon",
+      "path": "icons/Plug"
+    },
+    {
+      "implements": "part:@sanity/base/image-icon",
+      "path": "icons/Image"
+    },
+    {
+      "implements": "part:@sanity/base/image-area-icon",
+      "path": "icons/ImageArea"
+    },
+    {
+      "implements": "part:@sanity/base/images-icon",
+      "path": "icons/Images"
+    },
+    {
+      "implements": "part:@sanity/base/sync-icon",
+      "path": "icons/Sync"
+    },
+    {
+      "implements": "part:@sanity/base/time-icon",
+      "path": "icons/Time"
+    },
+    {
+      "implements": "part:@sanity/base/info-icon",
+      "path": "icons/Info"
+    },
+    {
+      "implements": "part:@sanity/base/error-icon",
+      "path": "icons/Error"
+    },
+    {
+      "implements": "part:@sanity/base/error-outline-icon",
+      "path": "icons/ErrorOutline"
+    },
+    {
+      "implements": "part:@sanity/base/warning-icon",
+      "path": "icons/Warning"
+    },
+    {
+      "implements": "part:@sanity/base/warning-outline-icon",
+      "path": "icons/WarningOutline"
+    },
+    {
+      "implements": "part:@sanity/base/danger-icon",
+      "path": "icons/Danger"
+    },
+    {
+      "implements": "part:@sanity/base/file-icon",
+      "path": "icons/File"
+    },
+    {
+      "implements": "part:@sanity/base/paste-icon",
+      "path": "icons/Paste"
+    },
+    {
+      "implements": "part:@sanity/base/calendar-icon",
+      "path": "icons/Calendar"
+    },
+    {
+      "implements": "part:@sanity/base/chevron-down-icon",
+      "path": "icons/ChevronDown"
+    },
+    {
+      "implements": "part:@sanity/base/folder-icon",
+      "path": "icons/Folder"
+    },
+    {
+      "implements": "part:@sanity/base/block-object-icon",
+      "path": "icons/BlockObject"
+    },
+    {
+      "implements": "part:@sanity/base/inline-object-icon",
+      "path": "icons/InlineObject"
+    },
+    {
+      "implements": "part:@sanity/base/comment-icon",
+      "path": "icons/Comment"
+    },
+    {
+      "implements": "part:@sanity/base/history-icon",
+      "path": "icons/History"
+    },
+    {
+      "implements": "part:@sanity/base/eye-icon",
+      "path": "icons/Eye"
+    },
+    {
+      "implements": "part:@sanity/base/launch-icon",
+      "path": "icons/Launch"
+    },
+    {
+      "implements": "part:@sanity/base/users-icon",
+      "path": "icons/UsersIcon"
+    },
+    {
+      "implements": "part:@sanity/base/user-icon",
+      "path": "icons/User"
+    },
+    {
+      "implements": "part:@sanity/base/clipboard-icon",
+      "path": "icons/Clipboard"
+    },
+    {
+      "implements": "part:@sanity/base/clipboard-image-icon",
+      "path": "icons/ClipboardImage"
+    },
+    {
+      "implements": "part:@sanity/base/drag-handle-icon",
+      "path": "icons/DragHandle"
+    },
+    {
+      "implements": "part:@sanity/base/stack-icon",
+      "path": "icons/Stack"
+    },
+    {
+      "implements": "part:@sanity/base/stack-compact-icon",
+      "path": "icons/StackCompact"
+    },
+    {
+      "implements": "part:@sanity/base/compose-icon",
+      "path": "icons/Compose"
+    },
+    {
+      "implements": "part:@sanity/base/publish-icon",
+      "path": "icons/Publish"
+    },
+    {
+      "implements": "part:@sanity/base/unpublish-icon",
+      "path": "icons/Unpublish"
+    },
+    {
+      "implements": "part:@sanity/base/truncate-icon",
+      "path": "icons/Truncate"
+    },
+    {
+      "implements": "part:@sanity/base/reset-icon",
+      "path": "icons/Reset"
+    },
+    {
+      "implements": "part:@sanity/base/code-block-icon",
+      "path": "icons/CodeBlock"
+    },
+    {
+      "implements": "part:@sanity/base/arrow-drop-down",
+      "path": "icons/ArrowDropDown"
+    },
+    {
+      "implements": "part:@sanity/base/arrow-right",
+      "path": "icons/ArrowRight"
     }
   ]
 }
