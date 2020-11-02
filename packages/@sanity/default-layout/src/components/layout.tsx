@@ -1,4 +1,4 @@
-import {Box, Flex, Theme} from '@sanity/ui'
+import {Box, Flex, Layer, LayerProvider, Theme} from '@sanity/ui'
 import absolutes from 'all:part:@sanity/base/absolutes'
 import AppLoadingScreen from 'part:@sanity/base/app-loading-screen'
 import {RouteScope, useRouterState} from 'part:@sanity/base/router'
@@ -35,9 +35,7 @@ const ToolContainer = styled(Box)`
   }
 `
 
-const NavbarContainer = styled.div`
-  z-index: 9999;
-  position: relative;
+const NavbarContainer = styled(Layer)`
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 `
@@ -52,14 +50,15 @@ const loadingScreen = keyframes`
   }
 `
 
-const LoadingScreenContainer = styled.div`
+const LoadingScreenContainer = styled(Layer)`
   display: block;
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
+  bottom: 0;
   opacity: 1;
   transition: opacity 0.5s linear;
-  z-index: 5000;
   animation-name: ${loadingScreen};
   animation-duration: 1s;
   animation-delay: 1s;
@@ -123,48 +122,60 @@ export function Layout() {
       {() => (
         <Root direction="column">
           {showLoadingScreen && (
-            <LoadingScreenContainer hidden={loadingScreenHidden} ref={loadingScreenElementRef}>
-              <AppLoadingScreen text="Restoring Sanity" />
-            </LoadingScreenContainer>
+            <LayerProvider baseDepth={10000} id="loader">
+              <LoadingScreenContainer hidden={loadingScreenHidden} ref={loadingScreenElementRef}>
+                <AppLoadingScreen text="Restoring Sanity" />
+              </LoadingScreenContainer>
+            </LayerProvider>
           )}
 
-          <NavbarContainer>
-            <Navbar
-              tools={tools}
-              createMenuIsOpen={createMenuIsOpen}
-              onCreateButtonClick={handleCreateButtonClick}
-              onSidemenuOpen={handleSidemenuOpen}
-              onSidemenuClose={handleSidemenuClose}
-              searchIsOpen={searchIsOpen}
-              onSearchOpen={handleSearchOpen}
-              onSearchClose={handleSearchClose}
-            />
-          </NavbarContainer>
+          <LayerProvider baseDepth={1000} id="navbar">
+            <NavbarContainer>
+              <Navbar
+                tools={tools}
+                createMenuIsOpen={createMenuIsOpen}
+                onCreateButtonClick={handleCreateButtonClick}
+                onSidemenuOpen={handleSidemenuOpen}
+                onSidemenuClose={handleSidemenuClose}
+                searchIsOpen={searchIsOpen}
+                onSearchOpen={handleSearchOpen}
+                onSearchClose={handleSearchClose}
+              />
+            </NavbarContainer>
+          </LayerProvider>
 
-          <SideMenu
-            activeToolName={routerState?.tool}
-            onClose={handleSidemenuClose}
-            open={sidemenuIsOpen}
-            tools={tools}
-          />
+          <LayerProvider baseDepth={2000} id="sidemenu">
+            <SideMenu
+              activeToolName={routerState?.tool}
+              onClose={handleSidemenuClose}
+              open={sidemenuIsOpen}
+              tools={tools}
+            />
+          </LayerProvider>
 
           <Flex flex={1}>
-            <ToolContainer flex={1}>
-              <RouteScope scope={routerState?.tool}>
-                <RenderTool tool={routerState?.tool} />
-              </RouteScope>
-            </ToolContainer>
+            <LayerProvider id="content">
+              <ToolContainer flex={1}>
+                <RouteScope scope={routerState?.tool}>
+                  <RenderTool tool={routerState?.tool} />
+                </RouteScope>
+              </ToolContainer>
+            </LayerProvider>
 
-            <SidecarContainer>
-              <Sidecar />
-            </SidecarContainer>
+            <LayerProvider id="sidecar" baseDepth={500}>
+              <SidecarContainer>
+                <Sidecar />
+              </SidecarContainer>
+            </LayerProvider>
           </Flex>
 
           {createMenuIsOpen && (
-            <CreateDocumentDialog
-              onClose={handleActionModalClose}
-              actions={getNewDocumentModalActions()}
-            />
+            <LayerProvider baseDepth={1500} id="new-document">
+              <CreateDocumentDialog
+                onClose={handleActionModalClose}
+                actions={getNewDocumentModalActions()}
+              />
+            </LayerProvider>
           )}
 
           {absolutes.map((Abs, i) => (

@@ -1,5 +1,5 @@
 import {UserAvatar} from '@sanity/base/components'
-import {Box, Button, Card, Flex, Stack, Text, useClickOutside} from '@sanity/ui'
+import {Box, Button, Card, Flex, Layer, Stack, Text, useClickOutside} from '@sanity/ui'
 import config from 'config:sanity'
 import React, {useState} from 'react'
 import styled, {css} from 'styled-components'
@@ -16,14 +16,12 @@ interface Props {
   tools: Tool[]
 }
 
-const Root = styled.div<{open: boolean}>`
-  /* z-index: var(--zindex-drawer); */
-  z-index: 10000;
+const Root = styled(Layer)<{open: boolean}>`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
   pointer-events: ${({open}) => (open ? 'all' : 'none')};
 `
 
@@ -35,6 +33,7 @@ const Overlay = styled.div<{open: boolean}>`
   bottom: 0;
   background-color: var(--card-shadow-outline-color);
   opacity: ${({open}) => (open ? 1 : 0)};
+  transition: opacity 100ms;
 `
 
 const SidemenuCard = styled(Card)<{open: boolean}>(({open}: {open: boolean}) => {
