@@ -29,7 +29,7 @@
     "@reach/auto-id": "^0.10.5",
     "@sanity/base": "2.0.4",
     "@sanity/types": "2.0.1",
-    "@sanity/ui": "^1.0.0-alpha.23",
+    "@sanity/ui": "^1.0.0-alpha.24",
     "@sanity/util": "2.0.1",
     "boundless-arrow-key-navigation": "^1.1.0",
     "chance": "^1.0.4",
