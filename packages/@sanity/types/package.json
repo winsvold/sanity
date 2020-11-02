@@ -8,7 +8,12 @@
   "author": "Sanity.io <hello@sanity.io>",
   "license": "MIT",
   "scripts": {
+    "build": "npm run build:cjs && npm run build:dts && npm run build:assets",
+    "build:assets": "cpx 'src/**/*.{css,json,svg}' lib",
+    "build:cjs": "babel src --extensions '.ts,.tsx,.js' --out-dir lib",
+    "build:dts": "tsc -p tsconfig.dist.json --emitDeclarationOnly",
     "clean": "rimraf lib",
+    "prebuild": "npm run clean",
     "type-check": "tsc --noEmit -p tsconfig.dist.json"
   },
   "keywords": [
@@ -20,6 +25,8 @@
     "typescript"
   ],
   "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "cpx": "^1.5.0",
     "react": "^16.14.0",
     "rimraf": "^2.7.1"
   },
