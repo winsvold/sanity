@@ -127,15 +127,15 @@ export function SideMenu(props: Props) {
           <FooterBox>
             <Flex align="center">
               <Box flex={1}>
-                {currentUser.isLoading && <Text>Loading user…</Text>}
+                {currentUser.loading && <Text>Loading user…</Text>}
 
-                {currentUser.value && (
+                {currentUser.data && (
                   <Flex align="center">
                     <Box padding={3}>
-                      <UserAvatar size={1} user={currentUser.value} />
+                      <UserAvatar size={1} user={currentUser.data} />
                     </Box>
                     <Box flex={1}>
-                      <Text weight="semibold">{currentUser.value.displayName}</Text>
+                      <Text weight="semibold">{currentUser.data.displayName}</Text>
                     </Box>
                   </Flex>
                 )}
