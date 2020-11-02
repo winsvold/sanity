@@ -189,7 +189,12 @@
       "part:@sanity/base/view-column-icon": ["./@sanity/components/src/icons/ViewColumn"],
       "part:@sanity/base/visibility-icon": ["./@sanity/components/src/icons/Visibility"],
       "part:@sanity/base/warning-icon": ["./@sanity/components/src/icons/Warning"],
-      "part:@sanity/base/warning-outline-icon": ["./@sanity/components/src/icons/WarningOutline"]
+      "part:@sanity/base/warning-outline-icon": ["./@sanity/components/src/icons/WarningOutline"],
+
+      // logos
+      "part:@sanity/base/sanity-logo": ["./@sanity/base/src/components/logos/SanityLogo"],
+      "part:@sanity/base/sanity-logo-alpha": ["./@sanity/base/src/components/logos/SanityLogoAlpha"],
+      "part:@sanity/base/sanity-studio-logo": ["./@sanity/base/src/components/logos/SanityStudioLogo"]
     }
   }
 }

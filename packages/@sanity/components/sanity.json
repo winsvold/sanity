@@ -1175,6 +1175,14 @@
     },
 
     {
+      "name": "part:@sanity/base/arrow-drop-down",
+      "description": "Arrow drop down"
+    },
+    {
+      "name": "part:@sanity/base/arrow-right",
+      "description": "Arrow right"
+    },
+    {
       "name": "part:@sanity/base/close-icon",
       "description": "Used in dialogs and popups"
     },
@@ -1689,6 +1697,31 @@
     {
       "implements": "part:@sanity/base/arrow-right",
       "path": "icons/ArrowRight"
+    },
+
+    {
+      "name": "part:@sanity/base/sanity-logo",
+      "description": "Monochrome sanity logo."
+    },
+    {
+      "name": "part:@sanity/base/sanity-logo-alpha",
+      "description": "Sanity logo with alpha transparancy parts"
+    },
+    {
+      "name": "part:@sanity/base/sanity-studio-logo",
+      "description": "Black SanityStudio logo"
+    },
+    {
+      "implements": "part:@sanity/base/sanity-logo",
+      "path": "logos/SanityLogo"
+    },
+    {
+      "implements": "part:@sanity/base/sanity-logo-alpha",
+      "path": "logos/SanityLogoAlpha"
+    },
+    {
+      "implements": "part:@sanity/base/sanity-studio-logo",
+      "path": "logos/SanityStudioLogo"
     }
   ]
 }

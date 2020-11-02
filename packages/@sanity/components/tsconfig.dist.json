@@ -191,7 +191,12 @@
       "part:@sanity/base/view-column-icon": ["./icons/ViewColumn"],
       "part:@sanity/base/visibility-icon": ["./icons/Visibility"],
       "part:@sanity/base/warning-icon": ["./icons/Warning"],
-      "part:@sanity/base/warning-outline-icon": ["./icons/WarningOutline"]
+      "part:@sanity/base/warning-outline-icon": ["./icons/WarningOutline"],
+
+      // logos
+      "part:@sanity/base/sanity-logo": ["./logos/SanityLogo"],
+      "part:@sanity/base/sanity-logo-alpha": ["./logos/SanityLogoAlpha"],
+      "part:@sanity/base/sanity-studio-logo": ["./logos/SanityStudioLogo"]
     }
   }
 }

@@ -500,44 +500,12 @@
       "path": "styles/layout/backgrounds.css"
     },
     {
-      "name": "part:@sanity/base/sanity-logo",
-      "description": "Monochrome sanity logo."
-    },
-    {
-      "name": "part:@sanity/base/sanity-logo-alpha",
-      "description": "Sanity logo with alpha transparancy parts"
-    },
-    {
-      "name": "part:@sanity/base/sanity-studio-logo",
-      "description": "Black SanityStudio logo"
-    },
-    {
       "name": "part:@sanity/base/brand-logo",
       "description": "Logo for the branding"
     },
     {
-      "name": "part:@sanity/base/arrow-drop-down",
-      "description": "Arrow drop down"
-    },
-    {
-      "name": "part:@sanity/base/arrow-right",
-      "description": "Arrow right"
-    },
-    {
       "implements": "part:@sanity/base/preview",
       "path": "preview/index"
-    },
-    {
-      "implements": "part:@sanity/base/sanity-logo",
-      "path": "components/logos/SanityLogo"
-    },
-    {
-      "implements": "part:@sanity/base/sanity-logo-alpha",
-      "path": "components/logos/SanityLogoAlpha"
-    },
-    {
-      "implements": "part:@sanity/base/sanity-studio-logo",
-      "path": "components/logos/SanityStudioLogo"
     },
     {
       "name": "part:@sanity/base/component",

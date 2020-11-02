@@ -52,17 +52,6 @@ declare module 'part:@sanity/base/router' {
   export * from '@sanity/base/src/router'
 }
 
-// logos
-declare module 'part:@sanity/base/sanity-logo' {
-  export {default} from '@sanity/base/src/components/logos/SanityLogo'
-}
-declare module 'part:@sanity/base/sanity-logo-alpha' {
-  export {default} from '@sanity/base/src/components/logos/SanityLogoAlpha'
-}
-declare module 'part:@sanity/base/sanity-studio-logo' {
-  export {default} from '@sanity/base/src/components/logos/SanityStudioLogo'
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Because `@sanity/components` depends on `@sanity/base` we need these "ambient" definitions
 ///////////////////////////////////////////////////////////////////////////////////////////////////
