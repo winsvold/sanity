@@ -1,5 +1,4 @@
-import {Box, Button, CardProvider, ElementQuery, Text, Tooltip} from '@sanity/ui'
-
+import {Box, Button, CardProvider, ElementQuery, Flex, Text, Tooltip} from '@sanity/ui'
 import {useRouterState} from 'part:@sanity/base/router'
 import * as sidecar from 'part:@sanity/default-layout/sidecar?'
 import React, {createElement, useCallback, useState} from 'react'
@@ -61,132 +60,134 @@ export function Navbar(props: Props) {
     <CardProvider scheme="dark">
       <ElementQuery>
         <Root data-ui="Navbar" data-search-open={searchIsOpen} padding={1}>
-          {!toolMenuVisible && (
-            <HamburgerContainer showToolMenu={toolMenuVisible}>
-              <Box padding={1}>
-                <Button
-                  aria-label="Open menu"
-                  icon="menu"
-                  mode="bleed"
-                  onClick={onSidemenuOpen}
-                  padding={3}
-                  title="Open menu"
-                />
-              </Box>
-            </HamburgerContainer>
-          )}
-
-          <NarrowCreateButtonContainer>
-            <Box padding={1}>
-              <Tooltip
-                disabled={TOUCH_DEVICE}
-                content={
-                  <Box padding={2}>
-                    <Text size={1}>Create new document</Text>
-                  </Box>
-                }
-                placement="bottom"
-              >
-                <Button
-                  aria-label="Create"
-                  icon="compose"
-                  mode="bleed"
-                  onClick={onCreateButtonClick}
-                  padding={3}
-                  selected={createMenuIsOpen}
-                />
-              </Tooltip>
-            </Box>
-          </NarrowCreateButtonContainer>
-
-          <BrandingContainer>
-            <Box padding={1}>
-              <StateButton mode="bleed" padding={3} state={rootState} text={<Branding />} />
-            </Box>
-          </BrandingContainer>
-
-          {HAS_SPACES && (
-            <DatasetSelectContainer showToolMenu={toolMenuVisible}>
-              <Box padding={1}>
-                <DatasetSelect />
-              </Box>
-            </DatasetSelectContainer>
-          )}
-
-          <WideCreateButtonContainer>
-            <Box padding={1}>
-              <Tooltip
-                disabled={TOUCH_DEVICE}
-                content={
-                  <Box padding={2}>
-                    <Text size={1}>Create new document</Text>
-                  </Box>
-                }
-                placement="bottom"
-              >
-                <Button
-                  aria-label="Create"
-                  icon="compose"
-                  mode="bleed"
-                  onClick={onCreateButtonClick}
-                  padding={3}
-                  selected={createMenuIsOpen}
-                />
-              </Tooltip>
-            </Box>
-          </WideCreateButtonContainer>
-
-          <CardProvider scheme="light">
-            <SearchContainer data-ui="SearchContainer" open={searchIsOpen}>
-              <Box padding={1}>
-                <DocumentSearch
-                // shouldBeFocused={searchIsOpen}
-                // onOpen={onSearchOpen}
-                // onClose={onSearchClose}
-                />
-              </Box>
-            </SearchContainer>
-          </CardProvider>
-
-          <ToolMenuContainer data-ui="ToolMenuContainer" flex={1} padding={1}>
-            {tools.length > 1 && (
-              <ToolMenu
-                activeToolName={routerState.tool}
-                onHide={handleToolMenuHide}
-                onShow={handleToolMenuShow}
-                onSwitchTool={onSidemenuClose}
-                tools={tools}
-              />
+          <Flex align="center">
+            {!toolMenuVisible && (
+              <HamburgerContainer showToolMenu={toolMenuVisible}>
+                <Box padding={1}>
+                  <Button
+                    aria-label="Open menu"
+                    icon="menu"
+                    mode="bleed"
+                    onClick={onSidemenuOpen}
+                    padding={3}
+                    title="Open menu"
+                  />
+                </Box>
+              </HamburgerContainer>
             )}
-          </ToolMenuContainer>
 
-          {latestVersions.isLoaded && latestVersions.data && !latestVersions.data.isUpToDate && (
-            <PackageStatusContainer>
+            <NarrowCreateButtonContainer>
               <Box padding={1}>
-                <SanityStatus latestVersions={latestVersions} />
+                <Tooltip
+                  disabled={TOUCH_DEVICE}
+                  content={
+                    <Box padding={2}>
+                      <Text size={1}>Create new document</Text>
+                    </Box>
+                  }
+                  placement="bottom"
+                >
+                  <Button
+                    aria-label="Create"
+                    icon="compose"
+                    mode="bleed"
+                    onClick={onCreateButtonClick}
+                    padding={3}
+                    selected={createMenuIsOpen}
+                  />
+                </Tooltip>
               </Box>
-            </PackageStatusContainer>
-          )}
+            </NarrowCreateButtonContainer>
 
-          {sidecar && sidecar.isSidecarEnabled && sidecar.isSidecarEnabled() && (
-            <HelpButtonContainer>
-              <Box padding={1}>{sidecar && createElement(sidecar.SidecarToggleButton)}</Box>
-            </HelpButtonContainer>
-          )}
+            <BrandingContainer>
+              <Box padding={1}>
+                <StateButton mode="bleed" padding={3} state={rootState} text={<Branding />} />
+              </Box>
+            </BrandingContainer>
 
-          <Box padding={1}>
-            <PresenceMenu />
-          </Box>
+            {HAS_SPACES && (
+              <DatasetSelectContainer showToolMenu={toolMenuVisible}>
+                <Box padding={1}>
+                  <DatasetSelect />
+                </Box>
+              </DatasetSelectContainer>
+            )}
 
-          <LoginStatusBox padding={1}>
-            <LoginStatus />
-          </LoginStatusBox>
+            <WideCreateButtonContainer>
+              <Box padding={1}>
+                <Tooltip
+                  disabled={TOUCH_DEVICE}
+                  content={
+                    <Box padding={2}>
+                      <Text size={1}>Create new document</Text>
+                    </Box>
+                  }
+                  placement="bottom"
+                >
+                  <Button
+                    aria-label="Create"
+                    icon="compose"
+                    mode="bleed"
+                    onClick={onCreateButtonClick}
+                    padding={3}
+                    selected={createMenuIsOpen}
+                  />
+                </Tooltip>
+              </Box>
+            </WideCreateButtonContainer>
 
-          <SearchButtonContainer open={searchIsOpen}>
+            <CardProvider scheme="light">
+              <SearchContainer data-ui="SearchContainer" open={searchIsOpen}>
+                <Box padding={1}>
+                  <DocumentSearch
+                  // shouldBeFocused={searchIsOpen}
+                  // onOpen={onSearchOpen}
+                  // onClose={onSearchClose}
+                  />
+                </Box>
+              </SearchContainer>
+            </CardProvider>
+
+            <ToolMenuContainer data-ui="ToolMenuContainer" flex={1} padding={1}>
+              {tools.length > 1 && (
+                <ToolMenu
+                  activeToolName={routerState.tool}
+                  onHide={handleToolMenuHide}
+                  onShow={handleToolMenuShow}
+                  onSwitchTool={onSidemenuClose}
+                  tools={tools}
+                />
+              )}
+            </ToolMenuContainer>
+
+            {latestVersions.isLoaded && latestVersions.data && !latestVersions.data.isUpToDate && (
+              <PackageStatusContainer>
+                <Box padding={1}>
+                  <SanityStatus latestVersions={latestVersions} />
+                </Box>
+              </PackageStatusContainer>
+            )}
+
+            {sidecar && sidecar.isSidecarEnabled && sidecar.isSidecarEnabled() && (
+              <HelpButtonContainer>
+                <Box padding={1}>{sidecar && createElement(sidecar.SidecarToggleButton)}</Box>
+              </HelpButtonContainer>
+            )}
+
             <Box padding={1}>
-              <Button icon="search" mode="bleed" onClick={onSearchOpen} padding={3} />
+              <PresenceMenu />
             </Box>
-          </SearchButtonContainer>
+
+            <LoginStatusBox paddingX={1}>
+              <LoginStatus />
+            </LoginStatusBox>
+
+            <SearchButtonContainer open={searchIsOpen}>
+              <Box padding={1}>
+                <Button icon="search" mode="bleed" onClick={onSearchOpen} padding={3} />
+              </Box>
+            </SearchButtonContainer>
+          </Flex>
         </Root>
       </ElementQuery>
     </CardProvider>

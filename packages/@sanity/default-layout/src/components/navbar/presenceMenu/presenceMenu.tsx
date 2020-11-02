@@ -1,29 +1,24 @@
 import {UserAvatar} from '@sanity/base/components'
 import {useGlobalPresence} from '@sanity/base/hooks'
-import {CogIcon} from '@sanity/icons'
 import {
   AvatarStack,
   Box,
   Button,
-  Flex,
   Heading,
-  Popover,
+  Icon,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
   Stack,
-  Text,
-  useClickOutside,
-  useGlobalKeyDown
+  Text
 } from '@sanity/ui'
 import client from 'part:@sanity/base/client'
 import React, {useCallback, useState} from 'react'
 import styled from 'styled-components'
 import {PresenceListRow} from './presenceListRow'
 
-const Root = styled.div`
-  display: flex;
-  align-items: center;
-`
-
-const PopoverContent = styled.div`
+const Root = styled(Menu)`
   max-width: 280px;
 `
 
@@ -34,33 +29,13 @@ const AvatarList = styled(Box)`
   overflow: auto;
 `
 
-const ManageMembers = styled(Box)`
-  border-top: 1px solid var(--card-hairline-soft-color);
-  position: sticky;
-  bottom: 0;
-`
-
-const ManageLink = styled.a`
-  display: block;
-  color: inherit;
-  text-decoration: none;
-  outline: none;
-
-  @media (hover: hover) {
-    &:hover {
-      background-color: var(--card-focus-bg-color);
-      color: var(--card-focus-fg-color);
-    }
-  }
-`
-
-const NarrowButton = styled(Button)`
+const NarrowButtonContent = styled(Box)`
   [data-eq-min~='1'] & {
     display: none;
   }
 `
 
-const WideButton = styled(Button)`
+const WideButtonContent = styled(Box)`
   [data-eq-max~='1'] & {
     display: none;
   }
@@ -76,8 +51,8 @@ export function PresenceMenu() {
   const handleToggle = useCallback(() => setOpen(!open), [open])
   const handleClose = useCallback(() => setOpen(false), [])
 
-  const popoverContent = (
-    <PopoverContent>
+  const menu = (
+    <Root>
       {presence.length === 0 && (
         <Header padding={4}>
           <Stack space={3}>
@@ -97,72 +72,44 @@ export function PresenceMenu() {
         </AvatarList>
       )}
 
-      <ManageMembers paddingY={2}>
-        <ManageLink
-          href={`https://manage.sanity.io/projects/${projectId}/team`}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={handleClose}
-        >
-          <Box paddingX={4} paddingY={3}>
-            <Flex align="center">
-              <Box flex={1} paddingRight={3}>
-                <Text>Manage members</Text>
-              </Box>
-              <Text>
-                <CogIcon />
-              </Text>
-            </Flex>
-          </Box>
-        </ManageLink>
-      </ManageMembers>
-    </PopoverContent>
-  )
+      <MenuDivider />
 
-  const [rootElement, setRootElement] = useState<HTMLDivElement | null>(null)
-
-  useClickOutside(
-    useCallback(() => {
-      setOpen(false)
-    }, []),
-    [rootElement]
-  )
-
-  useGlobalKeyDown(
-    useCallback(
-      (event: KeyboardEvent) => {
-        if (!open) return
-        if (event.key === 'Escape') {
-          event.stopPropagation()
-          setOpen(false)
-        }
-      },
-      [open]
-    )
+      <MenuItem
+        as="a"
+        href={`https://manage.sanity.io/projects/${projectId}/team`}
+        iconRight="cog"
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={handleClose}
+        text="Manage members"
+      />
+    </Root>
   )
 
   return (
-    <Root ref={setRootElement}>
-      <Popover content={popoverContent} open={open} scheme="light">
-        <div>
-          <NarrowButton
-            icon="users"
-            // iconStatus={presence.length > 0 ? 'success' : undefined}
-            mode="bleed"
-            onClick={handleToggle}
-            padding={3}
-            selected={open}
-          />
+    <MenuButton
+      button={
+        <Button mode="bleed" onClick={handleToggle} selected={open}>
+          <>
+            <NarrowButtonContent padding={3}>
+              <Text>
+                <Icon symbol="users" />
+              </Text>
+            </NarrowButtonContent>
 
-          <WideButton mode="bleed" onClick={handleToggle} padding={3} selected={open}>
-            <AvatarStack maxLength={MAX_AVATARS_GLOBAL}>
-              {presence.map(item => (
-                <UserAvatar key={item.user.id} user={item.user} />
-              ))}
-            </AvatarStack>
-          </WideButton>
-        </div>
-      </Popover>
-    </Root>
+            <WideButtonContent padding={3}>
+              <AvatarStack maxLength={MAX_AVATARS_GLOBAL} style={{margin: -6}}>
+                {presence.map(item => (
+                  <UserAvatar key={item.user.id} user={item.user} />
+                ))}
+              </AvatarStack>
+            </WideButtonContent>
+          </>
+        </Button>
+      }
+      id="presence-menu"
+      menu={menu}
+      popoverScheme="light"
+    />
   )
 }

@@ -3,9 +3,8 @@ import styled, {css} from 'styled-components'
 
 export const Root = styled(Card)`
   position: relative;
-  display: flex;
-  align-items: center;
   white-space: nowrap;
+  line-height: 0;
 
   &::before {
     content: '';
@@ -52,7 +51,7 @@ export const DatasetSelectContainer = styled.div<{showToolMenu: boolean}>(
       ${showToolMenu &&
         css`
           [data-eq-min~='0'] & {
-            display: flex;
+            display: block;
           }
         `}
     `
