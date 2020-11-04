@@ -1,9 +1,9 @@
-import * as React from 'react'
+import {useEffect, useRef, useState} from 'react'
 import {Observable, Subscription} from 'rxjs'
 
-export type LoadableState<T> = LoadingState<T> | LoadedState<T> | ErrorState<T>
+export type LoadableState<T> = LoadingState | LoadedState<T> | ErrorState
 
-export interface LoadingState<T> {
+export interface LoadingState {
   data: undefined
   error: undefined
   loading: true
@@ -15,7 +15,7 @@ export interface LoadedState<T> {
   loading: false
 }
 
-export interface ErrorState<T> {
+export interface ErrorState {
   data: undefined
   error: Error
   loading: false
@@ -24,8 +24,9 @@ export interface ErrorState<T> {
 export function useLoadable<T>(observable$: Observable<T>): LoadableState<T>
 export function useLoadable<T>(observable$: Observable<T>, initialValue: T): LoadableState<T>
 export function useLoadable<T>(observable$: Observable<T>, initialValue?: T): LoadableState<T> {
-  const subscription = React.useRef<Subscription>()
-  const [value, setState] = React.useState<LoadableState<T>>(() => {
+  const isInitial = useRef(true)
+  const subscription = useRef<Subscription>()
+  const [state, setState] = useState<LoadableState<T>>(() => {
     let isSync = true
     let syncVal: LoadableState<T> =
       typeof initialValue === 'undefined'
@@ -33,11 +34,11 @@ export function useLoadable<T>(observable$: Observable<T>, initialValue?: T): Lo
         : {loading: false, data: initialValue, error: undefined}
 
     subscription.current = observable$.subscribe(
-      nextVal => {
+      data => {
         const nextState: LoadedState<T> = {
-          loading: false,
-          data: nextVal,
-          error: undefined
+          data,
+          error: undefined,
+          loading: false
         }
 
         if (isSync) {
@@ -47,15 +48,44 @@ export function useLoadable<T>(observable$: Observable<T>, initialValue?: T): Lo
         }
       },
       error => {
-        setState({loading: false, error, data: undefined})
+        setState({data: undefined, error, loading: false})
       }
     )
 
     isSync = false
+
     return syncVal
   })
 
-  React.useEffect(
+  // When `initialValue` or `observable$` changes
+  useEffect(() => {
+    if (isInitial.current) {
+      isInitial.current = false
+      return
+    }
+
+    if (subscription.current) {
+      subscription.current.unsubscribe()
+    }
+
+    setState(
+      typeof initialValue === 'undefined'
+        ? {loading: true, data: undefined, error: undefined}
+        : {loading: false, data: initialValue, error: undefined}
+    )
+
+    subscription.current = observable$.subscribe(
+      data => {
+        setState({data, error: undefined, loading: false})
+      },
+      error => {
+        setState({data: undefined, error, loading: false})
+      }
+    )
+  }, [initialValue, observable$])
+
+  // On unmount
+  useEffect(
     () => () => {
       if (subscription.current) {
         subscription.current.unsubscribe()
@@ -64,5 +94,5 @@ export function useLoadable<T>(observable$: Observable<T>, initialValue?: T): Lo
     []
   )
 
-  return value
+  return state
 }
