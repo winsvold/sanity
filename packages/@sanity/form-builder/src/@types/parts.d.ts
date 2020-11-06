@@ -4,13 +4,13 @@
 /* eslint-disable no-undef */
 
 declare module 'part:@sanity/components/avatar' {
-  export * from '@sanity/components/src/avatar'
+  export * from '@sanity/base/src/__legacy/components/avatar'
 }
 
 declare module 'part:@sanity/components/buttons/default-style'
 declare module 'part:@sanity/components/buttons/default' {
-  export * from '@sanity/components/src/buttons/DefaultButton'
-  export {default} from '@sanity/components/src/buttons/DefaultButton'
+  export * from '@sanity/base/src/__legacy/components/buttons/DefaultButton'
+  export {default} from '@sanity/base/src/__legacy/components/buttons/DefaultButton'
 }
 
 declare module 'part:@sanity/components/dialogs/popover-style'
@@ -22,23 +22,23 @@ declare module 'part:@sanity/components/fieldsets/default' {
 }
 
 declare module 'part:@sanity/components/menu-button' {
-  export * from '@sanity/components/src/menuButton'
+  export * from '@sanity/base/src/__legacy/components/menuButton'
 }
 
 declare module 'part:@sanity/components/layer' {
-  export * from '@sanity/components/src/layer'
+  export * from '@sanity/base/src/__legacy/components/layer'
 }
 
 declare module 'part:@sanity/components/popover' {
-  export * from '@sanity/components/src/popover'
+  export * from '@sanity/base/src/__legacy/components/popover'
 }
 
 declare module 'part:@sanity/components/portal' {
-  export * from '@sanity/components/src/portal'
+  export * from '@sanity/base/src/__legacy/components/portal'
 }
 
 declare module 'part:@sanity/components/scroll' {
-  export * from '@sanity/components/src/scroll'
+  export * from '@sanity/base/src/__legacy/components/scroll'
 }
 
 declare module 'part:@sanity/components/selects/*' {
@@ -72,11 +72,11 @@ declare module 'part:@sanity/components/toggles/*' {
 }
 
 declare module 'part:@sanity/components/tooltip' {
-  export * from '@sanity/components/src/tooltip'
+  export * from '@sanity/base/src/__legacy/components/tooltip'
 }
 
 declare module 'part:@sanity/components/dialogs/popover' {
-  export {default} from '@sanity/components/src/dialogs/PopoverDialog'
+  export {default} from '@sanity/base/src/__legacy/components/dialogs/PopoverDialog'
 }
 
 declare module 'config:@sanity/form-builder'

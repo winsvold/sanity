@@ -1,4 +1,4 @@
-import {MenuItemGroup} from '@sanity/components'
+import {MenuItemGroup} from '@sanity/base/__legacy/components'
 import {Card} from '@sanity/ui'
 import classNames from 'classnames'
 import {PortalProvider, usePortal} from 'part:@sanity/components/portal'

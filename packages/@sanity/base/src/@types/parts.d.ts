@@ -31,11 +31,17 @@ declare module 'sanity:versions' {
   export default versions
 }
 
-declare module 'part:@sanity/base/close-icon'
-declare module 'part:@sanity/base/circle-check-icon'
-declare module 'part:@sanity/base/warning-icon'
-declare module 'part:@sanity/base/error-icon'
-declare module 'part:@sanity/base/info-icon'
+/*
+ * part:@sanity/base/*
+ */
+
+declare module 'part:@sanity/base/brand-logo?' {
+  const BrandLogo: React.ComponentType | undefined
+  export default BrandLogo
+}
+
+declare module 'part:@sanity/base/theme/typography/headings-style'
+declare module 'part:@sanity/base/theme/typography/text-blocks-style'
 
 declare module 'part:@sanity/base/configure-client?' {
   import {SanityClient as OriginalSanityClient} from '@sanity/client'
@@ -72,41 +78,44 @@ declare module 'part:@sanity/base/schema' {
   export default schema
 }
 
-declare module 'part:@sanity/components/avatar' {
-  export * from '@sanity/components/src/avatar'
-}
+/*
+ * part:@sanity/components/*
+ */
 
-declare module 'part:@sanity/components/buttons/default' {
-  export * from '@sanity/components/src/buttons/DefaultButton'
-  export {default} from '@sanity/components/src/buttons/DefaultButton'
-}
-
-declare module 'part:@sanity/components/dialogs/fullscreen-message' {
-  export {default} from '@sanity/components/src/dialogs/FullscreenMessageDialog'
-}
-
-declare module 'part:@sanity/components/layer' {
-  export * from '@sanity/components/src/layer'
-}
-
-declare module 'part:@sanity/components/portal' {
-  export * from '@sanity/components/src/portal'
-}
-
-declare module 'part:@sanity/components/tooltip' {
-  export * from '@sanity/components/src/tooltip'
-}
-
-declare module 'part:@sanity/components/popover' {
-  export * from '@sanity/components/src/popover'
-}
-
-declare module 'part:@sanity/components/scroll' {
-  export * from '@sanity/components/src/scroll'
-}
-
-declare module 'part:@sanity/components/snackbar/provider' {
-  export {default} from '@sanity/components/src/snackbar/SnackbarProvider'
-}
+declare module 'part:@sanity/components/autocomplete/default-style'
+declare module 'part:@sanity/components/buttons/button-grid-style'
+declare module 'part:@sanity/components/buttons/default-style'
+declare module 'part:@sanity/components/buttons/dropdown-style'
+declare module 'part:@sanity/components/buttons/in-input-style'
+declare module 'part:@sanity/components/dialogs/content-style'
+declare module 'part:@sanity/components/dialogs/default-style'
+declare module 'part:@sanity/components/dialogs/fullscreen-style'
+declare module 'part:@sanity/components/dialogs/popover-style'
+declare module 'part:@sanity/components/fieldsets/default-style'
+declare module 'part:@sanity/components/fileinput/button'
+declare module 'part:@sanity/components/edititem/fold-style'
+declare module 'part:@sanity/components/formfields/default-style'
+declare module 'part:@sanity/components/labels/default-style'
+declare module 'part:@sanity/components/loading/spinner-style'
+declare module 'part:@sanity/components/menus/default-style'
+declare module 'part:@sanity/components/previews/block-image-style'
+declare module 'part:@sanity/components/previews/block-style'
+declare module 'part:@sanity/components/previews/card-style'
+declare module 'part:@sanity/components/previews/default-style'
+declare module 'part:@sanity/components/previews/detail-style'
+declare module 'part:@sanity/components/previews/inline-style'
+declare module 'part:@sanity/components/previews/media-style'
+declare module 'part:@sanity/components/progress/bar-style'
+declare module 'part:@sanity/components/progress/circle-style'
+declare module 'part:@sanity/components/selects/custom-style'
+declare module 'part:@sanity/components/selects/default-style'
+declare module 'part:@sanity/components/selects/searchable-style'
+declare module 'part:@sanity/components/selects/style-style'
+declare module 'part:@sanity/components/tags/textfield-style'
+declare module 'part:@sanity/components/textareas/default-style'
+declare module 'part:@sanity/components/textfields/default-style'
+declare module 'part:@sanity/components/textfields/search-style'
+declare module 'part:@sanity/components/textinputs/default-style'
+declare module 'part:@sanity/components/toggles/buttons-style'
 
 declare module 'all:part:*'

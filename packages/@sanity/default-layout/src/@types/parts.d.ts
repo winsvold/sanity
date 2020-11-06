@@ -182,13 +182,13 @@ declare module 'part:@sanity/base/authentication-fetcher' {
 }
 
 declare module 'part:@sanity/components/dialogs/fullscreen-message' {
-  export {default} from '@sanity/components/src/dialogs/FullscreenMessageDialog'
+  export {default} from '@sanity/base/src/__legacy/components/dialogs/FullscreenMessageDialog'
 }
 
 declare module 'part:@sanity/components/tooltip' {
-  export * from '@sanity/components/src/tooltip'
+  export * from '@sanity/base/src/__legacy/components/tooltip'
 }
 
 declare module 'part:@sanity/components/portal' {
-  export * from '@sanity/components/src/portal'
+  export * from '@sanity/base/src/__legacy/components/portal'
 }
