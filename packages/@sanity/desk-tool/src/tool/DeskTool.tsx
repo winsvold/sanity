@@ -1,8 +1,7 @@
 import isHotkey from 'is-hotkey'
 import React from 'react'
-import PropTypes from 'prop-types'
 import {isEqual} from 'lodash'
-import {interval, of} from 'rxjs'
+import {interval, of, Subscription} from 'rxjs'
 import {map, switchMap, distinctUntilChanged, debounce} from 'rxjs/operators'
 import shallowEquals from 'shallow-equals'
 import {withRouterHOC} from 'part:@sanity/base/router'
@@ -18,6 +17,7 @@ import {calculatePanesEquality} from '../utils/calculatePanesEquality'
 import isNarrowScreen from '../utils/isNarrowScreen'
 import windowWidth$ from '../utils/windowWidth'
 import {LOADING_PANE} from '../constants'
+import {RouterNavigateFn} from '../types'
 import DeskToolPanes from './DeskToolPanes'
 
 const EMPTY_PANE_KEYS = []
@@ -26,38 +26,50 @@ const hasLoading = panes => panes.some(item => item === LOADING_PANE)
 
 const isSaveHotkey = isHotkey('mod+s')
 
+interface DeskToolProps {
+  router: {
+    navigate: RouterNavigateFn
+    state?: {
+      panes?: {
+        id: string
+        params?: Record<string, any>
+      }[][]
+      params?: {
+        template?: string
+      }
+      editDocumentId?: string
+      legacyEditDocumentId?: string
+      type?: string
+      action?: string
+    }
+  }
+  onPaneChange: () => void
+}
+
+interface State {
+  error?: Error | null
+  // isResolving: boolean
+  hasNarrowScreen: boolean
+  panes: null
+}
+
 export default withRouterHOC(
   // eslint-disable-next-line react/prefer-stateless-function
-  class DeskTool extends React.Component {
-    static contextTypes = {
-      addToSnackQueue: PropTypes.func
+  class DeskTool extends React.Component<DeskToolProps, State> {
+    // static contextTypes = {
+    //   addToSnackQueue: func
+    // }
+
+    state: State = {
+      // isResolving: true,
+      hasNarrowScreen: isNarrowScreen(),
+      panes: null
     }
 
-    static propTypes = {
-      router: PropTypes.shape({
-        navigate: PropTypes.func.isRequired,
-        state: PropTypes.shape({
-          panes: PropTypes.arrayOf(
-            PropTypes.arrayOf(
-              PropTypes.shape({
-                id: PropTypes.string.isRequired,
-                params: PropTypes.object
-              })
-            )
-          ),
-          params: PropTypes.shape({
-            template: PropTypes.string
-          }),
-          editDocumentId: PropTypes.string,
-          legacyEditDocumentId: PropTypes.string,
-          type: PropTypes.string,
-          action: PropTypes.string
-        })
-      }).isRequired,
-      onPaneChange: PropTypes.func.isRequired
-    }
+    // @todo: typings
+    paneDeriver?: any
 
-    state = {isResolving: true, hasNarrowScreen: isNarrowScreen(), panes: null}
+    resizeSubscriber?: Subscription
 
     constructor(props) {
       super(props)
@@ -69,7 +81,10 @@ export default withRouterHOC(
       const router = this.props.router
       const paneSegments = router.state?.panes || []
 
-      this.setState({panes, isResolving: false})
+      this.setState({
+        panes
+        // isResolving: false
+      })
 
       if (panes.length < paneSegments.length) {
         router.navigate(
@@ -79,13 +94,16 @@ export default withRouterHOC(
       }
     }
 
-    setResolveError = error => {
+    setResolveError = (error: Error) => {
       setStructureResolveError(error)
 
       // Log error for proper stacktraces
       console.error(error) // eslint-disable-line no-console
 
-      this.setState({error, isResolving: false})
+      this.setState({
+        error
+        // isResolving: false
+      })
     }
 
     derivePanes(props, fromIndex = [0, 0]) {
@@ -93,7 +111,8 @@ export default withRouterHOC(
         this.paneDeriver.unsubscribe()
       }
 
-      this.setState({isResolving: true})
+      // this.setState({isResolving: true})
+
       this.paneDeriver = loadStructure()
         .pipe(
           distinctUntilChanged(),
@@ -110,7 +129,7 @@ export default withRouterHOC(
 
     panesAreEqual = (prev, next) => calculatePanesEquality(prev, next).ids
 
-    shouldDerivePanes = (nextProps, prevProps) => {
+    shouldDerivePanes = (nextProps: DeskToolProps, prevProps: DeskToolProps) => {
       const nextRouterState = nextProps.router.state || {}
       const prevRouterState = prevProps.router.state || {}
 
@@ -122,7 +141,7 @@ export default withRouterHOC(
       )
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps: DeskToolProps, prevState: State) {
       if (
         prevProps.onPaneChange !== this.props.onPaneChange ||
         prevState.panes !== this.state.panes
@@ -143,7 +162,7 @@ export default withRouterHOC(
       }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate(nextProps: DeskToolProps, nextState: State) {
       const {router: oldRouter, ...oldProps} = this.props
       const {router: newRouter, ...newProps} = nextProps
       const {panes: oldPanes, ...oldState} = this.state

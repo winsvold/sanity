@@ -1,5 +1,5 @@
+import {DefaultSnackbar} from '@sanity/base/__legacy/components'
 import {useDocumentOperationEvent} from '@sanity/react-hooks'
-import Snackbar from 'part:@sanity/components/snackbar/default'
 import React from 'react'
 
 function getOpErrorTitle(op: string): string {
@@ -46,7 +46,7 @@ export const DocumentOperationResults = React.memo((props: Props) => {
 
   if (event && event.type === 'error') {
     return (
-      <Snackbar
+      <DefaultSnackbar
         kind="error"
         key={Math.random()}
         title={getOpErrorTitle(event.op)}
@@ -61,7 +61,9 @@ export const DocumentOperationResults = React.memo((props: Props) => {
   }
 
   if (event && event.type === 'success' && !IGNORE_OPS.includes(event.op)) {
-    return <Snackbar key={Math.random()} kind="success" title={getOpSuccessTitle(event.op)} />
+    return (
+      <DefaultSnackbar key={Math.random()} kind="success" title={getOpSuccessTitle(event.op)} />
+    )
   }
 
   return null

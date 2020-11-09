@@ -18,7 +18,7 @@ interface PreviewValue {
 export default function observeForPreview(
   value: any,
   type: Type,
-  fields: FieldName[],
+  fields?: FieldName[],
   viewOptions?: ViewOptions
 ): Observable<PreviewValue> {
   if (is('reference', type)) {

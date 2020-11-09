@@ -1,8 +1,8 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import generateHelpUrl from '@sanity/generate-help-url'
 import {SerializeError} from '@sanity/structure'
 import ErrorIcon from 'part:@sanity/base/error-icon'
+import {StructureError} from '../types'
 import styles from './StructureError.css'
 
 function formatStack(stack) {
@@ -19,7 +19,11 @@ function formatStack(stack) {
   )
 }
 
-export default function StructureError(props) {
+interface StructureErrorProps {
+  error: StructureError
+}
+
+export default function StructureError(props: StructureErrorProps) {
   const {path, helpId, message, stack} = props.error
 
   // Serialize errors are well-formatted and should be readable, in these cases a stack trace is
@@ -65,13 +69,4 @@ export default function StructureError(props) {
       </div>
     </div>
   )
-}
-
-StructureError.propTypes = {
-  error: PropTypes.shape({
-    message: PropTypes.string.isRequired,
-    stack: PropTypes.string.isRequired,
-    path: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])),
-    helpId: PropTypes.string
-  }).isRequired
 }

@@ -1,7 +1,6 @@
-import {MenuItemGroup} from '@sanity/base/__legacy/components'
+import {DefaultSnackbar, MenuItemGroup} from '@sanity/base/__legacy/components'
 import * as PathUtils from '@sanity/util/paths'
 import classNames from 'classnames'
-import Snackbar from 'part:@sanity/components/snackbar/default'
 import React, {useCallback, useRef, useState} from 'react'
 import {Path} from '@sanity/types'
 import {ChangeConnectorRoot} from '@sanity/base/lib/change-indicators/overlay/ChangeConnectorRoot'
@@ -244,7 +243,7 @@ export function DocumentPane(props: DocumentPaneProps) {
       </div>
 
       {connectionState === 'reconnecting' && (
-        <Snackbar kind="warning" isPersisted title="Connection lost. Reconnecting…" />
+        <DefaultSnackbar kind="warning" isPersisted title="Connection lost. Reconnecting…" />
       )}
 
       <DocumentOperationResults id={documentId} type={documentType} />

@@ -1,5 +1,5 @@
 import {createContext} from 'react'
-import {Doc} from '../types'
+import {Doc} from '../../../types'
 import {Controller} from './history/controller'
 import {Timeline} from './history/timeline'
 

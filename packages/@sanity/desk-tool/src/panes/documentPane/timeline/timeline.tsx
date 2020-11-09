@@ -1,6 +1,6 @@
-import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react'
+import {Spinner} from '@sanity/base'
 import {Chunk} from '@sanity/field/diff'
-import Spinner from 'part:@sanity/components/loading/spinner'
+import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react'
 import {Timeline as TimelineModel} from '../documentHistory/history/timeline'
 import {TimelineItem} from './timelineItem'
 import {TimelineItemState} from './types'

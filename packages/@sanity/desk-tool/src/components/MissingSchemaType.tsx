@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {SanityDefaultPreview} from 'part:@sanity/base/preview'
 import WarningIcon from 'part:@sanity/base/warning-icon'
 
@@ -15,9 +14,16 @@ const getUnknownTypeFallback = (id, typeName) => ({
   media: WarningIcon
 })
 
-export default class MissingSchemaType extends React.Component {
+interface MissingSchemaTypeProps {
+  layout?: 'default' | 'card' | 'media' | 'detail' | 'inline' | 'block'
+  value: Record<string, any>
+}
+
+// eslint-disable-next-line react/prefer-stateless-function
+export default class MissingSchemaType extends React.Component<MissingSchemaTypeProps> {
   render() {
-    const {layout, value} = this.props
+    const {layout = 'default', value} = this.props
+
     return (
       <SanityDefaultPreview
         value={getUnknownTypeFallback(value._id, value._type)}
@@ -25,8 +31,4 @@ export default class MissingSchemaType extends React.Component {
       />
     )
   }
-}
-MissingSchemaType.propTypes = {
-  layout: PropTypes.string,
-  value: PropTypes.object
 }

@@ -1,10 +1,6 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable react/no-array-index-key */
-
+import {Badge as DocumentBadge} from '@sanity/ui'
 import React from 'react'
 import {RenderBadgeCollectionState} from 'part:@sanity/base/actions/utils'
-import DocumentBadge from 'part:@sanity/components/badges/default'
 import styles from './documentBadges.css'
 import {Badge} from './types'
 

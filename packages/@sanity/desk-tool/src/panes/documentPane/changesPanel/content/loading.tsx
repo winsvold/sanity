@@ -1,5 +1,5 @@
+import {Spinner} from '@sanity/base/__legacy/components'
 import React from 'react'
-import Spinner from 'part:@sanity/components/loading/spinner'
 
 import styles from './loading.css'
 

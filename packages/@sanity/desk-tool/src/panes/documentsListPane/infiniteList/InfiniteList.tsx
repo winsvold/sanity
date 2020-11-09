@@ -1,23 +1,22 @@
-import PropTypes from 'prop-types'
 import React from 'react'
 import VirtualList from 'react-tiny-virtual-list'
 import enhanceWithAvailHeight from './enhanceWithAvailHeight'
 import styles from './InfiniteList.css'
 
-export default enhanceWithAvailHeight(
-  class InfiniteList extends React.PureComponent {
-    static propTypes = {
-      height: PropTypes.number,
-      items: PropTypes.array, // eslint-disable-line react/forbid-prop-types
-      hasMoreItems: PropTypes.bool,
-      isLoadingMore: PropTypes.bool,
-      renderItem: PropTypes.func,
-      className: PropTypes.string,
-      getItemKey: PropTypes.func,
-      layout: PropTypes.oneOf(['default', 'detail', 'card', 'media']),
-      onScroll: PropTypes.func
-    }
+interface InfiniteListProps {
+  height?: number
+  items?: {}[]
+  hasMoreItems?: boolean
+  isLoadingMore?: boolean
+  renderItem?: () => void
+  className?: string
+  getItemKey?: () => void
+  layout?: 'default' | 'detail' | 'card' | 'media'
+  onScroll?: () => void
+}
 
+export default enhanceWithAvailHeight(
+  class InfiniteList extends React.PureComponent<InfiniteListProps> {
     static defaultProps = {
       hasMoreItems: false,
       isLoadingMore: false,

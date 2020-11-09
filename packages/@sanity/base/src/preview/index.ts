@@ -6,5 +6,4 @@ export {
 } from '@sanity/preview/components'
 
 // deprecated
-// deprecated
 export {observeForPreview, observeWithPaths, materializePaths, observePaths} from '@sanity/preview'

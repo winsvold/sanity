@@ -1,4 +1,5 @@
 export {default as DefaultRootComponent} from './components/DefaultRootComponent'
 export * from './components/ErrorBoundary'
+export * from './components/spinner'
 export {UserStore} from './datastores/user/types'
 export * from './project'

@@ -1,7 +1,7 @@
-import * as React from 'react'
+import React from 'react'
 import schema from 'part:@sanity/base/schema'
 import {PreviewFields} from 'part:@sanity/base/preview'
-import {Doc} from '../../types'
+import {Doc} from '../../../../types'
 
 export function DocumentHeaderTitle({
   documentType,
@@ -24,7 +24,7 @@ export function DocumentHeaderTitle({
 
   return (
     <PreviewFields document={value} type={type} fields={['title']}>
-      {({title}) => (title ? <span>{title}</span> : <em>Untitled</em>)}
+      {({title}) => (title ? <span>{title}</span> : <em>Untitled</em>) as any}
     </PreviewFields>
   )
 }

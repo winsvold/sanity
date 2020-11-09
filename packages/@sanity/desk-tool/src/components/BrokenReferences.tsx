@@ -1,22 +1,44 @@
+import {PanePopover} from '@sanity/base/__legacy/components'
 import React from 'react'
-import PropTypes from 'prop-types'
 import {streamingComponent} from 'react-props-stream'
-import {merge, from, of} from 'rxjs'
+import {merge, from, of, Observable} from 'rxjs'
 import {map, switchMap, scan, filter, mergeMap} from 'rxjs/operators'
 import {uniq, uniqBy} from 'lodash'
-import DefaultPane from 'part:@sanity/components/panes/default'
 import {observePaths} from 'part:@sanity/base/preview'
 import {getDraftId, getPublishedId} from 'part:@sanity/base/util/draft-utils'
 import FormBuilder from 'part:@sanity/form-builder'
-import PanePopover from 'part:@sanity/components/dialogs/pane-popover'
+import {Pane} from '../components/pane'
 import styles from './BrokenReferences.css'
 import ReferringDocumentsList from './ReferringDocumentsList'
 
-function BrokenRefs(props) {
+interface TmpDoc {
+  draft?: {_type: string}
+  published?: {_type: string}
+}
+
+interface DocumentRef {
+  id: string
+  type: string | undefined
+  hasDraft: boolean
+  hasPublished: boolean
+}
+
+interface BrokenRefsProps {
+  schema?: any
+  type?: string
+  document?: any
+  documents: DocumentRef[]
+}
+
+interface TmpRef2 {
+  _weak?: boolean
+}
+
+function BrokenRefs(props: BrokenRefsProps) {
   const {documents, type, schema} = props
   const schemaType = schema.get(type)
   const {unpublished, nonExistent} = documents.reduce(
-    (groups, doc) => {
+    (groups: {unpublished: DocumentRef[]; nonExistent: DocumentRef[]}, doc) => {
       const group = doc.hasDraft ? groups.unpublished : groups.nonExistent
       group.push(doc)
       return groups
@@ -26,8 +48,9 @@ function BrokenRefs(props) {
 
   const renderNonExisting = nonExistent.length > 0
   const renderUnpublished = !renderNonExisting
+
   return (
-    <DefaultPane title={`New ${type}`} isScrollable={false}>
+    <Pane title={`New ${type}`} isScrollable={false}>
       <div className={styles.brokenReferences}>
         {renderNonExisting && (
           <PanePopover
@@ -60,9 +83,9 @@ function BrokenRefs(props) {
             a new document.`}
           >
             <ReferringDocumentsList
-              documents={unpublished.map(({id, type, hasDraft}) => ({
+              documents={unpublished.map(({id, type: _type, hasDraft}) => ({
                 _id: `drafts.${id}`,
-                _type: type,
+                _type,
                 _hasDraft: hasDraft
               }))}
             />
@@ -72,24 +95,17 @@ function BrokenRefs(props) {
       <form className={styles.editor}>
         <FormBuilder readOnly type={schemaType} schema={schema} />
       </form>
-    </DefaultPane>
-  )
-}
-
-BrokenRefs.propTypes = {
-  schema: PropTypes.any,
-  type: PropTypes.any,
-  document: PropTypes.any,
-  documents: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      hasDraft: PropTypes.bool.isRequired
-    })
+    </Pane>
   )
 }
 
 // @todo consider adding a progress indicator instead?
-const BrokenReferences = streamingComponent(props$ =>
+const BrokenReferences = streamingComponent<{
+  children?: React.ReactNode
+  document: Record<string, unknown>
+  type: string
+  schema: Record<string, unknown>
+}>(props$ =>
   props$.pipe(
     switchMap(props => {
       const ids = findReferences(props.document)
@@ -98,9 +114,10 @@ const BrokenReferences = streamingComponent(props$ =>
         return of(props.children)
       }
 
-      return from(ids).pipe(
-        mergeMap(checkExistance),
-        scan((prev, curr) => uniqBy([curr, ...prev], 'id'), []),
+      const refs$ = from(ids).pipe(mergeMap(checkExistance))
+
+      return refs$.pipe(
+        scan((prev: DocumentRef[], curr) => uniqBy([curr, ...prev], 'id'), []),
         filter(docs => docs.length === ids.length),
         map(docs => docs.filter(isMissingPublished)),
         map(broken =>
@@ -115,12 +132,14 @@ const BrokenReferences = streamingComponent(props$ =>
   )
 )
 
-function checkExistance(id) {
-  return merge(
-    observePaths(getDraftId(id), ['_type']).pipe(map(draft => ({draft}))),
-    observePaths(getPublishedId(id), ['_type']).pipe(map(published => ({published})))
-  ).pipe(
-    scan((prev, res) => ({...prev, ...res}), {}),
+function checkExistance(id: string): Observable<DocumentRef> {
+  const tmp$: Observable<TmpDoc> = merge(
+    observePaths(getDraftId(id), ['_type'] as any).pipe(map(draft => ({draft}))),
+    observePaths(getPublishedId(id), ['_type'] as any).pipe(map(published => ({published})))
+  )
+
+  return tmp$.pipe(
+    scan((prev: TmpDoc, res) => ({...prev, ...res}), {}),
     filter(res => 'draft' in res && 'published' in res),
     map(res => ({
       id,
@@ -131,30 +150,29 @@ function checkExistance(id) {
   )
 }
 
-function getDocumentType({draft, published}) {
-  if (draft || published) {
-    return draft ? draft._type : published._type
-  }
+function getDocumentType({draft, published}: TmpDoc) {
+  if (draft) return draft._type
+  if (published) return published._type
 
   return undefined
 }
 
-function isMissingPublished(doc) {
+function isMissingPublished(doc: {hasPublished: boolean}) {
   return !doc.hasPublished
 }
 
-function findReferences(value) {
+function findReferences(value: TmpRef2 | TmpRef2[]) {
   return dedupeReferences(extractStrongReferences(value))
 }
 
-function extractStrongReferences(value) {
+function extractStrongReferences(value: TmpRef2 | TmpRef2[]) {
   if (Array.isArray(value)) {
-    return value.reduce((refs, item) => [...refs, ...extractStrongReferences(item)], [])
+    return value.reduce((refs: TmpRef2[], item) => [...refs, ...extractStrongReferences(item)], [])
   }
 
   if (typeof value === 'object' && value !== null) {
     return Object.keys(value).reduce(
-      (refs, key) =>
+      (refs: any[], key) =>
         key === '_ref' && !value._weak
           ? [...refs, value[key]]
           : [...refs, ...extractStrongReferences(value[key])],
@@ -165,7 +183,7 @@ function extractStrongReferences(value) {
   return []
 }
 
-function dedupeReferences(refs) {
+function dedupeReferences(refs: string[]) {
   return uniq(refs.map(ref => (ref || '').replace(/^drafts\./, '')))
 }
 

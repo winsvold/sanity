@@ -1,7 +1,15 @@
 export type Id = string
 
 export type Reference = {_ref: string}
-export type Document = {_id: string}
+// export type Document = {_id: string}
+export type Document = {
+  _id?: string
+  _type?: string
+  _rev?: string
+  _updatedAt?: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
+}
 
 export type Value = Document | Reference | any
 

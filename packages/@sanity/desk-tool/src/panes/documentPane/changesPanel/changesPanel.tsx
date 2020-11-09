@@ -1,3 +1,4 @@
+import {ScrollContainer} from '@sanity/base/__legacy/components'
 import {useTimeAgo} from '@sanity/base/hooks'
 import {ChangeFieldWrapper} from '@sanity/base/lib/change-indicators/ChangeFieldWrapper'
 import {
@@ -12,10 +13,7 @@ import {
 } from '@sanity/field/diff'
 import CloseIcon from 'part:@sanity/base/close-icon'
 import {UserAvatar} from '@sanity/base/components'
-import {Card, AvatarStack} from '@sanity/ui'
-import Button from 'part:@sanity/components/buttons/default'
-import {ScrollContainer} from 'part:@sanity/components/scroll'
-import {TooltipProvider} from 'part:@sanity/components/tooltip'
+import {AvatarStack, BoundaryElementProvider, Button, Card} from '@sanity/ui'
 import React, {useCallback, useRef} from 'react'
 import {DropdownButton} from '../../../components/DropdownButton'
 import {useDocumentHistory} from '../documentHistory'
@@ -83,11 +81,10 @@ export function ChangesPanel({
           <div className={styles.closeButtonContainer}>
             <Button
               icon={CloseIcon}
-              kind="simple"
+              mode="bleed"
               onClick={closeHistory}
-              padding="small"
+              padding={2}
               title="Hide changes panel"
-              type="button"
             />
           </div>
         </div>
@@ -133,7 +130,7 @@ export function ChangesPanel({
           )}
         </div>
       </header>
-      <TooltipProvider boundaryElement={scrollRef.current}>
+      <BoundaryElementProvider element={scrollRef.current}>
         <ScrollContainer className={styles.body} ref={scrollRef}>
           <Content
             diff={diff}
@@ -142,7 +139,7 @@ export function ChangesPanel({
             schemaType={schemaType}
           />
         </ScrollContainer>
-      </TooltipProvider>
+      </BoundaryElementProvider>
     </Card>
   )
 }

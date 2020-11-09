@@ -1,6 +1,6 @@
 import React from 'react'
+import {Document, Type} from '../types'
 import PreviewSubscriber from './PreviewSubscriber'
-import {Type} from '../types'
 
 function arrify(val) {
   if (Array.isArray(val)) {
@@ -15,6 +15,7 @@ type Props = {
   type: Type
   children: (snapshot: Document) => React.ReactChildren
 }
+
 export default function PreviewFields(props: Props) {
   return (
     <PreviewSubscriber value={props.document} type={props.type} fields={arrify(props.fields)}>

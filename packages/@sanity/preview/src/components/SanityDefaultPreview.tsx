@@ -29,10 +29,10 @@ function extractUploadState(value) {
 }
 
 type Props = {
-  _renderAsBlockImage: boolean
+  _renderAsBlockImage?: boolean
   layout: keyof typeof previewComponentMap
   value: any
-  icon: any
+  icon?: any
 }
 
 export default class SanityDefaultPreview extends React.PureComponent<Props> {

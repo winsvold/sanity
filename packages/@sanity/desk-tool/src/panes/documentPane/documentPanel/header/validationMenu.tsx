@@ -1,6 +1,6 @@
-import {MenuButton} from 'part:@sanity/components/menu-button'
-import ValidationList from 'part:@sanity/components/validation/list'
-import ErrorOutlineIcon from 'part:@sanity/base/error-outline-icon'
+import {ValidationList} from '@sanity/base/__legacy/components'
+import {Button, MenuButton} from '@sanity/ui'
+import {ErrorOutlineIcon} from '@sanity/icons'
 import React, {useCallback} from 'react'
 
 interface ValidationMenuProps {
@@ -37,19 +37,23 @@ export function ValidationMenu(props: ValidationMenuProps) {
 
   return (
     <MenuButton
-      boundaryElement={boundaryElement}
-      buttonProps={{
-        color: validationErrorMarkers.length > 0 ? 'danger' : 'warning',
-        kind: 'simple',
-        icon: ErrorOutlineIcon,
-        padding: 'small',
-        selected: isOpen,
-        title: 'Show validation issues'
-      }}
+      boundaryElement={boundaryElement || undefined}
+      button={
+        <Button
+          color={validationErrorMarkers.length > 0 ? 'danger' : 'warning'}
+          // kind='simple'
+          mode="bleed"
+          icon={ErrorOutlineIcon}
+          padding={2}
+          selected={isOpen}
+          title={'Show validation issues'}
+        />
+      }
+      id="validation-menu"
       menu={popoverContent}
-      open={isOpen}
+      // open={isOpen}
       placement="bottom"
-      setOpen={setOpen}
+      // setOpen={setOpen}
     />
   )
 }

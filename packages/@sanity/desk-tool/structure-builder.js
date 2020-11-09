@@ -1,2 +1,1 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-module.exports = require('@sanity/structure').StructureBuilder
+module.exports = require('./lib/exports/structure-builder')

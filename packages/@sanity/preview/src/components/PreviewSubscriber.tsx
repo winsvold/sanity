@@ -1,16 +1,16 @@
 import React from 'react'
+import {Type} from '../types'
 import WithVisibility from './WithVisibility'
 import ObserveForPreview from './ObserveForPreview'
-import {Type} from '../types'
 
 const HIDE_DELAY = 20 * 1000
 
 interface Props {
   type: Type
-  fields: string[]
+  fields?: string[]
   value: any
   ordering?: {}
-  children: (props: any) => React.ReactElement
+  children?: (props: any) => React.ReactElement
   layout?: string
 }
 

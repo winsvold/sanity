@@ -1,5 +1,5 @@
+import {Spinner} from '@sanity/base'
 import {SanityDocument} from '@sanity/types'
-import Spinner from 'part:@sanity/components/loading/spinner'
 import React from 'react'
 import {InspectDialog} from './inspectDialog'
 

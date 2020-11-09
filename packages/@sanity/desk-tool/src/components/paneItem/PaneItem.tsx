@@ -1,16 +1,27 @@
-import PropTypes from 'prop-types'
 import React from 'react'
 import schema from 'part:@sanity/base/schema'
 import {SanityDefaultPreview} from 'part:@sanity/base/preview'
 import folderIcon from 'part:@sanity/base/folder-icon'
 import fileIcon from 'part:@sanity/base/file-icon'
-import DocumentPaneItemPreview from '../../components/DocumentPaneItemPreview'
+import DocumentPaneItemPreview from '../DocumentPaneItemPreview'
 import getIconWithFallback from '../../utils/getIconWithFallback'
-import MissingSchemaType from '../../components/MissingSchemaType'
+import MissingSchemaType from '../MissingSchemaType'
+import {PreviewValue, ResolvedSchema} from '../../types'
 import PaneItemWrapper from './PaneItemWrapper'
 
-export default function PaneItem(props) {
-  const {id, isSelected, schemaType, layout, icon, value} = props
+interface PaneItemProps {
+  icon?: React.ComponentType | boolean
+  id: string
+  isSelected: boolean
+  // @todo
+  schemaType: ResolvedSchema
+  layout: 'card' | 'default' | 'media'
+  // @todo
+  value?: PreviewValue
+}
+
+export default function PaneItem(props: PaneItemProps) {
+  const {id, isSelected = false, schemaType, layout = 'default', icon, value = null} = props
   const useGrid = layout === 'card' || layout === 'media'
 
   const hasSchemaType = schemaType && schemaType.name && schema.get(schemaType.name)
@@ -42,30 +53,4 @@ export default function PaneItem(props) {
       {preview}
     </PaneItemWrapper>
   )
-}
-
-PaneItem.propTypes = {
-  id: PropTypes.string.isRequired,
-  layout: PropTypes.string,
-  isSelected: PropTypes.bool,
-  icon: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
-  value: PropTypes.shape({
-    _id: PropTypes.string,
-    _type: PropTypes.string,
-    title: PropTypes.string,
-    subtitle: PropTypes.string,
-    media: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
-  }),
-  schemaType: PropTypes.shape({
-    name: PropTypes.string,
-    icon: PropTypes.func
-  })
-}
-
-PaneItem.defaultProps = {
-  layout: 'default',
-  icon: undefined,
-  value: null,
-  isSelected: false,
-  schemaType: null
 }

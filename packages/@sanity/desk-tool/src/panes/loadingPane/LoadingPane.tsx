@@ -1,21 +1,21 @@
+import {Spinner} from '@sanity/base'
 import React from 'react'
-import PropTypes from 'prop-types'
-import DefaultPane from 'part:@sanity/components/panes/default'
-import Spinner from 'part:@sanity/components/loading/spinner'
+import {Subscription} from 'rxjs'
+import {Pane} from '../../components/pane'
 import styles from './LoadingPane.css'
 
-export default class LoadingPane extends React.PureComponent {
-  static propTypes = {
-    title: PropTypes.string,
-    isSelected: PropTypes.bool.isRequired,
-    isCollapsed: PropTypes.bool.isRequired,
-    onExpand: PropTypes.func,
-    onCollapse: PropTypes.func,
-    path: PropTypes.arrayOf(PropTypes.string),
-    index: PropTypes.number,
-    message: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
-  }
+interface LoadingPaneProps {
+  title?: string
+  isSelected: boolean
+  isCollapsed: boolean
+  onExpand?: () => void
+  onCollapse?: () => void
+  path: string[]
+  index: number
+  message: string | (() => string)
+}
 
+export default class LoadingPane extends React.PureComponent<LoadingPaneProps> {
   static defaultProps = {
     // message: 'Loading…',
     path: [],
@@ -25,7 +25,9 @@ export default class LoadingPane extends React.PureComponent {
     onCollapse: undefined
   }
 
-  constructor(props) {
+  subscription?: Subscription
+
+  constructor(props: LoadingPaneProps) {
     super(props)
 
     const isGetter = typeof props.message === 'function'
@@ -59,7 +61,7 @@ export default class LoadingPane extends React.PureComponent {
     const {currentMessage} = this.state
 
     return (
-      <DefaultPane
+      <Pane
         title={title}
         isLoading
         isScrollable={false}
@@ -74,7 +76,7 @@ export default class LoadingPane extends React.PureComponent {
         <div className={styles.root}>
           <Spinner center message={currentMessage} />
         </div>
-      </DefaultPane>
+      </Pane>
     )
   }
 }

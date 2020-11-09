@@ -1,28 +1,23 @@
-/* eslint-disable react/no-multi-comp */
-
 import React from 'react'
-import PropTypes from 'prop-types'
 import schema from 'part:@sanity/base/schema'
 import {PreviewFields} from 'part:@sanity/base/preview'
 
-function ShowTitle({title}) {
+function ShowTitle({title}: {title: string}) {
   return <span>{title}</span>
 }
 
-ShowTitle.propTypes = {title: PropTypes.string}
-
-export default function DocTitle(props) {
+export default function DocTitle(props: {document?: {_id: string; _type: string}}) {
   const {document} = props
+
+  if (!document) {
+    return <div>Missing document</div>
+  }
+
   const type = schema.get(document._type)
+
   return (
     <PreviewFields document={document} type={type} fields={['title']}>
-      {ShowTitle}
+      {ShowTitle as any}
     </PreviewFields>
   )
-}
-
-DocTitle.propTypes = {
-  document: PropTypes.shape({
-    _type: PropTypes.string
-  })
 }

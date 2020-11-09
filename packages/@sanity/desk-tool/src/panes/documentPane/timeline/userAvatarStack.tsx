@@ -1,5 +1,5 @@
 import {UserAvatar} from '@sanity/base/components'
-import {AvatarStack} from 'part:@sanity/components/avatar'
+import {AvatarStack} from '@sanity/ui'
 import React from 'react'
 
 interface UserAvatarStackProps {

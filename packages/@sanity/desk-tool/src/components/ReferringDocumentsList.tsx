@@ -1,20 +1,37 @@
+import {DefaultList, DefaultListItem} from '@sanity/base/__legacy/components'
 import React from 'react'
-import PropTypes from 'prop-types'
-import {List as DefaultList, Item as DefaultItem} from 'part:@sanity/components/lists/default'
 import Preview from 'part:@sanity/base/preview'
 import {IntentLink} from 'part:@sanity/base/router'
 import schema from 'part:@sanity/base/schema'
 import styles from './ReferringDocumentsList.css'
 import DraftStatus from './DraftStatus'
 
-export default function ReferringDocumentsList(props) {
+interface ReferringDocumentsListProps {
+  documents: {
+    _id: string
+    _type?: string
+    _hasDraft: boolean
+  }[]
+}
+
+export default function ReferringDocumentsList(props: ReferringDocumentsListProps) {
   const {documents} = props
+
   return (
     <DefaultList className={styles.root}>
       {documents.map(document => {
+        if (!document._type) {
+          return (
+            <div key={document._id}>
+              Missing <code>_type</code>
+            </div>
+          )
+        }
+
         const schemaType = schema.get(document._type)
+
         return (
-          <DefaultItem className={styles.item} key={document._id}>
+          <DefaultListItem className={styles.item} key={document._id}>
             {schemaType ? (
               <IntentLink
                 className={styles.link}
@@ -29,18 +46,9 @@ export default function ReferringDocumentsList(props) {
                 A document of the unknown type <em>{document._type}</em>
               </div>
             )}
-          </DefaultItem>
+          </DefaultListItem>
         )
       })}
     </DefaultList>
-  )
-}
-
-ReferringDocumentsList.propTypes = {
-  documents: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string,
-      _type: PropTypes.string
-    })
   )
 }

@@ -1,5 +1,5 @@
 import {of} from 'rxjs'
-import {observePaths} from '@sanity/preview'
+import {observePaths} from '@sanity/preview/src'
 import {useMemo} from 'react'
 import {LoadableState, useLoadable} from '../../util/useLoadable'
 
@@ -8,7 +8,7 @@ export function useDocumentValues<T = Record<string, unknown>>(
   paths: string[]
 ): LoadableState<T> {
   const documentValues$ = useMemo(
-    () => (documentId ? observePaths(documentId, paths) : of(undefined)),
+    () => (documentId ? observePaths(documentId, paths as any) : of(undefined)),
     [documentId, ...paths]
   )
 

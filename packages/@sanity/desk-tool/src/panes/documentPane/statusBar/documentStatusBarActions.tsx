@@ -1,8 +1,6 @@
 import React, {useCallback, useState} from 'react'
 import {useEditState, useConnectionState} from '@sanity/react-hooks'
-import {Tooltip} from 'part:@sanity/components/tooltip'
-import Button from 'part:@sanity/components/buttons/default'
-import Hotkeys from 'part:@sanity/components/typography/hotkeys'
+import {Button, Hotkeys, Tooltip} from '@sanity/ui'
 import {RenderActionCollectionState} from 'part:@sanity/base/actions/utils'
 import resolveDocumentActions from 'part:@sanity/base/document-actions/resolver'
 import {HistoryRestoreAction} from '../../../actions/HistoryRestoreAction'
@@ -43,13 +41,13 @@ function DocumentStatusBarActionsInner(props: DocumentStatusBarActionsProps) {
           >
             <div ref={setButtonContainerElement}>
               <Button
+                aria-label={firstActionState.title}
                 className={
                   showMenu ? styles.mainActionButtonWithMoreActions : styles.mainActionButton
                 }
                 icon={firstActionState.icon}
-                color={firstActionState.disabled ? undefined : firstActionState.color || 'success'}
+                // color={firstActionState.disabled ? undefined : firstActionState.color || 'success'}
                 disabled={props.disabled || Boolean(firstActionState.disabled)}
-                aria-label={firstActionState.title}
                 onClick={firstActionState.onHandle}
               >
                 {firstActionState.label}

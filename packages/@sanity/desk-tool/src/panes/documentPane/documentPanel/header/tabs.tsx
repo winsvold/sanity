@@ -1,6 +1,5 @@
+import {Tab, TabList} from '@sanity/ui'
 import React, {useCallback} from 'react'
-import Tab from 'part:@sanity/components/tabs/tab'
-import TabList from 'part:@sanity/components/tabs/tab-list'
 import {DocumentView} from '../../types'
 
 import styles from './tabs.css'
@@ -16,7 +15,7 @@ export function DocumentHeaderTabs(props: {
 
   return (
     <div className={styles.headerTabsContainer}>
-      <TabList>
+      <TabList space={1}>
         {views.map((view, index) => (
           <DocumentHeaderTab
             icon={view.icon}
@@ -50,12 +49,12 @@ function DocumentHeaderTab(props: {
 
   return (
     <Tab
+      aria-controls={props.tabPanelId}
       icon={props.icon}
       id={props.id}
-      isActive={props.isActive}
-      label={props.label}
+      label={props.label as any}
       onClick={handleClick}
-      aria-controls={props.tabPanelId}
+      selected={props.isActive}
     />
   )
 }

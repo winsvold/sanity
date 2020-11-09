@@ -2,11 +2,12 @@
   "extends": "./tsconfig.dist",
   "compilerOptions": {
     "baseUrl": "./packages",
+
     // prettier-ignore
     "paths": {
       // Documented paths
       "@sanity/base/initial-value-template-builder": ["./@sanity/base/initial-value-template-builder"],
-      "@sanity/desk-tool/structure-builder": ["./@sanity/desk-tool/structure-builder"],
+      "@sanity/desk-tool/structure-builder": ["./@sanity/desk-tool/src/structure-builder"],
 
       // Internal paths
       "@sanity/base/lib/__legacy/components/fieldsets/FieldStatus": ["./@sanity/base/src/__legacy/components/fieldsets/FieldStatus"],
@@ -25,8 +26,8 @@
       "@sanity/field": ["./@sanity/field/src"],
       "@sanity/initial-value-templates": ["./@sanity/initial-value-templates/src"],
       "@sanity/mutator": ["./@sanity/mutator/src"],
-      "@sanity/preview/components": ["./@sanity/preview/components"],
-      "@sanity/preview": ["./@sanity/preview"],
+      "@sanity/preview/components": ["./@sanity/preview/src/exports/components"],
+      "@sanity/preview": ["./@sanity/preview/src"],
       "@sanity/schema/lib": ["./@sanity/schema/src"],
       "@sanity/schema": ["./@sanity/schema/src/legacy"],
       "@sanity/state-router/components": ["./@sanity/state-router/src/components"],

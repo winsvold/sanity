@@ -11,7 +11,10 @@ const DISABLED_REASON_TITLE = {
   NO_CHANGES: 'No unpublished changes'
 }
 
-function getDisabledReason(reason, publishedAt) {
+function getDisabledReason(
+  reason: 'ALREADY_PUBLISHED' | 'LIVE_EDIT_ENABLED' | 'NO_CHANGES',
+  publishedAt: string | Date
+) {
   if (reason === 'ALREADY_PUBLISHED' && publishedAt) {
     return (
       <>
@@ -19,6 +22,7 @@ function getDisabledReason(reason, publishedAt) {
       </>
     )
   }
+
   return DISABLED_REASON_TITLE[reason]
 }
 

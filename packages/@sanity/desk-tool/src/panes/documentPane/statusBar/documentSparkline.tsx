@@ -1,13 +1,9 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable react/no-array-index-key */
-
+import {ContainerQuery} from '@sanity/base/__legacy/components'
 import React from 'react'
 import SyncIcon from 'part:@sanity/base/sync-icon'
 import {useSyncState} from '@sanity/react-hooks'
-import Button from 'part:@sanity/components/buttons/default'
 import {ChunkType} from '@sanity/field/lib/diff'
-import {ContainerQuery} from 'part:@sanity/components/container-query'
+import {Button} from '@sanity/ui'
 import {useTimeAgo} from '@sanity/base/hooks'
 import {useDocumentHistory} from '../documentHistory'
 import {HistoryIcon, LiveIcon, PublishIcon} from '../../../badges/icons'
@@ -143,8 +139,8 @@ export function DocumentSparkline({badges, lastUpdated, editState}: DocumentSpar
 
       {!isLiveDocument && (
         <Button
-          kind="simple"
-          padding="small"
+          mode="bleed"
+          padding={2}
           onClick={openHistory}
           type="button"
           disabled={showingRevision || showingChangePanel}

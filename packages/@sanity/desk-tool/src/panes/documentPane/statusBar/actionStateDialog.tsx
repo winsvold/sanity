@@ -1,8 +1,11 @@
-import {ButtonColor, DialogAction} from '@sanity/base/__legacy/components'
+import {
+  ButtonColor,
+  DefaultSnackbar,
+  DialogAction,
+  PopoverDialog
+} from '@sanity/base/__legacy/components'
+import {Dialog} from '@sanity/ui'
 import React, {useCallback} from 'react'
-import Dialog from 'part:@sanity/components/dialogs/default'
-import PopoverDialog from 'part:@sanity/components/dialogs/popover'
-import Snackbar from 'part:@sanity/components/snackbar/default'
 
 // Todo: move these to action spec/core types
 interface ConfirmDialogProps {
@@ -114,10 +117,9 @@ export function ActionStateDialog(props: Props) {
     return (
       <Dialog
         onClose={dialog.onClose}
-        onClickOutside={dialog.onClose}
-        showCloseButton={dialog.showCloseButton}
-        size="medium"
-        padding="large"
+        // onClickOutside={dialog.onClose}
+        // showCloseButton={dialog.showCloseButton}
+        width={2}
       >
         {dialog.content}
       </Dialog>
@@ -141,7 +143,7 @@ export function ActionStateDialog(props: Props) {
 
   if (dialog.type === 'success') {
     return (
-      <Snackbar
+      <DefaultSnackbar
         kind="success"
         isPersisted={false}
         isCloseable
@@ -150,15 +152,15 @@ export function ActionStateDialog(props: Props) {
         title={dialog.title}
       >
         {dialog.content}
-      </Snackbar>
+      </DefaultSnackbar>
     )
   }
 
   if (dialog.type === 'error') {
     return (
-      <Snackbar isCloseable kind="error" onClose={dialog.onClose} title={dialog.title}>
+      <DefaultSnackbar isCloseable kind="error" onClose={dialog.onClose} title={dialog.title}>
         {dialog.content}
-      </Snackbar>
+      </DefaultSnackbar>
     )
   }
 
@@ -170,9 +172,7 @@ export function ActionStateDialog(props: Props) {
   return (
     <Dialog
       onClose={unknownDialog.onClose}
-      onClickOutside={unknownDialog.onClose}
-      size="medium"
-      padding="large"
+      // onClickOutside={unknownDialog.onClose}
     >
       {unknownDialog.content || (
         <>

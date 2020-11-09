@@ -1,6 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import DefaultPane from 'part:@sanity/components/panes/default'
+import {Pane} from '../../components/pane'
 import userComponentPaneStyles from './UserComponentPane.css'
 
 function noActionFn() {
@@ -8,31 +7,27 @@ function noActionFn() {
   console.warn('No handler defined for action')
 }
 
-export default class UserComponentPane extends React.PureComponent {
-  static propTypes = {
-    styles: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    title: PropTypes.string,
-    index: PropTypes.number.isRequired,
-    type: PropTypes.string.isRequired,
-    component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
-    options: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    isSelected: PropTypes.bool.isRequired,
-    isCollapsed: PropTypes.bool.isRequired,
-    onExpand: PropTypes.func,
-    onCollapse: PropTypes.func,
-    renderActions: PropTypes.func,
-    menuItems: PropTypes.arrayOf(
-      PropTypes.shape({
-        title: PropTypes.string.isRequired
-      })
-    ),
-    menuItemGroups: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string.isRequired
-      })
-    )
-  }
+interface UserComponentPaneProps {
+  styles?: Record<string, string>
+  title?: string
+  index: number
+  type: string
+  component: React.ComponentType | React.ReactNode
+  options?: Record<string, any>
+  isSelected: boolean
+  isCollapsed: boolean
+  onExpand?: () => void
+  onCollapse?: () => void
+  renderActions?: () => void
+  menuItems?: {
+    title: string
+  }[]
+  menuItemGroups?: {
+    id: string
+  }[]
+}
 
+export default class UserComponentPane extends React.PureComponent<UserComponentPaneProps> {
   static defaultProps = {
     title: '',
     options: {},
@@ -44,7 +39,9 @@ export default class UserComponentPane extends React.PureComponent {
     renderActions: undefined
   }
 
-  constructor(props) {
+  userComponent?: React.RefObject<any>
+
+  constructor(props: UserComponentPaneProps) {
     super(props)
 
     this.userComponent = React.createRef()
@@ -91,7 +88,7 @@ export default class UserComponentPane extends React.PureComponent {
     const UserComponent = typeof component === 'function' && component
 
     return (
-      <DefaultPane
+      <Pane
         styles={paneStyles}
         title={title}
         menuItems={menuItems}
@@ -103,7 +100,7 @@ export default class UserComponentPane extends React.PureComponent {
         onAction={this.handleAction}
       >
         {UserComponent ? <UserComponent ref={this.userComponent} {...rest} /> : component}
-      </DefaultPane>
+      </Pane>
     )
   }
 }

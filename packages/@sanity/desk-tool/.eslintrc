@@ -1,5 +1,7 @@
 {
   "rules": {
-    "complexity": ["warn", 15]
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "complexity": ["warn", 15],
+    "react/no-unused-prop-types": "off"
   }
 }

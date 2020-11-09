@@ -1,15 +1,14 @@
+import {Spinner} from '@sanity/base'
+import {DefaultSnackbar} from '@sanity/base/__legacy/components'
 import React from 'react'
-import PropTypes from 'prop-types'
 import schema from 'part:@sanity/base/schema'
-import DefaultPane from 'part:@sanity/components/panes/default'
 import {getQueryResults} from 'part:@sanity/base/query-container'
-import Snackbar from 'part:@sanity/components/snackbar/default'
-import Spinner from 'part:@sanity/components/loading/spinner'
 import {collate, getPublishedId} from 'part:@sanity/base/util/draft-utils'
 import {isEqual} from 'lodash'
-import {of, combineLatest} from 'rxjs'
+import {of, combineLatest, Subscription} from 'rxjs'
 import {map, tap, filter as filterEvents} from 'rxjs/operators'
 import shallowEquals from 'shallow-equals'
+import {Pane, PaneActions} from '../../components/pane'
 import settings from '../../settings'
 import listViewStyles from '../../components/listView/ListView.css'
 import {PaneItem} from '../../components/paneItem'
@@ -63,49 +62,41 @@ function toOrderClause(orderBy) {
     .join(', ')
 }
 
-export default class DocumentsListPane extends React.PureComponent {
-  static propTypes = {
-    index: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    childItemId: PropTypes.string.isRequired,
-    className: PropTypes.string,
-    styles: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    defaultLayout: PropTypes.string,
-    options: PropTypes.shape({
-      filter: PropTypes.string.isRequired,
-      defaultOrdering: PropTypes.arrayOf(
-        PropTypes.shape({
-          field: PropTypes.string.isRequired,
-          direction: PropTypes.oneOf(['asc', 'desc'])
-        })
-      ),
-      params: PropTypes.object // eslint-disable-line react/forbid-prop-types
-    }).isRequired,
-    menuItems: PropTypes.arrayOf(
-      PropTypes.shape({
-        title: PropTypes.string.isRequired
-      })
-    ),
-    menuItemGroups: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string.isRequired
-      })
-    ),
-    initialValueTemplates: PropTypes.arrayOf(
-      PropTypes.shape({
-        templateId: PropTypes.string,
-        parameters: PropTypes.object // eslint-disable-line react/forbid-prop-types
-      })
-    ),
-    displayOptions: PropTypes.shape({
-      showIcons: PropTypes.bool
-    }),
-    isSelected: PropTypes.bool.isRequired,
-    isCollapsed: PropTypes.bool.isRequired,
-    onExpand: PropTypes.func,
-    onCollapse: PropTypes.func
+interface DocumentsListPaneProps {
+  index: number
+  title: string
+  childItemId: string
+  className?: string
+  styles?: Record<string, string>
+  defaultLayout?: string
+  options: {
+    filter: string
+    defaultOrdering?: {
+      field: string
+      direction?: 'asc' | 'desc'
+    }[]
+    params?: Record<string, any>
   }
+  menuItems?: {
+    title: string
+  }[]
+  menuItemGroups?: {
+    id: string
+  }[]
+  initialValueTemplates?: {
+    templateId?: string
+    parameters?: Record<string, any>
+  }[]
+  displayOptions?: {
+    showIcons?: boolean
+  }
+  isSelected: boolean
+  isCollapsed: boolean
+  onExpand?: () => void
+  onCollapse?: () => void
+}
 
+export default class DocumentsListPane extends React.PureComponent<DocumentsListPaneProps> {
   static defaultProps = {
     className: '',
     styles: {},
@@ -117,6 +108,15 @@ export default class DocumentsListPane extends React.PureComponent {
     defaultLayout: undefined,
     initialValueTemplates: undefined
   }
+
+  // @todo: typings
+  layoutSetting?: any
+  sortOrderSetting?: any
+  queryResults$?: any
+
+  atLoadingThreshold?: boolean
+  templateMenuId?: string
+  settingsSubscription?: Subscription
 
   actionHandlers = {
     setLayout: ({layout}) => {
@@ -135,11 +135,13 @@ export default class DocumentsListPane extends React.PureComponent {
     hasFullSubscription: false
   }
 
-  constructor(props) {
-    super()
+  constructor(props: DocumentsListPaneProps) {
+    super(props)
+
     const {filter, params} = props.options
     const typeName = getTypeNameFromSingleTypeFilter(filter, params)
     const settingsNamespace = settings.forNamespace(typeName)
+
     this.atLoadingThreshold = false
     this.sortOrderSetting = settingsNamespace.forKey('sortOrder')
     this.layoutSetting = settingsNamespace.forKey('layout')
@@ -178,7 +180,9 @@ export default class DocumentsListPane extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    this.settingsSubscription.unsubscribe()
+    if (this.settingsSubscription) {
+      this.settingsSubscription.unsubscribe()
+    }
 
     if (this.queryResults$) {
       this.queryResults$.unsubscribe()
@@ -350,7 +354,7 @@ export default class DocumentsListPane extends React.PureComponent {
 
     if (error) {
       return (
-        <Snackbar
+        <DefaultSnackbar
           kind="error"
           isPersisted
           actionTitle="Retry"
@@ -386,13 +390,14 @@ export default class DocumentsListPane extends React.PureComponent {
     } = this.props
 
     return (
-      <DefaultPane
+      <Pane
+        actions={<PaneActions menuItems={menuItems} menuItemGroups={menuItemGroups} />}
         title={title}
         className={className}
         styles={this.props.styles}
         index={this.props.index}
-        menuItems={menuItems}
-        menuItemGroups={menuItemGroups}
+        // menuItems={menuItems}
+        // menuItemGroups={menuItemGroups}
         initialValueTemplates={initialValueTemplates}
         isSelected={isSelected}
         isCollapsed={isCollapsed}
@@ -401,7 +406,7 @@ export default class DocumentsListPane extends React.PureComponent {
         onExpand={onExpand}
       >
         {this.renderContent()}
-      </DefaultPane>
+      </Pane>
     )
   }
 }

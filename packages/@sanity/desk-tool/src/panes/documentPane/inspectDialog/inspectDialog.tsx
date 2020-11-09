@@ -1,8 +1,5 @@
 import {SanityDocument} from '@sanity/types'
-import FullScreenDialog from 'part:@sanity/components/dialogs/fullscreen'
-import Tab from 'part:@sanity/components/tabs/tab'
-import TabList from 'part:@sanity/components/tabs/tab-list'
-import TabPanel from 'part:@sanity/components/tabs/tab-panel'
+import {Dialog, Tab, TabList, TabPanel} from '@sanity/ui'
 import React, {useCallback} from 'react'
 import JSONInspector from 'react-json-inspector'
 import {withPropsStream} from 'react-props-stream'
@@ -56,8 +53,8 @@ function InspectDialogComponent(props: InnerInspectDialogProps) {
   }, [onViewModeChange])
 
   return (
-    <FullScreenDialog
-      title={
+    <Dialog
+      header={
         <span>
           Inspecting{' '}
           <em>
@@ -110,7 +107,7 @@ function InspectDialogComponent(props: InnerInspectDialogProps) {
           )}
         </TabPanel>
       </div>
-    </FullScreenDialog>
+    </Dialog>
   )
 }
 

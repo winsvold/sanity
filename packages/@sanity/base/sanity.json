@@ -741,7 +741,7 @@
     },
     {
       "implements": "part:@sanity/base/preview",
-      "path": "preview/index"
+      "path": "preview"
     },
     {
       "implements": "part:@sanity/base/th-list-icon",

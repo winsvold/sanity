@@ -1,30 +1,22 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable react/jsx-filename-extension */
-
-import PropTypes from 'prop-types'
+import {DefaultGridList} from '@sanity/base/__legacy/components'
 import React from 'react'
-import {List as GridList} from 'part:@sanity/components/lists/grid'
 import styles from './ListView.css'
 
-export default class ListView extends React.PureComponent {
-  static propTypes = {
-    layout: PropTypes.oneOf(['default', 'detail', 'card', 'media']),
-    children: PropTypes.node
-  }
+interface ListViewProps {
+  layout?: 'default' | 'detail' | 'card' | 'media'
+  children: React.ReactNode
+}
 
-  static defaultProps = {
-    layout: 'default',
-    children: undefined
-  }
-
+export default class ListView extends React.PureComponent<ListViewProps> {
   render() {
-    const {layout, children} = this.props
+    const {layout = 'default', children} = this.props
+
     if (layout === 'card') {
-      return <GridList className={styles.cardList}>{children}</GridList>
+      return <DefaultGridList className={styles.cardList}>{children}</DefaultGridList>
     }
 
     if (layout === 'media') {
-      return <GridList className={styles.mediaList}>{children}</GridList>
+      return <DefaultGridList className={styles.mediaList}>{children}</DefaultGridList>
     }
 
     return children

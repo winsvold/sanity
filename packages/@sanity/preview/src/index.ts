@@ -1,18 +1,21 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-exports.observeForPreview = require('./lib/observeForPreview').default
-exports.observePaths = require('./lib/observePaths').default
+import observeFields from './observeFields'
+import observePaths from './observePaths'
 
-exports.materializePaths = deprecate(
-  exports.observePaths,
+export {default as observeForPreview} from './observeForPreview'
+
+export {observePaths}
+
+export const materializePaths = deprecate(
+  observePaths,
   'The function materializePaths from @sanity/preview is deprecated in favor of observePaths from the same package'
 )
 
-exports.observeWithPaths = deprecate(
-  require('./lib/observeFields').default,
+export const observeWithPaths = deprecate(
+  observeFields,
   'The function observeWithPaths from @sanity/preview is deprecated in favor of observePaths from the same package'
 )
 
-function deprecate(old, message) {
+function deprecate(old: (...args: any[]) => any, message: string) {
   let hasWarned = false
   return function deprecated() {
     if (!hasWarned) {

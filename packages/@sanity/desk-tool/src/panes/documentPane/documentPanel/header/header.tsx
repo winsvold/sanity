@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import {negate, upperFirst} from 'lodash'
 import CloseIcon from 'part:@sanity/base/close-icon'
 import SplitHorizontalIcon from 'part:@sanity/base/split-horizontal-icon'
-import Button from 'part:@sanity/components/buttons/default'
+import {Button} from '@sanity/ui'
 import LanguageFilter from 'part:@sanity/desk-tool/language-select-component?'
 import React, {useCallback, useState} from 'react'
 import {DropdownButton} from '../../../../components/DropdownButton'
@@ -50,7 +50,7 @@ const isActionButton = (item: MenuItem) => (item as any).showAsAction
 const isMenuButton = negate(isActionButton)
 
 // eslint-disable-next-line complexity
-export function DocumentPanelHeader(props: DocumentPanelHeaderProps) {
+export function DocumentPanelHeader(props: DocumentPanelHeaderProps): JSX.Element {
   const {
     activeViewId,
     idPrefix,
@@ -139,11 +139,12 @@ export function DocumentPanelHeader(props: DocumentPanelHeaderProps) {
                 <div>
                   <Button
                     icon={SplitHorizontalIcon}
-                    kind="simple"
+                    // kind="simple"
+                    mode="bleed"
                     onClick={onSplitPane}
-                    padding="small"
+                    padding={2}
+                    // padding="small"
                     title="Split pane right"
-                    type="button"
                   />
                 </div>
               )}
@@ -152,11 +153,12 @@ export function DocumentPanelHeader(props: DocumentPanelHeaderProps) {
                 <div>
                   <Button
                     icon={CloseIcon}
-                    kind="simple"
+                    // kind="simple"
+                    mode="bleed"
                     onClick={onCloseView}
-                    padding="small"
+                    padding={2}
                     title="Close pane"
-                    type="button"
+                    // type="button"
                   />
                 </div>
               )}

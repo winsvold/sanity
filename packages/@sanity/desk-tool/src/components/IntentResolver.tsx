@@ -1,16 +1,15 @@
-/* eslint-disable react/no-multi-comp, react/prop-types */
+import {Spinner} from '@sanity/base/__legacy/components'
+import {getTemplateById} from '@sanity/base/initial-value-templates'
+import UUID from '@sanity/uuid'
 import React, {useEffect, useState} from 'react'
-import {of} from 'rxjs'
+import {Observable, of} from 'rxjs'
 import {map} from 'rxjs/operators'
 import client from 'part:@sanity/base/client'
 import {getPublishedId} from 'part:@sanity/base/util/draft-utils'
 import {useRouter} from 'part:@sanity/base/router'
-import Spinner from 'part:@sanity/components/loading/spinner'
 import {useStructure} from '../utils/resolvePanes'
 import {LOADING_PANE} from '../constants'
 import StructureError from './StructureError'
-import UUID from '@sanity/uuid'
-import {getTemplateById} from '@sanity/base/initial-value-templates'
 
 const FALLBACK_ID = '__fallback__'
 
@@ -37,7 +36,13 @@ function removeDraftPrefix(documentId) {
  *   - No : Resolves to fallback edit pane (context-less)
  */
 // eslint-disable-next-line complexity
-const IntentResolver = React.memo(function IntentResolver({params, payload}) {
+const IntentResolver = React.memo(function IntentResolver({
+  params,
+  payload
+}: {
+  params: Record<string, any>
+  payload: Record<string, any>
+}) {
   const {type: specifiedSchemaType, id, ...otherParams} = params || {}
 
   const documentId = id || FALLBACK_ID
@@ -108,10 +113,13 @@ function Redirect({panes}) {
 }
 
 function useDocumentType(documentId, specifiedType) {
-  const [{documentType, isLoaded}, setDocumentType] = useState({isLoaded: false})
+  const [{documentType, isLoaded}, setDocumentType] = useState<{
+    documentType?: any
+    isLoaded: boolean
+  }>({isLoaded: false})
   useEffect(() => {
-    const sub = resolveTypeForDocument(documentId, specifiedType).subscribe(documentType =>
-      setDocumentType({documentType, isLoaded: true})
+    const sub = resolveTypeForDocument(documentId, specifiedType).subscribe(_documentType =>
+      setDocumentType({documentType: _documentType, isLoaded: true})
     )
     return () => sub.unsubscribe()
   })
@@ -126,7 +134,10 @@ function resolveTypeForDocument(id, specifiedType) {
   const query = '*[_id in [$documentId, $draftId]]._type'
   const documentId = id.replace(/^drafts\./, '')
   const draftId = `drafts.${documentId}`
-  return client.observable.fetch(query, {documentId, draftId}).pipe(map(types => types[0]))
+
+  const types$: Observable<any[]> = client.observable.fetch(query, {documentId, draftId})
+
+  return types$.pipe(map(types => types[0]))
 }
 
 export default IntentResolver

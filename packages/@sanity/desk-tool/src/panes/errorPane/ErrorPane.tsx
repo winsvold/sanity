@@ -1,16 +1,15 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import DefaultPane from 'part:@sanity/components/panes/default'
+import {Pane} from '../../components/pane'
 import styles from './ErrorPane.css'
 
-export default function ErrorPane(props) {
-  return (
-    <DefaultPane color="danger" title="Error" isSelected={false} isCollapsed={false}>
-      <div className={styles.root}>{props.children}</div>
-    </DefaultPane>
-  )
+interface ErrorPaneProps {
+  children: React.ReactNode
 }
 
-ErrorPane.propTypes = {
-  children: PropTypes.node.isRequired
+export default function ErrorPane(props: ErrorPaneProps) {
+  return (
+    <Pane tone="critical" title="Error" isSelected={false} isCollapsed={false}>
+      <div className={styles.root}>{props.children}</div>
+    </Pane>
+  )
 }

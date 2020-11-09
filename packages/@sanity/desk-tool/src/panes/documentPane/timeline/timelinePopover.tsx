@@ -1,13 +1,9 @@
-import {Placement} from '@popperjs/core'
+import {Placement, Popover, useClickOutside} from '@sanity/ui'
 import {Chunk} from '@sanity/field/diff'
-import {ClickOutside} from 'part:@sanity/components/click-outside'
-import {Popover} from 'part:@sanity/components/popover'
-import React, {useCallback} from 'react'
+import React, {useCallback, useState} from 'react'
 import {useDocumentHistory} from '../documentHistory'
 import {sinceTimelineProps, revTimelineProps} from './helpers'
 import {Timeline} from './timeline'
-
-// import styles from './timelinePopover.css'
 
 interface TimelinePopoverProps {
   onClose: () => void
@@ -18,10 +14,7 @@ interface TimelinePopoverProps {
 
 export function TimelinePopover(props: TimelinePopoverProps) {
   const {onClose, open, targetElement} = props
-
-  // const openRef = useRef(open)
-
-  // const [mounted, setMounted] = useState(false)
+  const [timelineElement, setTimelineElement] = useState<HTMLElement | null>(null)
 
   const {
     historyController,
@@ -56,28 +49,30 @@ export function TimelinePopover(props: TimelinePopoverProps) {
     [historyController]
   )
 
+  useClickOutside(onClose, [timelineElement])
+
   const content = (
-    <ClickOutside onClickOutside={onClose}>
-      {ref =>
-        timelineMode === 'rev' ? (
-          <Timeline
-            ref={ref as any}
-            timeline={timeline}
-            onSelect={selectRev}
-            onLoadMore={loadMoreHistory}
-            {...revTimelineProps(historyController.realRevChunk)}
-          />
-        ) : (
-          <Timeline
-            ref={ref as any}
-            timeline={timeline}
-            onSelect={selectSince}
-            onLoadMore={loadMoreHistory}
-            {...sinceTimelineProps(historyController.sinceTime!, historyController.realRevChunk)}
-          />
-        )
-      }
-    </ClickOutside>
+    <>
+      {timelineMode === 'rev' && (
+        <Timeline
+          ref={setTimelineElement}
+          timeline={timeline}
+          onSelect={selectRev}
+          onLoadMore={loadMoreHistory}
+          {...revTimelineProps(historyController.realRevChunk)}
+        />
+      )}
+
+      {timelineMode !== 'rev' && (
+        <Timeline
+          ref={setTimelineElement}
+          timeline={timeline}
+          onSelect={selectSince}
+          onLoadMore={loadMoreHistory}
+          {...sinceTimelineProps(historyController.sinceTime!, historyController.realRevChunk)}
+        />
+      )}
+    </>
   )
 
   // @todo
@@ -101,7 +96,7 @@ export function TimelinePopover(props: TimelinePopoverProps) {
       // className={classNames(styles.root, mounted && styles.mounted)}
       content={content}
       open={open}
-      targetElement={targetElement}
+      referenceElement={targetElement}
     />
   )
 }

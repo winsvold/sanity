@@ -1,6 +1,6 @@
+import {Tooltip} from '@sanity/ui'
 import React from 'react'
 import VisibilityOffIcon from 'part:@sanity/base/visibility-off-icon'
-import {Tooltip} from 'part:@sanity/components/tooltip'
 import styles from './ItemStatus.css'
 
 const NotPublishedStatus = () => (

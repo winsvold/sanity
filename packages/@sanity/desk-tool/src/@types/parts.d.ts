@@ -34,7 +34,15 @@ declare module 'all:part:@sanity/base/diff-resolver' {
 
 declare module 'part:@sanity/base/document-actions/resolver'
 declare module 'part:@sanity/base/document-badges/resolver'
-declare module 'part:@sanity/base/preview'
+
+declare module 'part:@sanity/base/preview' {
+  export * from '@sanity/base/src/preview'
+  export {default} from '@sanity/base/src/preview'
+}
+
+declare module 'part:@sanity/base/with-referring-documents' {
+  export {WithReferringDocuments} from '@sanity/base/src/components/WithReferringDocuments'
+}
 
 declare module 'part:@sanity/base/router' {
   // @todo: replace all of this with:
@@ -72,6 +80,7 @@ declare module 'part:@sanity/base/router' {
 }
 
 declare module 'part:@sanity/base/schema'
+declare module 'part:@sanity/base/settings'
 declare module 'part:@sanity/base/user'
 declare module 'part:@sanity/base/util/document-action-utils'
 declare module 'part:@sanity/base/util/draft-utils'
@@ -452,7 +461,14 @@ declare module 'part:@sanity/components/validation/list' {
 }
 
 /*
- * @sanity/form-builder
+ * part:@sanity/form-builder
  */
 
 declare module 'part:@sanity/form-builder'
+
+/*
+ * part:@sanity/storybook
+ */
+
+declare module 'part:@sanity/storybook'
+declare module 'part:@sanity/storybook/*'

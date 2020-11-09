@@ -1,9 +1,7 @@
-/* eslint-disable complexity */
+import {Spinner} from '@sanity/base/__legacy/components'
+import {Dialog, Button} from '@sanity/ui'
 import React, {Fragment} from 'react'
 import {storiesOf} from 'part:@sanity/storybook'
-import Dialog from 'part:@sanity/components/dialogs/fullscreen'
-import Spinner from 'part:@sanity/components/loading/spinner'
-import Button from 'part:@sanity/components/buttons/default'
 import {withKnobs, boolean, number, text} from 'part:@sanity/storybook/addons/knobs'
 import {range} from 'lodash'
 
@@ -12,27 +10,28 @@ storiesOf('@sanity/desk-tool', module)
   .add('Confirm Delete', () => {
     const hasReferringDocuments = boolean('hasReferringDocuments', false)
     const isCheckingReferringDocuments = boolean('isCheckingReferringDocuments', false)
-    const canContinue = boolean('canContinue', false)
+    // const canContinue = boolean('canContinue', false)
     const referringDocuments = range(number('referringDocuments', 1))
-    const actions = [
-      canContinue && {
-        name: 'confirm',
-        title: hasReferringDocuments ? 'Try to delete anyway' : 'Delete now',
-        color: 'danger'
-      },
-      {name: 'cancel', title: 'Keep', kind: 'simple'}
-    ].filter(Boolean)
+    // const actions = [
+    //   canContinue && {
+    //     name: 'confirm',
+    //     title: hasReferringDocuments ? 'Try to delete anyway' : 'Delete now',
+    //     color: 'danger'
+    //   },
+    //   {name: 'cancel', title: 'Keep', kind: 'simple'}
+    // ].filter(Boolean)
     const title = isCheckingReferringDocuments ? 'Checking…' : 'Confirm delete'
 
     return (
       <Dialog
-        isOpen
-        showHeader
-        color="danger"
-        centered
-        title={title}
-        onAction={() => console.log('onAction')}
-        actions={actions}
+        // isOpen
+        // showHeader
+        // color="danger"
+        // centered
+        header={title}
+        id="storybook-example-dialog"
+        // onAction={() => console.log('onAction')}
+        // actions={actions}
       >
         {isCheckingReferringDocuments && <Spinner message="Looking for referring documents…" />}
         {hasReferringDocuments && (
@@ -85,13 +84,14 @@ storiesOf('@sanity/desk-tool', module)
 
     return (
       <Dialog
-        isOpen
-        showHeader
-        centered
-        title={title}
+        // isOpen
+        // showHeader
+        // centered
+        header={title}
+        id="storybook-example-dialog"
         onClose={() => console.log('handleClose')}
-        onAction={() => console.log('handleAction')}
-        actions={actions}
+        // onAction={() => console.log('handleAction')}
+        // actions={actions}
       >
         {isCheckingReferringDocuments && <Spinner message="Looking for referring documents…" />}
         {hasReferringDocuments && (
@@ -134,7 +134,14 @@ storiesOf('@sanity/desk-tool', module)
     const isNetworkError = boolean('isNetworkError')
     const message = text('message', 'An error occured')
     return (
-      <Dialog color="danger" title="Error" isOpen centered size="medium">
+      <Dialog
+        // color="danger"
+        header="Error"
+        id="storybook-example-dialog"
+        // isOpen
+        // centered
+        // size="medium"
+      >
         {!isNetworkError && <p>{message}</p>}
         {isNetworkError && (
           <>

@@ -1,46 +1,39 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import DefaultPane from 'part:@sanity/components/panes/default'
 import listStyles from 'part:@sanity/components/lists/default-style'
+import {Pane, PaneActions} from '../../components/pane'
 import {PaneRouterContext} from '../../contexts/PaneRouterContext'
 import {PaneItem} from '../../components/paneItem'
 import {ListView} from '../../components/listView'
 
-export default class ListPane extends React.PureComponent {
-  static contextType = PaneRouterContext
-
-  static propTypes = {
-    index: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    childItemId: PropTypes.string.isRequired,
-    className: PropTypes.string,
-    styles: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    defaultLayout: PropTypes.string,
-    items: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        type: PropTypes.string.isRequired,
-        schemaType: PropTypes.shape({name: PropTypes.string})
-      })
-    ),
-    menuItems: PropTypes.arrayOf(
-      PropTypes.shape({
-        title: PropTypes.string.isRequired
-      })
-    ),
-    menuItemGroups: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string.isRequired
-      })
-    ),
-    displayOptions: PropTypes.shape({
-      showIcons: PropTypes.bool
-    }),
-    isSelected: PropTypes.bool.isRequired,
-    isCollapsed: PropTypes.bool.isRequired,
-    onExpand: PropTypes.func,
-    onCollapse: PropTypes.func
+interface ListPaneProps {
+  index: number
+  title: string
+  childItemId: string
+  className?: string
+  styles?: Record<string, string>
+  defaultLayout?: string
+  items?: {
+    id: string
+    type: string
+    schemaType?: {name?: string}
+  }[]
+  menuItems?: {
+    title: string
+  }[]
+  menuItemGroups?: {
+    id: string
+  }[]
+  displayOptions?: {
+    showIcons?: boolean
   }
+  isSelected: boolean
+  isCollapsed: boolean
+  onExpand?: () => void
+  onCollapse?: () => void
+}
+
+export default class ListPane extends React.PureComponent<ListPaneProps> {
+  static contextType = PaneRouterContext
 
   static defaultProps = {
     className: '',
@@ -88,7 +81,8 @@ export default class ListPane extends React.PureComponent {
     } = this.props
 
     return (
-      <DefaultPane
+      <Pane
+        actions={<PaneActions menuItems={menuItems} menuItemGroups={menuItemGroups} />}
         index={index}
         title={title}
         styles={styles}
@@ -97,8 +91,6 @@ export default class ListPane extends React.PureComponent {
         isCollapsed={isCollapsed}
         onCollapse={onCollapse}
         onExpand={onExpand}
-        menuItems={menuItems}
-        menuItemGroups={menuItemGroups}
       >
         <ListView layout={defaultLayout}>
           {items.map(item =>
@@ -118,7 +110,7 @@ export default class ListPane extends React.PureComponent {
             )
           )}
         </ListView>
-      </DefaultPane>
+      </Pane>
     )
   }
 }

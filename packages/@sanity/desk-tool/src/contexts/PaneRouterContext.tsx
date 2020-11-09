@@ -1,9 +1,11 @@
-/* eslint-disable react/prop-types, react/no-multi-comp */
 import React, {useContext} from 'react'
 import {isEqual, pick, omit} from 'lodash'
 import {StateLink, Router} from 'part:@sanity/base/router'
 
-const contextCache = new WeakMap<object, Map<string, PaneRouterContextShape>>()
+const contextCache = new WeakMap<
+  React.Component<DeskToolPanesProps>,
+  Map<string, PaneRouterContextShape>
+>()
 
 interface SetParamsOptions {
   recurseIfInherited?: boolean
@@ -48,7 +50,11 @@ export interface PaneRouterContextShape {
   routerPanesState: RouterPanesState
 
   // Curried StateLink that passes the correct state automatically
-  ChildLink: (props: {childId: string; childParameters: Record<string, any>}) => React.ReactNode
+  ChildLink: React.ComponentType<{
+    childId: string
+    childParameters?: Record<string, any>
+    className?: string
+  }>
 
   // Curried StateLink that passed the correct state, but merges params/payload
   ParameterizedLink: (props: {params?: Record<string, any>; payload?: unknown}) => React.ReactNode

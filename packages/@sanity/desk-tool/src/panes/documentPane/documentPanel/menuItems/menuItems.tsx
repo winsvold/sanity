@@ -2,7 +2,7 @@ import {MenuItem} from '@sanity/base/__legacy/components'
 import BinaryIcon from 'part:@sanity/base/binary-icon'
 import PublicIcon from 'part:@sanity/base/public-icon'
 import HistoryIcon from 'part:@sanity/base/history-icon'
-import Hotkeys from 'part:@sanity/components/typography/hotkeys'
+import {Hotkeys} from '@sanity/ui'
 import resolveProductionPreviewUrl from 'part:@sanity/transitional/production-preview/resolve-production-url?'
 import React from 'react'
 import {DeskToolFeatures} from '../../../../features'
@@ -36,7 +36,7 @@ const getInspectItem = ({value}: Params): MenuItem => ({
     <span className={styles.menuItem}>
       <span className={styles.menuItemLabel}>Inspect</span>
       <span className={styles.hotkey}>
-        <Hotkeys keys={['Ctrl', 'Alt', 'I']} size="small" />
+        <Hotkeys keys={['Ctrl', 'Alt', 'I']} size={1} />
       </span>
     </span>
   ),
