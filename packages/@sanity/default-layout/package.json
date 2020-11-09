@@ -35,7 +35,7 @@
   "dependencies": {
     "@sanity/components": "2.0.4",
     "@sanity/generate-help-url": "2.0.1",
-    "@sanity/ui": "^1.0.0-alpha.25",
+    "@sanity/ui": "^1.0.0-alpha.26",
     "@sanity/util": "2.0.1",
     "lodash": "^4.17.15",
     "rxjs": "^6.5.3"
