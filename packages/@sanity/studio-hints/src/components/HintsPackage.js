@@ -1,9 +1,10 @@
 /* eslint-disable no-console, class-methods-use-this */
+
+import {WarningOutlineIcon} from '@sanity/icons'
 import React from 'react'
 import LinkButton from 'part:@sanity/components/buttons/anchor'
 import Spinner from 'part:@sanity/components/loading/spinner'
 import studioHintsConfig from 'part:@sanity/default-layout/studio-hints-config'
-import WarningIcon from 'part:@sanity/base/warning-icon'
 import {getHints} from '../datastore'
 import {resolveUrl} from './utils'
 import LinksList from './LinksList'
@@ -86,7 +87,7 @@ export default class HintsPackage extends React.PureComponent {
       <div className={`${styles.root} ${styles.withError}`}>
         <div className={styles.errorWrapper}>
           <h2 className={styles.errorTitle}>
-            <WarningIcon />
+            <WarningOutlineIcon />
             {title}
           </h2>
           <p className={styles.errorMessage}>{message}</p>

@@ -1,5 +1,5 @@
-import * as React from 'react'
-import ErrorOutlineIcon from 'part:@sanity/base/error-outline-icon'
+import {ErrorOutlineIcon} from '@sanity/icons'
+import React from 'react'
 import {FieldValueError} from '../../validation'
 import styles from './ValueError.css'
 

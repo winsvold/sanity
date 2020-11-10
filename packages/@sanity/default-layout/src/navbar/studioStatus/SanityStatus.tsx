@@ -1,6 +1,6 @@
+import {PackageIcon} from '@sanity/icons'
 import React from 'react'
 import Button from 'part:@sanity/components/buttons/default'
-import PackageIcon from 'part:@sanity/base/package-icon'
 import {useId} from '@reach/auto-id'
 import CurrentVersionsDialog from './CurrentVersionsDialog'
 import UpdateNotifierDialog from './UpdateNotifierDialog'

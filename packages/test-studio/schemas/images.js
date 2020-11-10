@@ -1,4 +1,4 @@
-import icon from 'part:@sanity/base/image-icon'
+import {ImageIcon} from '@sanity/icons'
 
 export const myImage = {
   name: 'myImage',
@@ -17,7 +17,7 @@ export default {
   name: 'imagesTest',
   type: 'document',
   title: 'Images test',
-  icon,
+  icon: ImageIcon,
   description: 'Different test cases of image fields',
   // readOnly: true,
   fields: [

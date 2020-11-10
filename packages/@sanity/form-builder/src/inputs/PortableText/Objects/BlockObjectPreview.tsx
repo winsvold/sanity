@@ -1,14 +1,10 @@
 /* eslint-disable react/prop-types */
+
+import {EditIcon, EyeOpenIcon, LinkIcon, TrashIcon} from '@sanity/icons'
 import React, {FunctionComponent} from 'react'
 import {Path} from '@sanity/types'
 import {PortableTextBlock, Type} from '@sanity/portable-text-editor'
 import DropDownButton from 'part:@sanity/components/buttons/dropdown'
-
-import EditIcon from 'part:@sanity/base/edit-icon'
-import LinkIcon from 'part:@sanity/base/link-icon'
-import TrashIcon from 'part:@sanity/base/trash-icon'
-import VisibilityIcon from 'part:@sanity/base/visibility-icon'
-
 import Preview from '../../../Preview'
 import {MenuItem, DropDownMenuItemProps} from './BlockObjectMenuItem'
 
@@ -43,7 +39,7 @@ export const BlockObjectPreview: FunctionComponent<Props> = ({
   if (readOnly) {
     menuItems.push({
       title: 'View',
-      icon: VisibilityIcon,
+      icon: EyeOpenIcon,
       name: 'view',
     })
   } else {

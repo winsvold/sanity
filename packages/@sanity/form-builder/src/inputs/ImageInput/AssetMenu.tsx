@@ -1,6 +1,4 @@
-import LinkIcon from 'part:@sanity/base/link-icon'
-import MoreVertIcon from 'part:@sanity/base/more-vert-icon'
-import TrashIcon from 'part:@sanity/base/trash-icon'
+import {EllipsisVerticalIcon, LinkIcon, TrashIcon} from '@sanity/icons'
 import DropDownButton from 'part:@sanity/components/buttons/dropdown'
 import React from 'react'
 import {AssetAction} from './types'
@@ -28,7 +26,7 @@ export default function AssetMenu({
 }) {
   return (
     <DropDownButton
-      icon={MoreVertIcon}
+      icon={EllipsisVerticalIcon}
       padding="small"
       placement="bottom-end"
       showArrow={false}

@@ -1,5 +1,5 @@
+import {TrashIcon} from '@sanity/icons'
 import {useDocumentOperation} from '@sanity/react-hooks'
-import TrashIcon from 'part:@sanity/base/trash-icon'
 import React, {useCallback} from 'react'
 import ConfirmDelete from '../components/ConfirmDelete'
 

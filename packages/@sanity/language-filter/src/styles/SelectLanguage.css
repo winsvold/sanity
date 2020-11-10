@@ -39,7 +39,7 @@
     font-size: calc(15 / 16 * 1em);
     margin: 1px 0;
 
-    &[data-sanity-icon='true'] {
+    &[data-sanity-icon] {
       font-size: calc(21 / 16 * 1em);
       margin: calc(2 / 21 * -1em);
     }

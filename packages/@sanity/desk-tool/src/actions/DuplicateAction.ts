@@ -1,6 +1,6 @@
+import {DocumentsIcon} from '@sanity/icons'
 import uuid from '@sanity/uuid'
 import {useDocumentOperation} from '@sanity/react-hooks'
-import ContentCopyIcon from 'part:@sanity/base/content-copy-icon'
 import {useRouter} from 'part:@sanity/base/router'
 import React, {useCallback} from 'react'
 
@@ -24,7 +24,7 @@ export function DuplicateAction({id, type, onComplete}) {
   }, [duplicate, onComplete, router, type])
 
   return {
-    icon: ContentCopyIcon,
+    icon: DocumentsIcon,
     disabled: Boolean(isDuplicating || duplicate.disabled),
     label: isDuplicating ? 'Duplicating…' : 'Duplicate',
     title: (duplicate.disabled && DISABLED_REASON_TITLE[duplicate.disabled]) || '',

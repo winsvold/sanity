@@ -1,8 +1,8 @@
 /* eslint-disable complexity */
 
+import {WarningOutlineIcon} from '@sanity/icons'
 import PropTypes from 'prop-types'
 import React from 'react'
-import WarningIcon from 'part:@sanity/base/warning-icon'
 import Alert from 'part:@sanity/components/alerts/alert'
 import FullscreenDialog from 'part:@sanity/components/dialogs/fullscreen'
 import Spinner from 'part:@sanity/components/loading/spinner'
@@ -68,7 +68,7 @@ export default enhanceWithReferringDocuments(
 
           {hasReferringDocuments && (
             <>
-              <Alert color="warning" icon={WarningIcon}>
+              <Alert color="warning" icon={WarningOutlineIcon}>
                 Warning: Found{' '}
                 {referringDocuments.length === 1 ? (
                   <>a document</>

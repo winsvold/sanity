@@ -1,10 +1,10 @@
-import icon from 'part:@sanity/base/user-icon'
+import {UserIcon} from '@sanity/icons'
 
 export default {
   name: 'author',
   type: 'document',
   title: 'Author',
-  icon,
+  icon: UserIcon,
   description: 'This represents an author',
   __experimental_search: [{path: 'name', weight: 10}],
   preview: {

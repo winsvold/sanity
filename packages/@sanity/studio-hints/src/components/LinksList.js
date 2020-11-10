@@ -1,6 +1,6 @@
+import {LaunchIcon} from '@sanity/icons'
 import React from 'react'
 import PropTypes from 'prop-types'
-import LaunchIcon from 'part:@sanity/base/launch-icon'
 import styles from './LinksList.css'
 import HintCard from './HintCard'
 

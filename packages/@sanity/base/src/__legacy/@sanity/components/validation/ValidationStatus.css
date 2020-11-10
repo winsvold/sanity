@@ -35,7 +35,7 @@
     display: block;
     font-size: calc(17 / 16 * 1em);
 
-    &[data-sanity-icon='true'] {
+    &[data-sanity-icon] {
       font-size: calc(25 / 16 * 1em);
       margin: calc(4 / 25 * -1em);
     }

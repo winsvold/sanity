@@ -1,6 +1,6 @@
+import {UndoIcon} from '@sanity/icons'
 import {DialogAction} from '@sanity/components'
 import {useDocumentOperation} from '@sanity/react-hooks'
-import UndoIcon from 'part:@sanity/base/undo-icon'
 import Button from 'part:@sanity/components/buttons/default'
 import PopoverDialog from 'part:@sanity/components/dialogs/popover'
 import React, {useState, useCallback} from 'react'

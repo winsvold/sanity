@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'react-datepicker/dist/react-datepicker-cssmodules.css'
 
+import {CalendarIcon} from '@sanity/icons'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import moment, {Moment} from 'moment'
@@ -9,7 +10,6 @@ import {isValidationErrorMarker, Marker} from '@sanity/types'
 import FormField from 'part:@sanity/components/formfields/default'
 import TextInput from 'part:@sanity/components/textinputs/default'
 import Button from 'part:@sanity/components/buttons/default'
-import CalendarIcon from 'part:@sanity/base/calendar-icon'
 import {uniqueId} from 'lodash'
 import styles from './styles/BaseDateTimeInput.css'
 

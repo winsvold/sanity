@@ -1,6 +1,6 @@
+import {RestoreIcon} from '@sanity/icons'
 import {useDocumentOperation} from '@sanity/react-hooks'
 import {useRouter} from 'part:@sanity/base/router'
-import HistoryIcon from 'part:@sanity/base/history-icon'
 import React, {useCallback, useMemo} from 'react'
 
 export function HistoryRestoreAction({id, type, revision, onComplete}) {
@@ -51,7 +51,7 @@ export function HistoryRestoreAction({id, type, revision, onComplete}) {
     title: isRevisionInitialVersion
       ? "You can't restore to the initial version"
       : 'Restore to this version',
-    icon: HistoryIcon,
+    icon: RestoreIcon,
     dialog,
     disabled: isRevisionInitialVersion,
   }

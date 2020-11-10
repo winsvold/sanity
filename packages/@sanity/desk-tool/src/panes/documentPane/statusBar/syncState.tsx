@@ -1,6 +1,5 @@
+import {CheckmarkIcon, SyncIcon} from '@sanity/icons'
 import {useSyncState, useConnectionState} from '@sanity/react-hooks'
-import CheckIcon from 'part:@sanity/base/check-icon'
-import SyncIcon from 'part:@sanity/base/sync-icon'
 import React from 'react'
 
 import styles from './syncState.css'
@@ -15,7 +14,7 @@ export function SyncState(props: SyncStateProps) {
   const {isSyncing} = useSyncState(id)
   const connectionState = useConnectionState(id, type)
   const isConnected = connectionState === 'connected'
-  const icon = isSyncing || !isConnected ? <SyncIcon /> : <CheckIcon />
+  const icon = isSyncing || !isConnected ? <SyncIcon /> : <CheckmarkIcon />
 
   // eslint-disable-next-line no-nested-ternary
   const className = isSyncing

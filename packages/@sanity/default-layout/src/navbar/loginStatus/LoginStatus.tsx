@@ -1,6 +1,5 @@
+import {ChevronDownIcon, LeaveIcon} from '@sanity/icons'
 import {UserAvatar} from '@sanity/base/components'
-import ChevronDownIcon from 'part:@sanity/base/chevron-down-icon'
-import IconSignOut from 'part:@sanity/base/sign-out-icon'
 import {ClickOutside} from 'part:@sanity/components/click-outside'
 import Menu from 'part:@sanity/components/menus/default'
 import {Popover} from 'part:@sanity/components/popover'
@@ -45,8 +44,8 @@ export default class LoginStatus extends React.PureComponent<LoginStatusProps, L
   render() {
     const menuItems: MenuItem[] = [
       {
-        title: `Sign out`,
-        icon: IconSignOut,
+        title: 'Sign out',
+        icon: LeaveIcon,
         action: 'signOut',
       },
     ]

@@ -1,6 +1,6 @@
+import {WarningOutlineIcon} from '@sanity/icons'
 import PropTypes from 'prop-types'
 import React from 'react'
-import WarningIcon from 'part:@sanity/base/warning-icon'
 import Alert from 'part:@sanity/components/alerts/alert'
 import FullscreenDialog from 'part:@sanity/components/dialogs/fullscreen'
 import Spinner from 'part:@sanity/components/loading/spinner'
@@ -78,7 +78,7 @@ export default enhanceWithReferringDocuments(
 
           {hasReferringDocuments && (
             <>
-              <Alert color="warning" icon={WarningIcon}>
+              <Alert color="warning" icon={WarningOutlineIcon}>
                 Warning: Found{' '}
                 {referringDocuments.length === 1 ? (
                   <>a document</>
@@ -98,7 +98,7 @@ export default enhanceWithReferringDocuments(
 
           {!isCheckingReferringDocuments && !hasReferringDocuments && (
             <>
-              <Alert color="warning" icon={WarningIcon} title="Careful!">
+              <Alert color="warning" icon={WarningOutlineIcon} title="Careful!">
                 If you unpublish this document, it will no longer be available for the public.
                 However, it will not be deleted and can be published again later.
               </Alert>

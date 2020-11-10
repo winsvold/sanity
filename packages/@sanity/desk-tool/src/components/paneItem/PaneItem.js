@@ -1,9 +1,8 @@
+import {DocumentIcon, FolderIcon} from '@sanity/icons'
 import PropTypes from 'prop-types'
 import React from 'react'
 import schema from 'part:@sanity/base/schema'
 import {SanityDefaultPreview} from 'part:@sanity/base/preview'
-import folderIcon from 'part:@sanity/base/folder-icon'
-import fileIcon from 'part:@sanity/base/file-icon'
 import DocumentPaneItemPreview from '../../components/DocumentPaneItemPreview'
 import getIconWithFallback from '../../utils/getIconWithFallback'
 import MissingSchemaType from '../../components/MissingSchemaType'
@@ -19,7 +18,7 @@ export default function PaneItem(props) {
   if (value && value._id) {
     preview = hasSchemaType ? (
       <DocumentPaneItemPreview
-        icon={getIconWithFallback(icon, schemaType, fileIcon)}
+        icon={getIconWithFallback(icon, schemaType, DocumentIcon)}
         layout={layout}
         schemaType={schemaType}
         value={value}
@@ -30,7 +29,7 @@ export default function PaneItem(props) {
   } else {
     preview = (
       <SanityDefaultPreview
-        icon={getIconWithFallback(icon, schemaType, folderIcon)}
+        icon={getIconWithFallback(icon, schemaType, FolderIcon)}
         layout={layout}
         value={value}
       />

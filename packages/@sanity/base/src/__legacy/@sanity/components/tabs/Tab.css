@@ -44,7 +44,7 @@
     display: block;
     font-size: calc(15 / 16 * 1em);
 
-    @nest &[data-sanity-icon='true'] {
+    @nest &[data-sanity-icon] {
       font-size: calc(21 / 16 * 1em);
       margin: calc(3 / 21 * -1em);
     }

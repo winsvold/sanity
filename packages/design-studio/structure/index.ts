@@ -1,5 +1,5 @@
+import {CogIcon} from '@sanity/icons'
 import S from '@sanity/desk-tool/structure-builder'
-import CogIcon from 'part:@sanity/base/cog-icon'
 import {JSONPreviewDocumentView} from '../documentViews/jsonPreview'
 
 const STRUCTURE_CUSTOM_TYPES = ['settings']

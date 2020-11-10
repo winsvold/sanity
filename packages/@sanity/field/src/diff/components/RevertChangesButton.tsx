@@ -1,6 +1,6 @@
+import {UndoIcon} from '@sanity/icons'
 import classNames from 'classnames'
 import React, {forwardRef} from 'react'
-import UndoIcon from 'part:@sanity/base/undo-icon'
 
 import styles from './RevertChangesButton.css'
 

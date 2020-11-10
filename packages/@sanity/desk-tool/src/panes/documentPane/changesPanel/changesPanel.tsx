@@ -10,7 +10,7 @@ import {
   ObjectDiff,
   ObjectSchemaType,
 } from '@sanity/field/diff'
-import CloseIcon from 'part:@sanity/base/close-icon'
+import {CloseIcon} from '@sanity/icons'
 import {UserAvatar} from '@sanity/base/components'
 import Button from 'part:@sanity/components/buttons/default'
 import {AvatarStack} from 'part:@sanity/components/avatar'

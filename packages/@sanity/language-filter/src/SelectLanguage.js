@@ -1,12 +1,12 @@
 /* eslint-disable complexity */
 
+import {ChevronDownIcon} from '@sanity/icons'
 import React, {Fragment} from 'react'
 import PropTypes from 'prop-types'
 import Poppable from 'part:@sanity/components/utilities/poppable'
 import Checkbox from 'part:@sanity/components/toggles/checkbox'
 import Button from 'part:@sanity/components/buttons/default'
 import styles from './styles/SelectLanguage.css'
-import ChevronDown from 'part:@sanity/base/angle-down-icon'
 
 const LanguagePropType = PropTypes.shape({id: PropTypes.string, title: PropTypes.string})
 export default class SelectLanguage extends React.Component {
@@ -73,7 +73,7 @@ export default class SelectLanguage extends React.Component {
             Filter languages{allIsSelected ? '' : ` (${selected.length}/${languages.length})`}
           </div>
           <div className={styles.targetIcon}>
-            <ChevronDown />
+            <ChevronDownIcon />
           </div>
         </div>
         <Poppable

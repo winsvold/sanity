@@ -1,7 +1,7 @@
+import {ChevronDownIcon} from '@sanity/icons'
 import {toString} from '@sanity/util/paths'
 import classNames from 'classnames'
 import {isKeySegment, Path} from '@sanity/types'
-import ChevronDownIcon from 'part:@sanity/base/chevron-down-icon'
 import {Popover} from 'part:@sanity/components/popover'
 import React, {useCallback, useEffect, useState} from 'react'
 import {ConnectorContext, useReportedValues} from '@sanity/base/lib/change-indicators'

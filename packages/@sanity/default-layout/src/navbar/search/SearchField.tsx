@@ -1,6 +1,5 @@
+import {CloseIcon, SearchIcon} from '@sanity/icons'
 import React from 'react'
-import CloseIcon from 'part:@sanity/base/close-icon'
-import SearchIcon from 'part:@sanity/base/search-icon'
 import Hotkeys from 'part:@sanity/components/typography/hotkeys'
 
 import styles from './SearchField.css'

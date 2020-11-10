@@ -1,7 +1,7 @@
+import {ChevronDownIcon} from '@sanity/icons'
 import {FOCUS_TERMINATOR, toString} from '@sanity/util/paths'
 import classNames from 'classnames'
 import {isKeySegment, Path} from '@sanity/types'
-import ChevronDownIcon from 'part:@sanity/base/chevron-down-icon'
 import SanityPreview from 'part:@sanity/base/preview'
 import {useClickOutside} from '@sanity/components'
 import {useLayer} from 'part:@sanity/components/layer'

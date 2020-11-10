@@ -1,7 +1,7 @@
+import {ChevronDownIcon} from '@sanity/icons'
 import React from 'react'
 import {Subscription} from 'rxjs'
 import enhanceClickOutside from 'react-click-outside'
-import ChevronDownIcon from 'part:@sanity/base/chevron-down-icon'
 import {withRouterHOC} from 'part:@sanity/base/router'
 import {map} from 'rxjs/operators'
 import {state as urlState} from '../../datastores/urlState'

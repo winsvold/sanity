@@ -1,7 +1,5 @@
+import {BinaryDocumentIcon, EarthAmericasIcon, RestoreIcon} from '@sanity/icons'
 import {MenuItem} from '@sanity/components'
-import BinaryIcon from 'part:@sanity/base/binary-icon'
-import PublicIcon from 'part:@sanity/base/public-icon'
-import HistoryIcon from 'part:@sanity/base/history-icon'
 import Hotkeys from 'part:@sanity/components/typography/hotkeys'
 import resolveProductionPreviewUrl from 'part:@sanity/transitional/production-preview/resolve-production-url?'
 import React from 'react'
@@ -25,7 +23,7 @@ const getHistoryMenuItem = (params: Params): MenuItem | null => {
   return {
     action: 'reviewChanges',
     title: 'Review changes',
-    icon: HistoryIcon,
+    icon: RestoreIcon,
     isDisabled: isHistoryOpen || !value,
   }
 }
@@ -40,7 +38,7 @@ const getInspectItem = ({value}: Params): MenuItem => ({
       </span>
     </span>
   ),
-  icon: BinaryIcon,
+  icon: BinaryDocumentIcon,
   isDisabled: !value,
 })
 
@@ -74,7 +72,7 @@ export const getProductionPreviewItem = ({value, rev}: Params): MenuItem | null 
         </span>
       </span>
     ),
-    icon: PublicIcon,
+    icon: EarthAmericasIcon,
     url: previewUrl,
   }
 }

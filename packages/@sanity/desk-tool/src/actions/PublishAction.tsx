@@ -1,6 +1,5 @@
+import {CheckmarkIcon, PublishIcon} from '@sanity/icons'
 import {useSyncState, useDocumentOperation, useValidationStatus} from '@sanity/react-hooks'
-import CheckmarkIcon from 'part:@sanity/base/check-icon'
-import PublishIcon from 'part:@sanity/base/publish-icon'
 import React, {useCallback, useEffect, useState} from 'react'
 import TimeAgo from '../components/TimeAgo'
 import {useDocumentHistory} from '../panes/documentPane/documentHistory'

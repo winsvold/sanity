@@ -22,7 +22,7 @@
     font-size: 13px;
     margin: -1px;
 
-    &[data-sanity-icon='true'] {
+    &[data-sanity-icon] {
       font-size: 17px;
       margin: -3px;
     }

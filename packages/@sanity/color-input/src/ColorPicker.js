@@ -1,9 +1,9 @@
+import {TrashIcon} from '@sanity/icons'
 import React from 'react'
 import PropTypes from 'prop-types'
 import Button from 'part:@sanity/components/buttons/default'
 import {ColorWrap, Checkboard, Saturation, Hue, Alpha} from 'react-color/lib/components/common'
 import ColorPickerFields from './ColorPickerFields'
-import TrashIcon from 'part:@sanity/base/trash-icon'
 import styles from './ColorPicker.css'
 
 const ColorPicker = ({

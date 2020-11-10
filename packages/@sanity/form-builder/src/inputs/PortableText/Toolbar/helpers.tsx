@@ -1,6 +1,18 @@
 /* eslint-disable react/no-multi-comp */
 
 import {
+  BlockElementIcon,
+  LinkIcon,
+  BoldIcon,
+  CodeIcon,
+  InlineElementIcon,
+  ItalicIcon,
+  StrikethroughIcon,
+  UnderlineIcon,
+  OlistIcon,
+  UlistIcon,
+} from '@sanity/icons'
+import {
   EditorSelection,
   HotkeyOptions,
   PortableTextEditor,
@@ -9,17 +21,7 @@ import {
 } from '@sanity/portable-text-editor'
 import {FOCUS_TERMINATOR} from '@sanity/util/paths'
 import {get} from 'lodash'
-import LinkIcon from 'part:@sanity/base/link-icon'
-import FormatBoldIcon from 'part:@sanity/base/format-bold-icon'
-import FormatItalicIcon from 'part:@sanity/base/format-italic-icon'
-import FormatStrikethroughIcon from 'part:@sanity/base/format-strikethrough-icon'
-import FormatUnderlinedIcon from 'part:@sanity/base/format-underlined-icon'
-import FormatCodeIcon from 'part:@sanity/base/format-code-icon'
 import SanityLogoIcon from 'part:@sanity/base/sanity-logo-icon'
-import FormatListBulletedIcon from 'part:@sanity/base/format-list-bulleted-icon'
-import FormatListNumberedIcon from 'part:@sanity/base/format-list-numbered-icon'
-import BlockObjectIcon from 'part:@sanity/base/block-object-icon'
-import InlineObjectIcon from 'part:@sanity/base/inline-object-icon'
 import React from 'react'
 import {Path} from '@sanity/types'
 import CustomIcon from './CustomIcon'
@@ -31,15 +33,15 @@ function getFormatIcon(
 ): React.ComponentType {
   switch (type) {
     case 'strong':
-      return FormatBoldIcon
+      return BoldIcon
     case 'em':
-      return FormatItalicIcon
+      return ItalicIcon
     case 'underline':
-      return FormatUnderlinedIcon
+      return UnderlineIcon
     case 'strike-through':
-      return FormatStrikethroughIcon
+      return StrikethroughIcon
     case 'code':
-      return FormatCodeIcon
+      return CodeIcon
     default:
       return schemaIcon || SanityLogoIcon
   }
@@ -93,9 +95,9 @@ function getListIcon(item: PortableTextFeature, active: boolean): React.Componen
 
   switch (item.value) {
     case 'number':
-      return FormatListNumberedIcon
+      return OlistIcon
     case 'bullet':
-      return FormatListBulletedIcon
+      return UlistIcon
     default:
       return SanityLogoIcon
   }
@@ -256,7 +258,7 @@ export function getInsertMenuItems(
         const path = PortableTextEditor.insertBlock(editor, type)
         onFocus(path.concat(FOCUS_TERMINATOR))
       },
-      icon: getInsertMenuIcon(type, BlockObjectIcon),
+      icon: getInsertMenuIcon(type, BlockElementIcon),
       inline: false,
       key: `block-${index}`,
       type,
@@ -270,7 +272,7 @@ export function getInsertMenuItems(
         const path = PortableTextEditor.insertChild(editor, type)
         onFocus(path.concat(FOCUS_TERMINATOR))
       },
-      icon: getInsertMenuIcon(type, InlineObjectIcon),
+      icon: getInsertMenuIcon(type, InlineElementIcon),
       inline: true,
       key: `inline-${index}`,
       type,

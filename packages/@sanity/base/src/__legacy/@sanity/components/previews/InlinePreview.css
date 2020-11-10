@@ -23,7 +23,7 @@
     font-size: calc(14 / 16 * 1em);
     margin: 1px 0;
 
-    @nest &[data-sanity-icon='true'] {
+    @nest &[data-sanity-icon] {
       font-size: calc(18 / 16 * 1em);
       margin: calc(1px + (2 / 18 * -1em)) 0;
     }

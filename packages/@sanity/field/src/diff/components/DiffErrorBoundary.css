@@ -10,7 +10,7 @@
   @nest & svg {
     font-size: calc(17 / 16 * 1em);
 
-    @nest &[data-sanity-icon='true'] {
+    @nest &[data-sanity-icon] {
       font-size: calc(25 / 16 * 1em);
       margin: -4px;
     }

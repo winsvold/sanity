@@ -1,4 +1,4 @@
-import EditIcon from 'part:@sanity/base/edit-icon'
+import {EditIcon} from '@sanity/icons'
 import React from 'react'
 
 import styles from './ItemStatus.css'

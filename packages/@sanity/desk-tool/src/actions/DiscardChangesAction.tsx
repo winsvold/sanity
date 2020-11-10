@@ -1,5 +1,5 @@
+import {ResetIcon} from '@sanity/icons'
 import {useDocumentOperation} from '@sanity/react-hooks'
-import ResetIcon from 'part:@sanity/base/reset-icon'
 import React, {useCallback, useMemo} from 'react'
 
 const DISABLED_REASON_TITLE = {

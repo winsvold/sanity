@@ -2,8 +2,8 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable react/no-array-index-key */
 
+import {SyncIcon} from '@sanity/icons'
 import React from 'react'
-import SyncIcon from 'part:@sanity/base/sync-icon'
 import {useSyncState} from '@sanity/react-hooks'
 import Button from 'part:@sanity/components/buttons/default'
 import {ChunkType} from '@sanity/field/lib/diff'

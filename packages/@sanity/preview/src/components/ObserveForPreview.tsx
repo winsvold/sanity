@@ -1,5 +1,5 @@
+import {WarningOutlineIcon} from '@sanity/icons'
 import React from 'react'
-import WarningIcon from 'part:@sanity/base/warning-icon'
 import {withPropsStream} from 'react-props-stream'
 import shallowEquals from 'shallow-equals'
 import {
@@ -19,7 +19,7 @@ import {FieldName, Type} from '../types'
 const INVALID_PREVIEW_FALLBACK = {
   title: <span style={{fontStyle: 'italic'}}>Invalid preview config</span>,
   subtitle: <span style={{fontStyle: 'italic'}}>Check the error log in the console</span>,
-  media: WarningIcon,
+  media: WarningOutlineIcon,
 }
 
 // Will track a memo of the value as long as the isActive$ stream emits true,

@@ -1,5 +1,5 @@
+import {ChevronDownIcon} from '@sanity/icons'
 import React from 'react'
-import FaAngleDown from 'part:@sanity/base/angle-down-icon'
 import Dropdown from '../components/Dropdown'
 import styles from '../css/select.css'
 
@@ -9,7 +9,7 @@ function Select(props) {
       <Dropdown className={styles.select} {...props} />
       <div className={styles.functions}>
         <div className={styles.icon}>
-          <FaAngleDown color="inherit" />
+          <ChevronDownIcon />
         </div>
       </div>
     </div>

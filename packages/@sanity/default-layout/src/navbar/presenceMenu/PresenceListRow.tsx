@@ -1,10 +1,10 @@
 /* eslint-disable react/require-default-props */
 
+import {LinkIcon} from '@sanity/icons'
 import {UserAvatar} from '@sanity/base/components'
 import {GlobalPresence} from '@sanity/base/presence'
 import * as PathUtils from '@sanity/util/paths'
 import {orderBy} from 'lodash'
-import LinkIcon from 'part:@sanity/base/link-icon'
 import {IntentLink} from 'part:@sanity/base/router'
 import React from 'react'
 

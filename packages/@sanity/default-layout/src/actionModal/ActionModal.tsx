@@ -1,7 +1,7 @@
+import {DocumentIcon} from '@sanity/icons'
 import React from 'react'
 import DefaultDialog from 'part:@sanity/components/dialogs/default'
 import CreateDocumentList from 'part:@sanity/components/lists/create-document'
-import FileIcon from 'part:@sanity/base/file-icon'
 
 interface Props {
   actions: {icon?: React.ComponentType<{}>; key: string}[]
@@ -22,7 +22,7 @@ function ActionModal(props: Props) {
         <CreateDocumentList
           items={actions.map((action) => ({
             ...action,
-            icon: action.icon || FileIcon,
+            icon: action.icon || DocumentIcon,
             onClick: onClose,
           }))}
         />

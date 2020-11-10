@@ -1,10 +1,10 @@
+import {WarningOutlineIcon} from '@sanity/icons'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {combineLatest, concat, of} from 'rxjs'
 import {assignWith} from 'lodash'
 import {map} from 'rxjs/operators'
 import {getDraftId, getPublishedId} from 'part:@sanity/base/util/draft-utils'
-import WarningIcon from 'part:@sanity/base/warning-icon'
 import {observeForPreview, SanityDefaultPreview} from 'part:@sanity/base/preview'
 import NotPublishedStatus from './NotPublishedStatus'
 import DraftStatus from './DraftStatus'
@@ -25,7 +25,7 @@ const getMissingDocumentFallback = (item) => ({
       {item.title ? `Missing document ID: ${item._id}` : `Document ID: ${item._id}`}
     </span>
   ),
-  media: WarningIcon,
+  media: WarningOutlineIcon,
 })
 
 const getValueWithFallback = ({value, draft, published}) => {

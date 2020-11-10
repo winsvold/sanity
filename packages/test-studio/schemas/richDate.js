@@ -1,10 +1,10 @@
-import icon from 'part:@sanity/base/calendar-icon'
+import {CalendarIcon} from '@sanity/icons'
 
 export default {
   name: 'richDateTest',
   type: 'document',
   title: 'RichDates (deprecated)',
-  icon,
+  icon: CalendarIcon,
   fields: [
     {
       name: 'title',

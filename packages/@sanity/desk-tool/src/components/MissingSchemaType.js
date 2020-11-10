@@ -1,7 +1,7 @@
+import {WarningOutlineIcon} from '@sanity/icons'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {SanityDefaultPreview} from 'part:@sanity/base/preview'
-import WarningIcon from 'part:@sanity/base/warning-icon'
 
 const getUnknownTypeFallback = (id, typeName) => ({
   title: (
@@ -12,7 +12,7 @@ const getUnknownTypeFallback = (id, typeName) => ({
     </span>
   ),
   subtitle: <span style={{fontStyle: 'italic'}}>Document: {id}</span>,
-  media: WarningIcon,
+  media: WarningOutlineIcon,
 })
 
 export default class MissingSchemaType extends React.Component {

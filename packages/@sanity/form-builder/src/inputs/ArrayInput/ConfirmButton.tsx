@@ -1,8 +1,8 @@
+import {TrashIcon} from '@sanity/icons'
 import {Placement} from '@sanity/components'
-import React, {useCallback, useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import Button from 'part:@sanity/components/buttons/default'
 import {MenuButton} from 'part:@sanity/components/menu-button'
-import TrashIcon from 'part:@sanity/base/trash-icon'
 
 import styles from './ConfirmButton.css'
 

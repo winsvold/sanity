@@ -105,7 +105,7 @@
     font-size: calc(24 / 16 * 1em);
     color: inherit;
 
-    @nest &[data-sanity-icon='true'] {
+    @nest &[data-sanity-icon] {
       font-size: calc(36 / 16 * 1em);
       margin: calc(6 / 36 * -1em);
     }

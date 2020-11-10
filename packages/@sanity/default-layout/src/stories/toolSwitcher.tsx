@@ -1,5 +1,4 @@
-import PluginIcon from 'part:@sanity/base/plugin-icon'
-import ViewColumnIcon from 'part:@sanity/base/view-column-icon'
+import {MasterDetailIcon, PlugIcon} from '@sanity/icons'
 import {action} from 'part:@sanity/storybook/addons/actions'
 import {CenteredContainer} from 'part:@sanity/storybook/components'
 import React from 'react'
@@ -20,17 +19,17 @@ export function ToolMenuStory() {
             {
               name: 'desk',
               title: 'Desk',
-              icon: ViewColumnIcon,
+              icon: MasterDetailIcon,
             },
             {
               name: 'plugin1',
               title: 'Plugin 1',
-              icon: PluginIcon,
+              icon: PlugIcon,
             },
             {
               name: 'plugin2',
               title: 'Plugin 2',
-              icon: PluginIcon,
+              icon: PlugIcon,
             },
           ]}
         />

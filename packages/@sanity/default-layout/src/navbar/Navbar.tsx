@@ -1,10 +1,8 @@
+import {ComposeIcon, MenuIcon, SearchIcon} from '@sanity/icons'
 import classNames from 'classnames'
 import React, {createElement} from 'react'
 import config from 'config:sanity'
-import ComposeIcon from 'part:@sanity/base/compose-icon'
-import HamburgerIcon from 'part:@sanity/base/hamburger-icon'
 import {StateLink} from 'part:@sanity/base/router'
-import SearchIcon from 'part:@sanity/base/search-icon'
 import Button from 'part:@sanity/components/buttons/default'
 import {Tooltip} from 'part:@sanity/components/tooltip'
 import * as sidecar from 'part:@sanity/default-layout/sidecar?'
@@ -67,7 +65,7 @@ export default function Navbar(props: Props) {
       <div className={styles.hamburger}>
         <Button
           aria-label="Open menu"
-          icon={HamburgerIcon}
+          icon={MenuIcon}
           kind="simple"
           onClick={onToggleMenu}
           padding="small"

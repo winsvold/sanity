@@ -1,8 +1,8 @@
+import {ErrorOutlineIcon} from '@sanity/icons'
 import React from 'react'
 import PropTypes from 'prop-types'
 import generateHelpUrl from '@sanity/generate-help-url'
 import {SerializeError} from '@sanity/structure'
-import ErrorIcon from 'part:@sanity/base/error-icon'
 import styles from './StructureError.css'
 
 function formatStack(stack) {
@@ -44,7 +44,7 @@ export default function StructureError(props) {
         <div className={styles.problem}>
           <div className={styles.problemSeverity}>
             <span className={styles.problemSeverityIcon}>
-              <ErrorIcon />
+              <ErrorOutlineIcon />
             </span>
             <span className={styles.problemSeverityText}>Error</span>
           </div>

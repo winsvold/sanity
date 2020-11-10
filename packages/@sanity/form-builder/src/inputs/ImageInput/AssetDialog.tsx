@@ -1,6 +1,5 @@
+import {LinkIcon, TrashIcon} from '@sanity/icons'
 import React from 'react'
-import LinkIcon from 'part:@sanity/base/link-icon'
-import TrashIcon from 'part:@sanity/base/trash-icon'
 import {IntentLink} from 'part:@sanity/base/router'
 import schema from 'part:@sanity/base/schema'
 import {WithReferringDocuments} from 'part:@sanity/base/with-referring-documents'

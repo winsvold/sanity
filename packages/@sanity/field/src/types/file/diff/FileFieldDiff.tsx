@@ -1,4 +1,4 @@
-import FileIcon from 'part:@sanity/base/file-icon'
+import {DocumentIcon} from '@sanity/icons'
 import React from 'react'
 import {
   DiffComponent,
@@ -42,7 +42,7 @@ export const FileFieldDiff: DiffComponent<ObjectDiff<File>> = ({diff, schemaType
 
   const from = prev && (
     <DiffCard as="del" className={styles.card} diff={diff} path="asset._ref">
-      <MetaInfo title={prev.originalFilename || 'Untitled'} icon={FileIcon}>
+      <MetaInfo title={prev.originalFilename || 'Untitled'} icon={DocumentIcon}>
         <span>{`${roundedPrevSize}MB`}</span>
       </MetaInfo>
     </DiffCard>
@@ -50,7 +50,7 @@ export const FileFieldDiff: DiffComponent<ObjectDiff<File>> = ({diff, schemaType
 
   const to = next && (
     <DiffCard as="ins" className={styles.card} diff={diff} path="asset._ref">
-      <MetaInfo title={next.originalFilename || 'Untitled'} icon={FileIcon}>
+      <MetaInfo title={next.originalFilename || 'Untitled'} icon={DocumentIcon}>
         <span>{`${roundedNextSize}MB`}</span>
         {pctDiff !== 0 && (
           <div className={styles.sizeDiff} data-number={pctDiff > 0 ? 'positive' : 'negative'}>

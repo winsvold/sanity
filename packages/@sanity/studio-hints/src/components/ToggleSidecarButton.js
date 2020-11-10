@@ -1,12 +1,12 @@
 /* eslint-disable prefer-template */
 
+import {HelpCircleIcon} from '@sanity/icons'
 import React from 'react'
 import {
   isSidecarOpenSetting,
   toggleSidecarOpenState,
 } from 'part:@sanity/default-layout/sidecar-datastore'
 import Button from 'part:@sanity/components/buttons/default'
-import HelpCircleIcon from 'part:@sanity/base/help-circle-icon'
 
 export default class ToggleSidecarButton extends React.PureComponent {
   state = {

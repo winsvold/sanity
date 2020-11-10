@@ -1,11 +1,8 @@
+import {MenuIcon, ComposeIcon, MasterDetailIcon, PlugIcon} from '@sanity/icons'
 import React from 'react'
 import {Tooltip} from 'part:@sanity/components/tooltip'
 import {action} from 'part:@sanity/storybook/addons/actions'
 import {boolean, number, select} from 'part:@sanity/storybook/addons/knobs'
-import HamburgerIcon from 'part:@sanity/base/hamburger-icon'
-import ComposeIcon from 'part:@sanity/base/compose-icon'
-import PluginIcon from 'part:@sanity/base/plugin-icon'
-import ViewColumnIcon from 'part:@sanity/base/view-column-icon'
 import Branding from '../navbar/branding/Branding'
 import ToolMenu from '../navbar/toolMenu/ToolMenu'
 import LoginStatus from '../navbar/loginStatus/LoginStatus'
@@ -54,7 +51,7 @@ export function ExampleStory() {
               title="Menu"
               onClick={action('onClick')}
             >
-              <HamburgerIcon />
+              <MenuIcon />
             </button>
           </div>
           <a className={NavbarStyles.branding} href="#" onClick={(evt) => evt.preventDefault()}>
@@ -103,17 +100,17 @@ export function ExampleStory() {
                 {
                   name: 'desk',
                   title: 'Desk',
-                  icon: ViewColumnIcon,
+                  icon: MasterDetailIcon,
                 },
                 {
                   name: 'plugin1',
                   title: 'Plugin 1',
-                  icon: PluginIcon,
+                  icon: PlugIcon,
                 },
                 {
                   name: 'plugin2',
                   title: 'Plugin 2',
-                  icon: PluginIcon,
+                  icon: PlugIcon,
                 },
               ]}
             />

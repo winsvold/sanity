@@ -1,5 +1,5 @@
 import {MenuItem, MenuItemGroup} from '@sanity/components'
-import IconMoreVert from 'part:@sanity/base/more-vert-icon'
+import {EllipsisVerticalIcon} from '@sanity/icons'
 import {MenuButton} from 'part:@sanity/components/menu-button'
 import Menu from 'part:@sanity/components/menus/default'
 import React, {useCallback, useMemo} from 'react'
@@ -42,7 +42,7 @@ export function DocumentPanelContextMenu(props: DocumentPanelContextMenuProps) {
         'aria-expanded': open,
         'aria-controls': id,
         className: styles.menuOverflowButton,
-        icon: IconMoreVert,
+        icon: EllipsisVerticalIcon,
         kind: 'simple',
         padding: 'small',
         selected: open,

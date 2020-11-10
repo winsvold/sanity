@@ -1,7 +1,6 @@
+import {CloseIcon, LeaveIcon} from '@sanity/icons'
 import {UserAvatar} from '@sanity/base/components'
 import React from 'react'
-import CloseIcon from 'part:@sanity/base/close-icon'
-import SignOutIcon from 'part:@sanity/base/sign-out-icon'
 import Button from 'part:@sanity/components/buttons/default'
 import ToolMenu from 'part:@sanity/default-layout/tool-switcher'
 import {DatasetSelect} from '../components'
@@ -71,7 +70,7 @@ function SideMenu(props: Props) {
 
         <div className={styles.menuBottom}>
           <div className={styles.signOutButton}>
-            <Button icon={SignOutIcon} kind="simple" onClick={onSignOut} tabIndex={tabIndex}>
+            <Button icon={LeaveIcon} kind="simple" onClick={onSignOut} tabIndex={tabIndex}>
               Sign out
             </Button>
           </div>

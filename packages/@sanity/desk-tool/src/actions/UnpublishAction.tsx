@@ -1,5 +1,5 @@
+import {UnpublishIcon} from '@sanity/icons'
 import {useDocumentOperation} from '@sanity/react-hooks'
-import UnpublishIcon from 'part:@sanity/base/unpublish-icon'
 import React, {useCallback, useMemo} from 'react'
 import ConfirmUnpublish from '../components/ConfirmUnpublish'
 

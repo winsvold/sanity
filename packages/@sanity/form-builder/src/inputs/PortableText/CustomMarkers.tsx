@@ -1,6 +1,6 @@
+import {CommentIcon} from '@sanity/icons'
 import React from 'react'
 import {Tooltip} from 'part:@sanity/components/tooltip'
-import CommentIcon from 'part:@sanity/base/comment-icon'
 import {Marker} from '@sanity/types'
 
 type Props = {

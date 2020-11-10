@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
+
+import {CodeBlockIcon} from '@sanity/icons'
 import React, {PureComponent} from 'react'
-import CodeBlockIcon from 'part:@sanity/base/code-block-icon'
 import JsonLogo from './jsonLogo'
 
 // eslint-disable-next-line react/no-multi-comp

@@ -92,7 +92,7 @@
     height: 1em;
     shape-rendering: geometricPrecision;
 
-    @nest &[data-sanity-icon='true'] {
+    @nest &[data-sanity-icon] {
       font-size: calc(25 / 16 * 1em);
       margin: calc(4 / 25 * -1em);
     }
@@ -100,7 +100,7 @@
     @nest .root.fullscreen & {
       font-size: calc(21 / 16 * 1em);
 
-      @nest &[data-sanity-icon='true'] {
+      @nest &[data-sanity-icon] {
         font-size: calc(29 / 16 * 1em);
         margin: calc(4 / 29 * -1em);
       }

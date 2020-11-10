@@ -1,5 +1,5 @@
+import {ChevronDownIcon} from '@sanity/icons'
 import classNames from 'classnames'
-import ChevronDownIcon from 'part:@sanity/base/chevron-down-icon'
 import React from 'react'
 
 import styles from './DropdownButton.css'

@@ -1,6 +1,6 @@
+import {ErrorOutlineIcon} from '@sanity/icons'
 import {MenuButton} from 'part:@sanity/components/menu-button'
 import ValidationList from 'part:@sanity/components/validation/list'
-import ErrorOutlineIcon from 'part:@sanity/base/error-outline-icon'
 import React, {useCallback} from 'react'
 
 interface ValidationMenuProps {
