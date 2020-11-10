@@ -29,7 +29,7 @@
   "homepage": "https://www.sanity.io/",
   "dependencies": {
     "@juggle/resize-observer": "^3.2.0",
-    "@popperjs/core": "^2.4.4",
+    "@popperjs/core": "^2.5.4",
     "@reach/auto-id": "^0.10.5",
     "@sanity/base": "2.0.9",
     "@sanity/bifur-client": "^0.0.7",
@@ -46,6 +46,7 @@
     "@sanity/structure": "2.0.9",
     "@sanity/transaction-collator": "2.0.9",
     "@sanity/types": "2.0.1",
+    "@sanity/ui": "^1.0.0-alpha.26",
     "@sanity/util": "2.0.9",
     "@sanity/uuid": "2.0.1",
     "@sanity/validation": "2.0.9",
@@ -70,12 +71,14 @@
     "react-fast-compare": "^2.0.2",
     "react-icon-base": "^2.1.2",
     "react-intl": "^2.2.2",
-    "react-popper": "^2.2.3",
+    "react-popper": "^2.2.4",
     "react-props-stream": "^1.0.0",
+    "react-refractor": "^2.1.2",
     "react-sortable-hoc": "^1.11.0",
     "react-split-pane": "^0.1.84",
     "rxjs": "^6.5.3",
     "semver-compare": "^1.0.0",
+    "styled-components": "^5.2.1",
     "shallow-equals": "^1.0.0"
   },
   "devDependencies": {
