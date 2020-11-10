@@ -1,14 +1,10 @@
+import {CalendarIcon, EditIcon, EyeOpenIcon} from '@sanity/icons'
 import Tab from 'part:@sanity/components/tabs/tab'
 import TabPanel from 'part:@sanity/components/tabs/tab-panel'
 import TabList from 'part:@sanity/components/tabs/tab-list'
 import {action} from 'part:@sanity/storybook/addons/actions'
 import {select} from 'part:@sanity/storybook/addons/knobs'
 import React from 'react'
-
-// Import icons
-import EyeIcon from 'part:@sanity/base/eye-icon'
-import EditIcon from 'part:@sanity/base/edit-icon'
-import CalendarIcon from 'part:@sanity/base/calendar-icon'
 
 export function WithIconsStory() {
   const currentTabId = select(
@@ -21,7 +17,7 @@ export function WithIconsStory() {
   const tabs = [
     {icon: EditIcon, id: 'tab-edit', label: 'Content'},
     {icon: CalendarIcon, id: 'tab-seo', label: 'SEO'},
-    {icon: EyeIcon, id: 'tab-preview', label: 'Preview'},
+    {icon: EyeOpenIcon, id: 'tab-preview', label: 'Preview'},
   ]
 
   return (

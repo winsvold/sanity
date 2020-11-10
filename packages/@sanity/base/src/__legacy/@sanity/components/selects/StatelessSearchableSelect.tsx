@@ -1,12 +1,11 @@
 import {Modifier} from '@popperjs/core'
+import {ChevronDownIcon, CloseIcon} from '@sanity/icons'
 import React, {forwardRef, useCallback, useEffect, useState} from 'react'
 import {usePopper} from 'react-popper'
 import styles from 'part:@sanity/components/selects/searchable-style'
-import FaAngleDown from 'part:@sanity/base/angle-down-icon'
 import {Layer, useLayer} from 'part:@sanity/components/layer'
 import Spinner from 'part:@sanity/components/loading/spinner'
 import DefaultTextInput from 'part:@sanity/components/textinputs/default'
-import CloseIcon from 'part:@sanity/base/close-icon'
 import {useClickOutside} from '../hooks'
 import SelectMenu from './SelectMenu'
 
@@ -318,7 +317,7 @@ const StatelessSearchableSelect = forwardRef(
                     tabIndex={0}
                     onKeyPress={disabled ? undefined : handleArrowKeyPress}
                   >
-                    <FaAngleDown />
+                    <ChevronDownIcon />
                   </div>
                 )}
                 {isLoading && (

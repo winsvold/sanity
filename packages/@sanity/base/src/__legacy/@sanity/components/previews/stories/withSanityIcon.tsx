@@ -1,4 +1,4 @@
-import WarningIcon from 'part:@sanity/base/warning-icon'
+import {WarningOutlineIcon} from '@sanity/icons'
 import DefaultPreview from 'part:@sanity/components/previews/default'
 import Sanity from 'part:@sanity/storybook/addons/sanity'
 import {CenteredContainer} from 'part:@sanity/storybook/components'
@@ -12,7 +12,7 @@ export function WithSanityIconStory() {
         <Sanity part="part:@sanity/components/previews/default" propTables={[DefaultPreview]}>
           <Stack>
             <PreviewCard>
-              <DefaultPreview title="Title" subtitle="Subtitle" media={<WarningIcon />} />
+              <DefaultPreview title="Title" subtitle="Subtitle" media={<WarningOutlineIcon />} />
             </PreviewCard>
           </Stack>
         </Sanity>

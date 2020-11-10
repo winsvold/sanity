@@ -1,5 +1,4 @@
-import WarningIcon from 'part:@sanity/base/warning-icon'
-import LinkIcon from 'part:@sanity/base/link-icon'
+import {LinkIcon, WarningOutlineIcon} from '@sanity/icons'
 import DefaultPreview from 'part:@sanity/components/previews/default'
 import {boolean, number, text, select} from 'part:@sanity/storybook/addons/knobs'
 import Sanity from 'part:@sanity/storybook/addons/sanity'
@@ -14,7 +13,7 @@ const renderMedia = () => {
 const renderStatus = () => {
   return (
     <span>
-      Status <LinkIcon /> <WarningIcon />
+      Status <LinkIcon /> <WarningOutlineIcon />
     </span>
   )
 }
@@ -33,7 +32,7 @@ const renderSubtitle = () => {
     <span>
       This is a{' '}
       <strong style={{color: 'red'}}>
-        <WarningIcon />
+        <WarningOutlineIcon />
         subtitle
       </strong>
     </span>
@@ -143,7 +142,7 @@ export function DefaultStory() {
                   status={
                     <div>
                       <LinkIcon />
-                      <WarningIcon />
+                      <WarningOutlineIcon />
                     </div>
                   }
                   progress={number(

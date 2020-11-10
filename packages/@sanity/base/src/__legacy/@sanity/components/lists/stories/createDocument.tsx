@@ -1,6 +1,6 @@
+import {DocumentIcon} from '@sanity/icons'
 import Chance from 'chance'
 import {range} from 'lodash'
-import FileIcon from 'part:@sanity/base/file-icon'
 import {number} from 'part:@sanity/storybook/addons/knobs'
 import Sanity from 'part:@sanity/storybook/addons/sanity'
 import CreateDocumentList from 'part:@sanity/components/lists/create-document'
@@ -16,7 +16,7 @@ export function CreateDocumentStory() {
       title: chance.animal(),
       subtitle: 'test',
       template: 'test',
-      icon: FileIcon,
+      icon: DocumentIcon,
     }
   })
 

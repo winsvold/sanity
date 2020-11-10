@@ -1,5 +1,5 @@
+import {CloseIcon} from '@sanity/icons'
 import React from 'react'
-import IoAndroidClose from 'part:@sanity/base/close-icon'
 import styles from 'part:@sanity/components/textareas/default-style'
 
 interface DefaultTextAreaProps {
@@ -79,7 +79,7 @@ export default class DefaultTextArea extends React.Component<
 
         {isClearable && !this.props.disabled && (
           <button type="button" className={styles.clearButton} onClick={onClear}>
-            <IoAndroidClose />
+            <CloseIcon />
           </button>
         )}
       </div>

@@ -1,6 +1,6 @@
+import {ChevronDownIcon} from '@sanity/icons'
 import React from 'react'
 import styles from 'part:@sanity/components/selects/default-style'
-import FaAngleDown from 'part:@sanity/base/angle-down-icon'
 
 interface Item {
   title: string
@@ -78,7 +78,7 @@ export default class DefaultSelect extends React.Component<
         </select>
         <div className={styles.functions}>
           <span className={styles.arrow}>
-            <FaAngleDown />
+            <ChevronDownIcon />
           </span>
         </div>
       </div>

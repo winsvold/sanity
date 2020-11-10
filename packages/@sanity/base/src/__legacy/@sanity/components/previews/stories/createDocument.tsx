@@ -1,4 +1,4 @@
-import FileIcon from 'part:@sanity/base/file-icon'
+import {DocumentIcon} from '@sanity/icons'
 import CreateDocumentPreview from 'part:@sanity/components/previews/create-document'
 import {text} from 'part:@sanity/storybook/addons/knobs'
 import Sanity from 'part:@sanity/storybook/addons/sanity'
@@ -25,7 +25,7 @@ export function CreateDocumentStory() {
                   'Science fiction is a genre of speculative fiction that has been called the "literature of ideas". It typically deals with imaginative and futuristic concepts such as advanced science and technology, time travel, parallel universes, fictional worlds, space exploration, and extraterrestrial life.',
                   'props'
                 )}
-                icon={FileIcon}
+                icon={DocumentIcon}
               />
             </PreviewCard>
           </Stack>

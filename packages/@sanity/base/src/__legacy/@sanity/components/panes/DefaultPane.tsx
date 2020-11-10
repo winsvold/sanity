@@ -1,10 +1,10 @@
+import {EllipsisVerticalIcon} from '@sanity/icons'
 import {StructureBuilder as S} from '@sanity/structure'
 import {InitialValueTemplateItem} from '@sanity/structure/lib/InitialValueTemplateItem'
 import classNames from 'classnames'
 import {negate} from 'lodash'
 import {MenuButton} from 'part:@sanity/components/menu-button'
 import Menu from 'part:@sanity/components/menus/default'
-import IconMoreVert from 'part:@sanity/base/more-vert-icon'
 import {IntentLink} from 'part:@sanity/base/router'
 import Button from 'part:@sanity/components/buttons/default'
 import IntentButton from 'part:@sanity/components/buttons/intent'
@@ -302,7 +302,7 @@ class DefaultPane extends React.PureComponent<DefaultPaneProps, State> {
             'aria-expanded': isMenuOpen,
             'aria-controls': this.paneMenuId,
             className: styles.menuOverflowButton,
-            icon: IconMoreVert,
+            icon: EllipsisVerticalIcon,
             kind: 'simple',
             padding: 'small',
             selected: isMenuOpen,

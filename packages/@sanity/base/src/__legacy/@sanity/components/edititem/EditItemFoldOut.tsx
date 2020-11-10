@@ -1,5 +1,5 @@
 import {Modifier} from '@popperjs/core'
-import CloseIcon from 'part:@sanity/base/close-icon'
+import {CloseIcon} from '@sanity/icons'
 import DefaultButton from 'part:@sanity/components/buttons/default'
 import styles from 'part:@sanity/components/edititem/fold-style'
 import {Layer, useLayer} from 'part:@sanity/components/layer'

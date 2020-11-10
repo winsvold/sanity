@@ -1,7 +1,7 @@
+import {UsersIcon} from '@sanity/icons'
 import Button from 'part:@sanity/components/buttons/default'
 import {action} from 'part:@sanity/storybook/addons/actions'
 import {text, select, boolean, button} from 'part:@sanity/storybook/addons/knobs'
-import UsersIcon from 'part:@sanity/base/users-icon'
 import Sanity from 'part:@sanity/storybook/addons/sanity'
 import {CenteredContainer} from 'part:@sanity/storybook/components'
 import React from 'react'

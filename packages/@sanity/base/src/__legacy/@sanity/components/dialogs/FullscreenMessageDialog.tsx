@@ -1,5 +1,5 @@
+import {CloseIcon} from '@sanity/icons'
 import classNames from 'classnames'
-import CloseIcon from 'part:@sanity/base/close-icon'
 import React from 'react'
 
 import styles from './FullscreenMessageDialog.css'

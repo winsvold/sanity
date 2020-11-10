@@ -1,4 +1,4 @@
-import ComposeIcon from 'part:@sanity/base/compose-icon'
+import {ComposeIcon} from '@sanity/icons'
 import SanityLogoIcon from 'part:@sanity/base/sanity-logo-icon'
 import ButtonGrid from 'part:@sanity/components/buttons/button-grid'
 import Button from 'part:@sanity/components/buttons/default'

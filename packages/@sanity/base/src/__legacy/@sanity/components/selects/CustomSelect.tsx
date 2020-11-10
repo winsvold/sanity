@@ -1,7 +1,7 @@
+import {ChevronDownIcon} from '@sanity/icons'
 import React from 'react'
 import styles from 'part:@sanity/components/selects/custom-style'
 import cx from 'classnames'
-import FaAngleDown from 'part:@sanity/base/angle-down-icon'
 
 interface CustomSelectProps {
   onChange: (item: any) => void
@@ -83,7 +83,7 @@ export default class CustomSelect extends React.Component<CustomSelectProps> {
           <div className={styles.selectContainer}>
             <span className={styles.text}>{renderItem(value)}</span>
             <div className={styles.arrow}>
-              <FaAngleDown />
+              <ChevronDownIcon />
             </div>
           </div>
         </div>

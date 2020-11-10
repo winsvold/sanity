@@ -1,7 +1,10 @@
+import {
+  CheckmarkCircleIcon,
+  ErrorOutlineIcon,
+  InfoOutlineIcon,
+  WarningOutlineIcon,
+} from '@sanity/icons'
 import React from 'react'
-import CheckCircleIcon from 'part:@sanity/base/circle-check-icon'
-import WarningIcon from 'part:@sanity/base/warning-icon'
-import InfoIcon from 'part:@sanity/base/info-icon'
 import classNames from 'classnames'
 import styles from './PanePopover.css'
 
@@ -15,10 +18,10 @@ interface PanePopoverProps {
 }
 
 const DEFAULT_ICONS = {
-  info: <InfoIcon />,
-  success: <CheckCircleIcon />,
-  warning: <WarningIcon />,
-  error: <WarningIcon />,
+  info: <InfoOutlineIcon />,
+  success: <CheckmarkCircleIcon />,
+  warning: <WarningOutlineIcon />,
+  error: <ErrorOutlineIcon />,
 }
 
 // @todo: refactor to functional component

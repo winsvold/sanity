@@ -1,9 +1,9 @@
+import {ToggleArrowRightIcon} from '@sanity/icons'
 import React from 'react'
 import classNames from 'classnames'
 import {FOCUS_TERMINATOR} from '@sanity/util/paths'
 import {isValidationMarker, Marker, Path} from '@sanity/types'
 import defaultStyles from 'part:@sanity/components/fieldsets/default-style'
-import ArrowDropDown from 'part:@sanity/base/arrow-drop-down'
 import DefaultLabel from 'part:@sanity/components/labels/default'
 import ValidationStatus from 'part:@sanity/components/validation/status'
 import {ChangeIndicator, ChangeIndicatorContextProvidedProps} from '../../../../change-indicators'
@@ -164,7 +164,7 @@ export default class Fieldset extends React.PureComponent<FieldsetProps, State> 
                   >
                     {isCollapsible && (
                       <div className={`${styles.arrow} ${isCollapsed ? '' : styles.isOpen}`}>
-                        <ArrowDropDown />
+                        <ToggleArrowRightIcon />
                       </div>
                     )}
                     <DefaultLabel className={styles.label} level={1}>

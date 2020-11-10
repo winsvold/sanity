@@ -1,5 +1,5 @@
+import {DragHandleIcon} from '@sanity/icons'
 import classNames from 'classnames'
-import DragHandleIcon from 'part:@sanity/base/drag-handle-icon'
 import React, {forwardRef} from 'react'
 import {createDragHandle} from './sortable-factories'
 

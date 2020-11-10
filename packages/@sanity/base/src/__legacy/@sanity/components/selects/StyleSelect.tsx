@@ -1,12 +1,11 @@
 /* eslint-disable complexity */
 
 import {Modifier} from '@popperjs/core'
+import {ChevronDownIcon, CheckmarkIcon} from '@sanity/icons'
 import classNames from 'classnames'
 import React from 'react'
 import ArrowKeyNavigation from 'boundless-arrow-key-navigation/build'
 import styles from 'part:@sanity/components/selects/style-style'
-import ArrowIcon from 'part:@sanity/base/angle-down-icon'
-import CheckmarkIcon from 'part:@sanity/base/check-icon'
 import {List} from 'part:@sanity/components/lists/default'
 import Poppable from 'part:@sanity/components/utilities/poppable'
 
@@ -219,7 +218,7 @@ class StyleSelect extends React.PureComponent<StyleSelectProps> {
               {!value && placeholder}
             </span>
             <span className={styles.arrow}>
-              <ArrowIcon />
+              <ChevronDownIcon />
             </span>
           </div>
         </button>

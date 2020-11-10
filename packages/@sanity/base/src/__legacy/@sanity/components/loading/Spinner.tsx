@@ -1,5 +1,5 @@
+import {SpinnerIcon} from '@sanity/icons'
 import classNames from 'classnames'
-import SpinnerIcon from 'part:@sanity/base/spinner-icon'
 import styles from 'part:@sanity/components/loading/spinner-style'
 import React from 'react'
 import {Portal} from '../utilities/Portal'

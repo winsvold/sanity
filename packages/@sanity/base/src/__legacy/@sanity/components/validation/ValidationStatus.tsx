@@ -1,3 +1,4 @@
+import {ErrorOutlineIcon, WarningOutlineIcon} from '@sanity/icons'
 import classNames from 'classnames'
 import React from 'react'
 import {
@@ -6,8 +7,6 @@ import {
   isValidationWarningMarker,
   Marker,
 } from '@sanity/types'
-import ErrorOutlineIcon from 'part:@sanity/base/error-outline-icon'
-import WarningOutlineIcon from 'part:@sanity/base/warning-outline-icon'
 import {Tooltip} from 'part:@sanity/components/tooltip'
 import {Placement} from '../types'
 import ValidationList from './ValidationList'

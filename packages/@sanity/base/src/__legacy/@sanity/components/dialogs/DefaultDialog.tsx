@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-prop-types */
 
+import {CloseIcon} from '@sanity/icons'
 import classNames from 'classnames'
-import CloseIcon from 'part:@sanity/base/close-icon'
 import Button from 'part:@sanity/components/buttons/default'
 import {ContainerQuery} from 'part:@sanity/components/container-query'
 import styles from 'part:@sanity/components/dialogs/default-style'

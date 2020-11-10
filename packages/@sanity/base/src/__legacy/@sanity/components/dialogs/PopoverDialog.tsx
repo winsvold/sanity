@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unused-prop-types */
 
+import {CloseIcon} from '@sanity/icons'
 import classNames from 'classnames'
 import {partition} from 'lodash'
-import CloseIcon from 'part:@sanity/base/close-icon'
 import styles from 'part:@sanity/components/dialogs/popover-style'
 import Button from 'part:@sanity/components/buttons/default'
 import ButtonGrid from 'part:@sanity/components/buttons/button-grid'

@@ -1,5 +1,5 @@
+import {CloseIcon} from '@sanity/icons'
 import classNames from 'classnames'
-import CloseIcon from 'part:@sanity/base/close-icon'
 import defaultStyles from 'part:@sanity/components/textinputs/default-style'
 import React from 'react'
 import {DefaultTextInputProps} from './types'

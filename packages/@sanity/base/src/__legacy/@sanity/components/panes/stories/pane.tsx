@@ -1,5 +1,4 @@
-import ComposeIcon from 'part:@sanity/base/compose-icon'
-import TrashIcon from 'part:@sanity/base/trash-icon'
+import {ComposeIcon, TrashIcon} from '@sanity/icons'
 import Button from 'part:@sanity/components/buttons/default'
 import Pane from 'part:@sanity/components/panes/default'
 import {action} from 'part:@sanity/storybook/addons/actions'

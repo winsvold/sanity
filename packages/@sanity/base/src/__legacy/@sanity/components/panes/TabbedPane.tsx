@@ -1,6 +1,5 @@
+import {CloseIcon, SplitHorizontalIcon} from '@sanity/icons'
 import React from 'react'
-import SplitHorizontalIcon from 'part:@sanity/base/split-horizontal-icon'
-import CloseIcon from 'part:@sanity/base/close-icon'
 import Tab from 'part:@sanity/components/tabs/tab'
 import TabList from 'part:@sanity/components/tabs/tab-list'
 import DefaultPane from './DefaultPane'

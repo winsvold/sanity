@@ -1,9 +1,11 @@
+import {
+  CloseIcon,
+  CheckmarkCircleIcon,
+  ErrorOutlineIcon,
+  InfoOutlineIcon,
+  WarningOutlineIcon,
+} from '@sanity/icons'
 import React from 'react'
-import CloseIcon from 'part:@sanity/base/close-icon'
-import CheckCircleIcon from 'part:@sanity/base/circle-check-icon'
-import WarningIcon from 'part:@sanity/base/warning-icon'
-import ErrorIcon from 'part:@sanity/base/error-icon'
-import InfoIcon from 'part:@sanity/base/info-icon'
 import Button from 'part:@sanity/components/buttons/default'
 import styles from './SnackbarItem.css'
 import {SnackbarAction} from './types'
@@ -29,10 +31,10 @@ export interface SnackbarItemProps {
 }
 
 const DEFAULT_ICONS = {
-  info: <InfoIcon />,
-  success: <CheckCircleIcon />,
-  warning: <WarningIcon />,
-  error: <ErrorIcon />,
+  info: <InfoOutlineIcon />,
+  success: <CheckmarkCircleIcon />,
+  warning: <WarningOutlineIcon />,
+  error: <ErrorOutlineIcon />,
 }
 
 interface State {

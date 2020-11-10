@@ -1,5 +1,4 @@
-import WarningIcon from 'part:@sanity/base/warning-icon'
-import LinkIcon from 'part:@sanity/base/link-icon'
+import {LinkIcon, WarningOutlineIcon} from '@sanity/icons'
 import DetailPreview from 'part:@sanity/components/previews/detail'
 import BlockPreview from 'part:@sanity/components/previews/block'
 import {boolean, text, select} from 'part:@sanity/storybook/addons/knobs'
@@ -15,7 +14,7 @@ const renderMedia = () => {
 const renderStatus = () => {
   return (
     <span>
-      Status <LinkIcon /> <WarningIcon />
+      Status <LinkIcon /> <WarningOutlineIcon />
     </span>
   )
 }
@@ -34,7 +33,7 @@ const renderSubtitle = () => {
     <span>
       This is a{' '}
       <strong style={{color: 'red'}}>
-        <WarningIcon />
+        <WarningOutlineIcon />
         subtitle
       </strong>
     </span>
@@ -46,7 +45,7 @@ const renderDescription = () => {
     <span>
       This is the{' '}
       <strong style={{color: 'red'}}>
-        <WarningIcon />
+        <WarningOutlineIcon />
         description
       </strong>
     </span>
@@ -154,7 +153,7 @@ export function BlockStory() {
                   status={
                     <div>
                       <LinkIcon />
-                      <WarningIcon />
+                      <WarningOutlineIcon />
                     </div>
                   }
                   media={boolean('Show image', false, 'test') ? renderMedia : undefined}
