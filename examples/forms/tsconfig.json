@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.build",
+  "include": ["./typings/*.d.ts"],
+  "files": ["./src/main.tsx", "./src/main.hot.tsx"],
+  "compilerOptions": {
+    "baseUrl": "../../packages",
+    "paths": {
+      "@sanity/base": ["./@sanity/base/src"]
+    }
+  }
+}

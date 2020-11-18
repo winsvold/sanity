@@ -1,9 +1,5 @@
 {
-  "hoist": true,
-  "concurrency": 8,
-  "ci": false,
-  "npmClient": "npm",
-  "npmClientArgs": ["--no-package-lock"],
+  "npmClient": "yarn",
   "packages": [
     "examples/*",
     "packages/@sanity/*",
@@ -11,5 +7,6 @@
     "packages/groq",
     "packages/sanity"
   ],
+  "useWorkspaces": true,
   "version": "2.0.9"
 }
