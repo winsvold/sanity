@@ -93,10 +93,7 @@ export default class ImageToolInput extends React.Component<
         value={value?.current}
         compareValue={compareValue}
       >
-        <FormField
-          label="Hotspot &amp; crop"
-          level={level}
-        >
+        <FormField label="Hotspot &amp; crop" level={level}>
           <div className={styles.imageToolContainer}>
             <div>
               <div>
