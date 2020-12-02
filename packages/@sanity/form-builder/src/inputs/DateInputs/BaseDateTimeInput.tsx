@@ -5,12 +5,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import type {Moment} from 'moment'
 import moment from 'moment'
-import DatePicker from 'react-datepicker'
 import {isValidationErrorMarker, Marker} from '@sanity/types'
 import {Box, Button, Flex, TextInput} from '@sanity/ui'
 import {uniqueId} from 'lodash'
 import {FormField} from '../../components/FormField'
 import {Portal, Root} from './styles'
+import ReactDatepickerCompat from './ReactDatepickerCompat'
+import DatePicker from 'react-datepicker'
 
 type Props = {
   value: Moment | null
@@ -68,7 +69,7 @@ export default class BaseDateTimeInput extends React.Component<Props, State> {
       this._datepicker.input.focus()
     }
   }
-  setDatePicker = (datePicker: DatePicker | null) => {
+  setDatePicker = (datePicker: ReactDatepickerCompat | null) => {
     this._datepicker = datePicker
   }
   handleInputKeyDown = (event) => {
@@ -152,7 +153,7 @@ export default class BaseDateTimeInput extends React.Component<Props, State> {
           <Root id={this._inputId} tabIndex={-1} shadow={3}>
             <Flex justify="space-between" align="center">
               <Box flex={1}>
-                <DatePicker
+                <ReactDatepickerCompat
                   onKeyDown={isDialogOpen ? undefined : this.handleInputKeyDown}
                   autoFocus={false}
                   onFocus={this.handleFocus}
