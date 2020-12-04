@@ -1,6 +1,5 @@
 /* eslint-disable no-nested-ternary */
 import {Box, Button, Card, Flex, Grid, Select, Text, useForwardedRef} from '@sanity/ui'
-import styled, {css} from 'styled-components'
 import {
   addDays,
   addMonths,
@@ -45,27 +44,12 @@ const TIME_PRESETS = [
   [23, 59],
 ]
 
+// @todo (1): use `251` instead
+// @todo (2): this should somehow be measured in the DOM
+const MONTH_MIN_HEIGHT = 290
+
 const formatTime = (hours: number, minutes: number) =>
   `${`${hours}`.padStart(2, '0')}:${`${minutes}`.padStart(2, '0')}`
-
-const WeekDay = styled(Button)<{today: boolean}>`
-  ${({today, muted}) => {
-    const fg = muted
-      ? '--card-muted-fg-color'
-      : today
-      ? '--card-focus-ring-color'
-      : '--card-fg-color'
-    return `
-        color: var(${fg});
-      ${
-        muted &&
-        css`
-          background-color: var(--card-shadow-penumbra-color);
-        `
-      }
-    `
-  }}
-`
 
 type Props = Omit<React.ComponentProps<'div'>, 'onSelect'> & {
   selectTime?: boolean
@@ -181,7 +165,7 @@ export const Calendar = React.forwardRef(function Calendar(
   return (
     <Card {...props} ref={ref}>
       <Flex direction="column">
-        <Flex justify="space-around" style={{marginBottom: 20}}>
+        <Grid columns={3} gap={1}>
           <Button
             text="Yesterday"
             mode="bleed"
@@ -195,104 +179,105 @@ export const Calendar = React.forwardRef(function Calendar(
             size={1}
             onClick={() => handleDateChange(addDays(today, 1))}
           />
-        </Flex>
-        <Box>
-          <Flex>
-            <Flex direction="column">
-              <Flex justify="center">
-                <Flex>
-                  <Box marginX={1}>
-                    <Button
-                      aria-label="Go to previous month"
-                      onClick={() => moveFocusedDate(-1)}
-                      mode="bleed"
-                      icon="chevron-left"
-                    />
-                  </Box>
-                  <Box>
-                    <Select value={focusedDate.getMonth()} onChange={handleFocusedMonthChange}>
-                      {MONTH_NAMES.map((m, i) => (
-                        <option key={i} value={i}>
-                          {m}
-                        </option>
-                      ))}
-                    </Select>
-                  </Box>
-                  <Box marginX={1}>
-                    <Button
-                      aria-label="Go to next month"
-                      mode="bleed"
-                      icon="chevron-right"
-                      onClick={() => moveFocusedDate(1)}
-                    />
-                  </Box>
-                </Flex>
-                <Flex>
-                  <Box marginX={1}>
-                    <Button
-                      aria-label="Go to previous year"
-                      onClick={() => moveFocusedDate(-12)}
-                      mode="bleed"
-                      icon="chevron-left"
-                    />
-                  </Box>
-                  <Box>
-                    <YearInput
-                      value={focusedDate.getFullYear()}
-                      onChange={setFocusedDateYear}
-                      style={{width: 65}}
-                    />
-                  </Box>
-                  <Box marginX={1}>
-                    <Button
-                      aria-label="Go to next year"
-                      onClick={() => moveFocusedDate(12)}
-                      mode="bleed"
-                      icon="chevron-right"
-                    />
-                  </Box>
-                </Flex>
+        </Grid>
+        <Box marginTop={2}>
+          <Flex direction="column">
+            <Flex>
+              <Flex flex={1}>
+                <Button
+                  aria-label="Go to previous month"
+                  onClick={() => moveFocusedDate(-1)}
+                  mode="bleed"
+                  icon="chevron-left"
+                  radius={0}
+                />
+                <Box flex={1}>
+                  <Select
+                    radius={0}
+                    value={focusedDate.getMonth()}
+                    onChange={handleFocusedMonthChange}
+                  >
+                    {MONTH_NAMES.map((m, i) => (
+                      <option key={i} value={i}>
+                        {m}
+                      </option>
+                    ))}
+                  </Select>
+                </Box>
+                <Button
+                  aria-label="Go to next month"
+                  mode="bleed"
+                  icon="chevron-right"
+                  onClick={() => moveFocusedDate(1)}
+                  radius={0}
+                />
               </Flex>
-              <Flex
-                ref={scrollSnapper}
-                direction="column"
-                justify="space-between"
-                style={{
-                  height: 290,
-                  scrollSnapType: 'y mandatory',
-                  overflowY: 'hidden',
-                  marginTop: 8,
-                  marginBottom: 8,
-                }}
-                tabIndex={0}
-                onKeyDown={handleKeyDown}
-                data-calendar-grid
-              >
-                <Month
-                  key={prevMonth.getMonth()}
-                  date={prevMonth}
-                  onSelect={onSelect}
-                  selected={selectedDate}
+              <Flex>
+                <Button
+                  aria-label="Go to previous year"
+                  onClick={() => moveFocusedDate(-12)}
+                  mode="bleed"
+                  icon="chevron-left"
+                  radius={0}
                 />
-                <Month
-                  key={focusedDate.getMonth()}
-                  date={focusedDate}
-                  focused={focusedDate}
-                  onSelect={onSelect}
-                  selected={selectedDate}
+                <YearInput
+                  value={focusedDate.getFullYear()}
+                  onChange={setFocusedDateYear}
+                  radius={0}
+                  style={{width: 65}}
                 />
-                <Month
-                  key={nextMonth.getMonth()}
-                  date={nextMonth}
-                  onSelect={onSelect}
-                  selected={selectedDate}
+                <Button
+                  aria-label="Go to next year"
+                  onClick={() => moveFocusedDate(12)}
+                  mode="bleed"
+                  icon="chevron-right"
+                  radius={0}
                 />
               </Flex>
             </Flex>
+
+            {/* Spacer */}
+            <Box paddingTop={4} />
+
+            <Flex
+              ref={scrollSnapper}
+              direction="column"
+              justify="space-between"
+              style={{
+                height: MONTH_MIN_HEIGHT,
+                scrollSnapType: 'y mandatory',
+                outline: 'none',
+              }}
+              tabIndex={0}
+              onKeyDown={handleKeyDown}
+              overflow="hidden"
+              data-calendar-grid
+            >
+              <Month
+                key={prevMonth.getMonth()}
+                date={prevMonth}
+                onSelect={onSelect}
+                selected={selectedDate}
+              />
+              <Month
+                key={focusedDate.getMonth()}
+                date={focusedDate}
+                focused={focusedDate}
+                onSelect={onSelect}
+                selected={selectedDate}
+              />
+              <Month
+                key={nextMonth.getMonth()}
+                date={nextMonth}
+                onSelect={onSelect}
+                selected={selectedDate}
+              />
+            </Flex>
           </Flex>
+
           {selectTime && (
-            <Box>
-              <Flex direction="row" justify="center" align="center" style={{marginTop: 10}}>
+            <Box marginTop={4}>
+              <Flex direction="row" justify="center" align="center">
                 <Box>
                   <Select
                     aria-label="Select hour"
@@ -306,11 +291,13 @@ export const Calendar = React.forwardRef(function Calendar(
                     ))}
                   </Select>
                 </Box>
+
                 <Box paddingX={1}>
                   <Text size={3} weight="semibold">
                     :
                   </Text>
                 </Box>
+
                 <Box>
                   <Select
                     aria-label="Select minutes"
@@ -325,7 +312,8 @@ export const Calendar = React.forwardRef(function Calendar(
                   </Select>
                 </Box>
               </Flex>
-              <Flex direction="row" justify="center" align="center" style={{marginTop: 5}}>
+
+              <Flex direction="row" justify="center" align="center">
                 {TIME_PRESETS.map(([hours, minutes]) => {
                   const formatted = formatTime(hours, minutes)
                   return (
@@ -357,43 +345,49 @@ type MonthProps = {
 function Month(props: MonthProps) {
   const today = new Date()
   return (
-    <Flex
-      direction="column"
-      align="center"
-      justify="center"
-      style={{minHeight: 290, scrollSnapAlign: 'center'}}
-    >
-      <Box marginTop={3} padding={2}>
-        <Grid columns={7} gap={2}>
-          {WEEK_DAY_NAMES.map((weekday) => (
-            <Flex key={weekday} justify="center">
-              <Text>{weekday}</Text>
-            </Flex>
-          ))}
-          {getWeeksOfMonth(props.date).map((week) =>
-            week.days.map((date) => {
-              const focused = props.focused && isSameDay(date, props.focused)
-              const selected = props.selected && isSameDay(date, props.selected)
-              return (
-                <WeekDay
-                  data-weekday={focused ? 'focused' : ''}
-                  key={week.number + date.getDay()}
+    <Box style={{minHeight: MONTH_MIN_HEIGHT, scrollSnapAlign: 'center'}}>
+      <Grid columns={7} gap={1}>
+        {WEEK_DAY_NAMES.map((weekday) => (
+          <Box key={weekday} paddingY={1}>
+            <Text size={1} weight="medium" style={{textAlign: 'center'}}>
+              {weekday}
+            </Text>
+          </Box>
+        ))}
+
+        {getWeeksOfMonth(props.date).map((week) =>
+          week.days.map((date) => {
+            const focused = props.focused && isSameDay(date, props.focused)
+            const selected = props.selected && isSameDay(date, props.selected)
+            const isToday = isSameDay(date, today)
+            const isCurrentMonth = props.focused && isSameMonth(date, props.focused)
+            return (
+              <div aria-selected={selected} key={week.number + date.getDay()}>
+                <Card
                   aria-label={date.toDateString()}
                   aria-pressed={selected}
+                  as="button"
+                  data-weekday={focused ? 'focused' : ''}
                   role="button"
-                  selected={selected}
                   tabIndex={-1}
-                  mode="ghost"
-                  today={isSameDay(date, today)}
-                  muted={props.focused && !isSameMonth(date, props.focused)}
-                  text={date.getDate()}
                   onClick={() => props.onSelect(date)}
-                />
-              )
-            })
-          )}
-        </Grid>
-      </Box>
-    </Flex>
+                  padding={3}
+                  radius={2}
+                  tone={isToday ? 'primary' : 'default'}
+                >
+                  <Text
+                    muted={!isCurrentMonth}
+                    style={{textAlign: 'center'}}
+                    weight={isCurrentMonth ? 'medium' : 'regular'}
+                  >
+                    {date.getDate()}
+                  </Text>
+                </Card>
+              </div>
+            )
+          })
+        )}
+      </Grid>
+    </Box>
   )
 }
