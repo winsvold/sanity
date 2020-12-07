@@ -76,6 +76,7 @@ export default {
       title: 'Array of multiple types (editModal=popover)',
       options: {
         editModal: 'popover',
+        addItemButtonLabel: 'Legg til',
       },
       type: 'array',
       of: [
@@ -108,6 +109,7 @@ export default {
       title: 'Array of multiple types (editModal=fullscreen)',
       options: {
         editModal: 'fullscreen',
+        addItemButtonLabel: 'Ny fullskjerm-item',
       },
       type: 'array',
       of: [

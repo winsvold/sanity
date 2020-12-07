@@ -21,6 +21,7 @@ interface ArrayFunctionsProps {
   onFocusItem: (item: ItemValue) => void
   onCreateValue: (type: SchemaType) => ItemValue
   onChange: (event: PatchEvent) => void
+  addItemButtonLabel: string
 }
 
 export default class ArrayFunctions extends React.Component<ArrayFunctionsProps> {
@@ -40,6 +41,8 @@ export default class ArrayFunctions extends React.Component<ArrayFunctionsProps>
   }
 
   renderSelectType() {
+    const {addItemButtonLabel} = this.props
+
     const items = this.props.type.of.map((memberDef) => {
       // Use reference icon if reference is to one type only
       const referenceIcon =
@@ -57,13 +60,13 @@ export default class ArrayFunctions extends React.Component<ArrayFunctionsProps>
 
     return (
       <DropDownButton inverted items={items} onAction={this.handleDropDownAction}>
-        Add
+        {addItemButtonLabel}
       </DropDownButton>
     )
   }
 
   render() {
-    const {className, type, readOnly, children} = this.props
+    const {className, type, readOnly, children, addItemButtonLabel} = this.props
 
     if (readOnly) {
       return null
@@ -74,7 +77,7 @@ export default class ArrayFunctions extends React.Component<ArrayFunctionsProps>
         <ButtonGrid align="start">
           {type.of.length === 1 ? (
             <Button inverted onClick={this.handleAddBtnClick}>
-              Add
+              {addItemButtonLabel}
             </Button>
           ) : (
             this.renderSelectType()

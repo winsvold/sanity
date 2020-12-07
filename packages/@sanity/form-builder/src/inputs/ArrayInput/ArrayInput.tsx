@@ -356,6 +356,7 @@ export default class ArrayInput extends React.Component<Props, ArrayInputState> 
   render() {
     const {type, level = 1, markers, readOnly, onChange, value, presence} = this.props
     const hasNonObjectValues = (value || []).some((item) => !isPlainObject(item))
+    const options = type.options || {}
 
     if (hasNonObjectValues) {
       return (
@@ -448,6 +449,7 @@ export default class ArrayInput extends React.Component<Props, ArrayInputState> 
           <ArrayFunctions
             className={styles.functions}
             type={type}
+            addItemButtonLabel={options.addItemButtonLabel || 'Add'}
             value={value}
             readOnly={readOnly}
             onAppendItem={this.handleAppend}
