@@ -26,6 +26,7 @@
     "@sanity/portable-text-editor": "0.1.25",
     "@sanity/types": "2.1.0",
     "@sanity/util": "2.1.0",
+    "@sanity/ui": "1.0.0-beta.24",
     "@sanity/uuid": "^3.0.1",
     "attr-accept": "^1.1.0",
     "classnames": "^2.2.5",
