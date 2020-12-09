@@ -14,11 +14,12 @@ import compressJavascript from './compressJavascript'
 const rimraf = promisify(rimTheRaf)
 const absoluteMatch = /^https?:\/\//i
 
+// eslint-disable-next-line max-statements
 export default async (args, context) => {
   const overrides = args.overrides || {}
   const {output, prompt, workDir} = context
   const flags = Object.assign(
-    {minify: true, profile: false, stats: false, 'source-maps': false},
+    {analyze: false, minify: true, profile: false, stats: false, 'source-maps': false},
     args.extOptions
   )
 
@@ -27,6 +28,7 @@ export default async (args, context) => {
   const outputDir = path.resolve(args.argsWithoutOptions[0] || defaultOutputDir)
   const config = getConfig(workDir, {env: 'production'})
   const compilationConfig = {
+    analyze: flags.analyze,
     env: 'production',
     staticPath: resolveStaticPath(workDir, config.get('server')),
     basePath: workDir,

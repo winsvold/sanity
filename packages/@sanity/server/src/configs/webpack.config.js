@@ -5,6 +5,7 @@ import resolveFrom from 'resolve-from'
 import webpackIntegration from '@sanity/webpack-integration/v3'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import rxPaths from 'rxjs/_esm5/path-mapping'
+import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer'
 import getStaticBasePath from '../util/getStaticBasePath'
 
 const resolve = (mod) => require.resolve(mod)
@@ -161,6 +162,15 @@ export default (config = {}) => {
       webpackIntegration.getPartResolverPlugin(wpIntegrationOptions),
       cssExtractor,
       commonChunkPlugin,
+      config.analyze &&
+        new BundleAnalyzerPlugin({
+          analyzerMode: 'static',
+          reportFilename: path.resolve(
+            config.outputPath || path.join(__dirname, '..', '..', 'dist'),
+            'analysis/index.html'
+          ),
+          openAnalyzer: false,
+        }),
     ].filter(Boolean),
   }
 }

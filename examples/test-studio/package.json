@@ -6,7 +6,7 @@
   "author": "Sanity.io <hello@sanity.io>",
   "license": "MIT",
   "scripts": {
-    "build": "sanity build",
+    "build": "sanity build --analyze",
     "start": "sanity start",
     "clean": "rimraf dist"
   },
