@@ -1,5 +1,5 @@
 import {uniqueId} from 'lodash'
-import React, {useEffect, useState, useMemo} from 'react'
+import React, {useEffect, useState, useMemo, useCallback} from 'react'
 import {Marker, Path} from '@sanity/types'
 import {FormFieldPresence} from '@sanity/base/presence'
 import {
@@ -19,8 +19,8 @@ import withPatchSubscriber from '../../../utils/withPatchSubscriber'
 import {FormField} from '../../../components/FormField'
 import type {Patch} from '../../../patch/types'
 import {RenderBlockActions, RenderCustomMarkers} from './types'
-import Input from './Input'
-import RespondToInvalidContent from './InvalidValue'
+import {PTInput} from './Input'
+import {InvalidValue} from './InvalidValue'
 import styles from './PortableTextInput.css'
 
 export type PatchWithOrigin = Patch & {
@@ -28,7 +28,7 @@ export type PatchWithOrigin = Patch & {
   timestamp: Date
 }
 
-type PatchSubscribe = (subscribeFn: PatchSubscriber) => void
+type PatchSubscribe = (subscribeFn: PatchSubscriber) => () => void
 type PatchSubscriber = ({
   patches,
 }: {
@@ -63,7 +63,8 @@ const PortableTextInputWithRef = React.forwardRef(function PortableTextInput(
     focusPath,
     hotkeys,
     markers,
-    onBlur,
+    // @todo
+    // onBlur,
     onChange,
     onCopy,
     onFocus,
@@ -72,12 +73,11 @@ const PortableTextInputWithRef = React.forwardRef(function PortableTextInput(
     readOnly,
     renderBlockActions,
     renderCustomMarkers,
+    subscribe,
     type,
     value,
   } = props
-
-  const toast = useToast()
-
+  const {push} = useToast()
   // The PortableTextEditor will not re-render unless the value is changed (which is good).
   // But, we want to re-render it when the markers changes too,
   // (we render error indicators directly in the editor nodes for inline objects and annotations)
@@ -86,161 +86,157 @@ const PortableTextInputWithRef = React.forwardRef(function PortableTextInput(
     .map((marker) => JSON.stringify(marker.path).concat(marker.type).concat(marker.level))
     .sort()
     .join('')
-  const forceUpdate = (fromValue?: PortableTextBlock[] | undefined) => {
-    const val = fromValue || props.value
-    setValueTouchedByMarkers(val ? [...val] : val)
-  }
-  const [valueTouchedByMarkers, setValueTouchedByMarkers] = useState(props.value)
-  useEffect(forceUpdate, [validationHash, value])
+  const [valueTouchedByMarkers, setValueTouchedByMarkers] = useState(value)
+  // Handle editor changes
+  const [hasFocus, setHasFocus] = useState(false)
+  const [ignoreValidationError, setIgnoreValidationError] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const editorId = useMemo(() => uniqueId('PortableTextInputRoot'), [])
+  const [invalidValue, setInvalidValue] = useState(null)
+  // Memoized patch stream
+  const patche$: Subject<EditorPatch> = useMemo(() => new Subject(), [])
+
+  const handleForceUpdate = useCallback(() => {
+    setValueTouchedByMarkers(value ? [...value] : value)
+  }, [value])
+
+  // Handle incoming patches from withPatchSubscriber HOC
+  const handleDocumentPatches = useCallback(
+    ({patches}: {patches: PatchWithOrigin[]; snapshot: PortableTextBlock[] | undefined}) => {
+      const patchSelection =
+        patches && patches.length > 0 && patches.filter((patch) => patch.origin !== 'local')
+      if (patchSelection) {
+        patchSelection.map((patch) => patche$.next(patch))
+      }
+    },
+    [patche$]
+  )
+
+  const handleEditorChange = useCallback(
+    (change: EditorChange) => {
+      switch (change.type) {
+        case 'mutation':
+          // Don't wait for the result
+          setTimeout(() => {
+            onChange(PatchEvent.from(change.patches))
+          })
+          break
+        case 'focus':
+          setHasFocus(true)
+          break
+        case 'blur':
+          setHasFocus(false)
+          break
+        case 'undo':
+        case 'redo':
+          onChange(PatchEvent.from(change.patches))
+          break
+        case 'invalidValue':
+          setInvalidValue(change)
+          break
+        case 'error':
+          push({
+            status: change.level,
+            description: change.description,
+          })
+          break
+        default:
+      }
+    },
+    [onChange, push]
+  )
+
+  const handleIgnoreValidation = useCallback(() => {
+    setIgnoreValidationError(true)
+  }, [])
+
+  const handleFocusSkipper = useCallback(() => {
+    if (ref.current) {
+      PortableTextEditor.focus(ref.current)
+    }
+  }, [ref])
+
+  const handleToggleFullscreen = useCallback(() => {
+    setIsFullscreen((flag) => !flag)
+  }, [])
+
+  // Force update when validation or value changes
+  useEffect(
+    (fromValue?: PortableTextBlock[] | undefined) => {
+      const val = fromValue || value
+      setValueTouchedByMarkers(val ? [...val] : val)
+    },
+    [validationHash, value]
+  )
+
+  // Subscribe to incoming patches
+  useEffect(() => subscribe(handleDocumentPatches), [handleDocumentPatches, subscribe])
 
   // Reset invalidValue if new value is coming in from props
-  const [invalidValue, setInvalidValue] = useState(null)
   useEffect(() => {
     if (invalidValue && value !== invalidValue.value) {
       setInvalidValue(null)
     }
-  }, [value])
+  }, [invalidValue, value])
 
-  // Subscribe to incoming patches
-  let unsubscribe
-  useEffect(() => {
-    unsubscribe = props.subscribe(handleDocumentPatches)
-    return () => {
-      unsubscribe()
-    }
-  }, [])
-
-  // Memoized patch stream
-  const patche$: Subject<EditorPatch> = useMemo(() => new Subject(), [])
-
-  // Handle incoming patches from withPatchSubscriber HOC
-  function handleDocumentPatches({
-    patches,
-  }: {
-    patches: PatchWithOrigin[]
-    snapshot: PortableTextBlock[] | undefined
-  }): void {
-    const patchSelection =
-      patches && patches.length > 0 && patches.filter((patch) => patch.origin !== 'local')
-    if (patchSelection) {
-      patchSelection.map((patch) => patche$.next(patch))
-    }
-  }
-
-  // Handle editor changes
-  const [hasFocus, setHasFocus] = useState(false)
-  function handleEditorChange(change: EditorChange): void {
-    switch (change.type) {
-      case 'mutation':
-        // Don't wait for the result
-        setTimeout(() => {
-          onChange(PatchEvent.from(change.patches))
-        })
-        break
-      case 'focus':
-        setHasFocus(true)
-        break
-      case 'blur':
-        setHasFocus(false)
-        break
-      case 'undo':
-      case 'redo':
-        onChange(PatchEvent.from(change.patches))
-        break
-      case 'invalidValue':
-        setInvalidValue(change)
-        break
-      case 'error':
-        toast.push({
-          status: change.level,
-          description: change.description,
-        })
-        break
-      default:
-    }
-  }
-
-  const [ignoreValidationError, setIgnoreValidationError] = useState(false)
-  function handleIgnoreValidation(): void {
-    setIgnoreValidationError(true)
-  }
-
-  const handleFocusSkipper = () => {
-    if (ref.current) {
-      PortableTextEditor.focus(ref.current)
-    }
-  }
-
-  // Render error message and resolution
-  let respondToInvalidContent = null
-  if (invalidValue) {
-    respondToInvalidContent = (
-      <>
-        <RespondToInvalidContent
+  return (
+    <>
+      {invalidValue && !ignoreValidationError && (
+        <InvalidValue
           onChange={handleEditorChange}
           onIgnore={handleIgnoreValidation}
           resolution={invalidValue.resolution}
           value={value}
         />
-      </>
-    )
-  }
+      )}
 
-  const [isFullscreen, setIsFullscreen] = useState(false)
-  const handleToggleFullscreen = () => setIsFullscreen(!isFullscreen)
-  const editorId = useMemo(() => uniqueId('PortableTextInputRoot'), [])
-  const editorInput = useMemo(
-    () => (
-      <PortableTextEditor
-        ref={ref}
-        incomingPatche$={patche$.asObservable()}
-        key={`portable-text-editor-${editorId}`}
-        onChange={handleEditorChange}
-        maxBlocks={undefined} // TODO: from schema?
-        readOnly={readOnly}
-        type={type}
-        value={valueTouchedByMarkers}
-      >
-        {!readOnly && (
-          <button
-            type="button"
-            tabIndex={0}
-            className={styles.focusSkipper}
-            onClick={handleFocusSkipper}
-          >
-            Jump to editor
-          </button>
-        )}
-        <Input
-          focusPath={focusPath}
-          forceUpdate={forceUpdate}
-          hasFocus={hasFocus}
-          hotkeys={hotkeys}
-          isFullscreen={isFullscreen}
-          key={`portable-text-input-${editorId}`}
-          markers={markers}
-          onBlur={onBlur}
-          onChange={onChange}
-          onCopy={onCopy}
-          onFocus={onFocus}
-          onPaste={onPaste}
-          onToggleFullscreen={handleToggleFullscreen}
-          patche$={patche$}
-          presence={presence}
+      {(!invalidValue || ignoreValidationError) && (
+        <PortableTextEditor
+          ref={ref}
+          incomingPatche$={patche$.asObservable()}
+          key={`portable-text-editor-${editorId}`}
+          onChange={handleEditorChange}
+          // @todo: from schema?
+          maxBlocks={undefined}
           readOnly={readOnly}
-          renderBlockActions={renderBlockActions}
-          renderCustomMarkers={renderCustomMarkers}
-          type={props.type}
+          type={type}
           value={valueTouchedByMarkers}
-        />
-      </PortableTextEditor>
-    ),
-    [focusPath, hasFocus, isFullscreen, presence, readOnly, valueTouchedByMarkers]
-  )
-  return (
-    <>
-      {invalidValue && !ignoreValidationError && respondToInvalidContent}
-      {(!invalidValue || ignoreValidationError) && editorInput}
+        >
+          {!readOnly && (
+            <button
+              type="button"
+              tabIndex={0}
+              className={styles.focusSkipper}
+              onClick={handleFocusSkipper}
+            >
+              Jump to editor
+            </button>
+          )}
+
+          <PTInput
+            focusPath={focusPath}
+            forceUpdate={handleForceUpdate}
+            hasFocus={hasFocus}
+            hotkeys={hotkeys}
+            isFullscreen={isFullscreen}
+            key={`portable-text-input-${editorId}`}
+            markers={markers}
+            // onBlur={onBlur}
+            onChange={onChange}
+            onCopy={onCopy}
+            onFocus={onFocus}
+            onPaste={onPaste}
+            onToggleFullscreen={handleToggleFullscreen}
+            patche$={patche$}
+            presence={presence}
+            readOnly={readOnly}
+            renderBlockActions={renderBlockActions}
+            renderCustomMarkers={renderCustomMarkers}
+            type={type}
+            value={valueTouchedByMarkers}
+          />
+        </PortableTextEditor>
+      )}
     </>
   )
 })

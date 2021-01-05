@@ -1,8 +1,8 @@
-import React, {useCallback} from 'react'
 import {PortableTextEditor, usePortableTextEditor} from '@sanity/portable-text-editor'
+import {Button} from '@sanity/ui'
+import React, {useCallback} from 'react'
 import {OverflowMenu} from './OverflowMenu'
 import {PTEToolbarAction, PTEToolbarActionGroup} from './types'
-import {Button} from '@sanity/ui'
 
 import styles from './ActionMenu.css'
 
@@ -29,8 +29,8 @@ function ActionButton(props: {action: PTEToolbarAction; disabled: boolean; visib
       mode="bleed"
       padding={2}
       onClick={handleClick}
-      tabIndex={visible ? 0 : -1}
       selected={action.active}
+      tabIndex={visible ? 0 : -1}
       title={title}
     />
   )
@@ -43,7 +43,7 @@ function ActionMenuItem(props: {action: PTEToolbarAction; disabled: boolean; onC
   const handleClick = useCallback(() => {
     action.handle()
     onClose()
-  }, [action])
+  }, [action, onClose])
 
   return (
     <Button

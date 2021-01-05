@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import React, {FunctionComponent, SyntheticEvent, useMemo} from 'react'
+import React, {useCallback, useMemo} from 'react'
 import classNames from 'classnames'
 import {Path, Marker, isValidationErrorMarker} from '@sanity/types'
 import {
@@ -9,8 +8,7 @@ import {
   RenderAttributes,
 } from '@sanity/portable-text-editor'
 import {FOCUS_TERMINATOR} from '@sanity/util/paths'
-
-import {PatchEvent} from '../../../../PatchEvent'
+// import {PatchEvent} from '../../../../PatchEvent'
 import {BlockObjectPreview} from './BlockObjectPreview'
 import styles from './BlockObject.css'
 
@@ -18,14 +16,14 @@ type Props = {
   attributes: RenderAttributes
   editor: PortableTextEditor
   markers: Marker[]
-  onChange: (patchEvent: PatchEvent, path: Path) => void
+  // onChange: (patchEvent: PatchEvent, path: Path) => void
   onFocus: (path: Path) => void
   readOnly: boolean
   type: Type
   value: PortableTextBlock
 }
 
-export const BlockObject: FunctionComponent<Props> = ({
+export function BlockObject({
   attributes: {focused, selected, path},
   editor,
   markers,
@@ -33,7 +31,7 @@ export const BlockObject: FunctionComponent<Props> = ({
   readOnly,
   type,
   value,
-}): JSX.Element => {
+}: Props) {
   const errors = markers.filter(isValidationErrorMarker)
   const classnames = classNames([
     styles.root,
@@ -42,41 +40,54 @@ export const BlockObject: FunctionComponent<Props> = ({
     errors.length > 0 && styles.hasErrors,
   ])
 
-  const handleClickToOpen = (event: SyntheticEvent<HTMLElement>): void => {
-    if (focused) {
-      event.preventDefault()
-      event.stopPropagation()
-      onFocus(path.concat(FOCUS_TERMINATOR))
-    } else {
-      onFocus(path)
-    }
-  }
+  const handleClickToOpen = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      if (focused) {
+        event.preventDefault()
+        event.stopPropagation()
+        onFocus(path.concat(FOCUS_TERMINATOR))
+      } else {
+        onFocus(path)
+      }
+    },
+    [focused, onFocus, path]
+  )
 
-  const handleEdit = (): void => {
+  const handleEdit = useCallback(() => {
     onFocus(path.concat(FOCUS_TERMINATOR))
-  }
+  }, [onFocus, path])
 
-  const handleDelete = (): void => {
+  const handleDelete = useCallback(() => {
     PortableTextEditor.delete(
       editor,
       {focus: {path, offset: 0}, anchor: {path, offset: 0}},
       {mode: 'block'}
     )
     PortableTextEditor.focus(editor)
-  }
+  }, [editor, path])
+
   const blockPreview = useMemo(() => {
     return (
       <BlockObjectPreview
         type={type}
         value={value}
-        path={path}
+        // path={path}
         readOnly={readOnly}
-        onFocus={onFocus}
+        // onFocus={onFocus}
         onClickingDelete={handleDelete}
         onClickingEdit={handleEdit}
       />
     )
-  }, [value, readOnly])
+  }, [
+    handleDelete,
+    handleEdit,
+    // onFocus,
+    // path,
+    readOnly,
+    type,
+    value,
+  ])
+
   return (
     <div className={classnames} onDoubleClick={handleClickToOpen}>
       <div className={styles.previewContainer} style={readOnly ? {cursor: 'default'} : {}}>

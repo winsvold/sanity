@@ -1,23 +1,16 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable react/jsx-handler-names */
-/* eslint-disable react/jsx-no-bind */
-
 import {
   HotkeyOptions,
   RenderBlockFunction,
   usePortableTextEditor,
   usePortableTextEditorSelection,
-  PortableTextEditor,
 } from '@sanity/portable-text-editor'
-import classNames from 'classnames'
-import React from 'react'
 import {Path} from '@sanity/types'
+import {Card, Flex, Stack} from '@sanity/ui'
+import React, {useCallback} from 'react'
 import ActionMenu from './ActionMenu'
-import BlockStyleSelect from './BlockStyleSelect'
-import InsertMenu from './InsertMenu'
+import {BlockStyleSelect} from './BlockStyleSelect'
 import {getBlockStyleSelectProps, getInsertMenuItems, getPTEToolbarActionGroups} from './helpers'
-
-import styles from './Toolbar.css'
+import InsertMenu from './InsertMenu'
 
 interface Props {
   hotkeys: HotkeyOptions
@@ -27,7 +20,7 @@ interface Props {
   onFocus: (path: Path) => void
 }
 
-function PTEToolbar(props: Props) {
+export function Toolbar(props: Props) {
   const {hotkeys, isFullscreen, readOnly, onFocus, renderBlock} = props
   const editor = usePortableTextEditor()
   const selection = usePortableTextEditorSelection()
@@ -36,49 +29,56 @@ function PTEToolbar(props: Props) {
     () => (editor ? getPTEToolbarActionGroups(editor, selection, onFocus, hotkeys) : []),
     [editor, selection, onFocus, hotkeys]
   )
+
   const actionsLen = actionGroups.reduce((acc, x) => acc + x.actions.length, 0)
+
   const blockStyleSelectProps = React.useMemo(
     () => (editor ? getBlockStyleSelectProps(editor) : null),
-    [selection]
-  )
-  const insertMenuItems = React.useMemo(
-    () => (editor ? getInsertMenuItems(editor, selection, onFocus) : []),
-    [selection]
+    // @todo: Make `usePortableTextEditor` update its value when selection changes
+    // Workaround: include `selection` to update active block style in block style menu
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [editor, selection]
   )
 
+  const insertMenuItems = React.useMemo(
+    () => (editor ? getInsertMenuItems(editor, selection, onFocus) : []),
+    [editor, onFocus, selection]
+  )
+
+  const handleMouseDown = useCallback((event) => event.preventDefault(), [])
+  const handleKeyPress = useCallback((event) => event.preventDefault(), [])
+
   return (
-    <div
-      className={classNames(styles.root, isFullscreen && styles.fullscreen)}
+    <Flex
+      align="center"
       // Ensure the editor doesn't lose focus when interacting
       // with the toolbar (prevent focus click events)
-      onMouseDown={(event) => event.preventDefault()}
-      onKeyPress={(event) => event.preventDefault()}
+      onMouseDown={handleMouseDown}
+      onKeyPress={handleKeyPress}
+      style={{lineHeight: 0}}
     >
       {blockStyleSelectProps && blockStyleSelectProps.items.length > 1 && (
-        <div className={styles.blockStyleSelectContainer}>
+        <Stack padding={isFullscreen ? 2 : 1} style={{minWidth: '8em'}}>
           <BlockStyleSelect
             {...blockStyleSelectProps}
-            className={styles.blockStyleSelect}
             disabled={disabled}
-            padding="small"
-            selection={selection}
             readOnly={readOnly}
             renderBlock={renderBlock}
           />
-        </div>
+        </Stack>
       )}
+
       {actionsLen > 0 && (
-        <div className={styles.actionMenuContainer}>
+        <Card borderLeft flex={1} padding={isFullscreen ? 2 : 1}>
           <ActionMenu disabled={disabled} groups={actionGroups} readOnly={readOnly} />
-        </div>
+        </Card>
       )}
+
       {insertMenuItems.length > 0 && (
-        <div className={styles.insertMenuContainer}>
+        <Card borderLeft padding={isFullscreen ? 2 : 1}>
           <InsertMenu disabled={disabled} items={insertMenuItems} readOnly={readOnly} />
-        </div>
+        </Card>
       )}
-    </div>
+    </Flex>
   )
 }
-
-export default PTEToolbar

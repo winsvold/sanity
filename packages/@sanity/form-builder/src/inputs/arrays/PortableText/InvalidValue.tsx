@@ -1,8 +1,9 @@
-import React from 'react'
 import {InvalidValueResolution, PortableTextBlock} from '@sanity/portable-text-editor'
-import Warning from '../../Warning'
-import styles from '../../ObjectInput/styles/UnknownFields.css'
 import {Button} from '@sanity/ui'
+import React from 'react'
+import Warning from '../../Warning'
+
+import styles from '../../ObjectInput/styles/UnknownFields.css'
 
 type InvalidValueProps = {
   resolution: InvalidValueResolution
@@ -11,7 +12,7 @@ type InvalidValueProps = {
   onIgnore: () => void
 }
 
-export default class InvalidValue extends React.PureComponent<InvalidValueProps> {
+export class InvalidValue extends React.PureComponent<InvalidValueProps> {
   handleAction = (): void => {
     const resolution = this.props.resolution
     if (resolution) {

@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import {EllipsisHorizontalIcon} from '@sanity/icons'
 import {MenuButton} from 'part:@sanity/components/menu-button'
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 
 import styles from './OverflowMenu.css'
 
@@ -22,7 +22,7 @@ interface Props {
   disabled?: boolean
 }
 
-const preventDefault = (event: any) => {
+const preventDefault = (event: React.SyntheticEvent<HTMLElement>) => {
   event.preventDefault()
   event.stopPropagation()
 }
@@ -44,7 +44,7 @@ export function OverflowMenu(props: Props) {
   const lastHidden = hiddenActions.length === 1
   const ioRef = useRef<IntersectionObserver | null>(null)
   const [open, setOpen] = useState(false)
-  const handleClose = () => setOpen(false)
+  const handleClose = useCallback(() => setOpen(false), [])
 
   useEffect(() => {
     const actionBar = actionBarRef.current

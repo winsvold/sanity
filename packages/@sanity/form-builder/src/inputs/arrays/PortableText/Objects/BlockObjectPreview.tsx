@@ -1,6 +1,5 @@
-/* eslint-disable react/prop-types */
-import React, {FunctionComponent} from 'react'
-import {Path} from '@sanity/types'
+import React, {useCallback} from 'react'
+// import {Path} from '@sanity/types'
 import {PortableTextBlock, Type} from '@sanity/portable-text-editor'
 import DropDownButton from 'part:@sanity/components/buttons/dropdown'
 import {EditIcon, LinkIcon, TrashIcon, EyeOpenIcon} from '@sanity/icons'
@@ -13,20 +12,20 @@ import styles from './BlockObject.css'
 type Props = {
   type: Type
   value: PortableTextBlock
-  path: Path
+  // path: Path
   readOnly: boolean
-  onFocus: (path: Path) => void
+  // onFocus: (path: Path) => void
   onClickingEdit: () => void
   onClickingDelete: () => void
 }
 
-export const BlockObjectPreview: FunctionComponent<Props> = ({
+export function BlockObjectPreview({
   value,
   type,
   readOnly,
   onClickingEdit,
   onClickingDelete,
-}): JSX.Element => {
+}: Props) {
   const menuItems: DropDownMenuItemProps[] = []
   if (value._ref) {
     menuItems.push({
@@ -56,17 +55,20 @@ export const BlockObjectPreview: FunctionComponent<Props> = ({
     })
   }
 
-  const handleHeaderMenuAction = (item: DropDownMenuItemProps): void => {
-    if (item.name === 'delete') {
-      onClickingDelete()
-    }
-    if (item.name === 'edit') {
-      onClickingEdit()
-    }
-    if (item.name === 'view') {
-      onClickingEdit()
-    }
-  }
+  const handleHeaderMenuAction = useCallback(
+    (item: DropDownMenuItemProps) => {
+      if (item.name === 'delete') {
+        onClickingDelete()
+      }
+      if (item.name === 'edit') {
+        onClickingEdit()
+      }
+      if (item.name === 'view') {
+        onClickingEdit()
+      }
+    },
+    [onClickingDelete, onClickingEdit]
+  )
 
   return (
     <div className={styles.preview}>

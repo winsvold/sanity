@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import React, {FunctionComponent} from 'react'
+import React from 'react'
 import {IntentLink} from 'part:@sanity/base/router'
 
 import styles from './BlockObjectMenuItem.css'
@@ -15,13 +14,7 @@ export type DropDownMenuItemProps = {
   name?: string
 }
 
-export const MenuItem: FunctionComponent<DropDownMenuItemProps> = ({
-  title,
-  color,
-  icon,
-  intent,
-  params,
-}): JSX.Element => {
+export function MenuItem({title, color, icon, intent, params}: DropDownMenuItemProps) {
   const Icon = icon
   return (
     <div className={color === 'danger' ? styles.menuItemDanger : styles.menuItem}>

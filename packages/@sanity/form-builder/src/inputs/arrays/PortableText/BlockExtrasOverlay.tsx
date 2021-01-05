@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 import BlockExtras from 'part:@sanity/form-builder/input/block-editor/block-extras'
 import {isKeySegment, Marker, Path} from '@sanity/types'
 import {

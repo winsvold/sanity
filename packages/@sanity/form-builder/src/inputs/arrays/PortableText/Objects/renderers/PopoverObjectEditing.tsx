@@ -1,6 +1,4 @@
-/* eslint-disable react/prop-types */
-import React, {FunctionComponent, useEffect, useState} from 'react'
-
+import React, {useCallback, useEffect, useState} from 'react'
 import {
   PortableTextBlock,
   PortableTextChild,
@@ -14,7 +12,7 @@ import {FormBuilderInput} from '../../../../../FormBuilderInput'
 import {PatchEvent} from '../../../../../PatchEvent'
 import {PopoverDialog} from '../../../../../transitional/PopoverDialog'
 
-interface Props {
+interface PopoverObjectEditingProps {
   editorPath: Path
   focusPath: Path
   markers: Marker[]
@@ -29,31 +27,38 @@ interface Props {
   type: Type
 }
 
-export const PopoverObjectEditing: FunctionComponent<Props> = ({
-  editorPath,
-  focusPath,
-  markers,
-  object,
-  onBlur,
-  onChange,
-  onClose,
-  onFocus,
-  path,
-  presence,
-  readOnly,
-  type,
-}) => {
+export function PopoverObjectEditing(props: PopoverObjectEditingProps) {
+  const {
+    editorPath,
+    focusPath,
+    markers,
+    object,
+    onBlur,
+    onChange,
+    onClose,
+    onFocus,
+    path,
+    presence,
+    readOnly,
+    type,
+  } = props
   const editor = usePortableTextEditor()
-  const handleChange = (patchEvent: PatchEvent): void => onChange(patchEvent, path)
-  const getEditorElement = () => {
+
+  const handleChange = useCallback((patchEvent: PatchEvent): void => onChange(patchEvent, path), [
+    onChange,
+    path,
+  ])
+
+  const getEditorElement = useCallback(() => {
     const [editorObject] = PortableTextEditor.findByPath(editor, editorPath)
     return PortableTextEditor.findDOMNode(editor, editorObject) as HTMLElement
-  }
+  }, [editor, editorPath])
+
   const [refElement, setRefElement] = useState(getEditorElement())
 
   useEffect(() => {
     setRefElement(getEditorElement())
-  }, [object])
+  }, [getEditorElement, object])
 
   return (
     <PopoverDialog

@@ -12,8 +12,10 @@ export default function createBlockActionPatchFn(
   onPatch: (event: PatchEvent) => void,
   portableTextFeatures: PortableTextFeatures
 ): UnsetFunction | SetFunction | InsertFunction {
-  let toInsert
+  let toInsert: PortableTextBlock[]
+
   const allowedDecorators = portableTextFeatures.decorators.map((item) => item.value)
+
   switch (type) {
     case 'set':
       return (givenBlock: PortableTextBlock): void => {
@@ -28,10 +30,12 @@ export default function createBlockActionPatchFn(
           )
         )
       }
+
     case 'unset':
       return (): void => {
         return onPatch(PatchEvent.from(unset([{_key: block._key}])))
       }
+
     case 'insert':
       return (givenBlock: PortableTextBlock | PortableTextBlock[]): void => {
         toInsert = Array.isArray(givenBlock) ? givenBlock : [givenBlock]
@@ -42,6 +46,7 @@ export default function createBlockActionPatchFn(
         )
         return onPatch(PatchEvent.from(insert(toInsert, 'after', [{_key: block._key}])))
       }
+
     default:
       throw new Error(`Patch type ${type} not supported`)
   }

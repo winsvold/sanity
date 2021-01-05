@@ -6,6 +6,7 @@ type Props = {
   block: PortableTextBlock
   children: React.ReactNode
 }
-export default function Header(props: Props) {
+
+export function Header(props: Props) {
   return <div className={styles[props.block.style]}>{props.children}</div>
 }

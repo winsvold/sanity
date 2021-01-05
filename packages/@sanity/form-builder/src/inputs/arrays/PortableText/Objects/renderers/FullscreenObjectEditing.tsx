@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import {PortableTextBlock, Type, PortableTextChild} from '@sanity/portable-text-editor'
 import {FormFieldPresence, PresenceOverlay} from '@sanity/base/presence'
 import {Path, Marker, SchemaType} from '@sanity/types'

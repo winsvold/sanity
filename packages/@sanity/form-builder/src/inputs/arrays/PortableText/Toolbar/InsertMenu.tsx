@@ -1,10 +1,8 @@
+import {useId} from '@reach/auto-id'
 import {AddIcon} from '@sanity/icons'
-import {MenuButton} from 'part:@sanity/components/menu-button'
+import {Button, Menu, MenuButton, MenuItem} from '@sanity/ui'
 import React, {useCallback} from 'react'
 import {BlockItem} from './types'
-import {Button} from '@sanity/ui'
-
-import styles from './InsertMenu.css'
 
 interface InsertMenuProps {
   disabled: boolean
@@ -14,67 +12,47 @@ interface InsertMenuProps {
 
 export default function InsertMenu(props: InsertMenuProps) {
   const {disabled, items, readOnly} = props
-  const [open, setOpen] = React.useState(false)
-
-  const handleClose = useCallback(() => {
-    setOpen(false)
-  }, [])
-
-  const menu = (
-    <div className={styles.menu}>
-      {items.map((item) => (
-        <InsertMenuItem item={item} onClick={handleClose} key={item.key} />
-      ))}
-    </div>
-  )
+  const id = useId()
 
   return (
-    <div className={styles.root}>
-      <MenuButton
-        buttonProps={{
-          'aria-label': 'Insert elements',
-          'aria-haspopup': 'menu',
-          'aria-expanded': open,
-          'aria-controls': 'insertmenu',
-          disabled: disabled || readOnly,
-          icon: AddIcon,
-          mode: 'bleed',
-          padding: 2,
-          selected: open,
-          title: 'Insert elements',
-        }}
-        menu={menu}
-        open={open}
-        placement="bottom"
-        portal
-        setOpen={setOpen}
-      />
-    </div>
+    <MenuButton
+      button={
+        <Button
+          aria-label="Insert elements"
+          aria-haspopup="menu"
+          aria-controls="insertmenu"
+          disabled={disabled || readOnly}
+          icon={AddIcon}
+          mode="bleed"
+          padding={2}
+          title="Insert elements"
+        />
+      }
+      id={id}
+      menu={
+        <Menu>
+          {items.map((item) => (
+            <InsertMenuItem item={item} key={item.key} />
+          ))}
+        </Menu>
+      }
+      placement="bottom"
+      portal
+    />
   )
 }
 
-function InsertMenuItem({
-  item,
-  onClick,
-}: {
-  item: BlockItem
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
-}) {
-  const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      item.handle()
-      if (onClick) onClick(event)
-    },
-    [item, onClick]
-  )
+function InsertMenuItem({item}: {item: BlockItem}) {
+  const handleClick = useCallback(() => {
+    item.handle()
+  }, [item])
 
   const title = item.type.title || item.type.type.name
 
   return (
-    <Button
+    <MenuItem
       aria-label={`Insert ${title}${item.inline ? ' (inline)' : ' (block)'}`}
-      mode="bleed"
-      className={styles.menuItem}
+      as="button"
       disabled={item.disabled}
       icon={item.icon}
       onClick={handleClick}

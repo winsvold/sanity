@@ -1,0 +1,5 @@
+{
+  "rules": {
+    "react/no-find-dom-node": "off"
+  }
+}

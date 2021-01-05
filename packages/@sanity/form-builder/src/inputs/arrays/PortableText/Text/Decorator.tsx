@@ -5,6 +5,7 @@ type Props = {
   mark: string
   children: React.ReactNode
 }
-export default function Decorator(props: Props) {
+
+export function Decorator(props: Props) {
   return <span className={`${styles.root} ${styles[props.mark]}`}>{props.children}</span>
 }

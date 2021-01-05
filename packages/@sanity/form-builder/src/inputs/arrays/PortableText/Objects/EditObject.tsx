@@ -1,5 +1,4 @@
-/* eslint-disable react/no-find-dom-node */
-import React, {useState, useEffect, useMemo, useLayoutEffect} from 'react'
+import React, {useState, useEffect, useMemo, useLayoutEffect, useCallback} from 'react'
 import {isKeySegment, Path, Marker} from '@sanity/types'
 import {FormFieldPresence} from '@sanity/base/presence'
 import {
@@ -11,9 +10,7 @@ import {
   usePortableTextEditor,
 } from '@sanity/portable-text-editor'
 import {get, debounce} from 'lodash'
-
 import {applyAll} from '../../../../simplePatch'
-
 import type {Patch} from '../../../../patch/types'
 import {PatchEvent} from '../../../../PatchEvent'
 import {ObjectEditData} from '../types'
@@ -39,8 +36,7 @@ interface Props {
   value: PortableTextBlock[] | undefined
 }
 
-// eslint-disable-next-line complexity
-export const EditObject = ({
+export function EditObject({
   focusPath,
   markers,
   objectEditData,
@@ -51,7 +47,7 @@ export const EditObject = ({
   presence,
   readOnly,
   value,
-}: Props) => {
+}: Props) {
   const editor = usePortableTextEditor()
   const ptFeatures = PortableTextEditor.getPortableTextFeatures(editor)
   const [_object, type] = useMemo(() => findObjectAndType(objectEditData, value, ptFeatures), [
@@ -61,48 +57,17 @@ export const EditObject = ({
   ])
   const [object, setObject] = useState(_object)
   const [timeoutInstance, setTimeoutInstance] = useState(undefined)
-
-  // Initialize weakmaps on mount, and send patches on unmount
-  useEffect(() => {
-    PATCHES.set(editor, [])
-    IS_THROTTLING.set(editor, false)
-    return () => {
-      sendPatches()
-      PATCHES.delete(editor)
-      IS_THROTTLING.delete(editor)
-    }
-  }, [])
-
-  useLayoutEffect(() => {
-    setObject(_object)
-  }, [_object])
-
-  if (!objectEditData) {
-    return null
-  }
   const {formBuilderPath, kind} = objectEditData
 
-  function handleClose(): void {
-    onClose()
-  }
+  const cancelThrottle = useMemo(
+    () =>
+      debounce(() => {
+        IS_THROTTLING.set(editor, false)
+      }, THROTTLE_MS),
+    [editor]
+  )
 
-  const editModalLayout: ModalType = get(type, 'options.editModal')
-
-  const cancelThrottle = debounce(() => {
-    IS_THROTTLING.set(editor, false)
-  }, THROTTLE_MS)
-
-  function handleChange(patchEvent: PatchEvent): void {
-    setObject(applyAll(object, patchEvent.patches))
-    const patches = PATCHES.get(editor)
-    IS_THROTTLING.set(editor, true)
-    if (patches) {
-      PATCHES.set(editor, PATCHES.get(editor).concat(patchEvent.patches))
-      sendPatches()
-    }
-  }
-
-  function sendPatches() {
+  const sendPatches = useCallback(() => {
     if (IS_THROTTLING.get(editor) === true) {
       cancelThrottle()
       clearInterval(timeoutInstance)
@@ -120,11 +85,49 @@ export const EditObject = ({
       onChange(PatchEvent.from(_patches), formBuilderPath)
     })
     cancelThrottle()
+  }, [cancelThrottle, editor, formBuilderPath, onChange, timeoutInstance])
+
+  // Initialize weakmaps on mount, and send patches on unmount
+  useEffect(() => {
+    PATCHES.set(editor, [])
+    IS_THROTTLING.set(editor, false)
+    return () => {
+      sendPatches()
+      PATCHES.delete(editor)
+      IS_THROTTLING.delete(editor)
+    }
+  }, [editor, sendPatches])
+
+  useLayoutEffect(() => {
+    setObject(_object)
+  }, [_object])
+
+  const handleClose = useCallback(() => {
+    onClose()
+  }, [onClose])
+
+  const handleChange = useCallback(
+    (patchEvent: PatchEvent) => {
+      setObject(applyAll(object, patchEvent.patches))
+      const patches = PATCHES.get(editor)
+      IS_THROTTLING.set(editor, true)
+      if (patches) {
+        PATCHES.set(editor, PATCHES.get(editor).concat(patchEvent.patches))
+        sendPatches()
+      }
+    },
+    [editor, object, sendPatches]
+  )
+
+  if (!objectEditData) {
+    return null
   }
 
   if (!object || !type) {
     return null
   }
+
+  const editModalLayout: ModalType = get(type, 'options.editModal')
 
   if (editModalLayout === 'fullscreen') {
     return (
@@ -143,6 +146,7 @@ export const EditObject = ({
       />
     )
   }
+
   if (editModalLayout === 'popover' || kind === 'annotation') {
     return (
       <PopoverObjectEditing
@@ -161,6 +165,7 @@ export const EditObject = ({
       />
     )
   }
+
   return (
     <DefaultObjectEditing
       focusPath={focusPath}
@@ -233,5 +238,6 @@ function findObjectAndType(
       // Nothing
     }
   }
+
   return [object, type]
 }

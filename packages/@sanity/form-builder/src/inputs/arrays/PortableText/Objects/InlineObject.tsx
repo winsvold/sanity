@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import React, {FunctionComponent, SyntheticEvent} from 'react'
+import React, {FunctionComponent, useCallback} from 'react'
 import {isEqual} from 'lodash'
 import classNames from 'classnames'
 import {PortableTextChild, Type, RenderAttributes} from '@sanity/portable-text-editor'
@@ -37,11 +36,11 @@ export const InlineObject: FunctionComponent<Props> = ({
     errors.length > 0 && styles.hasErrors,
   ])
 
-  const handleOpen = (event: SyntheticEvent<HTMLSpanElement>): void => {
+  const handleOpen = useCallback(() => {
     if (focused) {
       onFocus(path.concat(FOCUS_TERMINATOR))
     }
-  }
+  }, [focused, onFocus, path])
 
   const isEmpty = !value || isEqual(Object.keys(value), ['_key', '_type'])
 
@@ -49,7 +48,8 @@ export const InlineObject: FunctionComponent<Props> = ({
     <span className={classnames} onClick={handleOpen}>
       <span
         className={styles.previewContainer}
-        style={readOnly ? {cursor: 'default'} : {}} // TODO: Probably move to styles aka. className?
+        // TODO: Probably move to styles aka. className?
+        style={readOnly ? {cursor: 'default'} : {}}
       >
         {!isEmpty && <Preview type={type} value={value} layout="inline" />}
         {isEmpty && !readOnly && <span>Click to edit</span>}
