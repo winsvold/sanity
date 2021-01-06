@@ -24,6 +24,7 @@
     "url": "https://github.com/sanity-io/sanity/issues"
   },
   "dependencies": {
+    "@sanity/base": "^2.1.3",
     "@sanity/image-url": "^0.140.19",
     "@sanity/types": "2.1.4",
     "lodash": "^4.17.15",

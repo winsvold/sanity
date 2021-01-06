@@ -19,6 +19,9 @@
   },
   "references": [
     {
+      "path": "../base"
+    },
+    {
       "path": "../types"
     }
   ]
