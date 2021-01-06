@@ -1,13 +1,23 @@
 import React from 'react'
+import styled from 'styled-components'
 
-import styles from './CustomIcon.css'
-
-interface Props {
+interface CustomIconProps {
   icon: string
   active: boolean
 }
 
-export default function CustomIcon(props: Props) {
+const Root = styled.div`
+  width: 1em;
+  height: 1em;
+  border-radius: inherit;
+  background-origin: content-box;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  transform: scale(0.7);
+`
+
+export default function CustomIcon(props: CustomIconProps) {
   const {icon, active} = props
 
   const inlineStyle = {
@@ -15,5 +25,5 @@ export default function CustomIcon(props: Props) {
     filter: active ? 'invert(100%)' : 'invert(0%)',
   }
 
-  return <div className={styles.root} style={inlineStyle} />
+  return <Root style={inlineStyle} />
 }

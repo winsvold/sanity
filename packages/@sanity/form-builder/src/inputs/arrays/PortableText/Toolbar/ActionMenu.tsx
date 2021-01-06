@@ -1,10 +1,8 @@
 import {PortableTextEditor, usePortableTextEditor} from '@sanity/portable-text-editor'
-import {Button} from '@sanity/ui'
+import {Button, MenuItem} from '@sanity/ui'
 import React, {useCallback} from 'react'
 import {OverflowMenu} from './OverflowMenu'
 import {PTEToolbarAction, PTEToolbarActionGroup} from './types'
-
-import styles from './ActionMenu.css'
 
 interface Props {
   disabled: boolean
@@ -36,19 +34,14 @@ function ActionButton(props: {action: PTEToolbarAction; disabled: boolean; visib
   )
 }
 
-function ActionMenuItem(props: {action: PTEToolbarAction; disabled: boolean; onClose: () => void}) {
-  const {action, disabled, onClose} = props
+function ActionMenuItem(props: {action: PTEToolbarAction; disabled: boolean}) {
+  const {action, disabled} = props
   const title = action.hotkeys ? `${action.title} (${action.hotkeys.join('+')})` : action.title
 
-  const handleClick = useCallback(() => {
-    action.handle()
-    onClose()
-  }, [action, onClose])
+  const handleClick = useCallback(() => action.handle(), [action])
 
   return (
-    <Button
-      mode="bleed"
-      className={styles.menuItem}
+    <MenuItem
       disabled={disabled}
       icon={action.icon}
       onClick={handleClick}

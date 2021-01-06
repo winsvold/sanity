@@ -348,6 +348,7 @@ export function PTInput(props: Props) {
 
   const ptEditor = (
     <PortableTextSanityEditor
+      hasFocus={hasFocus}
       hotkeys={hotkeys}
       initialSelection={initialSelection}
       isFullscreen={isFullscreen}

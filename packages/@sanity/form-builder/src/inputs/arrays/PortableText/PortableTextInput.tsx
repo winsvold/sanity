@@ -21,6 +21,7 @@ import type {Patch} from '../../../patch/types'
 import {RenderBlockActions, RenderCustomMarkers} from './types'
 import {PTInput} from './Input'
 import {InvalidValue} from './InvalidValue'
+
 import styles from './PortableTextInput.css'
 
 export type PatchWithOrigin = Patch & {

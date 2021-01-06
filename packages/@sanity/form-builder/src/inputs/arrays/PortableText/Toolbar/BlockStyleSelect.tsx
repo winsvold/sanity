@@ -7,6 +7,7 @@ import {
 } from '@sanity/portable-text-editor'
 import {Box, Button, Menu, MenuButton, MenuItem} from '@sanity/ui'
 import React, {createRef, useCallback, useEffect, useMemo, useState} from 'react'
+import styled from 'styled-components'
 import {BlockStyleItem} from './types'
 
 interface BlockStyleSelectProps {
@@ -107,6 +108,12 @@ export function BlockStyleSelect(props: BlockStyleSelectProps) {
   )
 }
 
+const BlockStyleMenuItemBox = styled(Box)`
+  & > * {
+    margin: 0 !important;
+  }
+`
+
 function BlockStyleMenuItem({
   children,
   item,
@@ -120,7 +127,7 @@ function BlockStyleMenuItem({
 
   return (
     <MenuItem onClick={handleClick}>
-      <Box paddingX={3}>{children}</Box>
+      <BlockStyleMenuItemBox padding={3}>{children}</BlockStyleMenuItemBox>
     </MenuItem>
   )
 }
