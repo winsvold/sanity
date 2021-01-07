@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unused-prop-types */
 
-import {Box, Flex, Stack, Text} from '@sanity/ui'
+import {Box, Card, Flex, Stack, Text} from '@sanity/ui'
 import React from 'react'
 import styled from 'styled-components'
 import {renderPreviewNode} from '../helpers'
@@ -75,7 +75,28 @@ const CappedSpan = styled.span`
 `
 
 export function DefaultPreview(props: DefaultPreviewProps) {
-  const {media: mediaNode, title: titleNode, status: statusNode, subtitle: subtitleNode} = props
+  const {
+    isPlaceholder,
+    media: mediaNode,
+    title: titleNode,
+    status: statusNode,
+    subtitle: subtitleNode,
+  } = props
+
+  if (isPlaceholder) {
+    return (
+      <Flex align="center" style={{height: PREVIEW_SIZE}}>
+        <MediaBox display="flex" marginRight={2} overflow="hidden">
+          <Card radius={2} tone="transparent" style={{width: '100%', height: '100%'}} />
+        </MediaBox>
+        <Stack flex={1} space={2}>
+          <Card radius={1} style={{height: 11, width: '50%'}} tone="transparent" />
+          <Card radius={1} style={{height: 9, width: '40%'}} tone="transparent" />
+        </Stack>
+      </Flex>
+    )
+  }
+
   const media = renderPreviewNode(mediaNode, {
     layout: 'default',
     dimensions: DEFAULT_MEDIA_DIMENSIONS,
