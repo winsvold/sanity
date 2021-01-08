@@ -2,7 +2,7 @@ import {PortableTextBlock} from '@sanity/portable-text-editor'
 import {Box, Heading} from '@sanity/ui'
 import React from 'react'
 
-type Props = {
+interface HeaderProps {
   block: PortableTextBlock
   children: React.ReactNode
 }
@@ -16,10 +16,12 @@ const STYLE_SIZES = {
   h6: [0, 0],
 }
 
-export function Header(props: Props) {
+export function Header(props: HeaderProps) {
+  const {block, children} = props
+
   return (
-    <Box data-style={props.block.style} marginTop={5} marginBottom={3}>
-      <Heading size={STYLE_SIZES[props.block.style] || 1}>{props.children}</Heading>
+    <Box data-style={block.style} marginTop={5} marginBottom={3}>
+      <Heading size={STYLE_SIZES[block.style] || 1}>{children}</Heading>
     </Box>
   )
 }

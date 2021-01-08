@@ -4,13 +4,13 @@ import React, {useCallback} from 'react'
 import {OverflowMenu} from './OverflowMenu'
 import {PTEToolbarAction, PTEToolbarActionGroup} from './types'
 
-interface Props {
+interface ActionButtonProps {
+  action: PTEToolbarAction
   disabled: boolean
-  groups: PTEToolbarActionGroup[]
-  readOnly: boolean
+  visible: boolean
 }
 
-function ActionButton(props: {action: PTEToolbarAction; disabled: boolean; visible: boolean}) {
+function ActionButton(props: ActionButtonProps) {
   const {action, disabled, visible} = props
   const title = action.hotkeys ? `${action.title} (${action.hotkeys.join('+')})` : action.title
 
@@ -34,7 +34,12 @@ function ActionButton(props: {action: PTEToolbarAction; disabled: boolean; visib
   )
 }
 
-function ActionMenuItem(props: {action: PTEToolbarAction; disabled: boolean}) {
+interface ActionMenuItemProps {
+  action: PTEToolbarAction
+  disabled: boolean
+}
+
+function ActionMenuItem(props: ActionMenuItemProps) {
   const {action, disabled} = props
   const title = action.hotkeys ? `${action.title} (${action.hotkeys.join('+')})` : action.title
 
@@ -51,7 +56,13 @@ function ActionMenuItem(props: {action: PTEToolbarAction; disabled: boolean}) {
   )
 }
 
-export default function ActionMenu(props: Props) {
+interface ActionMenuProps {
+  disabled: boolean
+  groups: PTEToolbarActionGroup[]
+  readOnly: boolean
+}
+
+export function ActionMenu(props: ActionMenuProps) {
   const {disabled, groups, readOnly} = props
   const editor = usePortableTextEditor()
   const focusBlock = PortableTextEditor.focusBlock(editor)

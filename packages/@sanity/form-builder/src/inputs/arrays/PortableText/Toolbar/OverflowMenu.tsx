@@ -9,7 +9,7 @@ interface Action {
   [key: string]: any
 }
 
-interface Props {
+interface OverflowMenuProps {
   actionButtonComponent: React.ComponentType<{action: Action; disabled: boolean; visible: boolean}>
   actionMenuItemComponent: React.ComponentType<{
     action: Action
@@ -37,7 +37,7 @@ const ActionButtonBox = styled.div`
   }
 `
 
-export function OverflowMenu(props: Props) {
+export function OverflowMenu(props: OverflowMenuProps) {
   const {
     actionButtonComponent: ActionButton,
     actionMenuItemComponent: ActionMenuItem,

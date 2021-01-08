@@ -6,13 +6,13 @@ import {
 } from '@sanity/portable-text-editor'
 import {Path} from '@sanity/types'
 import {Card, Flex, Stack} from '@sanity/ui'
-import React, {useCallback} from 'react'
-import ActionMenu from './ActionMenu'
+import React, {forwardRef, useCallback} from 'react'
+import {ActionMenu} from './ActionMenu'
 import {BlockStyleSelect} from './BlockStyleSelect'
 import {getBlockStyleSelectProps, getInsertMenuItems, getPTEToolbarActionGroups} from './helpers'
-import InsertMenu from './InsertMenu'
+import {InsertMenu} from './InsertMenu'
 
-interface Props {
+interface ToolbarProps {
   hotkeys: HotkeyOptions
   isFullscreen: boolean
   readOnly: boolean
@@ -20,7 +20,7 @@ interface Props {
   onFocus: (path: Path) => void
 }
 
-export function Toolbar(props: Props) {
+export const Toolbar = forwardRef((props: ToolbarProps, ref: React.Ref<HTMLDivElement>) => {
   const {hotkeys, isFullscreen, readOnly, onFocus, renderBlock} = props
   const editor = usePortableTextEditor()
   const selection = usePortableTextEditorSelection()
@@ -55,6 +55,7 @@ export function Toolbar(props: Props) {
       // with the toolbar (prevent focus click events)
       onMouseDown={handleMouseDown}
       onKeyPress={handleKeyPress}
+      ref={ref}
       style={{lineHeight: 0}}
     >
       {blockStyleSelectProps && blockStyleSelectProps.items.length > 1 && (
@@ -81,4 +82,6 @@ export function Toolbar(props: Props) {
       )}
     </Flex>
   )
-}
+})
+
+Toolbar.displayName = 'Toolbar'

@@ -1,14 +1,18 @@
 import {Box, Text} from '@sanity/ui'
 import React from 'react'
 
-interface Props {
+interface ParagraphProps {
   children: React.ReactNode
 }
 
-export function Paragraph(props: Props) {
+export function Paragraph(props: ParagraphProps) {
+  const {children} = props
+
   return (
     <Box marginY={4}>
-      <Text>{props.children}</Text>
+      <Text muted size={[2, 3]}>
+        {children}
+      </Text>
     </Box>
   )
 }

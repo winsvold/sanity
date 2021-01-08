@@ -24,7 +24,7 @@ import {FOCUS_TERMINATOR} from '@sanity/util/paths'
 import {get} from 'lodash'
 import React from 'react'
 import {Path} from '@sanity/types'
-import CustomIcon from './CustomIcon'
+import {CustomIcon} from './CustomIcon'
 import {BlockItem, BlockStyleItem, PTEToolbarAction, PTEToolbarActionGroup} from './types'
 
 function getFormatIcon(

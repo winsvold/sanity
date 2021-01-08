@@ -17,7 +17,7 @@ const Root = styled.div`
   transform: scale(0.7);
 `
 
-export default function CustomIcon(props: CustomIconProps) {
+export function CustomIcon(props: CustomIconProps) {
   const {icon, active} = props
 
   const inlineStyle = {

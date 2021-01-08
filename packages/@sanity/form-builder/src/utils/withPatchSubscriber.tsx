@@ -54,10 +54,12 @@ type SubscriberArg = {
   snapshot: any
 }
 type Subscriber = (arg0: SubscriberArg) => void
-export default function withPatchSubscriber(ComposedComponent: any) {
-  return class SubscribePatch extends React.Component {
+export default function withPatchSubscriber(ComposedComponent: any): React.ComponentType {
+  return class PatchSubscriber extends React.Component {
     _input: typeof ComposedComponent
-    static displayName = `withPatches(${ComposedComponent.displayName || ComposedComponent.name})`
+    static displayName = `withPatchSubscriber(${
+      ComposedComponent.displayName || ComposedComponent.name
+    })`
     static contextTypes = {
       getValuePath: PropTypes.func,
       formBuilder: PropTypes.any,
