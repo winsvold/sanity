@@ -9,7 +9,7 @@ type Props = {
   children?: any
 }
 
-export default function Warning({heading, message, values = [], children}: Props) {
+export function Warning({heading, message, values = [], children}: Props) {
   const len = values.length
   return (
     <div className={styles.root}>

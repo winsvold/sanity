@@ -1,8 +1,8 @@
-import React from 'react'
 import {Button} from '@sanity/ui'
-import styles from '../ObjectInput/styles/UnknownFields.css'
+import React from 'react'
+import {Warning} from '../../components/Warning'
 import PatchEvent, {set, unset} from '../../PatchEvent'
-import Warning from '../Warning'
+import styles from '../ObjectInput/styles/UnknownFields.css'
 import CONVERTERS from './converters'
 import {UntypedValueInput} from './UntypedValueInput'
 

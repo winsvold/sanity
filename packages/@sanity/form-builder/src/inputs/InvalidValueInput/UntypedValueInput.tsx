@@ -1,9 +1,9 @@
-import React from 'react'
+import {Button} from '@sanity/ui'
 import schema from 'part:@sanity/base/schema'
+import React from 'react'
+import {Warning} from '../../components/Warning'
 import PatchEvent, {setIfMissing, unset} from '../../PatchEvent'
 import styles from '../ObjectInput/styles/UnknownFields.css'
-import Warning from '../Warning'
-import {Button} from '@sanity/ui'
 
 type Props = {
   validTypes?: string[]

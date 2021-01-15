@@ -1,8 +1,8 @@
-import React from 'react'
 import {InvalidValueResolution, PortableTextBlock} from '@sanity/portable-text-editor'
-import Warning from '../../Warning'
-import styles from '../../ObjectInput/styles/UnknownFields.css'
 import {Button} from '@sanity/ui'
+import React from 'react'
+import {Warning} from '../../../components/Warning'
+import styles from '../../ObjectInput/styles/UnknownFields.css'
 
 type InvalidValueProps = {
   resolution: InvalidValueResolution
