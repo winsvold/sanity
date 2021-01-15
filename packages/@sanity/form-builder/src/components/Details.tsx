@@ -1,50 +1,71 @@
-import {ChevronDownIcon} from '@sanity/icons'
-import React from 'react'
+import {ToggleArrowRightIcon} from '@sanity/icons'
+import {Box, Flex, Text} from '@sanity/ui'
+import React, {useCallback, useState} from 'react'
+import styled from 'styled-components'
 
-import styles from './Details.css'
-
-type DetailsProps = {
-  isOpen?: boolean
+interface DetailsProps {
+  children?: React.ReactNode
+  open?: boolean
   title?: React.ReactNode
 }
 
-type DetailsState = {
-  isOpen: any
-}
+const HeaderButton = styled.button`
+  -webkit-font-smoothing: inherit;
+  appearance: none;
+  font: inherit;
+  background: none;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  outline: none;
+`
 
-export class Details extends React.Component<DetailsProps, DetailsState> {
-  static defaultProps = {
-    title: 'Details',
-    isOpen: false,
+const Header = styled(Flex)`
+  cursor: default;
+  user-select: none;
+`
+
+const IconBox = styled(Box)`
+  & > div > svg {
+    transform: rotate(0);
+    transition: transform 100ms;
   }
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      isOpen: props.isOpen,
-    }
+  &[data-open] > div > svg {
+    transform: rotate(90deg);
   }
+`
 
-  handleToggle = () => {
-    this.setState((prevState) => ({isOpen: !prevState.isOpen}))
-  }
+export function Details(props: DetailsProps) {
+  const {children, open: openProp, title = 'Details'} = props
 
-  render() {
-    const {title, children} = this.props
-    const {isOpen} = this.state
+  const [open, setOpen] = useState(openProp || false)
 
-    return (
-      <div className={styles.root} data-open={isOpen}>
-        <button type="button" className={styles.headerButton} onClick={this.handleToggle}>
-          <div className={styles.header}>
-            <span className={styles.iconContainer}>
-              <ChevronDownIcon />
-            </span>
-            <span className={styles.summary}>{title}</span>
-          </div>
-        </button>
-        <div className={styles.content}>{children}</div>
-      </div>
-    )
-  }
+  const handleToggle = useCallback(() => setOpen((v) => !v), [])
+
+  return (
+    <Box>
+      <HeaderButton type="button" onClick={handleToggle}>
+        <Header align="center">
+          <IconBox data-open={open ? '' : undefined}>
+            <Text size={1}>
+              <ToggleArrowRightIcon />
+            </Text>
+          </IconBox>
+
+          <Box flex={1} marginLeft={1}>
+            <Text size={1} weight="medium">
+              {title}
+            </Text>
+          </Box>
+        </Header>
+      </HeaderButton>
+
+      <Box hidden={!open} marginTop={3}>
+        {children}
+      </Box>
+    </Box>
+  )
 }
