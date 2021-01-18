@@ -1,10 +1,34 @@
-import customInputs from './customInputs'
 import defaultInputs from './defaultInputs'
 import * as is from '../../utils/is'
 import resolveReferenceInput from './resolveReferenceInput'
 import resolveArrayInput from './resolveArrayInput'
 import resolveStringInput from './resolveStringInput'
 import resolveNumberInput from './resolveNumberInput'
+import {
+  BooleanInput,
+  DateTimeInput,
+  EmailInput,
+  GeoPointInput,
+  NumberInput,
+  ObjectInput,
+  ReferenceInput,
+  StringInput,
+  TextInput,
+  UrlInput,
+} from '../../legacyPluginParts'
+
+const CUSTOM_INPUT_MAP = {
+  object: ObjectInput,
+  boolean: BooleanInput,
+  number: NumberInput,
+  string: StringInput,
+  text: TextInput,
+  reference: ReferenceInput,
+  datetime: DateTimeInput,
+  email: EmailInput,
+  geopoint: GeoPointInput,
+  url: UrlInput,
+}
 
 function getExport(obj) {
   return obj && obj.__esModule ? obj.default : obj
@@ -52,5 +76,5 @@ export default function resolveInputComponent(type) {
     return type.inputComponent
   }
 
-  return resolveTypeVariants(type) || customInputs[type.name] || defaultInputs[type.name]
+  return resolveTypeVariants(type) || CUSTOM_INPUT_MAP[type.name] || defaultInputs[type.name]
 }
