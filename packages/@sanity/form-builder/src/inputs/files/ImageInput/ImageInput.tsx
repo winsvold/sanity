@@ -1,5 +1,3 @@
-// Modules
-
 import {ImperativeToast, FormFieldSet} from '@sanity/base/components'
 import {Button, ToastParams} from '@sanity/ui'
 import classNames from 'classnames'
@@ -10,6 +8,8 @@ import {ChangeIndicator} from '@sanity/base/lib/change-indicators'
 import {EditIcon, ImageIcon, SearchIcon, TrashIcon, UploadIcon, EyeOpenIcon} from '@sanity/icons'
 import HotspotImage from '@sanity/imagetool/HotspotImage'
 import ImageTool from '@sanity/imagetool'
+import {PresenceOverlay} from '@sanity/base/presence'
+import {FormFieldPresence} from '@sanity/base/lib/presence'
 import {
   Image as BaseImage,
   ImageAsset,
@@ -21,18 +21,6 @@ import {
 } from '@sanity/types'
 import React, {createElement} from 'react'
 import PropTypes from 'prop-types'
-
-// Parts
-import assetSources from 'all:part:@sanity/form-builder/input/image/asset-source'
-import ButtonGrid from 'part:@sanity/components/buttons/button-grid'
-import DefaultDialog from 'part:@sanity/components/dialogs/default'
-import {PresenceOverlay} from '@sanity/base/presence'
-import DropDownButton from 'part:@sanity/components/buttons/dropdown'
-import formBuilderConfig from 'config:@sanity/form-builder'
-import userDefinedAssetSources from 'part:@sanity/form-builder/input/image/asset-sources?'
-import {FormFieldPresence} from '@sanity/base/lib/presence'
-
-// Package files
 import {FormBuilderInput} from '../../../FormBuilderInput'
 import {
   ResolvedUploader,
@@ -46,6 +34,14 @@ import UploadPlaceholder from '../common/UploadPlaceholder'
 import WithMaterializedReference from '../../../utils/WithMaterializedReference'
 import {FileInputButton} from '../common/FileInputButton/FileInputButton'
 import {CircularProgress} from '../../../components/progress'
+import {
+  assetSources,
+  ButtonGrid,
+  DefaultDialog,
+  DropDownButton,
+  formBuilderConfig,
+  userDefinedAssetSources,
+} from '../../../legacyPluginParts'
 import {urlToFile, base64ToFile} from './utils/image'
 
 import styles from './ImageInput.css'

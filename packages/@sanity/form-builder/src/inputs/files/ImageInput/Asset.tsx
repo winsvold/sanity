@@ -1,10 +1,10 @@
 import classNames from 'classnames'
 import React from 'react'
-import client from 'part:@sanity/base/client'
+import {client} from '../../../legacyPluginParts'
+import {FullscreenSpinner} from '../../../components/FullscreenSpinner'
 import AssetDialog from './AssetDialog'
 import AssetMenu from './AssetMenu'
 import {AssetAction, AssetRecord} from './types'
-import {FullscreenSpinner} from '../../../components/FullscreenSpinner'
 
 import styles from './Asset.css'
 

@@ -1,16 +1,18 @@
 import React from 'react'
 import {LinkIcon, TrashIcon} from '@sanity/icons'
-import {IntentLink} from 'part:@sanity/base/router'
-import schema from 'part:@sanity/base/schema'
-import {WithReferringDocuments} from 'part:@sanity/base/with-referring-documents'
-import DefaultDialog from 'part:@sanity/components/dialogs/default'
-import {List, Item} from 'part:@sanity/components/lists/default'
 import Preview from '../../../Preview'
+import {SpinnerWithText} from '../../../components/SpinnerWithText'
+import {
+  DefaultDialog,
+  IntentLink,
+  Item,
+  List,
+  schema,
+  WithReferringDocuments,
+} from '../../../legacyPluginParts'
 import {AssetAction, AssetRecord} from './types'
-import {Spinner} from '@sanity/ui'
 
 import styles from './AssetDialog.css'
-import {SpinnerWithText} from '../../../components/SpinnerWithText'
 
 interface Props {
   asset: AssetRecord
