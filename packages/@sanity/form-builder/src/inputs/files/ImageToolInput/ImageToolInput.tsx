@@ -6,7 +6,7 @@ import HotspotImage from '@sanity/imagetool/HotspotImage'
 import {ChangeIndicatorProvider} from '@sanity/base/lib/change-indicators'
 import {DEFAULT_CROP, DEFAULT_HOTSPOT} from '@sanity/imagetool/constants'
 import PatchEvent, {set} from '../../../PatchEvent'
-import {ImageLoader} from '../../../legacyPluginParts'
+import {ImageLoader} from '../../../legacyParts'
 
 import styles from './styles/ImageToolInput.css'
 

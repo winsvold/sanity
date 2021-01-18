@@ -1,6 +1,6 @@
 import React from 'react'
 import {Button} from '@sanity/ui'
-import {useRouter} from '../legacyPluginParts'
+import {useRouter} from '../legacyParts'
 
 export function IntentButton(props) {
   const router = useRouter()

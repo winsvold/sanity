@@ -9,7 +9,7 @@ import {
   PortableTextEditor,
   usePortableTextEditor,
 } from '@sanity/portable-text-editor'
-import {Markers} from '../../../legacyPluginParts'
+import {Markers} from '../../../legacyParts'
 import {RenderCustomMarkers} from './types'
 import styles from './BlockExtras.css'
 

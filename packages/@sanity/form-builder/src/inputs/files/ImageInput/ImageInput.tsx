@@ -41,7 +41,7 @@ import {
   DropDownButton,
   formBuilderConfig,
   userDefinedAssetSources,
-} from '../../../legacyPluginParts'
+} from '../../../legacyParts'
 import {urlToFile, base64ToFile} from './utils/image'
 
 import styles from './ImageInput.css'

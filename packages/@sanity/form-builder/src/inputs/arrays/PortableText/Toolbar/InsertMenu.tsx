@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react'
 import {Button} from '@sanity/ui'
 import {AddIcon} from '@sanity/icons'
-import {MenuButton} from '../../../../legacyPluginParts'
+import {MenuButton} from '../../../../legacyParts'
 import {BlockItem} from './types'
 
 import styles from './InsertMenu.css'

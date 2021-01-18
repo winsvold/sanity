@@ -1,5 +1,5 @@
 import React from 'react'
-import {schema} from '../../legacyPluginParts'
+import {schema} from '../../legacyParts'
 import PatchEvent, {setIfMissing, unset} from '../../PatchEvent'
 import styles from '../ObjectInput/styles/UnknownFields.css'
 import Warning from '../Warning'

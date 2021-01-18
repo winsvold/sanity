@@ -1,7 +1,7 @@
 import React from 'react'
 import {ImageIcon} from '@sanity/icons'
 import {Button} from '@sanity/ui'
-import {client, DefaultDialog} from '../../../legacyPluginParts'
+import {client, DefaultDialog} from '../../../legacyParts'
 import Asset from './Asset'
 import {AssetFromSource} from './ImageInput'
 

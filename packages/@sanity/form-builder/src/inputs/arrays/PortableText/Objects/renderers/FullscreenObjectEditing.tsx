@@ -5,7 +5,7 @@ import {Path, Marker, SchemaType} from '@sanity/types'
 import React, {useCallback} from 'react'
 import {FormBuilderInput} from '../../../../../FormBuilderInput'
 import {PatchEvent} from '../../../../../PatchEvent'
-import {FullscreenDialog} from '../../../../../legacyPluginParts'
+import {FullscreenDialog} from '../../../../../legacyParts'
 
 interface FullscreenObjectEditingProps {
   focusPath: Path

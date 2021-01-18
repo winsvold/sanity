@@ -2,7 +2,7 @@
 // and to ease migration towards a part-less studio
 import React from 'react'
 import {Marker} from '@sanity/types'
-import {ValidationStatusPart} from '../legacyPluginParts'
+import {ValidationStatusPart} from '../legacyParts'
 
 // Note: these are the props currently in use
 interface Props {

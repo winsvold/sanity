@@ -15,7 +15,7 @@ import {
   StringInput,
   TextInput,
   UrlInput,
-} from '../../legacyPluginParts'
+} from '../../legacyParts'
 
 const CUSTOM_INPUT_MAP = {
   object: ObjectInput,
@@ -38,7 +38,7 @@ function getExport(obj) {
 // this can happen if a custom input component imports and tries
 // to access something from the form-builder immediately (top-level)
 let getCustomResolver = () => {
-  // TODO(@benedicteb, 2021-01-18) How can we move this to legacyPluginParts.ts?
+  // TODO(@benedicteb, 2021-01-18) How can we move this to legacyParts.ts?
   const resolver = getExport(require('part:@sanity/form-builder/input-resolver?'))
   getCustomResolver = () => resolver
   return resolver

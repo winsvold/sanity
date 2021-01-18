@@ -6,7 +6,7 @@ import {
   RenderBlockFunction,
   usePortableTextEditor,
 } from '@sanity/portable-text-editor'
-import {StyleSelect} from '../../../../legacyPluginParts'
+import {StyleSelect} from '../../../../legacyParts'
 import {BlockStyleItem} from './types'
 
 type Props = {

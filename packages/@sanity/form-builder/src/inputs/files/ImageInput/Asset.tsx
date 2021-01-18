@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import React from 'react'
-import {client} from '../../../legacyPluginParts'
+import {client} from '../../../legacyParts'
 import {FullscreenSpinner} from '../../../components/FullscreenSpinner'
 import AssetDialog from './AssetDialog'
 import AssetMenu from './AssetMenu'

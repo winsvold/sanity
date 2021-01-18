@@ -3,7 +3,7 @@ import {Observable, of as observableOf} from 'rxjs'
 import {FileAsset} from '@sanity/types'
 import {withMaxConcurrency} from '../../utils/withMaxConcurrency'
 import {UploadOptions} from '../../uploads/types'
-import {client, observePaths} from '../../../legacyPluginParts'
+import {client, observePaths} from '../../../legacyParts'
 
 const MAX_CONCURRENT_UPLOADS = 4
 

@@ -3,7 +3,7 @@
 import React from 'react'
 import {FormFieldPresence} from '@sanity/base/presence'
 import {Marker} from '@sanity/types'
-import {FormFieldPart} from '../legacyPluginParts'
+import {FormFieldPart} from '../legacyParts'
 
 interface Props {
   label?: string

@@ -1,5 +1,5 @@
 import React from 'react'
-import {ProgressCirclePart} from '../legacyPluginParts'
+import {ProgressCirclePart} from '../legacyParts'
 
 interface Props {
   percent?: number

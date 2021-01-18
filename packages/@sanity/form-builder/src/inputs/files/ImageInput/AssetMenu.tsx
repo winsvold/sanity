@@ -1,6 +1,6 @@
 import React from 'react'
 import {LinkIcon, EllipsisVerticalIcon, TrashIcon} from '@sanity/icons'
-import {DropDownButton} from '../../../legacyPluginParts'
+import {DropDownButton} from '../../../legacyParts'
 import {AssetAction} from './types'
 
 const menuItems: AssetAction[] = [

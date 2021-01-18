@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, {FunctionComponent} from 'react'
-import {IntentLink} from '../../../../legacyPluginParts'
+import {IntentLink} from '../../../../legacyParts'
 
 import styles from './BlockObjectMenuItem.css'
 

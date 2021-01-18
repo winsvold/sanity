@@ -5,7 +5,7 @@ import {FormFieldPresence, PresenceOverlay} from '@sanity/base/presence'
 import {PortableTextBlock, Type, PortableTextChild} from '@sanity/portable-text-editor'
 import {FormBuilderInput} from '../../../../../FormBuilderInput'
 import {PatchEvent} from '../../../../../PatchEvent'
-import {DefaultDialog} from '../../../../../legacyPluginParts'
+import {DefaultDialog} from '../../../../../legacyParts'
 
 type Props = {
   focusPath: Path

@@ -6,7 +6,7 @@ import {
   PortableTextFeatures,
   usePortableTextEditor,
 } from '@sanity/portable-text-editor'
-import {BlockExtras} from '../../../legacyPluginParts'
+import {BlockExtras} from '../../../legacyParts'
 import PatchEvent from '../../../../PatchEvent'
 import createBlockActionPatchFn from './utils/createBlockActionPatchFn'
 import {RenderBlockActions, RenderCustomMarkers} from './types'

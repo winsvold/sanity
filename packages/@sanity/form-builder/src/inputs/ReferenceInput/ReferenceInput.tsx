@@ -16,7 +16,7 @@ import {ChangeIndicatorCompareValueProvider} from '@sanity/base/lib/change-indic
 import {LinkIcon} from '@sanity/icons'
 import {Button} from '@sanity/ui'
 import {Observable} from 'rxjs'
-import {IntentLink, SearchableSelect} from '../../legacyPluginParts'
+import {IntentLink, SearchableSelect} from '../../legacyParts'
 import Preview from '../../Preview'
 import subscriptionManager from '../../utils/subscriptionManager'
 import PatchEvent, {set, setIfMissing, unset} from '../../PatchEvent'

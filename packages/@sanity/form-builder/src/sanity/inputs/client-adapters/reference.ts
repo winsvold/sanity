@@ -1,5 +1,5 @@
 import {map} from 'rxjs/operators'
-import {client, createWeightedSearch, observeForPreview} from '../../../legacyPluginParts'
+import {client, createWeightedSearch, observeForPreview} from '../../../legacyParts'
 
 export function getPreviewSnapshot(value, referenceType) {
   return observeForPreview(value, referenceType).pipe(map((result: any) => result.snapshot))

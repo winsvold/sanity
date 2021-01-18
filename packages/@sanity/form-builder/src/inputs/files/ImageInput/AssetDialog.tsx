@@ -9,7 +9,7 @@ import {
   List,
   schema,
   WithReferringDocuments,
-} from '../../../legacyPluginParts'
+} from '../../../legacyParts'
 import {AssetAction, AssetRecord} from './types'
 
 import styles from './AssetDialog.css'
