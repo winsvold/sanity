@@ -1,10 +1,9 @@
 import {FormFieldPresence} from '@sanity/base/presence'
-import {ErrorOutlineIcon, WarningOutlineIcon} from '@sanity/icons'
 import {ArraySchemaType, isObjectSchemaType, Marker, Path, SchemaType} from '@sanity/types'
 import {FOCUS_TERMINATOR, startsWith} from '@sanity/util/paths'
 import {isPlainObject} from 'lodash'
 import {FormFieldSet} from '@sanity/base/components'
-import {Box, Button, Card, Flex, Stack, Text} from '@sanity/ui'
+import {Button, Stack, Text} from '@sanity/ui'
 import React from 'react'
 import {map} from 'rxjs/operators'
 import {Subscription} from 'rxjs'
@@ -16,8 +15,11 @@ import {Details} from '../../../components/Details'
 import randomKey from '../common/randomKey'
 import {Item, List} from '../common/list'
 import {fileTarget} from '../../common/fileTarget'
+import {Alert} from '../../../components/Alert'
 import {ArrayItem} from './item'
 import {ArrayMember} from './types'
+
+declare const __DEV__: boolean
 
 const UploadTargetFieldset = fileTarget(FormFieldSet)
 
@@ -248,47 +250,32 @@ export class ArrayInput extends React.Component<Props> {
           ref={this.setElement}
           markers={markers}
         >
-          <Card padding={2} radius={3} tone="critical">
-            <Stack space={3}>
-              <Flex padding={3}>
-                <Box>
-                  <Text size={1}>
-                    <ErrorOutlineIcon />
-                  </Text>
-                </Box>
+          <Alert
+            status="error"
+            suffix={
+              <Stack padding={2}>
+                <Button
+                  onClick={this.handleRemoveNonObjectValues}
+                  text="Remove non-object values"
+                  tone="critical"
+                />
+              </Stack>
+            }
+            title={<>Invalid list values</>}
+          >
+            <Text as="p" muted size={1}>
+              Some items in this list are not objects. This must be fixed in order to edit the list.
+            </Text>
 
-                <Stack flex={1} marginLeft={3} space={2}>
-                  <Text as="h3" size={1} weight="semibold">
-                    Invalid list values
-                  </Text>
-
-                  <Text as="p" muted size={1}>
-                    Some items in this list are not objects. This must be fixed in order to edit the
-                    list.
-                  </Text>
-
-                  <Details title={<>Why is this happening?</>}>
-                    <Stack space={3}>
-                      <Text as="p" muted size={1}>
-                        This usually happens when items are created using an API client, or when a
-                        custom input component has added invalid data to the list.
-                      </Text>
-                    </Stack>
-                  </Details>
-                </Stack>
-              </Flex>
-
-              {/* <Text as="p" muted>
-
-              </Text> */}
-
-              <Button
-                onClick={this.handleRemoveNonObjectValues}
-                text="Remove non-object values"
-                tone="critical"
-              />
-            </Stack>
-          </Card>
+            <Details marginTop={4} open={__DEV__} title={<>Developer info</>}>
+              <Stack space={3}>
+                <Text as="p" muted size={1}>
+                  This usually happens when items are created using an API client, or when a custom
+                  input component has added invalid data to the list.
+                </Text>
+              </Stack>
+            </Details>
+          </Alert>
         </FormFieldSet>
       )
     }
@@ -316,49 +303,39 @@ export class ArrayInput extends React.Component<Props> {
         markers={markers}
         {...uploadProps}
       >
-        <div>
+        <Stack space={2}>
           {hasMissingKeys && (
-            <Card marginBottom={2} padding={2} radius={3} tone="caution">
-              <Stack space={3}>
-                <Flex padding={3}>
-                  <Box>
-                    <Text size={1}>
-                      <WarningOutlineIcon />
-                    </Text>
-                  </Box>
+            <Alert
+              status="warning"
+              suffix={
+                <Stack padding={2}>
+                  <Button
+                    onClick={this.handleFixMissingKeys}
+                    text="Add missing keys"
+                    tone="caution"
+                  />
+                </Stack>
+              }
+              title={<>Missing keys</>}
+            >
+              <Text as="p" muted size={1}>
+                Some items in the list are missing their keys. This must be fixed in order to edit
+                the list.
+              </Text>
 
-                  <Stack flex={1} marginLeft={3} space={2}>
-                    <Text as="h3" size={1} weight="semibold">
-                      Missing keys
-                    </Text>
+              <Details marginTop={4} open={__DEV__} title={<>Developer info</>}>
+                <Stack space={3}>
+                  <Text as="p" muted size={1}>
+                    This usually happens when items are created using an API client, and the{' '}
+                    <code>_key</code> property has not been included.
+                  </Text>
 
-                    <Text as="p" muted size={1}>
-                      Some items in the list are missing their keys. This must be fixed in order to
-                      edit the list.
-                    </Text>
-
-                    <Details title={<>Why is this happening?</>}>
-                      <Stack space={3}>
-                        <Text as="p" muted size={1}>
-                          This usually happens when items are created using an API client, and the{' '}
-                          <code>_key</code> property has not been included.
-                        </Text>
-
-                        <Text as="p" muted size={1}>
-                          The value of the <code>_key</code> property must be a unique string.
-                        </Text>
-                      </Stack>
-                    </Details>
-                  </Stack>
-                </Flex>
-
-                <Button
-                  onClick={this.handleFixMissingKeys}
-                  text="Fix missing keys"
-                  tone="caution"
-                />
-              </Stack>
-            </Card>
+                  <Text as="p" muted size={1}>
+                    The value of the <code>_key</code> property must be a unique string.
+                  </Text>
+                </Stack>
+              </Details>
+            </Alert>
           )}
 
           <Stack space={1}>
@@ -413,7 +390,7 @@ export class ArrayInput extends React.Component<Props> {
               onChange={onChange}
             />
           </Stack>
-        </div>
+        </Stack>
       </FieldSetComponent>
     )
   }

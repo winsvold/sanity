@@ -1,38 +1,47 @@
 import {ErrorOutlineIcon, WarningOutlineIcon} from '@sanity/icons'
-import {Box, Card, Flex, Stack, Text} from '@sanity/ui'
+import {Box, Card, Flex, Text, ThemeColorToneKey} from '@sanity/ui'
 import React from 'react'
-import {Details} from './Details'
+import styled from 'styled-components'
 
 interface AlertProps {
   children?: React.ReactNode
-  heading: React.ReactNode
-  message: React.ReactNode
-  tone?: 'caution' | 'critical'
+  title: React.ReactNode
+  status?: 'warning' | 'error'
+  suffix?: React.ReactNode
 }
 
-export function Alert({heading, message, children, tone = 'caution'}: AlertProps) {
+const STATUS_TONES: {[key: string]: ThemeColorToneKey} = {
+  warning: 'caution',
+  error: 'critical',
+}
+
+const SuffixBox = styled(Box)`
+  border-top: 1px solid var(--card-border-color);
+`
+
+export function Alert(props: AlertProps) {
+  const {children, status = 'warning', suffix, title} = props
+
   return (
-    <Card padding={2} radius={2} tone={tone}>
-      <Flex padding={3}>
+    <Card radius={2} tone={STATUS_TONES[status]}>
+      <Flex padding={4}>
         <Box>
           <Text size={1}>
-            {tone === 'caution' && <WarningOutlineIcon />}
-            {tone === 'critical' && <ErrorOutlineIcon />}
+            {status === 'warning' && <WarningOutlineIcon />}
+            {status === 'error' && <ErrorOutlineIcon />}
           </Text>
         </Box>
 
-        <Box flex={1} marginLeft={2}>
-          <Stack space={3}>
-            <Text size={1} weight="semibold">
-              {heading}
-            </Text>
+        <Box flex={1} marginLeft={3}>
+          <Text size={1} weight="semibold">
+            {title}
+          </Text>
 
-            <Details>{message}</Details>
-          </Stack>
+          {children && <Box marginTop={3}>{children}</Box>}
         </Box>
       </Flex>
 
-      {children}
+      {suffix && <SuffixBox>{suffix}</SuffixBox>}
     </Card>
   )
 }

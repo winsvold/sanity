@@ -5,11 +5,19 @@ import styled from 'styled-components'
 
 interface DetailsProps {
   children?: React.ReactNode
+  margin?: number | number[]
+  marginX?: number | number[]
+  marginY?: number | number[]
+  marginTop?: number | number[]
+  marginRight?: number | number[]
+  marginBottom?: number | number[]
+  marginLeft?: number | number[]
   open?: boolean
   title?: React.ReactNode
 }
 
 const HeaderButton = styled.button`
+  display: block;
   -webkit-font-smoothing: inherit;
   appearance: none;
   font: inherit;
@@ -39,14 +47,14 @@ const IconBox = styled(Box)`
 `
 
 export function Details(props: DetailsProps) {
-  const {children, open: openProp, title = 'Details'} = props
+  const {children, open: openProp, title = 'Details', ...restProps} = props
 
   const [open, setOpen] = useState(openProp || false)
 
   const handleToggle = useCallback(() => setOpen((v) => !v), [])
 
   return (
-    <Box>
+    <Box {...restProps}>
       <HeaderButton type="button" onClick={handleToggle}>
         <Header align="center">
           <IconBox data-open={open ? '' : undefined}>

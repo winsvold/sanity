@@ -6,9 +6,14 @@ export const myObject = {
   title: 'My object',
   icon,
   fields: [
+    // {
+    //   name: 'first',
+    //   type: 'string',
+    //   title: 'First',
+    // },
     {
       name: 'first',
-      type: 'string',
+      type: 'number',
       title: 'First',
     },
     {
