@@ -1,6 +1,6 @@
 import {Button} from '@sanity/ui'
 import React from 'react'
-import {Warning} from '../../components/Warning'
+import {Alert} from '../../components/Alert'
 import PatchEvent, {set, unset} from '../../PatchEvent'
 import styles from '../ObjectInput/styles/UnknownFields.css'
 import CONVERTERS from './converters'
@@ -93,6 +93,6 @@ export default class InvalidValueInput extends React.PureComponent<InvalidValueP
       </>
     )
 
-    return <Warning heading="Content has invalid type" message={message} />
+    return <Alert heading="Content has invalid type" message={message} />
   }
 }

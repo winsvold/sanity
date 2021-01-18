@@ -1,16 +1,16 @@
 import {ErrorOutlineIcon, WarningOutlineIcon} from '@sanity/icons'
 import {Box, Card, Flex, Stack, Text} from '@sanity/ui'
 import React from 'react'
-import {Details} from '../components/Details'
+import {Details} from './Details'
 
-interface WarningProps {
+interface AlertProps {
   children?: React.ReactNode
   heading: React.ReactNode
   message: React.ReactNode
   tone?: 'caution' | 'critical'
 }
 
-export function Warning({heading, message, children, tone = 'caution'}: WarningProps) {
+export function Alert({heading, message, children, tone = 'caution'}: AlertProps) {
   return (
     <Card padding={2} radius={2} tone={tone}>
       <Flex padding={3}>

@@ -1,7 +1,7 @@
 import {Button} from '@sanity/ui'
 import schema from 'part:@sanity/base/schema'
 import React from 'react'
-import {Warning} from '../../components/Warning'
+import {Alert} from '../../components/Alert'
 import PatchEvent, {setIfMissing, unset} from '../../PatchEvent'
 import styles from '../ObjectInput/styles/UnknownFields.css'
 
@@ -90,5 +90,5 @@ export function UntypedValueInput({validTypes, value, onChange}: Props) {
     </>
   )
 
-  return <Warning heading="Content is missing _type" message={message} />
+  return <Alert heading="Content is missing _type" message={message} />
 }

@@ -1,7 +1,7 @@
 import {InvalidValueResolution, PortableTextBlock} from '@sanity/portable-text-editor'
 import {Button} from '@sanity/ui'
 import React, {useCallback} from 'react'
-import {Warning} from '../../../components/Warning'
+import {Alert} from '../../../components/Alert'
 import styles from '../../ObjectInput/styles/UnknownFields.css'
 
 interface InvalidValueProps {
@@ -46,5 +46,5 @@ export function InvalidValue(props: InvalidValueProps) {
     </>
   )
 
-  return <Warning heading="Invalid portable text value" message={message} />
+  return <Alert heading="Invalid portable text value" message={message} />
 }
